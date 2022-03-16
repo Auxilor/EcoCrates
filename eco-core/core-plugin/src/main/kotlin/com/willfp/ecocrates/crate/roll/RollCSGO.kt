@@ -14,14 +14,13 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class RollCSGO(
-    reward: Reward,
-    private val rollItems: List<Reward>,
+class RollCSGO private constructor(
+    override val reward: Reward,
     private val crate: Crate,
     private val plugin: EcoPlugin,
-    player: Player
-) : Roll("csgo", player, reward) {
-    private val scrollTimes = 35
+    private val player: Player
+) : Roll {
+    private val scrollTimes = plugin.configYml.getInt("rolls.csgo.scrolls")
     private val bias = plugin.configYml.getDouble("rolls.csgo.bias")
     private val delays = (1..scrollTimes)
         .asSequence()
@@ -32,10 +31,12 @@ class RollCSGO(
         .map { if (it <= 0) 1 else it }  // Make it 1!
         .toList()
 
-    private val display = rollItems.toMutableList().apply {
-        add(reward) // Add the item that the player will win
-        addAll(rollItems.shuffled()) // Add extra items for filler
-    }
+    // Add three so it lines up
+    private val display = crate.getRandomRewards(scrollTimes + 3)
+        .toMutableList().apply {
+            add(reward)
+            addAll(crate.getRandomRewards(5))
+        }
 
     private var scroll = 0
     private var tick = 0
@@ -109,5 +110,15 @@ class RollCSGO(
     private fun handleFinish(player: Player) {
         runnable.cancel()
         crate.handleFinish(player, this)
+    }
+
+    object Factory : RollFactory<RollCSGO>("csgo") {
+        override fun create(options: RollOptions): RollCSGO =
+            RollCSGO(
+                options.reward,
+                options.crate,
+                options.plugin,
+                options.player
+            )
     }
 }

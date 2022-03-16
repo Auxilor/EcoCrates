@@ -35,3 +35,4 @@ rolls:
     filler: black_stained_glass_pane name:""
     selector: lime_stained_glass_pane name:""
     bias: 0.65
+    scrolls: 35

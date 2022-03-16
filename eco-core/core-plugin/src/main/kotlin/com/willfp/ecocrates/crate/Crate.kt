@@ -17,7 +17,8 @@ import com.willfp.eco.util.formatEco
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.crate.placed.particle.ParticleData
 import com.willfp.ecocrates.crate.roll.Roll
-import com.willfp.ecocrates.crate.roll.RollCSGO
+import com.willfp.ecocrates.crate.roll.RollOptions
+import com.willfp.ecocrates.crate.roll.Rolls
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
@@ -49,6 +50,8 @@ class Crate(
             ParticleAnimations.getByID(it.getString("animation")) ?: ParticleAnimations.SPIRAL
         )
     }
+
+    private val rollFactory = Rolls.getByID(config.getString("roll"))!!
 
     private val rewards = config.getSubsections("rewards").map { Reward(it) }
 
@@ -85,6 +88,24 @@ class Crate(
         ) { getKeys(it).toString() }.register()
     }
 
+    private fun makeRoll(player: Player): Roll {
+        val display = mutableListOf<Reward>()
+
+        // Add three to the scroll times so that it lines up
+        for (i in 0..(35 + 3)) {
+            display.add(getRandomReward(displayWeight = true)) // Fill roll with display weight items
+        }
+
+        return rollFactory.create(
+            RollOptions(
+                getRandomReward(),
+                this,
+                this.plugin,
+                player
+            )
+        )
+    }
+
     private fun getRandomReward(displayWeight: Boolean = false): Reward {
         var weight = 100.0
         val selection = rewards.toList().shuffled()
@@ -99,18 +120,6 @@ class Crate(
         }
 
         return current
-    }
-
-    private fun makeRoll(player: Player): Roll {
-        val display = mutableListOf<Reward>()
-
-        // Add three to the scroll times so that it lines up
-        for (i in 0..(35 + 3)) {
-            display.add(getRandomReward(displayWeight = true)) // Fill roll with display weight items
-        }
-
-        // The last item should use the actual weights.
-        return RollCSGO(getRandomReward(), display, this, this.plugin, player)
     }
 
     internal fun addToKeyGUI(builder: MenuBuilder) {
@@ -143,6 +152,10 @@ class Crate(
                 }
             }
         )
+    }
+
+    fun getRandomRewards(amount: Int, displayWeight: Boolean = false): List<Reward> {
+        return (0..amount).map { getRandomReward(displayWeight) }
     }
 
     fun openWithKey(player: Player) {

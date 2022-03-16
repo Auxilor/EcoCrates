@@ -1,6 +1,7 @@
 crates:
   - id: demo
     name: "Demo Crate"
+    roll: csgo
     preview:
       title: Demo Crate
       rows: 6
