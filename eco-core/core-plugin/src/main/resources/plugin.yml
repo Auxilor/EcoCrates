@@ -1,0 +1,56 @@
+name: EcoCrates
+version: ${projectVersion}
+main: com.willfp.ecocrates.EcoCratesPlugin
+api-version: 1.17
+authors: [ Auxilor ]
+website: willfp.com
+load: STARTUP
+depend:
+  - eco
+  - ProtocolLib
+
+commands:
+  ecocrates:
+    aliases:
+      - crates
+    description: Base plugin command
+    permission: ecocrates.command.ecocrates
+
+permissions:
+  ecocrates.*:
+    description: All ecocrates permissions
+    default: op
+    children:
+      ecocrates.command.reload: true
+      ecocrates.command.ecocrates: true
+      ecocrates.command.give: true
+      ecocrates.command.open: true
+      ecocrates.command.preview: true
+      ecocrates.command.keys: true
+      ecocrates.command.set: true
+      ecocrates.break: true
+
+  ecocrates.command.ecocrates:
+    description: Allows the use of /ecocrates (base command)
+    default: true
+  ecocrates.command.reload:
+    description: Allows reloading the config
+    default: op
+  ecocrates.command.give:
+    description: Allows giving players keys
+    default: op
+  ecocrates.command.open:
+    description: Allows opening crates with /ecocrates open
+    default: true
+  ecocrates.command.preview:
+    description: Allows previewing crates with /ecocrates preview
+    default: true
+  ecocrates.command.keys:
+    description: Allows viewing owned keys with /ecocrates keys
+    default: true
+  ecocrates.command.set:
+    description: Allows marking a block as a crate
+    default: op
+  ecocrates.break:
+    description: Allows breaking crate blocks
+    default: op

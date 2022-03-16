@@ -1,0 +1,5 @@
+rootProject.name = 'EcoCrates'
+
+// Core
+include ':eco-core'
+include ':eco-core:core-plugin'
