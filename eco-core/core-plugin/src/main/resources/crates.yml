@@ -45,37 +45,37 @@ crates:
           - diamond
         messages:
           - 'amogus?'
-        weight: 10
-        displayWeight: 25
+        weight:
+          actual: 10
+          display: 25
         display:
           item: diamond
           lore: [ ]
-        gui:
           row: 2
           column: 2
       - commands: [ ]
         items:
           - emerald
+        messages:
+          - 'amogus?!!'
+        weight:
+          actual: 10
+          display: 50
         display:
           item: emerald
           lore: [ ]
-        messages:
-          - 'amogus?!!'
-        weight: 10
-        displayWeight: 50
-        gui:
           row: 2
           column: 3
       - commands: [ ]
         items:
           - bedrock
+        messages:
+          - 'amogus?!!'
+        weight:
+          actual: 10000000
+          display: 0
         display:
           item: bedrock
           lore: [ ]
-        messages:
-          - 'amogus?!!'
-        weight: 10000000
-        displayWeight: 0
-        gui:
           row: 2
           column: 4

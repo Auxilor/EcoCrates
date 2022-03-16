@@ -21,13 +21,13 @@ class Reward(
 
     val messages = config.getFormattedStrings("messages")
 
-    val weight = config.getDouble("weight")
+    val weight = config.getDouble("weight.actual")
 
-    val displayWeight = config.getDouble("displayWeight")
+    val displayWeight = config.getDouble("weight.display")
 
-    val displayRow = config.getInt("gui.row")
+    val displayRow = config.getInt("display.row")
 
-    val displayColumn = config.getInt("gui.column")
+    val displayColumn = config.getInt("display.column")
 
     fun giveTo(player: Player) {
         for (command in commands) {
