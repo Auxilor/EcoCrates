@@ -14,10 +14,13 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.util.formatEco
+import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
+import com.willfp.ecocrates.crate.placed.particle.ParticleData
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
 import org.bukkit.OfflinePlayer
+import org.bukkit.Particle
 import org.bukkit.entity.Player
 
 class Crate(
@@ -34,9 +37,16 @@ class Crate(
         0
     ).player()
 
-    val hologramLines = config.getFormattedStrings("placed.hologram")
+    val hologramLines = config.getFormattedStrings("placed.hologram.lines")
 
-    val hologramHeight = config.getDouble("placed.hologram-height")
+    val hologramHeight = config.getDouble("placed.hologram.height")
+
+    val particles = config.getSubsections("placed.particles").map {
+        ParticleData(
+            Particle.valueOf(it.getString("particle").uppercase()),
+            ParticleAnimations.getByID(it.getString("animation")) ?: ParticleAnimations.SPIRAL
+        )
+    }
 
     private val rewards = config.getSubsections("rewards").map { Reward(it) }
 

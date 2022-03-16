@@ -14,6 +14,22 @@ keygui:
       - "111111111"
   title: "Your Keys"
 
+animations:
+  spiral:
+    spirals-per-second: 0.5
+    rises-per-second: 0.25
+    radius: 1.5
+    height: 1
+  double_spiral:
+    spirals-per-second: 0.25
+    rises-per-second: 0.125
+    radius: 1.5
+    height: 1
+  circle:
+    spirals-per-second: 0.5
+    radius: 1.5
+    height: 1
+
 crates:
   - id: demo
     name: "Demo Crate"
@@ -45,11 +61,15 @@ crates:
           volume: 100
           pitch: 1
     placed:
-      hologram-height: 1.5
+      particles:
+        - particle: flame
+          animation: spiral
       hologram:
-        - "Amogus? Sus!"
-        - "&b&lLeft Click to Preview"
-        - '&a&lRight click to Open'
+        height: 1.5
+        lines:
+          - "Amogus? Sus!"
+          - "&b&lLeft Click to Preview"
+          - '&a&lRight click to Open'
     rewards:
       - commands: [ ]
         items:
@@ -60,7 +80,7 @@ crates:
         displayWeight: 25
         display:
           item: diamond
-          lore: []
+          lore: [ ]
         gui:
           row: 2
           column: 2
@@ -69,7 +89,7 @@ crates:
           - emerald
         display:
           item: emerald
-          lore: []
+          lore: [ ]
         messages:
           - 'amogus?!!'
         weight: 10
@@ -82,7 +102,7 @@ crates:
           - bedrock
         display:
           item: bedrock
-          lore: []
+          lore: [ ]
         messages:
           - 'amogus?!!'
         weight: 10000000
