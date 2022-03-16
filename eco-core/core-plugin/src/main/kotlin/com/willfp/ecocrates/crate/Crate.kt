@@ -16,6 +16,8 @@ import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.util.formatEco
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.crate.placed.particle.ParticleData
+import com.willfp.ecocrates.crate.roll.Roll
+import com.willfp.ecocrates.crate.roll.RollCSGO
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
@@ -103,12 +105,12 @@ class Crate(
         val display = mutableListOf<Reward>()
 
         // Add three to the scroll times so that it lines up
-        for (i in 0..(SCROLL_TIMES + 3)) {
+        for (i in 0..(35 + 3)) {
             display.add(getRandomReward(displayWeight = true)) // Fill roll with display weight items
         }
 
         // The last item should use the actual weights.
-        return Roll(display, getRandomReward(), this, this.plugin, player)
+        return RollCSGO(getRandomReward(), display, this, this.plugin, player)
     }
 
     internal fun addToKeyGUI(builder: MenuBuilder) {
