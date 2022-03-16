@@ -17,6 +17,7 @@ class CommandEcoCrates(plugin: EcoPlugin) : PluginCommand(
             .addSubcommand(CommandGive(plugin))
             .addSubcommand(CommandKeys(plugin))
             .addSubcommand(CommandSet(plugin))
+            .addSubcommand(CommandForceOpen(plugin))
     }
 
     override fun onExecute(sender: CommandSender, args: List<String>) {

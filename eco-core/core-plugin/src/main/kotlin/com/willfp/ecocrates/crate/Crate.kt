@@ -76,8 +76,8 @@ class Crate(
         }
     }
 
-    private val onFinishSound = PlayableSound(
-        config.getSubsections("onFinish.sounds")
+    private val finishSound = PlayableSound(
+        config.getSubsections("finish.sounds")
             .map { ConfiguredSound.fromConfig(it) }
     )
 
@@ -180,7 +180,7 @@ class Crate(
 
     fun handleFinish(player: Player, roll: Roll) {
         roll.reward.giveTo(player)
-        onFinishSound.play(player.location)
+        finishSound.play(player.location)
     }
 
     fun giveKeys(player: OfflinePlayer, amount: Int) {

@@ -2,6 +2,7 @@ crates:
   - id: demo
     name: "Demo Crate"
     roll: csgo
+
     preview:
       title: Demo Crate
       rows: 6
@@ -15,6 +16,7 @@ crates:
           - "100000001"
           - "100000001"
           - "111111111"
+
     keygui:
       item: tripwire_hook unbreaking:1 hide_enchants name:"Demo Crate"
       lore:
@@ -24,6 +26,7 @@ crates:
       column: 3
       rightClickMessage:
         - "Buy a Demo Crate key here! get lured into the trap of gambling addiction"
+
     placed:
       particles:
         - particle: flame
@@ -34,11 +37,13 @@ crates:
           - "Amogus? Sus!"
           - "&b&lLeft Click to Preview"
           - '&a&lRight click to Open'
-    onFinish:
+
+    finish:
       sounds:
         - sound: entity_firework_rocket_launch
           volume: 100
           pitch: 1
+
     rewards:
       - commands: [ ]
         items:

@@ -13,6 +13,7 @@ commands:
   ecocrates:
     aliases:
       - crates
+      - crate
     description: Base plugin command
     permission: ecocrates.command.ecocrates
 
@@ -28,6 +29,7 @@ permissions:
       ecocrates.command.preview: true
       ecocrates.command.keys: true
       ecocrates.command.set: true
+      ecocrates.command.forceopen: true
       ecocrates.break: true
 
   ecocrates.command.ecocrates:
@@ -42,6 +44,9 @@ permissions:
   ecocrates.command.open:
     description: Allows opening crates with /ecocrates open
     default: true
+  ecocrates.command.forceopen:
+    description: Allows opening crates with /ecocrates forceopen
+    default: op
   ecocrates.command.preview:
     description: Allows previewing crates with /ecocrates preview
     default: true

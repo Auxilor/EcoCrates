@@ -7,19 +7,20 @@ import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
 class Reward(
-    private val config: Config
+    config: Config
 ) {
-    val commands = config.getStrings("commands")
+    private val commands = config.getStrings("commands")
 
-    val items = config.getStrings("items").map { Items.lookup(it) }.filterNot { it is EmptyTestableItem }
+    private val items = config.getStrings("items").map { Items.lookup(it) }.filterNot { it is EmptyTestableItem }
 
-    val display = ItemStackBuilder(Items.lookup(config.getString("display.item")))
+    private val messages = config.getFormattedStrings("messages")
+
+    val display: ItemStack = ItemStackBuilder(Items.lookup(config.getString("display.item")))
         .addLoreLines(config.getStrings("display.lore"))
         .build()
-
-    val messages = config.getFormattedStrings("messages")
 
     val weight = config.getDouble("weight.actual")
 
