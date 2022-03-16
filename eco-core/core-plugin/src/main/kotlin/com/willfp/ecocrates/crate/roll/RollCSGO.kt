@@ -22,11 +22,20 @@ class RollCSGO private constructor(
 ) : Roll {
     private val scrollTimes = plugin.configYml.getInt("rolls.csgo.scrolls")
     private val bias = plugin.configYml.getDouble("rolls.csgo.bias")
+    private val maxDelay = plugin.configYml.getInt("rolls.csgo.max-delay")
+
+    /*
+    Bias the number using the NumberUtils bias function,
+    but varying inputs from 0-35 rather than 0-1,
+    and then multiplying the output by 25 to give
+    a maximum tick value of 25 (rather than 1);
+    essentially doing f(x/<scrolls>) * <max delay>.
+     */
     private val delays = (1..scrollTimes)
         .asSequence()
         .map { it / scrollTimes.toDouble() }
         .map { NumberUtils.bias(it, bias) }
-        .map { it * 25 }
+        .map { it * maxDelay }
         .map { it.toInt() }
         .map { if (it <= 0) 1 else it }  // Make it 1!
         .toList()

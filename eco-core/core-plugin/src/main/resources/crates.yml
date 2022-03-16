@@ -58,6 +58,7 @@ crates:
           lore: [ ]
           row: 2
           column: 2
+
       - commands: [ ]
         items:
           - emerald
@@ -71,6 +72,7 @@ crates:
           lore: [ ]
           row: 2
           column: 3
+
       - commands: [ ]
         items:
           - bedrock

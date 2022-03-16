@@ -36,3 +36,4 @@ rolls:
     selector: lime_stained_glass_pane name:""
     bias: 0.65
     scrolls: 35
+    max-delay: 25
