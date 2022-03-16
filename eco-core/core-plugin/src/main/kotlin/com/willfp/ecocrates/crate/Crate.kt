@@ -20,8 +20,10 @@ import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollOptions
 import com.willfp.ecocrates.crate.roll.Rolls
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.util.ConfiguredFirework
 import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
+import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -81,6 +83,9 @@ class Crate(
             .map { ConfiguredSound.fromConfig(it) }
     )
 
+    private val finishFireworks = config.getSubsections("finish.fireworks")
+        .map { ConfiguredFirework.fromConfig(it) }
+
     init {
         PlayerPlaceholder(
             plugin,
@@ -88,7 +93,7 @@ class Crate(
         ) { getKeys(it).toString() }.register()
     }
 
-    private fun makeRoll(player: Player): Roll {
+    private fun makeRoll(player: Player, location: Location): Roll {
         val display = mutableListOf<Reward>()
 
         // Add three to the scroll times so that it lines up
@@ -101,7 +106,8 @@ class Crate(
                 getRandomReward(),
                 this,
                 this.plugin,
-                player
+                player,
+                location
             )
         )
     }
@@ -158,7 +164,7 @@ class Crate(
         return (0..amount).map { getRandomReward(displayWeight) }
     }
 
-    fun openWithKey(player: Player) {
+    fun openWithKey(player: Player, location: Location? = null) {
         val keys = player.profile.read(keysKey)
 
         if (keys == 0) {
@@ -167,20 +173,21 @@ class Crate(
         }
 
         player.profile.write(keysKey, keys - 1)
-        open(player)
+        open(player, location)
     }
 
-    fun open(player: Player) {
-        makeRoll(player).roll()
+    fun open(player: Player, location: Location? = null) {
+        makeRoll(player, location ?: player.location).roll()
     }
 
     fun previewForPlayer(player: Player) {
         previewGUI.open(player)
     }
 
-    fun handleFinish(player: Player, roll: Roll) {
+    fun handleFinish(player: Player, roll: Roll, location: Location) {
         roll.reward.giveTo(player)
-        finishSound.play(player.location)
+        finishSound.play(location)
+        finishFireworks.forEach { it.launch(location) }
     }
 
     fun giveKeys(player: OfflinePlayer, amount: Int) {

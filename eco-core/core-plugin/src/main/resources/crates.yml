@@ -39,9 +39,20 @@ crates:
           - '&a&lRight click to Open'
 
     finish:
+      fireworks:
+        - power: 2
+          type: ball_large
+          colors:
+            - 00ffff
+            - 00ff00
+          fade-colors:
+            - ffffff
+            - 999999
+          trail: true
+          flicker: true
       sounds:
-        - sound: entity_firework_rocket_launch
-          volume: 100
+        - sound: entity_generic_explode
+          volume: 10
           pitch: 1
 
     rewards:
