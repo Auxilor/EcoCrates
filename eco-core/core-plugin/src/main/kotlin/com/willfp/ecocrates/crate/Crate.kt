@@ -34,12 +34,6 @@ class Crate(
 
     val name = config.getFormattedString("name")
 
-    val keysKey = PersistentDataKey(
-        plugin.namespacedKeyFactory.create("${id}_keys"),
-        PersistentDataKeyType.INT,
-        0
-    ).player()
-
     val hologramLines = config.getFormattedStrings("placed.hologram.lines")
 
     val hologramHeight = config.getDouble("placed.hologram.height")
@@ -50,6 +44,12 @@ class Crate(
             ParticleAnimations.getByID(it.getString("animation")) ?: ParticleAnimations.SPIRAL
         )
     }
+
+    private val keysKey: PersistentDataKey<Int> = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("${id}_keys"),
+        PersistentDataKeyType.INT,
+        0
+    ).player()
 
     private val rollFactory = Rolls.getByID(config.getString("roll"))!!
 
