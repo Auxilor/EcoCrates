@@ -36,7 +36,7 @@ object Crates {
     fun update(plugin: EcoCratesPlugin) {
         BY_ID.clear()
 
-        for (config in plugin.configYml.getSubsections("crates")) {
+        for (config in plugin.cratesYml.getSubsections("crates")) {
             val crate = Crate(config, plugin)
             BY_ID[crate.id] = crate
         }

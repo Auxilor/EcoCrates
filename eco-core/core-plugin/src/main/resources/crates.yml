@@ -1,0 +1,80 @@
+crates:
+  - id: demo
+    name: "Demo Crate"
+    preview:
+      title: Demo Crate
+      rows: 6
+      mask:
+        items:
+          - black_stained_glass_pane
+        pattern:
+          - "111111111"
+          - "100000001"
+          - "100000001"
+          - "100000001"
+          - "100000001"
+          - "111111111"
+    keygui:
+      item: tripwire_hook unbreaking:1 hide_enchants name:"Demo Crate"
+      lore:
+        - "&famogus? sus? impostor?"
+        - "&fYou have %keys% keys"
+      row: 2
+      column: 3
+      rightClickMessage:
+        - "Buy a Demo Crate key here! get lured into the trap of gambling addiction"
+    placed:
+      particles:
+        - particle: flame
+          animation: spiral
+      hologram:
+        height: 1.5
+        lines:
+          - "Amogus? Sus!"
+          - "&b&lLeft Click to Preview"
+          - '&a&lRight click to Open'
+    onFinish:
+      sounds:
+        - sound: entity_firework_rocket_launch
+          volume: 100
+          pitch: 1
+    rewards:
+      - commands: [ ]
+        items:
+          - diamond
+        messages:
+          - 'amogus?'
+        weight: 10
+        displayWeight: 25
+        display:
+          item: diamond
+          lore: [ ]
+        gui:
+          row: 2
+          column: 2
+      - commands: [ ]
+        items:
+          - emerald
+        display:
+          item: emerald
+          lore: [ ]
+        messages:
+          - 'amogus?!!'
+        weight: 10
+        displayWeight: 50
+        gui:
+          row: 2
+          column: 3
+      - commands: [ ]
+        items:
+          - bedrock
+        display:
+          item: bedrock
+          lore: [ ]
+        messages:
+          - 'amogus?!!'
+        weight: 10000000
+        displayWeight: 0
+        gui:
+          row: 2
+          column: 4

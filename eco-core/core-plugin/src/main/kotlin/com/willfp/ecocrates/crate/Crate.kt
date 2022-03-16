@@ -50,15 +50,15 @@ class Crate(
 
     private val rewards = config.getSubsections("rewards").map { Reward(it) }
 
-    private val previewGUI = menu(config.getInt("gui.rows")) {
+    private val previewGUI = menu(config.getInt("preview.rows")) {
         setMask(
             FillerMask(
-                MaskItems.fromItemNames(config.getStrings("gui.mask.items")),
-                *config.getStrings("gui.mask.pattern").toTypedArray()
+                MaskItems.fromItemNames(config.getStrings("preview.mask.items")),
+                *config.getStrings("preview.mask.pattern").toTypedArray()
             )
         )
 
-        setTitle(config.getFormattedString("gui.title"))
+        setTitle(config.getFormattedString("preview.title"))
 
         for (reward in rewards) {
             setSlot(
