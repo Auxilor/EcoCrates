@@ -10,6 +10,7 @@ object ParticleAnimations {
     val SPIRAL: ParticleAnimation = SpiralParticleAnimation()
     val DOUBLE_SPIRAL: ParticleAnimation = DoubleSpiralParticleAnimation()
     val CIRCLE: ParticleAnimation = CircleParticleAnimation()
+    val TWIRL: ParticleAnimation = TwirlParticleAnimation()
 
     /**
      * Get animation matching id.

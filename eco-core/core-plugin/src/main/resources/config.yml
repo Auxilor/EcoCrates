@@ -29,6 +29,13 @@ animations:
     spirals-per-second: 0.5
     radius: 1.5
     height: 1
+  twirl:
+    spirals-per-second: 0.5
+    ticks: 80
+    small-radius: 0.2
+    large-radius: 1.2
+    start-height: 2
+    end-height: 0.7
 
 rolls:
   csgo:
