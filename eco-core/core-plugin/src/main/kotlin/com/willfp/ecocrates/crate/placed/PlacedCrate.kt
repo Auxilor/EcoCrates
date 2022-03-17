@@ -24,10 +24,9 @@ class PlacedCrate(
 
     internal fun tick(tick: Int) {
         tick.toLong() // Just shut up, compiler
-        plugin.scheduler.runAsync { tickAsync(tick) }
     }
 
-    private fun tickAsync(tick: Int) {
+    internal fun tickAsync(tick: Int) {
         tickParticles(tick)
     }
 
