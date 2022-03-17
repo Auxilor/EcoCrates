@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.reward
 
+import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.core.items.Items
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 class Reward(
+    private val plugin: EcoPlugin,
     config: Config
 ) {
     private val commands = config.getStrings("commands")
@@ -43,6 +45,6 @@ class Reward(
             .forceTelekinesis()
             .push()
 
-        messages.forEach { player.sendMessage(it) }
+        messages.forEach { player.sendMessage(plugin.langYml.prefix + it) }
     }
 }

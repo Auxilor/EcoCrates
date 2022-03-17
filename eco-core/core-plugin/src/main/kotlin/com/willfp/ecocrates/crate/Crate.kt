@@ -10,6 +10,7 @@ import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
+import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
@@ -24,9 +25,11 @@ import com.willfp.ecocrates.util.ConfiguredFirework
 import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.Particle
 import org.bukkit.entity.Player
+import java.util.*
 
 class Crate(
     private val config: Config,
@@ -47,6 +50,15 @@ class Crate(
         )
     }
 
+    val key = CustomItem(
+        plugin.namespacedKeyFactory.create(id),
+        { it.getAsKey() == this },
+        Items.lookup(config.getString("key.item")).item
+            .clone().apply { setAsKeyFor(this@Crate) }
+    ).apply { register() }
+
+    val keyLore = config.getFormattedStrings("key.lore")
+
     private val keysKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_keys"),
         PersistentDataKeyType.INT,
@@ -55,7 +67,7 @@ class Crate(
 
     private val rollFactory = Rolls.getByID(config.getString("roll"))!!
 
-    private val rewards = config.getSubsections("rewards").map { Reward(it) }
+    private val rewards = config.getSubsections("rewards").map { Reward(plugin, it) }
 
     private val previewGUI = menu(config.getInt("preview.rows")) {
         setMask(
@@ -164,9 +176,12 @@ class Crate(
         return (0..amount).map { getRandomReward(displayWeight) }
     }
 
-    fun openPhysical(player: Player, location: Location) {
-        if (!testKeys(player)) {
-            val vector = player.location.clone().subtract(location.toVector())
+    fun openPhysical(player: Player, location: Location, physicalKey: Boolean) {
+        val nicerLocation = location.clone().add(0.5, 1.5, 0.5)
+
+        if (!testKeys(player, physicalKey = physicalKey)) {
+            val vector = player.location.clone().subtract(nicerLocation.toVector())
+                .add(0.0, 1.5, 0.0)
                 .toVector()
                 .normalize()
                 .multiply(plugin.configYml.getDouble("no-key-velocity"))
@@ -176,15 +191,20 @@ class Crate(
             return
         }
 
-        openWithKey(player, location)
+        openWithKey(player, nicerLocation, physicalKey)
     }
 
-    fun openWithKey(player: Player, location: Location? = null) {
-        if (!testKeys(player)) {
+    fun openWithKey(player: Player, location: Location? = null, physicalKey: Boolean = false) {
+        if (!testKeys(player, physicalKey = true)) {
             return
         }
 
-        adjustKeys(player, -1)
+        if (physicalKey) {
+            usePhysicalKey(player)
+        } else {
+            adjustKeys(player, -1)
+        }
+
         open(player, location)
     }
 
@@ -210,12 +230,47 @@ class Crate(
         return player.profile.read(keysKey)
     }
 
-    fun testKeys(player: Player): Boolean {
+    fun usePhysicalKey(player: Player) {
+        val itemStack = player.inventory.itemInMainHand
+        if (key.matches(itemStack)) {
+            itemStack.amount -= 1
+            if (itemStack.amount == 0) {
+                itemStack.type = Material.AIR
+            }
+        }
+    }
+
+    fun hasPhysicalKey(player: Player): Boolean {
+        return key.matches(player.inventory.itemInMainHand)
+    }
+
+    fun testKeys(player: Player, physicalKey: Boolean = false): Boolean {
         if (getKeys(player) == 0) {
-            player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
-            return false
+            return if (!physicalKey) {
+                player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
+                false
+            } else {
+                val physical = hasPhysicalKey(player)
+                if (!physical) {
+                    player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
+                }
+
+                physical
+            }
         }
 
         return true
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Crate) {
+            return false
+        }
+
+        return this.id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(this.id)
     }
 }

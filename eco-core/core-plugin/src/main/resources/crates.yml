@@ -17,6 +17,12 @@ crates:
           - "100000001"
           - "111111111"
 
+    key:
+      item: tripwire_hook unbreaking:1 hide_enchants name:"&aDemo Crate Key"
+      lore:
+        - "&fuse this key to open"
+        - "&fdemo crates, yeah?"
+
     keygui:
       item: tripwire_hook unbreaking:1 hide_enchants name:"Demo Crate"
       lore:

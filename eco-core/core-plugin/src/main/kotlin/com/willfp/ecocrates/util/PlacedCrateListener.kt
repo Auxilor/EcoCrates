@@ -30,9 +30,11 @@ class PlacedCrateListener(
 
         val crate = PlacedCrates.getCrateAt(block.location) ?: return
 
+        val physicalKey = crate.hasPhysicalKey(player)
+
         when (event.action) {
             Action.LEFT_CLICK_BLOCK -> crate.previewForPlayer(player)
-            Action.RIGHT_CLICK_BLOCK -> crate.openPhysical(player, block.location)
+            Action.RIGHT_CLICK_BLOCK -> crate.openPhysical(player, block.location, physicalKey)
             else -> return
         }
 

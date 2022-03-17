@@ -2,10 +2,12 @@ package com.willfp.ecocrates.commands
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
+import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Crates
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
+import org.bukkit.inventory.ItemStack
 import org.bukkit.util.StringUtil
 
 class CommandGive(plugin: EcoPlugin) : Subcommand(
@@ -20,14 +22,12 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
             return
         }
 
-        @Suppress("DEPRECATION")
-        val player = Bukkit.getOfflinePlayer(args[0])
+        val player = Bukkit.getPlayer(args[0])
 
-        if (!player.hasPlayedBefore()) {
+        if (player == null) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return
         }
-
 
         if (args.size < 2) {
             sender.sendMessage("must-specify-crate")
@@ -41,9 +41,21 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
             return
         }
 
-        val amount = args.getOrNull(2)?.toIntOrNull() ?: 1
+        val physical = args.getOrNull(2)?.equals("physical", ignoreCase = true) == true
 
-        crate.adjustKeys(player, amount)
+        val amount = args.getOrNull(3)?.toIntOrNull() ?: 1
+
+        if (physical) {
+            val items = mutableListOf<ItemStack>().apply { repeat(amount) { add(crate.key.item) } }
+
+            DropQueue(player)
+                .addItems(items)
+                .forceTelekinesis()
+                .push()
+        } else {
+            crate.adjustKeys(player, amount)
+        }
+
         sender.sendMessage(
             plugin.langYml.getMessage("gave-keys")
                 .replace("%amount%", amount.toString())
@@ -82,6 +94,16 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
         if (args.size == 3) {
             StringUtil.copyPartialMatches(
                 args[2],
+                listOf("physical", "virtual"),
+                completions
+            )
+
+            return completions
+        }
+
+        if (args.size == 4) {
+            StringUtil.copyPartialMatches(
+                args[3],
                 listOf("1", "2", "3", "4", "5", "10"),
                 completions
             )
