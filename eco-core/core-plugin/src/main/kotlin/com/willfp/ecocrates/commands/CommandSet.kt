@@ -36,6 +36,7 @@ class CommandSet(plugin: EcoPlugin) : Subcommand(
             return
         }
 
+        PlacedCrates.removeCrate(block.location)
         PlacedCrates.setAsCrate(block.location, crate)
 
         player.sendMessage(plugin.langYml.getMessage("set-block-as-crate"))

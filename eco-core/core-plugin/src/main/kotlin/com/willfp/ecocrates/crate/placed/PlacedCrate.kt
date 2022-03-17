@@ -4,6 +4,9 @@ import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.ecocrates.EcoCratesPlugin
 import com.willfp.ecocrates.crate.Crate
 import org.bukkit.Location
+import org.bukkit.entity.Item
+import org.bukkit.util.Vector
+import java.util.*
 
 class PlacedCrate(
     val crate: Crate,
@@ -18,12 +21,29 @@ class PlacedCrate(
         z += 0.5
     }
 
-    private val hologram = HologramManager.createHologram(location.clone().apply {
-        y += crate.hologramHeight
-    }, crate.hologramLines)
+    private val world = location.world!!
+
+    private val hologram = HologramManager.createHologram(
+        location.clone().add(0.0, crate.hologramHeight, 0.0),
+        crate.hologramLines
+    )
+
+    private val item: Item? = if (crate.showRandomReward) {
+        val entity = world.dropItem(
+            location.clone().add(0.0, crate.randomRewardHeight, 0.0),
+            crate.rewards.first().display
+        )
+        entity.velocity = Vector(0.0, 0.0, 0.0)
+        entity.pickupDelay = Int.MAX_VALUE
+        entity.setGravity(false)
+        entity.isCustomNameVisible = true
+        entity.customName = crate.randomRewardName
+        entity.owner = UUID(0, 0)
+        entity
+    } else null
 
     internal fun tick(tick: Int) {
-        tick.toLong() // Just shut up, compiler
+        tickRandomReward(tick)
     }
 
     internal fun tickAsync(tick: Int) {
@@ -32,6 +52,14 @@ class PlacedCrate(
 
     internal fun onRemove() {
         hologram.remove()
+        item?.remove()
+    }
+
+    private fun tickRandomReward(tick: Int) {
+        if (tick % crate.randomRewardDelay == 0) {
+            item?.itemStack = crate.rewards.random().display
+            item?.teleport(location.clone().add(0.0, crate.randomRewardHeight, 0.0))
+        }
     }
 
     private fun tickParticles(tick: Int) {

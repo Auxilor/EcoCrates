@@ -44,6 +44,14 @@ class Crate(
 
     val hologramHeight = config.getDouble("placed.hologram.height")
 
+    val showRandomReward = config.getBool("placed.random-reward.enabled")
+
+    val randomRewardHeight = config.getDouble("placed.random-reward.height")
+
+    val randomRewardDelay = config.getInt("placed.random-reward.delay")
+
+    val randomRewardName = config.getFormattedString("placed.random-reward.name")
+
     val particles = config.getSubsections("placed.particles").map {
         ParticleData(
             Particle.valueOf(it.getString("particle").uppercase()),

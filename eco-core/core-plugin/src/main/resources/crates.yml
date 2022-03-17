@@ -35,6 +35,11 @@ crates:
       left-click-opens: true
 
     placed:
+      random-reward:
+        enabled: true
+        height: 2
+        delay: 30
+        name: "&fYou could win:"
       particles:
         - particle: flame
           animation: spiral
