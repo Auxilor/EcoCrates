@@ -21,6 +21,7 @@ import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollOptions
 import com.willfp.ecocrates.crate.roll.Rolls
 import com.willfp.ecocrates.event.CrateOpenEvent
+import com.willfp.ecocrates.event.CrateRewardEvent
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.util.ConfiguredFirework
 import com.willfp.ecocrates.util.ConfiguredSound
@@ -219,7 +220,10 @@ class Crate(
     }
 
     fun handleFinish(player: Player, roll: Roll, location: Location) {
-        roll.reward.giveTo(player)
+        val event = CrateRewardEvent(player, this, roll.reward)
+        Bukkit.getPluginManager().callEvent(event)
+
+        event.reward.giveTo(player)
         finishSound.play(location)
         finishFireworks.forEach { it.launch(location) }
     }
