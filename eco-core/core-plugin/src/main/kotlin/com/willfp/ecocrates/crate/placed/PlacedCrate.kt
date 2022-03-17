@@ -6,7 +6,6 @@ import com.willfp.ecocrates.crate.Crate
 import org.bukkit.Location
 import org.bukkit.entity.Item
 import org.bukkit.util.Vector
-import java.util.*
 
 class PlacedCrate(
     val crate: Crate,
@@ -54,8 +53,6 @@ class PlacedCrate(
             entity.setGravity(false)
             entity.isCustomNameVisible = true
             entity.customName = crate.randomRewardName
-            entity.owner = UUID(0, 0)
-            println("sus? amogus?")
             item = entity
         }
     }
