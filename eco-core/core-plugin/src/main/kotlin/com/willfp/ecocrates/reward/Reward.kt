@@ -32,6 +32,8 @@ class Reward(
 
     val displayColumn = config.getInt("display.column")
 
+    val displayName = config.getFormattedString("display.name")
+
     fun giveTo(player: Player) {
         for (command in commands) {
             Bukkit.dispatchCommand(

@@ -46,6 +46,10 @@ crates:
           - '&a&lRight click to Open'
 
     finish:
+      messages:
+        - "You won %reward%&f!"
+      broadcasts:
+        - "%player%&f won %reward%&f from the Demo Crate!"
       fireworks:
         - power: 2
           type: ball_large
@@ -72,6 +76,7 @@ crates:
           actual: 10
           display: 25
         display:
+          name: "&bDiamond"
           item: diamond
           lore: [ ]
           row: 2
@@ -86,6 +91,7 @@ crates:
           actual: 10
           display: 50
         display:
+          name: "&aEmerald"
           item: emerald
           lore: [ ]
           row: 2
@@ -100,6 +106,7 @@ crates:
           actual: 10000000
           display: 0
         display:
+          name: "<g:#00ffff>very cool demo bedrock</g:#00ff00>"
           item: bedrock
           lore: [ ]
           row: 2

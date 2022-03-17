@@ -14,7 +14,9 @@ import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
+import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.formatEco
+import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.crate.placed.particle.ParticleData
 import com.willfp.ecocrates.crate.roll.Roll
@@ -96,6 +98,10 @@ class Crate(
 
     private val finishFireworks = config.getSubsections("finish.fireworks")
         .map { ConfiguredFirework.fromConfig(it) }
+
+    private val finishMessages = config.getStrings("finish.messages")
+
+    private val finishBroadcasts = config.getStrings("finish.broadcasts")
 
     init {
         PlayerPlaceholder(
@@ -246,6 +252,15 @@ class Crate(
         event.reward.giveTo(player)
         finishSound.play(location)
         finishFireworks.forEach { it.launch(location) }
+
+        finishMessages.map { it.replace("%reward%", event.reward.displayName) }
+            .map { plugin.langYml.prefix + StringUtils.format(it, player) }
+            .forEach { player.sendMessage(it) }
+
+        finishBroadcasts.map { it.replace("%reward%", event.reward.displayName) }
+            .map { it.replace("%player%", player.savedDisplayName) }
+            .map { plugin.langYml.prefix + StringUtils.format(it, player) }
+            .forEach { Bukkit.broadcastMessage(it) }
     }
 
     fun adjustKeys(player: OfflinePlayer, amount: Int) {
