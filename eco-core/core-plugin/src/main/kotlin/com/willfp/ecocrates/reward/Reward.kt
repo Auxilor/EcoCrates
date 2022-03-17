@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack
 
 class Reward(
     private val plugin: EcoPlugin,
-    config: Config
+    private val config: Config
 ) {
     private val commands = config.getStrings("commands")
 
@@ -24,9 +24,9 @@ class Reward(
         .addLoreLines(config.getStrings("display.lore"))
         .build()
 
-    val weight = config.getDouble("weight.actual")
+    fun getWeight(player: Player) = config.getDoubleFromExpression("weight.actual", player)
 
-    val displayWeight = config.getDouble("weight.display")
+    fun getDisplayWeight(player: Player) = config.getDoubleFromExpression("weight.display", player)
 
     val displayRow = config.getInt("display.row")
 

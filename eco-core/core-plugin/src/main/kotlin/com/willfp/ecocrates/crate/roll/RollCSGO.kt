@@ -43,10 +43,10 @@ class RollCSGO private constructor(
         .toList()
 
     // Add three so it lines up
-    private val display = crate.getRandomRewards(scrollTimes + 3, displayWeight = true)
+    private val display = crate.getRandomRewards(player, scrollTimes + 3, displayWeight = true)
         .toMutableList().apply {
             add(reward)
-            addAll(crate.getRandomRewards(5, displayWeight = true))
+            addAll(crate.getRandomRewards(player, 5, displayWeight = true))
         }
 
     private var scroll = 0

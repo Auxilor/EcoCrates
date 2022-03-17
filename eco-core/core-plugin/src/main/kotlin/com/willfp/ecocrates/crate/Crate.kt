@@ -115,7 +115,7 @@ class Crate(
 
         // Add three to the scroll times so that it lines up
         for (i in 0..(35 + 3)) {
-            display.add(getRandomReward(displayWeight = true)) // Fill roll with display weight items
+            display.add(getRandomReward(player, displayWeight = true)) // Fill roll with display weight items
         }
 
         return rollFactory.create(
@@ -129,14 +129,14 @@ class Crate(
         )
     }
 
-    private fun getRandomReward(displayWeight: Boolean = false): Reward {
+    private fun getRandomReward(player: Player, displayWeight: Boolean = false): Reward {
         var weight = 100.0
         val selection = rewards.toList().shuffled()
 
         lateinit var current: Reward
         for (i in 0..Int.MAX_VALUE) {
             current = selection[i % selection.size]
-            weight -= if (displayWeight) current.displayWeight else current.weight
+            weight -= if (displayWeight) current.getDisplayWeight(player) else current.getWeight(player)
             if (weight <= 0) {
                 break
             }
@@ -197,8 +197,8 @@ class Crate(
         )
     }
 
-    fun getRandomRewards(amount: Int, displayWeight: Boolean = false): List<Reward> {
-        return (0..amount).map { getRandomReward(displayWeight) }
+    fun getRandomRewards(player: Player, amount: Int, displayWeight: Boolean = false): List<Reward> {
+        return (0..amount).map { getRandomReward(player, displayWeight) }
     }
 
     fun openPhysical(player: Player, location: Location, physicalKey: Boolean) {
@@ -234,7 +234,7 @@ class Crate(
     }
 
     fun open(player: Player, location: Location? = null, physicalKey: Boolean = false) {
-        val event = CrateOpenEvent(player, this, physicalKey, getRandomReward())
+        val event = CrateOpenEvent(player, this, physicalKey, getRandomReward(player))
         Bukkit.getPluginManager().callEvent(event)
 
         val roll = makeRoll(player, location ?: player.location, event.reward)
