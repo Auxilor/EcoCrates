@@ -164,15 +164,27 @@ class Crate(
         return (0..amount).map { getRandomReward(displayWeight) }
     }
 
-    fun openWithKey(player: Player, location: Location? = null) {
-        val keys = player.profile.read(keysKey)
+    fun openPhysical(player: Player, location: Location) {
+        if (!testKeys(player)) {
+            val vector = player.location.clone().subtract(location.toVector())
+                .toVector()
+                .normalize()
+                .multiply(plugin.configYml.getDouble("no-key-velocity"))
 
-        if (keys == 0) {
-            player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
+            player.velocity = vector
+
             return
         }
 
-        player.profile.write(keysKey, keys - 1)
+        openWithKey(player, location)
+    }
+
+    fun openWithKey(player: Player, location: Location? = null) {
+        if (!testKeys(player)) {
+            return
+        }
+
+        adjustKeys(player, -1)
         open(player, location)
     }
 
@@ -190,11 +202,20 @@ class Crate(
         finishFireworks.forEach { it.launch(location) }
     }
 
-    fun giveKeys(player: OfflinePlayer, amount: Int) {
+    fun adjustKeys(player: OfflinePlayer, amount: Int) {
         player.profile.write(keysKey, player.profile.read(keysKey) + amount)
     }
 
     fun getKeys(player: OfflinePlayer): Int {
         return player.profile.read(keysKey)
+    }
+
+    fun testKeys(player: Player): Boolean {
+        if (getKeys(player) == 0) {
+            player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
+            return false
+        }
+
+        return true
     }
 }

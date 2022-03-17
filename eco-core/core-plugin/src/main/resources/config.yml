@@ -3,6 +3,8 @@
 # by Auxilor
 #
 
+no-key-velocity: 1.5 # The speed at which a player should be launched away from a crate if they try to open it without a key. Set to 0 to disable.
+
 keygui:
   rows: 3
   mask:

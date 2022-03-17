@@ -43,7 +43,7 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
 
         val amount = args.getOrNull(2)?.toIntOrNull() ?: 1
 
-        crate.giveKeys(player, amount)
+        crate.adjustKeys(player, amount)
         sender.sendMessage(
             plugin.langYml.getMessage("gave-keys")
                 .replace("%amount%", amount.toString())

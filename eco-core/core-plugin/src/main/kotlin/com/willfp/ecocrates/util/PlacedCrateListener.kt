@@ -32,7 +32,7 @@ class PlacedCrateListener(
 
         when (event.action) {
             Action.LEFT_CLICK_BLOCK -> crate.previewForPlayer(player)
-            Action.RIGHT_CLICK_BLOCK -> crate.openWithKey(player, block.location)
+            Action.RIGHT_CLICK_BLOCK -> crate.openPhysical(player, block.location)
             else -> return
         }
 
