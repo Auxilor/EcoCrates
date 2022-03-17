@@ -139,6 +139,24 @@ class Crate(
         return current
     }
 
+    private fun hasKeysAndNotify(player: Player, physicalKey: Boolean = false): Boolean {
+        if (getKeys(player) == 0) {
+            return if (!physicalKey) {
+                player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
+                false
+            } else {
+                val physical = hasPhysicalKey(player)
+                if (!physical) {
+                    player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
+                }
+
+                physical
+            }
+        }
+
+        return true
+    }
+
     internal fun addToKeyGUI(builder: MenuBuilder) {
         builder.setSlot(
             config.getInt("keygui.row"),
@@ -178,7 +196,7 @@ class Crate(
     fun openPhysical(player: Player, location: Location, physicalKey: Boolean) {
         val nicerLocation = location.clone().add(0.5, 1.5, 0.5)
 
-        if (!testKeys(player, physicalKey = physicalKey)) {
+        if (!hasKeysAndNotify(player, physicalKey = physicalKey)) {
             val vector = player.location.clone().subtract(nicerLocation.toVector())
                 .add(0.0, 1.5, 0.0)
                 .toVector()
@@ -194,7 +212,7 @@ class Crate(
     }
 
     fun openWithKey(player: Player, location: Location? = null, physicalKey: Boolean = false) {
-        if (!testKeys(player, physicalKey = true)) {
+        if (!hasKeysAndNotify(player, physicalKey = true)) {
             return
         }
 
@@ -248,24 +266,6 @@ class Crate(
 
     fun hasPhysicalKey(player: Player): Boolean {
         return key.matches(player.inventory.itemInMainHand)
-    }
-
-    fun testKeys(player: Player, physicalKey: Boolean = false): Boolean {
-        if (getKeys(player) == 0) {
-            return if (!physicalKey) {
-                player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
-                false
-            } else {
-                val physical = hasPhysicalKey(player)
-                if (!physical) {
-                    player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
-                }
-
-                physical
-            }
-        }
-
-        return true
     }
 
     override fun equals(other: Any?): Boolean {
