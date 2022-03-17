@@ -28,19 +28,7 @@ class PlacedCrate(
         crate.hologramLines
     )
 
-    private val item: Item? = if (crate.showRandomReward) {
-        val entity = world.dropItem(
-            location.clone().add(0.0, crate.randomRewardHeight, 0.0),
-            crate.rewards.first().display
-        )
-        entity.velocity = Vector(0.0, 0.0, 0.0)
-        entity.pickupDelay = Int.MAX_VALUE
-        entity.setGravity(false)
-        entity.isCustomNameVisible = true
-        entity.customName = crate.randomRewardName
-        entity.owner = UUID(0, 0)
-        entity
-    } else null
+    private var item: Item? = null
 
     internal fun tick(tick: Int) {
         tickRandomReward(tick)
@@ -55,8 +43,26 @@ class PlacedCrate(
         item?.remove()
     }
 
+    private fun spawnRandomReward() {
+        if ((item == null || item?.isDead == true) && crate.isShowingRandomReward) {
+            val entity = world.dropItem(
+                location.clone().add(0.0, crate.randomRewardHeight, 0.0),
+                crate.rewards.first().display
+            )
+            entity.velocity = Vector(0.0, 0.0, 0.0)
+            entity.pickupDelay = Int.MAX_VALUE
+            entity.setGravity(false)
+            entity.isCustomNameVisible = true
+            entity.customName = crate.randomRewardName
+            entity.owner = UUID(0, 0)
+            println("sus? amogus?")
+            item = entity
+        }
+    }
+
     private fun tickRandomReward(tick: Int) {
         if (tick % crate.randomRewardDelay == 0) {
+            spawnRandomReward()
             item?.itemStack = crate.rewards.random().display
             item?.teleport(location.clone().add(0.0, crate.randomRewardHeight, 0.0))
         }

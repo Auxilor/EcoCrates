@@ -44,7 +44,7 @@ class Crate(
 
     val hologramHeight = config.getDouble("placed.hologram.height")
 
-    val showRandomReward = config.getBool("placed.random-reward.enabled")
+    val isShowingRandomReward = config.getBool("placed.random-reward.enabled")
 
     val randomRewardHeight = config.getDouble("placed.random-reward.height")
 
