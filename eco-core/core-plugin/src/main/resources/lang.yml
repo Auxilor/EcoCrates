@@ -14,5 +14,5 @@ messages:
   set-block-as-crate: "Set block to be a crate!"
   removed-crate: "Removed crate!"
   all-rewards-used: "&cYou have already won all things in this crate!"
-  resetting-wins: "&fResetting wins for %player%f..."
-  reset-wins: "&fReset wins for %player%&f!"
+  resetting-wins: "&fResetting wins for %user%&f..."
+  reset-wins: "&fReset wins for %user%&f!"

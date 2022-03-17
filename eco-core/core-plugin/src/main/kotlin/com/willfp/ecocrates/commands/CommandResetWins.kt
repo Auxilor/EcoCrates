@@ -5,6 +5,7 @@ import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Crates
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
 
@@ -20,21 +21,29 @@ class CommandResetWins(plugin: EcoPlugin) : Subcommand(
             return
         }
 
-        @Suppress("DEPRECATION")
-        val player = Bukkit.getOfflinePlayer(args[0])
+        if (args[0] == "all") {
+            for (player in Bukkit.getOfflinePlayers()) {
+                resetWinsFor(sender, player)
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            resetWinsFor(sender, Bukkit.getOfflinePlayer(args[0]))
+        }
+    }
 
+    private fun resetWinsFor(sender: CommandSender, player: OfflinePlayer) {
         if (!player.hasPlayedBefore()) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return
         }
 
-        sender.sendMessage(plugin.langYml.getMessage("resetting-wins").replace("%player%", player.savedDisplayName))
+        sender.sendMessage(plugin.langYml.getMessage("resetting-wins").replace("%user%", player.savedDisplayName))
 
         for (crate in Crates.values()) {
             crate.rewards.forEach { it.resetWins(player) }
         }
 
-        sender.sendMessage(plugin.langYml.getMessage("reset-wins").replace("%player%", player.savedDisplayName))
+        sender.sendMessage(plugin.langYml.getMessage("reset-wins").replace("%user%", player.savedDisplayName))
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
@@ -47,7 +56,7 @@ class CommandResetWins(plugin: EcoPlugin) : Subcommand(
         if (args.size == 1) {
             StringUtil.copyPartialMatches(
                 args[0],
-                Bukkit.getOnlinePlayers().map { it.name },
+                Bukkit.getOnlinePlayers().map { it.name } union listOf("all"),
                 completions
             )
 
