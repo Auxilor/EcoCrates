@@ -183,6 +183,7 @@ class Crate(
                 onLeftClick { event, _, _ ->
                     if (config.getBool("keygui.left-click-opens")) {
                         val player = event.whoClicked as Player
+                        player.closeInventory()
                         openWithKey(player)
                     }
                 }
@@ -252,10 +253,12 @@ class Crate(
             return false
         }
 
+        val loc = location ?: player.eyeLocation
+
         val event = CrateOpenEvent(player, this, physicalKey, getRandomReward(player))
         Bukkit.getPluginManager().callEvent(event)
 
-        val roll = makeRoll(player, location ?: player.location, event.reward)
+        val roll = makeRoll(player, loc, event.reward)
         var tick = 0
 
         plugin.runnableFactory.create {
@@ -266,7 +269,7 @@ class Crate(
                 it.cancel()
                 roll.onFinish()
                 player.isOpeningCrate = false
-                this.handleFinish(player, roll, location ?: player.location)
+                this.handleFinish(player, roll, loc)
             }
         }.runTaskTimer(1, 1)
 
