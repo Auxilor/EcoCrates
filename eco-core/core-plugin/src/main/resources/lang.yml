@@ -13,3 +13,4 @@ messages:
   must-target-block: "&cYou must be looking at a block!"
   set-block-as-crate: "Set block to be a crate!"
   removed-crate: "Removed crate!"
+  all-rewards-used: "&cYou have already won all things in this crate!"

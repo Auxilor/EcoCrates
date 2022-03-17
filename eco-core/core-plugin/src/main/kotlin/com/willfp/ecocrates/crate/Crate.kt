@@ -129,6 +129,16 @@ class Crate(
         )
     }
 
+    private fun hasRanOutOfRewardsAndNotify(player: Player): Boolean {
+        val ranOut = rewards.all { it.getWeight(player) <= 0 || it.getDisplayWeight(player) <= 0 }
+
+        if (ranOut) {
+            player.sendMessage(plugin.langYml.getMessage("all-rewards-used"))
+        }
+
+        return ranOut
+    }
+
     private fun getRandomReward(player: Player, displayWeight: Boolean = false): Reward {
         var weight = 100.0
         val selection = rewards.toList().shuffled()
@@ -223,6 +233,10 @@ class Crate(
         if (!hasKeysAndNotify(player, physicalKey = true)) {
             return
         }
+        if (hasRanOutOfRewardsAndNotify(player)) {
+            return
+        }
+
 
         if (physicalKey) {
             usePhysicalKey(player)
@@ -234,6 +248,11 @@ class Crate(
     }
 
     fun open(player: Player, location: Location? = null, physicalKey: Boolean = false) {
+        /* Prevent server crashes */
+        if (hasRanOutOfRewardsAndNotify(player)) {
+            return
+        }
+
         val event = CrateOpenEvent(player, this, physicalKey, getRandomReward(player))
         Bukkit.getPluginManager().callEvent(event)
 
