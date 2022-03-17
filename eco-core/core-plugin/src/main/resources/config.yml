@@ -48,3 +48,13 @@ rolls:
     max-delay: 25
   flash:
     wait: 80
+  encircle:
+    spin-time: 100
+    reveal-time: 80
+    items: 12
+    radius: 3
+    height: 1
+    spins-per-second: 0.5
+    rise-velocity: 0.05
+    spin-velocity: 0.4
+    reveal-velocity: 0.2
