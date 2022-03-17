@@ -10,6 +10,7 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
@@ -85,6 +86,12 @@ class Reward(
 
         if (maxWins > 0) {
             player.profile.write(winsKey, player.profile.read(winsKey) + 1)
+        }
+    }
+
+    fun resetWins(player: OfflinePlayer) {
+        if (maxWins > 0) {
+            player.profile.write(winsKey, 0)
         }
     }
 

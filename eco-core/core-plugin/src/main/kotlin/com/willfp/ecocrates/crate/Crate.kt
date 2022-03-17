@@ -60,6 +60,8 @@ class Crate(
 
     val keyLore = config.getFormattedStrings("key.lore")
 
+    val rewards = config.getSubsections("rewards").map { Reward(plugin, it) }
+
     private val keysKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_keys"),
         PersistentDataKeyType.INT,
@@ -67,8 +69,6 @@ class Crate(
     ).player()
 
     private val rollFactory = Rolls.getByID(config.getString("roll"))!!
-
-    private val rewards = config.getSubsections("rewards").map { Reward(plugin, it) }
 
     private val previewGUI = menu(config.getInt("preview.rows")) {
         setMask(

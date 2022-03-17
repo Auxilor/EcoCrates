@@ -30,6 +30,7 @@ permissions:
       ecocrates.command.keys: true
       ecocrates.command.set: true
       ecocrates.command.forceopen: true
+      ecocrates.command.resetwins: true
       ecocrates.break: true
 
   ecocrates.command.ecocrates:
@@ -55,6 +56,9 @@ permissions:
     default: true
   ecocrates.command.set:
     description: Allows marking a block as a crate
+    default: op
+  ecocrates.command.resetwins:
+    description: Allows resetting a players tracked reward wins
     default: op
   ecocrates.break:
     description: Allows breaking crate blocks
