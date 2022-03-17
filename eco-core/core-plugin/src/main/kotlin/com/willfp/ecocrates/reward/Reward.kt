@@ -22,6 +22,7 @@ class Reward(
 
     val display: ItemStack = ItemStackBuilder(Items.lookup(config.getString("display.item")))
         .addLoreLines(config.getStrings("display.lore"))
+        .setDisplayName(config.getString("display.name"))
         .build()
 
     fun getWeight(player: Player) = config.getDoubleFromExpression("weight.actual", player)
