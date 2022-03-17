@@ -30,8 +30,9 @@ crates:
         - "&fYou have %keys% keys"
       row: 2
       column: 3
-      rightClickMessage:
+      right-click-message:
         - "Buy a Demo Crate key here! get lured into the trap of gambling addiction"
+      left-click-opens: true
 
     placed:
       particles:

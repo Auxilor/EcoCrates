@@ -165,13 +165,15 @@ class Crate(
                 ItemStackBuilder(Items.lookup(config.getString("keygui.item"))).build()
             ) {
                 onLeftClick { event, _, _ ->
-                    val player = event.whoClicked as Player
-                    openWithKey(player)
+                    if (config.getBool("keygui.left-click-opens")) {
+                        val player = event.whoClicked as Player
+                        openWithKey(player)
+                    }
                 }
 
                 onRightClick { event, _, _ ->
                     event.whoClicked.closeInventory()
-                    config.getFormattedStrings("keygui.rightClickMessage")
+                    config.getFormattedStrings("keygui.right-click-message")
                         .forEach { event.whoClicked.sendMessage(it) }
                 }
 
