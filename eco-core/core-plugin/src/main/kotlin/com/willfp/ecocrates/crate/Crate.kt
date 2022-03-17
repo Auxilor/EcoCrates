@@ -20,14 +20,12 @@ import com.willfp.ecocrates.crate.placed.particle.ParticleData
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollOptions
 import com.willfp.ecocrates.crate.roll.Rolls
+import com.willfp.ecocrates.event.CrateOpenEvent
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.util.ConfiguredFirework
 import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
-import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.OfflinePlayer
-import org.bukkit.Particle
+import org.bukkit.*
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -105,7 +103,7 @@ class Crate(
         ) { getKeys(it).toString() }.register()
     }
 
-    private fun makeRoll(player: Player, location: Location): Roll {
+    private fun makeRoll(player: Player, location: Location, reward: Reward): Roll {
         val display = mutableListOf<Reward>()
 
         // Add three to the scroll times so that it lines up
@@ -115,7 +113,7 @@ class Crate(
 
         return rollFactory.create(
             RollOptions(
-                getRandomReward(),
+                reward,
                 this,
                 this.plugin,
                 player,
@@ -205,11 +203,15 @@ class Crate(
             adjustKeys(player, -1)
         }
 
-        open(player, location)
+        open(player, location, physicalKey)
     }
 
-    fun open(player: Player, location: Location? = null) {
-        makeRoll(player, location ?: player.location).roll()
+    fun open(player: Player, location: Location? = null, physicalKey: Boolean = false) {
+        val event = CrateOpenEvent(player, this, physicalKey, getRandomReward())
+        Bukkit.getPluginManager().callEvent(event)
+
+        val roll = makeRoll(player, location ?: player.location, event.reward)
+        roll.roll()
     }
 
     fun previewForPlayer(player: Player) {
