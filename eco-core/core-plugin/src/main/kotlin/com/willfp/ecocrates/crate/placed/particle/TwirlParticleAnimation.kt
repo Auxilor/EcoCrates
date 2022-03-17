@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.crate.placed.particle
 
 import com.willfp.eco.util.NumberUtils
+import com.willfp.ecocrates.util.lerp
 import org.bukkit.util.Vector
 import kotlin.math.PI
 
@@ -26,6 +27,3 @@ class TwirlParticleAnimation : ParticleAnimation("twirl") {
         }
     }
 }
-
-private fun lerp(start: Double, end: Double, fraction: Double): Double =
-    (start * (1 - fraction)) + (end * fraction)

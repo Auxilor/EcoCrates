@@ -233,31 +233,47 @@ class Crate(
         if (!hasKeysAndNotify(player, physicalKey = true)) {
             return
         }
-        if (hasRanOutOfRewardsAndNotify(player)) {
-            return
+
+        if (open(player, location, physicalKey)) {
+            if (physicalKey) {
+                usePhysicalKey(player)
+            } else {
+                adjustKeys(player, -1)
+            }
         }
-
-
-        if (physicalKey) {
-            usePhysicalKey(player)
-        } else {
-            adjustKeys(player, -1)
-        }
-
-        open(player, location, physicalKey)
     }
 
-    fun open(player: Player, location: Location? = null, physicalKey: Boolean = false) {
+    fun open(player: Player, location: Location? = null, physicalKey: Boolean = false): Boolean {
         /* Prevent server crashes */
         if (hasRanOutOfRewardsAndNotify(player)) {
-            return
+            return false
+        }
+        if (player.isOpeningCrate) {
+            return false
         }
 
         val event = CrateOpenEvent(player, this, physicalKey, getRandomReward(player))
         Bukkit.getPluginManager().callEvent(event)
 
         val roll = makeRoll(player, location ?: player.location, event.reward)
+        var tick = 0
+
+        plugin.runnableFactory.create {
+            roll.tick(tick)
+
+            tick++
+            if (!roll.shouldContinueTicking(tick) || !player.isOpeningCrate) {
+                it.cancel()
+                roll.onFinish()
+                player.isOpeningCrate = false
+                this.handleFinish(player, roll, location ?: player.location)
+            }
+        }.runTaskTimer(1, 1)
+
+        player.isOpeningCrate = true
         roll.roll()
+
+        return true
     }
 
     fun previewForPlayer(player: Player) {
@@ -316,3 +332,15 @@ class Crate(
         return Objects.hash(this.id)
     }
 }
+
+private val openingCrates = mutableSetOf<UUID>()
+
+var Player.isOpeningCrate: Boolean
+    get() = openingCrates.contains(this.uniqueId)
+    set(value) {
+        if (value) {
+            openingCrates.add(this.uniqueId)
+        } else {
+            openingCrates.remove(this.uniqueId)
+        }
+    }

@@ -8,6 +8,7 @@ import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.Crate
+import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.reward.Reward
 import org.bukkit.Location
 import org.bukkit.Material
@@ -33,7 +34,7 @@ class RollCSGO private constructor(
     a maximum tick value of 25 (rather than 1);
     essentially doing f(x/<scrolls>) * <max delay>.
      */
-    private val delays = (1..scrollTimes)
+    private val delays = (1..scrollTimes + 1)
         .asSequence()
         .map { it / scrollTimes.toDouble() }
         .map { NumberUtils.bias(it, bias) }
@@ -50,32 +51,7 @@ class RollCSGO private constructor(
         }
 
     private var scroll = 0
-    private var tick = 0
-
-    private val runnable = plugin.runnableFactory.create {
-        val currentDelay = delays[scroll]
-
-        if (tick % currentDelay == 0) {
-            tick = 0
-            scroll++
-
-            gui.refresh(player)
-
-            player.playSound(
-                player.location,
-                Sound.BLOCK_STONE_BUTTON_CLICK_ON,
-                1.0f,
-                1.0f
-            )
-
-            if (scroll >= scrollTimes) {
-                it.cancel()
-                plugin.scheduler.runLater(60) { player.closeInventory() }
-            }
-        }
-
-        tick++
-    }
+    private var ticksSinceLastScroll = 0
 
     private val gui = menu(3) {
         setMask(
@@ -106,21 +82,41 @@ class RollCSGO private constructor(
             )
         }
 
-        onClose { event, _ ->
-            handleFinish(event.player as Player)
+        onClose { _, _ ->
+            player.isOpeningCrate = false
         }
     }
 
     override fun roll() {
         gui.open(player)
-
-        // Run the scroll animation
-        runnable.runTaskTimer(1, 1)
     }
 
-    private fun handleFinish(player: Player) {
-        runnable.cancel()
-        crate.handleFinish(player, this, location)
+    override fun tick(tick: Int) {
+        val currentDelay = delays[scroll]
+
+        if (ticksSinceLastScroll % currentDelay == 0) {
+            ticksSinceLastScroll = 0
+            scroll++
+
+            gui.refresh(player)
+
+            player.playSound(
+                player.location,
+                Sound.BLOCK_STONE_BUTTON_CLICK_ON,
+                1.0f,
+                1.0f
+            )
+        }
+
+        ticksSinceLastScroll++
+    }
+
+    override fun shouldContinueTicking(tick: Int): Boolean {
+        return scroll <= scrollTimes
+    }
+
+    override fun onFinish() {
+        player.closeInventory()
     }
 
     object Factory : RollFactory<RollCSGO>("csgo") {

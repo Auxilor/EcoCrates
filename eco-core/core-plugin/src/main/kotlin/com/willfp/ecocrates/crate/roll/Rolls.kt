@@ -8,6 +8,7 @@ object Rolls {
     private val BY_ID = HashBiMap.create<String, RollFactory<*>>()
 
     val CSGO: RollFactory<*> = RollCSGO.Factory
+    val FLASH: RollFactory<*> = RollFlash.Factory
 
     /**
      * Get roll factory matching id.

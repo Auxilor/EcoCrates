@@ -46,3 +46,5 @@ rolls:
     bias: 0.65
     scrolls: 35
     max-delay: 25
+  flash:
+    wait: 80
