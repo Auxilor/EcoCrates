@@ -106,7 +106,9 @@ crates:
         display:
           name: "&bDiamond"
           item: diamond
-          lore: [ ]
+          lore:
+            - "&fDisplay Chance: &a%chance%%"
+            - "&fActual Chance: &a%actual_chance%%"
           row: 3
           column: 2
 
@@ -123,7 +125,9 @@ crates:
         display:
           name: "&aEmerald"
           item: emerald
-          lore: [ ]
+          lore:
+            - "&fDisplay Chance: &a%chance%%"
+            - "&fActual Chance: &a%actual_chance%%"
           row: 4
           column: 2
 
@@ -140,6 +144,8 @@ crates:
         display:
           name: "<g:#00ffff>very cool demo bedrock</g:#00ff00>"
           item: bedrock
-          lore: [ ]
+          lore:
+            - "&fDisplay Chance: &a%chance%%"
+            - "&fActual Chance: &a%actual_chance%%"
           row: 5
           column: 2
