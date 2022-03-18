@@ -10,7 +10,7 @@ import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.roll.Roll
 
 object ReRollGUI {
-    private val metaKey = "crates-accept"
+    private const val metaKey = "crates-accept"
 
     fun open(roll: Roll) {
         val plugin = roll.plugin
