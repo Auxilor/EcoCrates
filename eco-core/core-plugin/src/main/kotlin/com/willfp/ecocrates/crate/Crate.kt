@@ -21,6 +21,7 @@ import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.placed.HologramFrame
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.crate.placed.particle.ParticleData
+import com.willfp.ecocrates.crate.reroll.ReRollGUI
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollOptions
 import com.willfp.ecocrates.crate.roll.Rolls
@@ -87,6 +88,8 @@ class Crate(
             addParent(Bukkit.getPluginManager().getPermission("ecocrates.open.*")!!, true)
             Bukkit.getPluginManager().addPermission(this)
         }
+
+    val canReroll = config.getBool("can-reroll")
 
     private val keysKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_keys"),
@@ -160,7 +163,7 @@ class Crate(
         ) { getOpens(it).toString() }.register()
     }
 
-    private fun makeRoll(player: Player, location: Location, reward: Reward): Roll {
+    private fun makeRoll(player: Player, location: Location, reward: Reward, isReroll: Boolean = false): Roll {
         val display = mutableListOf<Reward>()
 
         // Add three to the scroll times so that it lines up
@@ -174,7 +177,8 @@ class Crate(
                 this,
                 this.plugin,
                 player,
-                location
+                location,
+                isReroll
             )
         )
     }
@@ -317,7 +321,7 @@ class Crate(
         }
     }
 
-    fun open(player: Player, location: Location? = null, physicalKey: Boolean = false): Boolean {
+    fun open(player: Player, location: Location? = null, physicalKey: Boolean = false, isReroll: Boolean = false): Boolean {
         /* Prevent server crashes */
         if (hasRanOutOfRewardsAndNotify(player)) {
             return false
@@ -346,7 +350,7 @@ class Crate(
             .map { plugin.langYml.prefix + StringUtils.format(it, player) }
             .forEach { Bukkit.broadcastMessage(it) }
 
-        val roll = makeRoll(player, loc, event.reward)
+        val roll = makeRoll(player, loc, event.reward, isReroll = isReroll)
         var tick = 0
 
         plugin.runnableFactory.create {
@@ -357,7 +361,7 @@ class Crate(
                 it.cancel()
                 roll.onFinish()
                 player.isOpeningCrate = false
-                this.handleFinish(player, roll, loc)
+                if (!canReroll || roll.isReroll) handleFinish(roll) else ReRollGUI.open(roll)
             }
         }.runTaskTimer(1, 1)
 
@@ -372,7 +376,10 @@ class Crate(
         previewGUI.open(player)
     }
 
-    fun handleFinish(player: Player, roll: Roll, location: Location) {
+    fun handleFinish(roll: Roll) {
+        val player = roll.player
+        val location = roll.location
+
         val event = CrateRewardEvent(player, this, roll.reward)
         Bukkit.getPluginManager().callEvent(event)
 

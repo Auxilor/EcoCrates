@@ -11,5 +11,6 @@ data class RollOptions(
     val crate: Crate,
     val plugin: EcoPlugin,
     val player: Player,
-    val location: Location
+    val location: Location,
+    val isReroll: Boolean
 )

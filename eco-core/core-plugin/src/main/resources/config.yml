@@ -5,6 +5,32 @@
 
 no-key-velocity: 1.5 # The speed at which a player should be launched away from a crate if they try to open it without a key. Set to 0 to disable.
 
+reroll:
+  rows: 3
+  mask:
+    items:
+      - black_stained_glass_pane
+      - green_stained_glass_pane
+    pattern:
+      - "122211111"
+      - "120211011"
+      - "122211111"
+  title: "Accept your reward?"
+  accept:
+    row: 2
+    column: 3
+  reroll:
+    row: 2
+    column: 7
+    item: orange_stained_glass_pane
+    name: "&6Reroll"
+    lore:
+      - "&fNot happy with your item?"
+      - "&fClick to try again for"
+      - "&fa chance at something else!"
+      - ""
+      - "&cYou can only reroll once!"
+
 keygui:
   rows: 3
   mask:

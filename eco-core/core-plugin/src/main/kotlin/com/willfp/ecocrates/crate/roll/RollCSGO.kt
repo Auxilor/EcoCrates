@@ -18,10 +18,11 @@ import org.bukkit.inventory.ItemStack
 
 class RollCSGO private constructor(
     override val reward: Reward,
-    private val crate: Crate,
-    private val plugin: EcoPlugin,
-    private val player: Player,
-    private val location: Location
+    override val crate: Crate,
+    override val plugin: EcoPlugin,
+    override val player: Player,
+    override val location: Location,
+    override val isReroll: Boolean
 ) : Roll {
     private val scrollTimes = plugin.configYml.getInt("rolls.csgo.scrolls")
     private val bias = plugin.configYml.getDouble("rolls.csgo.bias")
@@ -126,7 +127,8 @@ class RollCSGO private constructor(
                 options.crate,
                 options.plugin,
                 options.player,
-                options.location
+                options.location,
+                options.isReroll
             )
     }
 }

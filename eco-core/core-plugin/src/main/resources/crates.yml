@@ -2,6 +2,7 @@ crates:
   - id: demo
     name: "Demo Crate"
     roll: csgo
+    can-reroll: true
 
     preview:
       title: Demo Crate
