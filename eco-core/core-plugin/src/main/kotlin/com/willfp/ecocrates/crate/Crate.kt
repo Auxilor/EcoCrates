@@ -404,6 +404,10 @@ class Crate(
     override fun hashCode(): Int {
         return Objects.hash(this.id)
     }
+
+    override fun toString(): String {
+        return "Crate{id=$id}"
+    }
 }
 
 private val openingCrates = mutableSetOf<UUID>()

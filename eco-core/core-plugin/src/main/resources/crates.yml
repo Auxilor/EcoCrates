@@ -8,14 +8,15 @@ crates:
       rows: 6
       mask:
         items:
+          - gray_stained_glass_pane
           - black_stained_glass_pane
         pattern:
-          - "111111111"
-          - "100000001"
-          - "100000001"
-          - "100000001"
-          - "100000001"
-          - "111111111"
+          - "222222222"
+          - "211010112"
+          - "201010102"
+          - "201010102"
+          - "201111102"
+          - "222222222"
 
     key:
       item: tripwire_hook unbreaking:1 hide_enchants name:"&aDemo Crate Key"
@@ -106,7 +107,7 @@ crates:
           name: "&bDiamond"
           item: diamond
           lore: [ ]
-          row: 2
+          row: 3
           column: 2
 
       - id: emerald
@@ -123,8 +124,8 @@ crates:
           name: "&aEmerald"
           item: emerald
           lore: [ ]
-          row: 2
-          column: 3
+          row: 4
+          column: 2
 
       - id: bedrock
         commands: [ ]
@@ -140,5 +141,5 @@ crates:
           name: "<g:#00ffff>very cool demo bedrock</g:#00ff00>"
           item: bedrock
           lore: [ ]
-          row: 2
-          column: 4
+          row: 5
+          column: 2

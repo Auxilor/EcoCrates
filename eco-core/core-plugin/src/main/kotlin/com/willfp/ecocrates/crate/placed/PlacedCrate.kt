@@ -24,7 +24,6 @@ class PlacedCrate(
         crate.hologramFrames.firstOrNull()?.lines ?: emptyList()
     )
 
-    private var currentFrameTick = 0
     private var currentFrame: HologramFrame? = null
 
     private var item: Item? = null
@@ -85,5 +84,9 @@ class PlacedCrate(
         for ((particle, animation) in crate.particles) {
             animation.spawnParticle(location, tick, particle)
         }
+    }
+
+    override fun toString(): String {
+        return "PlacedCrate{crate=$crate,location=$location}"
     }
 }
