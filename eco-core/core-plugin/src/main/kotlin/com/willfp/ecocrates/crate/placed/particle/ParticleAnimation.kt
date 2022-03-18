@@ -8,7 +8,7 @@ import org.bukkit.util.Vector
 abstract class ParticleAnimation(
     val id: String
 ) {
-    protected val config = EcoCratesPlugin.instance.configYml.getSubsection("animations.$id")
+    protected open val config = EcoCratesPlugin.instance.configYml.getSubsection("animations.$id")
 
     init {
         register()

@@ -1,7 +1,6 @@
 package com.willfp.ecocrates.crate.placed
 
 import com.willfp.eco.core.integrations.hologram.HologramManager
-import com.willfp.ecocrates.EcoCratesPlugin
 import com.willfp.ecocrates.crate.Crate
 import org.bukkit.Location
 import org.bukkit.entity.Item
@@ -11,8 +10,6 @@ class PlacedCrate(
     val crate: Crate,
     blockLocation: Location
 ) {
-    private val plugin = EcoCratesPlugin.instance
-
     // Center the location, they're mutable because bukkit is bad at designing APIs.
     private val location = blockLocation.clone().apply {
         x += 0.5
