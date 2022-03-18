@@ -93,6 +93,12 @@ class Crate(
         0
     ).player()
 
+    private val opensKey: PersistentDataKey<Int> = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("${id}_opens"),
+        PersistentDataKeyType.INT,
+        0
+    ).player()
+
     private val rollFactory = Rolls.getByID(config.getString("roll"))!!
 
     private val previewGUI = menu(config.getInt("preview.rows")) {
@@ -146,6 +152,11 @@ class Crate(
             plugin,
             "${id}_keys",
         ) { getKeys(it).toString() }.register()
+
+        PlayerPlaceholder(
+            plugin,
+            "${id}_opens",
+        ) { getOpens(it).toString() }.register()
     }
 
     private fun makeRoll(player: Player, location: Location, reward: Reward): Roll {
@@ -352,6 +363,7 @@ class Crate(
         }.runTaskTimer(1, 1)
 
         player.isOpeningCrate = true
+        player.profile.write(opensKey, getOpens(player) + 1)
         roll.roll()
 
         return true
@@ -392,6 +404,10 @@ class Crate(
 
     fun hasPhysicalKey(player: Player): Boolean {
         return key.matches(player.inventory.itemInMainHand)
+    }
+
+    fun getOpens(player: OfflinePlayer): Int {
+        return player.profile.read(opensKey)
     }
 
     override fun equals(other: Any?): Boolean {

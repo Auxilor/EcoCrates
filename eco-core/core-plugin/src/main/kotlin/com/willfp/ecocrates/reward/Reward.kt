@@ -8,6 +8,7 @@ import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
+import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
@@ -69,6 +70,13 @@ class Reward(
 
     val displayName = config.getFormattedString("display.name")
 
+    init {
+        PlayerPlaceholder(
+            plugin,
+            "${id}_wins",
+        ) { getWins(it).toString() }.register()
+    }
+
     fun giveTo(player: Player) {
         for (command in commands) {
             Bukkit.dispatchCommand(
@@ -87,6 +95,10 @@ class Reward(
         if (maxWins > 0) {
             player.profile.write(winsKey, player.profile.read(winsKey) + 1)
         }
+    }
+
+    fun getWins(player: OfflinePlayer): Int {
+        return if (maxWins > 0) player.profile.read(winsKey) else 0
     }
 
     fun resetWins(player: OfflinePlayer) {
