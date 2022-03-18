@@ -14,6 +14,7 @@ import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
+import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
@@ -189,19 +190,17 @@ class Crate(
     }
 
     private fun getRandomReward(player: Player, displayWeight: Boolean = false): Reward {
-        var weight = 100.0
         val selection = rewards.toList().shuffled()
 
-        lateinit var current: Reward
-        for (i in 0..Int.MAX_VALUE) {
-            current = selection[i % selection.size]
-            weight -= if (displayWeight) current.getDisplayWeight(player) else current.getWeight(player)
-            if (weight <= 0) {
-                break
+        // Limit to 1024 in case RNG breaks.
+        for (i in 0..1024) {
+            val reward = selection[i % rewards.size]
+            if (NumberUtils.randFloat(0.0, 100.0) < reward.getPercentageChance(player, selection, displayWeight)) {
+                return reward
             }
         }
 
-        return current
+        return selection.first()
     }
 
     private fun hasKeysAndNotify(player: Player, physicalKey: Boolean = false): Boolean {
