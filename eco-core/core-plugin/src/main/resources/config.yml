@@ -73,7 +73,8 @@ rolls:
     scrolls: 35
     max-delay: 25
   flash:
-    wait: 80
+    duration: 80
+    wait: 20
   encircle:
     spin-time: 100
     reveal-time: 80
@@ -84,3 +85,7 @@ rolls:
     rise-velocity: 0.05
     spin-velocity: 0.4
     reveal-velocity: 0.2
+  quick:
+    height: 1.5
+    rise-velocity: 0.05
+    suspend: 10

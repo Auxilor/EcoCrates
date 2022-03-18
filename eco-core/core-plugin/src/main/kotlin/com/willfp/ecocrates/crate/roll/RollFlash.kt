@@ -19,6 +19,7 @@ class RollFlash private constructor(
     override val location: Location,
     override val isReroll: Boolean
 ) : Roll {
+    private val duration = plugin.configYml.getInt("rolls.flash.duration")
     private val wait = plugin.configYml.getInt("rolls.flash.wait")
     private val display = crate.getRandomRewards(player, 100, displayWeight = true)
 
@@ -32,10 +33,12 @@ class RollFlash private constructor(
         item.setGravity(false)
         item.isCustomNameVisible = true
 
+        player.closeInventory()
+
         player.addPotionEffect(
             PotionEffect(
                 PotionEffectType.BLINDNESS,
-                wait * 2,
+                (wait + duration) * 2,
                 1,
                 false,
                 false,
@@ -46,14 +49,20 @@ class RollFlash private constructor(
 
     override fun tick(tick: Int) {
         if (tick % 5 == 0) {
-            item.velocity = player.eyeLocation.toVector()
-                .add(player.eyeLocation.direction.normalize().multiply(1.5)) // Make it stop in front of the player
-                .subtract(item.location.toVector())
-                .multiply(tick.toDouble() / wait)
-                .multiply(0.5)
+            if (tick < duration) {
+                item.velocity = player.eyeLocation.toVector()
+                    .add(player.eyeLocation.direction.normalize().multiply(1.5)) // Make it stop in front of the player
+                    .subtract(item.location.toVector())
+                    .multiply(tick.toDouble() / duration)
+                    .multiply(0.5)
 
-            item.itemStack = display[tick.floorDiv(5)].getDisplay(player, crate)
-            item.customName = display[tick.floorDiv(5)].displayName
+                item.itemStack = display[tick.floorDiv(5)].getDisplay(player, crate)
+                item.customName = display[tick.floorDiv(5)].displayName
+            } else {
+                item.itemStack = reward.getDisplay(player, crate)
+                item.customName = reward.displayName
+                item.velocity = Vector(0, 0, 0)
+            }
         }
 
         if (tick % 4 == 0) {
@@ -67,26 +76,12 @@ class RollFlash private constructor(
     }
 
     override fun shouldContinueTicking(tick: Int): Boolean {
-        return tick < wait
+        return tick < wait + duration
     }
 
     override fun onFinish() {
         player.removePotionEffect(PotionEffectType.BLINDNESS)
-
-        player.playSound(
-            player.location,
-            Sound.ENTITY_FIREWORK_ROCKET_TWINKLE,
-            1f,
-            1f
-        )
-
-        item.itemStack = reward.getDisplay(player, crate)
-        item.customName = reward.displayName
-        item.velocity = Vector(0, 0, 0)
-
-        plugin.scheduler.runLater(80) {
-            item.remove()
-        }
+        item.remove()
     }
 
     object Factory : RollFactory<RollFlash>("flash") {

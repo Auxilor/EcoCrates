@@ -10,6 +10,7 @@ object Rolls {
     val CSGO: RollFactory<*> = RollCSGO.Factory
     val FLASH: RollFactory<*> = RollFlash.Factory
     val ENCIRCLE: RollFactory<*> = RollEncircle.Factory
+    val QUICK: RollFactory<*> = RollQuick.Factory
 
     /**
      * Get roll factory matching id.

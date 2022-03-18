@@ -52,6 +52,8 @@ class RollEncircle private constructor(
         itemsToDisplay.add(reward)
         itemsToDisplay.shuffle()
 
+        player.closeInventory()
+
         for (item in itemsToDisplay) {
             val entity = world.dropItem(location, item.getDisplay(player, crate))
 

@@ -39,7 +39,7 @@ crates:
     placed:
       random-reward:
         enabled: true
-        height: 2
+        height: 1.5
         delay: 30
         name: "&fYou could win:"
       particles:
