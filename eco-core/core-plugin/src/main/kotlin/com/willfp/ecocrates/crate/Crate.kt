@@ -33,6 +33,7 @@ import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
+import org.bukkit.util.Vector
 import java.util.*
 
 class Crate(
@@ -274,9 +275,9 @@ class Crate(
 
         if (!hasKeysAndNotify(player, physicalKey = physicalKey)) {
             val vector = player.location.clone().subtract(nicerLocation.toVector())
-                .add(0.0, 1.5, 0.0)
                 .toVector()
                 .normalize()
+                .add(Vector(0.0, 1.0, 0.0))
                 .multiply(plugin.configYml.getDouble("no-key-velocity"))
 
             player.velocity = vector
