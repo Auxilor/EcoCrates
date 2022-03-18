@@ -32,6 +32,7 @@ permissions:
       ecocrates.command.forceopen: true
       ecocrates.command.resetwins: true
       ecocrates.break: true
+      ecocrates.open.*: true
 
   ecocrates.command.ecocrates:
     description: Allows the use of /ecocrates (base command)
@@ -63,3 +64,6 @@ permissions:
   ecocrates.break:
     description: Allows breaking crate blocks
     default: op
+  ecocrates.open.*:
+    description: Allows opening all crates
+    default: true

@@ -1,6 +1,9 @@
 package com.willfp.ecocrates.crate
 
 import com.willfp.ecocrates.EcoCratesPlugin
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
@@ -19,4 +22,13 @@ fun ItemStack.getAsKey(): Crate? {
     val pdc = meta.persistentDataContainer
     val id = pdc.get(key, PersistentDataType.STRING) ?: return null
     return Crates.getByID(id)
+}
+
+class CrateKeyListener: Listener {
+    @EventHandler
+    fun handle(event: BlockPlaceEvent) {
+        if (event.itemInHand.getAsKey() != null) {
+            event.isCancelled = true
+        }
+    }
 }

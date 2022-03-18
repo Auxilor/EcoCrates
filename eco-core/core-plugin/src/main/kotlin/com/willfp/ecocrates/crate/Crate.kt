@@ -17,6 +17,7 @@ import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
+import com.willfp.ecocrates.crate.placed.HologramFrame
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.crate.placed.particle.ParticleData
 import com.willfp.ecocrates.crate.roll.Roll
@@ -30,6 +31,8 @@ import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
 import org.bukkit.*
 import org.bukkit.entity.Player
+import org.bukkit.permissions.Permission
+import org.bukkit.permissions.PermissionDefault
 import java.util.*
 
 class Crate(
@@ -40,7 +43,10 @@ class Crate(
 
     val name = config.getFormattedString("name")
 
-    val hologramLines = config.getFormattedStrings("placed.hologram.lines")
+    val hologramFrames = config.getSubsections("placed.hologram.frames")
+        .map { HologramFrame(it.getInt("tick"), it.getFormattedStrings("lines")) }
+
+    val hologramTicks = config.getInt("placed.hologram.ticks")
 
     val hologramHeight = config.getDouble("placed.hologram.height")
 
@@ -69,6 +75,16 @@ class Crate(
     val keyLore = config.getFormattedStrings("key.lore")
 
     val rewards = config.getSubsections("rewards").map { Reward(plugin, it) }
+
+    val permission: Permission =
+        Bukkit.getPluginManager().getPermission("ecocrates.open.$id") ?: Permission(
+            "ecocrates.open.$id",
+            "Allows opening the $id crate",
+            PermissionDefault.TRUE
+        ).apply {
+            addParent(Bukkit.getPluginManager().getPermission("ecocrates.open.*")!!, true)
+            Bukkit.getPluginManager().addPermission(this)
+        }
 
     private val keysKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_keys"),
@@ -99,6 +115,17 @@ class Crate(
         }
     }
 
+    private val openSound = PlayableSound(
+        config.getSubsections("open.sounds")
+            .map { ConfiguredSound.fromConfig(it) }
+    )
+
+    private val openMessages = config.getStrings("open.messages")
+
+    private val openBroadcasts = config.getStrings("open.broadcasts")
+
+    private val openCommands = config.getStrings("open.commands")
+
     private val finishSound = PlayableSound(
         config.getSubsections("finish.sounds")
             .map { ConfiguredSound.fromConfig(it) }
@@ -110,6 +137,8 @@ class Crate(
     private val finishMessages = config.getStrings("finish.messages")
 
     private val finishBroadcasts = config.getStrings("finish.broadcasts")
+
+    private val finishCommands = config.getStrings("finish.commands")
 
     init {
         PlayerPlaceholder(
@@ -179,6 +208,16 @@ class Crate(
         }
 
         return true
+    }
+
+    private fun hasPermissionAndNotify(player: Player): Boolean {
+        val hasPermission = player.hasPermission(permission)
+
+        if (!hasPermission) {
+            player.sendMessage(plugin.langYml.getMessage("no-crate-permission").replace("%crate%", this.name))
+        }
+
+        return hasPermission
     }
 
     private fun usePhysicalKey(player: Player) {
@@ -253,6 +292,11 @@ class Crate(
             return
         }
 
+        // Goes here rather than open() to keep force opening working
+        if (!hasPermissionAndNotify(player)) {
+            return
+        }
+
         if (open(player, location, physicalKey)) {
             if (physicalKey) {
                 usePhysicalKey(player)
@@ -267,6 +311,7 @@ class Crate(
         if (hasRanOutOfRewardsAndNotify(player)) {
             return false
         }
+
         if (player.isOpeningCrate) {
             return false
         }
@@ -275,6 +320,20 @@ class Crate(
 
         val event = CrateOpenEvent(player, this, physicalKey, getRandomReward(player))
         Bukkit.getPluginManager().callEvent(event)
+
+        openSound.play(loc)
+
+        openCommands.map { it.replace("%player%", player.name) }
+            .forEach { Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it) }
+
+        openMessages.map { it.replace("%reward%", event.reward.displayName) }
+            .map { plugin.langYml.prefix + StringUtils.format(it, player) }
+            .forEach { player.sendMessage(it) }
+
+        openBroadcasts.map { it.replace("%reward%", event.reward.displayName) }
+            .map { it.replace("%player%", player.savedDisplayName) }
+            .map { plugin.langYml.prefix + StringUtils.format(it, player) }
+            .forEach { Bukkit.broadcastMessage(it) }
 
         val roll = makeRoll(player, loc, event.reward)
         var tick = 0
@@ -308,6 +367,9 @@ class Crate(
         event.reward.giveTo(player)
         finishSound.play(location)
         finishFireworks.forEach { it.launch(location) }
+
+        finishCommands.map { it.replace("%player%", player.name) }
+            .forEach { Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it) }
 
         finishMessages.map { it.replace("%reward%", event.reward.displayName) }
             .map { plugin.langYml.prefix + StringUtils.format(it, player) }

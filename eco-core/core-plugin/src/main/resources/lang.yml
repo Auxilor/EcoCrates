@@ -16,3 +16,4 @@ messages:
   all-rewards-used: "&cYou have already won all things in this crate!"
   resetting-wins: "&fResetting wins for %user%&f..."
   reset-wins: "&fReset wins for %user%&f!"
+  no-crate-permission: "&cYou don't have permission to open this crate!"

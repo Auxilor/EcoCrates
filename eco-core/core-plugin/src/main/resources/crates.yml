@@ -45,16 +45,36 @@ crates:
           animation: spiral
       hologram:
         height: 1.5
-        lines:
-          - "Amogus? Sus!"
-          - "&b&lLeft Click to Preview"
-          - '&a&lRight click to Open'
+        ticks: 200
+        frames:
+          - tick: 0
+            lines:
+              - "Amogus? Sus!"
+              - "&b&lLeft Click to Preview"
+              - '&a&lRight click to Open'
+          - tick: 100
+            lines:
+              - "&cOpen me bitch"
+              - "&b&lLeft Click to Preview"
+              - '&a&lRight click to Open'
+
+    open:
+      messages:
+        - "Good luck!"
+      broadcasts:
+        - "%player%&f is opening the Demo Crate!"
+      commands: [ ]
+      sounds:
+        - sound: entity_villager_yes
+          volume: 10
+          pitch: 1
 
     finish:
       messages:
         - "You won %reward%&f!"
       broadcasts:
         - "%player%&f won %reward%&f from the Demo Crate!"
+      commands: [ ]
       fireworks:
         - power: 2
           type: ball_large

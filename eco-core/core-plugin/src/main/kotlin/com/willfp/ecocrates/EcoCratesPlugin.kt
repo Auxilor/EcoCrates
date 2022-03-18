@@ -5,6 +5,7 @@ import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.display.DisplayModule
 import com.willfp.ecocrates.commands.CommandEcoCrates
 import com.willfp.ecocrates.config.CratesYml
+import com.willfp.ecocrates.crate.CrateKeyListener
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.display.KeyDisplay
@@ -34,7 +35,8 @@ class EcoCratesPlugin : EcoPlugin() {
 
     override fun loadListeners(): List<Listener> {
         return listOf(
-            PlacedCrateListener(this)
+            PlacedCrateListener(this),
+            CrateKeyListener()
         )
     }
 

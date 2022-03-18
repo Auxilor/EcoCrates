@@ -47,7 +47,10 @@ object PlacedCrates {
 
     fun setAsCrate(location: Location, crate: Crate) {
         loaded[location] = PlacedCrate(crate, location)
+        saveCrate(location, crate)
+    }
 
+    private fun saveCrate(location: Location, crate: Crate) {
         YamlStorage.set("crates.${location.toShortString()}", crate.id)
         YamlStorage.save()
     }
@@ -61,6 +64,10 @@ object PlacedCrates {
     }
 
     internal fun load() {
+        for ((location, crate) in loaded) {
+            saveCrate(location, crate.crate)
+        }
+
         removeAll()
 
         for (shortString in YamlStorage.getSubsection("crates").getKeys(false)) {

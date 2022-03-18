@@ -21,13 +21,17 @@ class PlacedCrate(
 
     private val hologram = HologramManager.createHologram(
         location.clone().add(0.0, crate.hologramHeight, 0.0),
-        crate.hologramLines
+        crate.hologramFrames.firstOrNull()?.lines ?: emptyList()
     )
+
+    private var currentFrameTick = 0
+    private var currentFrame: HologramFrame? = null
 
     private var item: Item? = null
 
     internal fun tick(tick: Int) {
         tickRandomReward(tick)
+        tickHolograms(tick)
     }
 
     internal fun tickAsync(tick: Int) {
@@ -51,6 +55,21 @@ class PlacedCrate(
             entity.isCustomNameVisible = true
             entity.customName = crate.randomRewardName
             item = entity
+        }
+    }
+
+    private fun tickHolograms(tick: Int) {
+        var frameToShow: HologramFrame? = null
+
+        for (hologramFrame in crate.hologramFrames) {
+            if (hologramFrame.tick < (tick % crate.hologramTicks)) {
+                frameToShow = hologramFrame
+            }
+        }
+
+        if (currentFrame != frameToShow && frameToShow != null) {
+            currentFrame = frameToShow
+            hologram.setContents(frameToShow.lines)
         }
     }
 
