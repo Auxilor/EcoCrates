@@ -51,8 +51,8 @@ class RollFlash private constructor(
                 .multiply(tick.toDouble() / wait)
                 .multiply(0.5)
 
-            item.itemStack = display[tick.floorDiv(4)].display
-            item.customName = display[tick.floorDiv(4)].displayName
+            item.itemStack = display[tick.floorDiv(5)].display
+            item.customName = display[tick.floorDiv(5)].displayName
         }
 
         if (tick % 4 == 0) {
