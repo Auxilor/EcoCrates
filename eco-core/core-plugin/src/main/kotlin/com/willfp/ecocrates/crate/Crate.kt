@@ -181,6 +181,16 @@ class Crate(
         return true
     }
 
+    private fun usePhysicalKey(player: Player) {
+        val itemStack = player.inventory.itemInMainHand
+        if (key.matches(itemStack)) {
+            itemStack.amount -= 1
+            if (itemStack.amount == 0) {
+                itemStack.type = Material.AIR
+            }
+        }
+    }
+
     internal fun addToKeyGUI(builder: MenuBuilder) {
         builder.setSlot(
             config.getInt("keygui.row"),
@@ -315,16 +325,6 @@ class Crate(
 
     fun getKeys(player: OfflinePlayer): Int {
         return player.profile.read(keysKey)
-    }
-
-    fun usePhysicalKey(player: Player) {
-        val itemStack = player.inventory.itemInMainHand
-        if (key.matches(itemStack)) {
-            itemStack.amount -= 1
-            if (itemStack.amount == 0) {
-                itemStack.type = Material.AIR
-            }
-        }
     }
 
     fun hasPhysicalKey(player: Player): Boolean {
