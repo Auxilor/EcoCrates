@@ -76,7 +76,7 @@ class RollCSGO private constructor(
                     ItemStack(Material.AIR)
                 ) {
                     setUpdater { _, _, _ ->
-                        display[(9 - i) + scroll].display
+                        display[(9 - i) + scroll].getDisplay(player, crate)
                     }
                 }
             )

@@ -6,10 +6,14 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.drops.DropQueue
+import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
+import com.willfp.eco.util.formatEco
+import com.willfp.eco.util.toNiceString
+import com.willfp.ecocrates.crate.Crate
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
@@ -39,10 +43,23 @@ class Reward(
         if (maxWins > 0) player()
     }
 
-    val display: ItemStack = ItemStackBuilder(Items.lookup(config.getString("display.item")))
-        .addLoreLines(config.getStrings("display.lore"))
+    private val baseDisplay = ItemStackBuilder(Items.lookup(config.getString("display.item")))
         .setDisplayName(config.getString("display.name"))
         .build()
+
+    fun getDisplay(player: Player, crate: Crate): ItemStack {
+        val item = baseDisplay.clone()
+        val fis = FastItemStack.wrap(item)
+        fis.lore = config.getStrings("display.lore").map {
+            it.replace("%chance%", getPercentageChance(player, crate.rewards, displayWeight = true).toNiceString().formatEco(player))
+                .replace("%actual_chance%", getPercentageChance(player, crate.rewards, displayWeight = false).toNiceString()).formatEco(player)
+        }
+        return item
+    }
+
+    fun getDisplay(): ItemStack {
+        return baseDisplay.clone()
+    }
 
     fun getWeight(player: Player): Double {
         val weight = config.getDoubleFromExpression("weight.actual", player)
@@ -62,6 +79,20 @@ class Reward(
             }
         }
         return weight
+    }
+
+    fun getPercentageChance(player: Player, among: Collection<Reward>, displayWeight: Boolean = false): Double {
+        val others = among.toMutableList()
+        others.remove(this)
+
+        val weight = if (displayWeight) this.getDisplayWeight(player) else this.getWeight(player)
+
+        var totalWeight = weight
+        for (other in others) {
+            totalWeight += if (displayWeight) other.getDisplayWeight(player) else other.getWeight(player)
+        }
+
+        return (weight / totalWeight) * 100
     }
 
     val displayRow = config.getInt("display.row")

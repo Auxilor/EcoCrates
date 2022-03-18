@@ -46,7 +46,7 @@ class PlacedCrate(
         if ((item == null || item?.isDead == true) && crate.isShowingRandomReward) {
             val entity = world.dropItem(
                 location.clone().add(0.0, crate.randomRewardHeight, 0.0),
-                crate.rewards.first().display
+                crate.rewards.first().getDisplay()
             )
             entity.velocity = Vector(0.0, 0.0, 0.0)
             entity.pickupDelay = Int.MAX_VALUE
@@ -75,7 +75,7 @@ class PlacedCrate(
     private fun tickRandomReward(tick: Int) {
         if (tick % crate.randomRewardDelay == 0) {
             spawnRandomReward()
-            item?.itemStack = crate.rewards.random().display
+            item?.itemStack = crate.rewards.random().getDisplay()
             item?.teleport(location.clone().add(0.0, crate.randomRewardHeight, 0.0))
         }
     }

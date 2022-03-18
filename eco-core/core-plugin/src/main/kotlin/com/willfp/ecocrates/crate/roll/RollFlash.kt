@@ -26,7 +26,7 @@ class RollFlash private constructor(
     override fun roll() {
         val world = location.world!!
 
-        item = world.dropItem(location, display[0].display)
+        item = world.dropItem(location, display[0].getDisplay(player, crate))
         item.pickupDelay = Int.MAX_VALUE
         item.setGravity(false)
         item.isCustomNameVisible = true
@@ -51,7 +51,7 @@ class RollFlash private constructor(
                 .multiply(tick.toDouble() / wait)
                 .multiply(0.5)
 
-            item.itemStack = display[tick.floorDiv(5)].display
+            item.itemStack = display[tick.floorDiv(5)].getDisplay(player, crate)
             item.customName = display[tick.floorDiv(5)].displayName
         }
 
@@ -79,7 +79,7 @@ class RollFlash private constructor(
             1f
         )
 
-        item.itemStack = reward.display
+        item.itemStack = reward.getDisplay(player, crate)
         item.customName = reward.displayName
         item.velocity = Vector(0, 0, 0)
 

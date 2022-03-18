@@ -52,7 +52,7 @@ class RollEncircle private constructor(
         itemsToDisplay.shuffle()
 
         for (item in itemsToDisplay) {
-            val entity = world.dropItem(location, item.display)
+            val entity = world.dropItem(location, item.getDisplay(player, crate))
 
             entity.pickupDelay = Int.MAX_VALUE
             entity.setGravity(false)
@@ -114,7 +114,7 @@ class RollEncircle private constructor(
             }
             EncircleState.REVEAL -> {
                 for (item in display.toSet()) {
-                    if (item.itemStack != reward.display) {
+                    if (item.itemStack != reward.getDisplay(player, crate)) {
                         item.remove()
                         display.remove(item)
                     }

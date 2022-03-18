@@ -115,8 +115,8 @@ class Crate(
             setSlot(
                 reward.displayRow,
                 reward.displayColumn,
-                slot(reward.display) {
-
+                slot(reward.getDisplay()) {
+                    setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
                 }
             )
         }
