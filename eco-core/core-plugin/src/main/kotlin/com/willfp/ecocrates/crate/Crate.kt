@@ -321,7 +321,12 @@ class Crate(
         }
     }
 
-    fun open(player: Player, location: Location? = null, physicalKey: Boolean = false, isReroll: Boolean = false): Boolean {
+    fun open(
+        player: Player,
+        location: Location? = null,
+        physicalKey: Boolean = false,
+        isReroll: Boolean = false
+    ): Boolean {
         /* Prevent server crashes */
         if (hasRanOutOfRewardsAndNotify(player)) {
             return false
@@ -333,22 +338,24 @@ class Crate(
 
         val loc = location ?: player.eyeLocation
 
-        val event = CrateOpenEvent(player, this, physicalKey, getRandomReward(player))
+        val event = CrateOpenEvent(player, this, physicalKey, getRandomReward(player), isReroll)
         Bukkit.getPluginManager().callEvent(event)
 
-        openSound.play(loc)
+        if (!isReroll) {
+            openSound.play(loc)
 
-        openCommands.map { it.replace("%player%", player.name) }
-            .forEach { Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it) }
+            openCommands.map { it.replace("%player%", player.name) }
+                .forEach { Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it) }
 
-        openMessages.map { it.replace("%reward%", event.reward.displayName) }
-            .map { plugin.langYml.prefix + StringUtils.format(it, player) }
-            .forEach { player.sendMessage(it) }
+            openMessages.map { it.replace("%reward%", event.reward.displayName) }
+                .map { plugin.langYml.prefix + StringUtils.format(it, player) }
+                .forEach { player.sendMessage(it) }
 
-        openBroadcasts.map { it.replace("%reward%", event.reward.displayName) }
-            .map { it.replace("%player%", player.savedDisplayName) }
-            .map { plugin.langYml.prefix + StringUtils.format(it, player) }
-            .forEach { Bukkit.broadcastMessage(it) }
+            openBroadcasts.map { it.replace("%reward%", event.reward.displayName) }
+                .map { it.replace("%player%", player.savedDisplayName) }
+                .map { plugin.langYml.prefix + StringUtils.format(it, player) }
+                .forEach { Bukkit.broadcastMessage(it) }
+        }
 
         val roll = makeRoll(player, loc, event.reward, isReroll = isReroll)
         var tick = 0

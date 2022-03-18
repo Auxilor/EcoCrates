@@ -10,7 +10,8 @@ class CrateOpenEvent(
     player: Player,
     val crate: Crate,
     val isPhysicalKey: Boolean,
-    var reward: Reward
+    var reward: Reward,
+    val isReroll: Boolean
 ) : PlayerEvent(player) {
     override fun getHandlers(): HandlerList {
         return Companion.handlers
