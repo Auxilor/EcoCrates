@@ -2,7 +2,6 @@ package com.willfp.ecocrates.crate
 
 import com.google.common.collect.HashBiMap
 import com.google.common.collect.ImmutableList
-import com.willfp.eco.core.config.updating.ConfigUpdater
 import com.willfp.ecocrates.EcoCratesPlugin
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 
@@ -32,8 +31,7 @@ object Crates {
     }
 
     @JvmStatic
-    @ConfigUpdater
-    fun update(plugin: EcoCratesPlugin) {
+    internal fun update(plugin: EcoCratesPlugin) {
         BY_ID.clear()
 
         for (config in plugin.cratesYml.getSubsections("crates")) {

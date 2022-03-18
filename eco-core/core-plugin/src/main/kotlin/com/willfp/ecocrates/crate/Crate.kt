@@ -28,6 +28,7 @@ import com.willfp.ecocrates.crate.roll.Rolls
 import com.willfp.ecocrates.event.CrateOpenEvent
 import com.willfp.ecocrates.event.CrateRewardEvent
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.ConfiguredFirework
 import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
@@ -77,7 +78,7 @@ class Crate(
 
     val keyLore = config.getFormattedStrings("key.lore")
 
-    val rewards = config.getSubsections("rewards").map { Reward(plugin, it) }
+    val rewards = config.getStrings("rewards").mapNotNull { Rewards.getByID(it) }
 
     val permission: Permission =
         Bukkit.getPluginManager().getPermission("ecocrates.open.$id") ?: Permission(

@@ -5,6 +5,7 @@ import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.display.DisplayModule
 import com.willfp.ecocrates.commands.CommandEcoCrates
 import com.willfp.ecocrates.config.CratesYml
+import com.willfp.ecocrates.config.RewardsYml
 import com.willfp.ecocrates.crate.CrateKeyListener
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
@@ -14,6 +15,7 @@ import org.bukkit.event.Listener
 
 class EcoCratesPlugin : EcoPlugin() {
     val cratesYml = CratesYml(this)
+    val rewardsYml = RewardsYml(this)
 
     init {
         instance = this

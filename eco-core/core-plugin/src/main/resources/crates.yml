@@ -94,59 +94,6 @@ crates:
           pitch: 1
 
     rewards:
-      - id: diamond
-        commands: [ ]
-        items:
-          - diamond
-        messages:
-          - 'amogus?'
-        weight:
-          actual: 1
-          display: 25
-        max-wins: -1
-        display:
-          name: "&bDiamond"
-          item: diamond
-          lore:
-            - "&fDisplay Chance: &a%chance%%"
-            - "&fActual Chance: &a%actual_chance%%"
-          row: 3
-          column: 2
-
-      - id: emerald
-        commands: [ ]
-        items:
-          - emerald
-        messages:
-          - 'amogus?!!'
-        weight:
-          actual: 1
-          display: 50
-        max-wins: -1
-        display:
-          name: "&aEmerald"
-          item: emerald
-          lore:
-            - "&fDisplay Chance: &a%chance%%"
-            - "&fActual Chance: &a%actual_chance%%"
-          row: 4
-          column: 2
-
-      - id: bedrock
-        commands: [ ]
-        items:
-          - bedrock
-        messages:
-          - 'amogus?!!'
-        weight:
-          actual: 98
-          display: 0
-        max-wins: -1
-        display:
-          name: "<g:#00ffff>very cool demo bedrock</g:#00ff00>"
-          item: bedrock
-          lore:
-            - "&fDisplay Chance: &a%chance%%"
-            - "&fActual Chance: &a%actual_chance%%"
-          row: 5
-          column: 2
+      - diamond
+      - emerald
+      - bedrock
