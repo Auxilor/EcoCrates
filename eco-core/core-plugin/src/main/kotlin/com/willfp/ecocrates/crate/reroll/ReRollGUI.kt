@@ -10,8 +10,11 @@ import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.roll.Roll
 
 object ReRollGUI {
+    private val metaKey = "crates-accept"
+
     fun open(roll: Roll) {
         val plugin = roll.plugin
+        val player = roll.player
 
         val menu = menu(plugin.configYml.getInt("reroll.rows")) {
             setMask(
@@ -30,9 +33,11 @@ object ReRollGUI {
             setSlot(
                 plugin.configYml.getInt("reroll.accept.row"),
                 plugin.configYml.getInt("reroll.accept.column"),
-                slot(roll.reward.getDisplay(roll.player, roll.crate)) {
+                slot(roll.reward.getDisplay(player, roll.crate)) {
                     onLeftClick { _, _, _ ->
-                        roll.player.closeInventory() // Will automatically call finish
+                        player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
+                        player.closeInventory()
+                        roll.crate.handleFinish(roll)
                     }
                 }
             )
@@ -47,14 +52,21 @@ object ReRollGUI {
                         .build()
                 ) {
                     onLeftClick { _, _, _ ->
-                        roll.crate.open(roll.player, roll.location, isReroll = true)
+                        player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
+                        roll.crate.open(player, roll.location, isReroll = true)
                     }
                 }
             )
 
-            onClose { _, _ -> roll.crate.handleFinish(roll) }
+            onClose { _, _ ->
+                if (player.hasMetadata(metaKey)) {
+                    player.removeMetadata(metaKey, plugin)
+                } else {
+                    roll.crate.handleFinish(roll)
+                }
+            }
         }
 
-        menu.open(roll.player)
+        menu.open(player)
     }
 }
