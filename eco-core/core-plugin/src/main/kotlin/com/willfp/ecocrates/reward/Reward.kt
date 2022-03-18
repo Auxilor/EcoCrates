@@ -51,8 +51,9 @@ class Reward(
         val item = baseDisplay.clone()
         val fis = FastItemStack.wrap(item)
         fis.lore = config.getStrings("display.lore").map {
-            it.replace("%chance%", getPercentageChance(player, crate.rewards, displayWeight = true).toNiceString().formatEco(player))
-                .replace("%actual_chance%", getPercentageChance(player, crate.rewards, displayWeight = false).toNiceString()).formatEco(player)
+            it.replace("%chance%", getPercentageChance(player, crate.rewards, displayWeight = true).toNiceString())
+                .replace("%actual_chance%", getPercentageChance(player, crate.rewards, displayWeight = false).toNiceString())
+                .formatEco(player)
         }
         return item
     }
