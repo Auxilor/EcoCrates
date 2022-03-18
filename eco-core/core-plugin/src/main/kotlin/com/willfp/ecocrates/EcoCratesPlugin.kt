@@ -11,7 +11,7 @@ import com.willfp.ecocrates.display.KeyDisplay
 import com.willfp.ecocrates.util.PlacedCrateListener
 import org.bukkit.event.Listener
 
-class EcoCratesPlugin : EcoPlugin(0, 0, "&#6dd5ed", true) {
+class EcoCratesPlugin : EcoPlugin() {
     val cratesYml = CratesYml(this)
 
     init {
