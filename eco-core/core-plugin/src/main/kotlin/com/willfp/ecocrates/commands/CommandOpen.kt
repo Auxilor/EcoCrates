@@ -18,7 +18,7 @@ class CommandOpen(plugin: EcoPlugin) : Subcommand(
         player as Player
         val crate = Crates.getByID(args[0]) ?: return
 
-        crate.openWithKey(player, OpenMethod.VIRTUAL_KEY)
+        crate.openWithMethod(player, OpenMethod.VIRTUAL_KEY)
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {

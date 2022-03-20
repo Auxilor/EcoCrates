@@ -273,7 +273,7 @@ class Crate(
                     if (config.getBool("keygui.left-click-opens")) {
                         val player = event.whoClicked as Player
                         player.closeInventory()
-                        openWithKey(player, OpenMethod.VIRTUAL_KEY)
+                        openWithMethod(player, OpenMethod.VIRTUAL_KEY)
                     }
                 }
 
@@ -309,7 +309,7 @@ class Crate(
         return (0..amount).map { getRandomReward(player, displayWeight) }
     }
 
-    fun openPhysical(player: Player, location: Location, method: OpenMethod) {
+    fun openPlaced(player: Player, location: Location, method: OpenMethod) {
         val nicerLocation = location.clone().add(0.5, 1.5, 0.5)
 
         if (!hasKeysAndNotify(player, method)) {
@@ -324,10 +324,10 @@ class Crate(
             return
         }
 
-        openWithKey(player, method, nicerLocation)
+        openWithMethod(player, method, nicerLocation)
     }
 
-    fun openWithKey(player: Player, method: OpenMethod, location: Location? = null) {
+    fun openWithMethod(player: Player, method: OpenMethod, location: Location? = null) {
         if (!hasKeysAndNotify(player, method)) {
             return
         }

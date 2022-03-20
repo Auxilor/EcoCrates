@@ -35,7 +35,7 @@ class PlacedCrateListener(
 
         when (event.action) {
             Action.LEFT_CLICK_BLOCK -> crate.previewForPlayer(player)
-            Action.RIGHT_CLICK_BLOCK -> crate.openPhysical(
+            Action.RIGHT_CLICK_BLOCK -> crate.openPlaced(
                 player,
                 block.location,
                 if (physicalKey) OpenMethod.PHYSICAL_KEY else OpenMethod.VIRTUAL_KEY
