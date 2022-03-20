@@ -3,7 +3,7 @@ package com.willfp.ecocrates.crate
 import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.ecocrates.EcoCratesPlugin
 import org.bukkit.entity.Player
-import java.util.Objects
+import java.util.*
 
 abstract class OpenMethod(
     val id: String
