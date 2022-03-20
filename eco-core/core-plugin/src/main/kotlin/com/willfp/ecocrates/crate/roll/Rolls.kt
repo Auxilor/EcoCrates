@@ -11,6 +11,7 @@ object Rolls {
     val FLASH: RollFactory<*> = RollFlash.Factory
     val ENCIRCLE: RollFactory<*> = RollEncircle.Factory
     val QUICK: RollFactory<*> = RollQuick.Factory
+    val INSTANT: RollFactory<*> = RollInstant.Factory
 
     /**
      * Get roll factory matching id.
