@@ -17,7 +17,7 @@ private object YamlStorage : StaticBaseConfig(
 )
 
 private fun Location.toShortString(): String {
-    return "$blockX,$blockY,$blockZ@${world!!.name.lowercase()}"
+    return "${world!!.name.lowercase()}@$blockX,$blockY,$blockZ"
 }
 
 private fun locationFromShortString(string: String): Location? {
@@ -25,12 +25,12 @@ private fun locationFromShortString(string: String): Location? {
     if (split.size != 2) {
         return null
     }
-    val coords = split[0].split(",")
+    val coords = split[1].split(",")
     if (coords.size != 3) {
         return null
     }
 
-    val world = Bukkit.getWorld(split[1]) ?: return null
+    val world = Bukkit.getWorld(split[0]) ?: return null
     val x = coords[0].toIntOrNull() ?: return null
     val y = coords[1].toIntOrNull() ?: return null
     val z = coords[2].toIntOrNull() ?: return null
@@ -63,7 +63,7 @@ object PlacedCrates {
         YamlStorage.save()
     }
 
-    internal fun load() {
+    internal fun reload() {
         for ((location, crate) in loaded) {
             saveCrate(location, crate.crate)
         }

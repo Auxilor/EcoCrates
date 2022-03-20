@@ -39,6 +39,6 @@ object Crates {
             BY_ID[crate.id] = crate
         }
 
-        PlacedCrates.load()
+        PlacedCrates.reload()
     }
 }

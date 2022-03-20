@@ -70,7 +70,7 @@ class Crate(
     }
 
     val key = CustomItem(
-        plugin.namespacedKeyFactory.create(id),
+        plugin.namespacedKeyFactory.create("${id}_key"),
         { it.getAsKey() == this },
         Items.lookup(config.getString("key.item")).item
             .clone().apply { setAsKeyFor(this@Crate) }
