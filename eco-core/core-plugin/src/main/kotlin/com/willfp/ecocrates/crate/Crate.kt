@@ -213,19 +213,19 @@ class Crate(
         return selection.first()
     }
 
-    private fun hasKeysAndNotify(player: Player, physicalKey: Boolean = false): Boolean {
+    private fun hasKeysAndNotify(player: Player, method: OpenMethod): Boolean {
         if (getKeys(player) == 0) {
-            return if (!physicalKey) {
+            return if (method == OpenMethod.VIRTUAL_KEY) {
                 player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
                 false
-            } else {
+            } else if (method == OpenMethod.PHYSICAL_KEY) {
                 val physical = hasPhysicalKey(player)
                 if (!physical) {
                     player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
                 }
 
                 physical
-            }
+            } else true
         }
 
         return true
@@ -266,7 +266,7 @@ class Crate(
                     if (config.getBool("keygui.left-click-opens")) {
                         val player = event.whoClicked as Player
                         player.closeInventory()
-                        openWithKey(player)
+                        openWithKey(player, OpenMethod.VIRTUAL_KEY)
                     }
                 }
 
@@ -302,10 +302,10 @@ class Crate(
         return (0..amount).map { getRandomReward(player, displayWeight) }
     }
 
-    fun openPhysical(player: Player, location: Location, physicalKey: Boolean) {
+    fun openPhysical(player: Player, location: Location, method: OpenMethod) {
         val nicerLocation = location.clone().add(0.5, 1.5, 0.5)
 
-        if (!hasKeysAndNotify(player, physicalKey = physicalKey)) {
+        if (!hasKeysAndNotify(player, method)) {
             val vector = player.location.clone().subtract(nicerLocation.toVector())
                 .toVector()
                 .normalize()
@@ -317,11 +317,11 @@ class Crate(
             return
         }
 
-        openWithKey(player, nicerLocation, physicalKey)
+        openWithKey(player, method, nicerLocation)
     }
 
-    fun openWithKey(player: Player, location: Location? = null, physicalKey: Boolean = false) {
-        if (!hasKeysAndNotify(player, physicalKey = true)) {
+    fun openWithKey(player: Player, method: OpenMethod, location: Location? = null) {
+        if (!hasKeysAndNotify(player, method)) {
             return
         }
 
@@ -330,8 +330,8 @@ class Crate(
             return
         }
 
-        if (open(player, location, physicalKey)) {
-            if (physicalKey) {
+        if (open(player, method, location = location)) {
+            if (method == OpenMethod.PHYSICAL_KEY) {
                 usePhysicalKey(player)
             } else {
                 adjustKeys(player, -1)
@@ -341,8 +341,8 @@ class Crate(
 
     fun open(
         player: Player,
+        method: OpenMethod,
         location: Location? = null,
-        physicalKey: Boolean = false,
         isReroll: Boolean = false
     ): Boolean {
         /* Prevent server crashes */
@@ -356,7 +356,7 @@ class Crate(
 
         val loc = location ?: player.eyeLocation
 
-        val event = CrateOpenEvent(player, this, physicalKey, getRandomReward(player), isReroll)
+        val event = CrateOpenEvent(player, this, method, getRandomReward(player), isReroll)
         Bukkit.getPluginManager().callEvent(event)
 
         if (!isReroll) {

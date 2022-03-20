@@ -1,13 +1,14 @@
 package com.willfp.ecocrates.util
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
-import java.util.*
+import java.util.UUID
 
 class PlacedCrateListener(
     private val plugin: EcoPlugin
@@ -34,7 +35,11 @@ class PlacedCrateListener(
 
         when (event.action) {
             Action.LEFT_CLICK_BLOCK -> crate.previewForPlayer(player)
-            Action.RIGHT_CLICK_BLOCK -> crate.openPhysical(player, block.location, physicalKey)
+            Action.RIGHT_CLICK_BLOCK -> crate.openPhysical(
+                player,
+                block.location,
+                if (physicalKey) OpenMethod.PHYSICAL_KEY else OpenMethod.VIRTUAL_KEY
+            )
             else -> return
         }
 
