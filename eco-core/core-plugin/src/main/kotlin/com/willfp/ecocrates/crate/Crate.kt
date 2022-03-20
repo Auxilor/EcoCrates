@@ -252,6 +252,10 @@ class Crate(
     }
 
     internal fun addToKeyGUI(builder: MenuBuilder) {
+        if (!config.getBool("keygui.enabled")) {
+            return
+        }
+
         builder.setSlot(
             config.getInt("keygui.row"),
             config.getInt("keygui.column"),
