@@ -14,7 +14,7 @@ data class PermissionMultiplier(
             Bukkit.getPluginManager().addPermission(
                 Permission(
                     permission,
-                    "Gives a ${multiplier}x multiplier in crate rewards",
+                    "Gives a ${multiplier}x chance multiplier in crate rewards",
                     PermissionDefault.FALSE
                 )
             )
