@@ -22,21 +22,22 @@ crates:
     key:
       item: tripwire_hook unbreaking:1 hide_enchants name:"&aDemo Crate Key"
       lore:
-        - "&fuse this key to open"
-        - "&fdemo crates, yeah?"
+        - "&fUse this key to open"
+        - "&fthe <g:#56ab2f>Demo Crate</g:#a8e063>"
 
     keygui:
       enabled: true
       item: tripwire_hook unbreaking:1 hide_enchants name:"Demo Crate"
       lore:
-        - "&famogus? sus? impostor?"
+        - "<g:#56ab2f>Demo Crate</g:#a8e063>"
         - "&fYou have %keys% keys"
+        - "&fGet more at &astore.example.net"
       row: 2
       column: 3
       right-click-previews: true
       left-click-opens: true
       shift-left-click-messsage:
-        - "Buy a Demo Crate key here! get lured into the trap of gambling addiction"
+        - "Buy a Demo Crate key here! &astore.example.net"
 
     pay-to-open:
       enabled: false
@@ -57,14 +58,14 @@ crates:
         frames:
           - tick: 0
             lines:
-              - "Amogus? Sus!"
+              - "<g:#56ab2f>&lDEMO CRATE</g:#a8e063>"
               - "&b&lLeft Click to Preview"
               - '&a&lRight click to Open'
           - tick: 100
             lines:
-              - "&cOpen me bitch"
-              - "&b&lLeft Click to Preview"
-              - '&a&lRight click to Open'
+              - "<g:#56ab2f>&lDEMO CRATE</g:#a8e063>"
+              - "&a&lLeft Click to Preview"
+              - '&b&lRight click to Open'
 
     open:
       messages:
@@ -100,6 +101,6 @@ crates:
           pitch: 1
 
     rewards:
-      - diamond
-      - emerald
+      - diamond_sword
+      - stack_of_emeralds
       - bedrock

@@ -1,38 +1,36 @@
 rewards:
-  - id: diamond
+  - id: diamond_sword
     commands: [ ]
     items:
-      - diamond
-    messages:
-      - 'amogus?'
+      - diamond_sword sharpness:5 unbreaking:3
+    messages: [ ]
     weight:
       permission-multipliers: true
       actual: 1
       display: 25
     max-wins: -1
     display:
-      name: "&bDiamond"
-      item: diamond
+      name: "&bDiamond Sword"
+      item: diamond_sword sharpness:5 unbreaking:3
       lore:
         - "&fDisplay Chance: &a%chance%%"
         - "&fActual Chance: &a%actual_chance%%"
       row: 3
       column: 2
 
-  - id: emerald
+  - id: stack_of_emeralds
     commands: [ ]
     items:
-      - emerald
-    messages:
-      - 'amogus?!!'
+      - emerald 64
+    messages: [ ]
     weight:
       permission-multipliers: false
       actual: 1
       display: 50
     max-wins: -1
     display:
-      name: "&aEmerald"
-      item: emerald
+      name: "&aStack of Emeralds"
+      item: emerald 64
       lore:
         - "&fDisplay Chance: &a%chance%%"
         - "&fActual Chance: &a%actual_chance%%"
@@ -44,14 +42,14 @@ rewards:
     items:
       - bedrock
     messages:
-      - 'amogus?!!'
+      - 'You won the rare bedrock!'
     weight:
       permission-multipliers: false
       actual: 98
       display: 0
     max-wins: -1
     display:
-      name: "<g:#00ffff>very cool demo bedrock</g:#00ff00>"
+      name: "<g:#00ffff>Rare Bedrock</g:#00ff00>"
       item: bedrock
       lore:
         - "&fDisplay Chance: &a%chance%%"
