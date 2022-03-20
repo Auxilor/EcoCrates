@@ -101,3 +101,10 @@ rolls:
     height: 1.5
     rise-velocity: 0.05
     suspend: 10
+  semi_instant:
+    velocity:
+      randomness: 0.2
+      x: 0
+      y: 1
+      z: 0
+    item-lifespan: 30

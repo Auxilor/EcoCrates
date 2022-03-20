@@ -12,6 +12,7 @@ object Rolls {
     val ENCIRCLE: RollFactory<*> = RollEncircle.Factory
     val QUICK: RollFactory<*> = RollQuick.Factory
     val INSTANT: RollFactory<*> = RollInstant.Factory
+    val SEMI_INSTANT: RollFactory<*> = RollSemiInstant.Factory
 
     /**
      * Get roll factory matching id.
