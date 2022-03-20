@@ -8,6 +8,7 @@ import com.willfp.ecocrates.crate.Crates
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.StringUtil
 
 class CommandGive(plugin: EcoPlugin) : Subcommand(
@@ -47,6 +48,18 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
 
         if (physical) {
             val items = mutableListOf<ItemStack>().apply { repeat(amount) { add(crate.key.item) } }
+
+            if (plugin.configYml.getBool("track-player-keys")) {
+                items.map {
+                    val meta = it.itemMeta!!
+                    meta.persistentDataContainer.set(
+                        plugin.namespacedKeyFactory.create("player"),
+                        PersistentDataType.STRING,
+                        player.uniqueId.toString()
+                    )
+                    it.itemMeta = meta
+                }
+            }
 
             DropQueue(player)
                 .addItems(items)
