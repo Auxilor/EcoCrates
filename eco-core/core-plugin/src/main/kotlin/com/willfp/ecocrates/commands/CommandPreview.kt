@@ -15,7 +15,19 @@ class CommandPreview(plugin: EcoPlugin) : Subcommand(
 ) {
     override fun onExecute(player: CommandSender, args: List<String>) {
         player as Player
-        val crate = Crates.getByID(args[0]) ?: return
+
+        if (args.isEmpty()) {
+            player.sendMessage(plugin.langYml.getMessage("must-specify-crate"))
+            return
+        }
+
+        val crate = Crates.getByID(args[0])
+
+        if (crate == null) {
+            player.sendMessage(plugin.langYml.getMessage("invalid-crate"))
+            return
+        }
+
         crate.previewForPlayer(player)
     }
 
