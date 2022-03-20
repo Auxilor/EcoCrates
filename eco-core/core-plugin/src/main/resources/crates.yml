@@ -32,9 +32,10 @@ crates:
         - "&fYou have %keys% keys"
       row: 2
       column: 3
-      right-click-message:
-        - "Buy a Demo Crate key here! get lured into the trap of gambling addiction"
+      right-click-previews: true
       left-click-opens: true
+      shift-left-click-messsage:
+        - "Buy a Demo Crate key here! get lured into the trap of gambling addiction"
 
     placed:
       random-reward:

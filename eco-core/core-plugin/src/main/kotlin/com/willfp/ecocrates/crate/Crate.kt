@@ -32,12 +32,17 @@ import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.ConfiguredFirework
 import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
-import org.bukkit.*
+import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.OfflinePlayer
+import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.Vector
-import java.util.*
+import java.util.Objects
+import java.util.UUID
 
 class Crate(
     private val config: Config,
@@ -262,8 +267,16 @@ class Crate(
                 }
 
                 onRightClick { event, _, _ ->
+                    if (config.getBool("keygui.right-click-previews")) {
+                        val player = event.whoClicked as Player
+                        player.closeInventory()
+                        previewForPlayer(player)
+                    }
+                }
+
+                onShiftLeftClick { event, _, _ ->
                     event.whoClicked.closeInventory()
-                    config.getFormattedStrings("keygui.right-click-message")
+                    config.getFormattedStrings("keygui.shift-left-click-message")
                         .forEach { event.whoClicked.sendMessage(it) }
                 }
 
