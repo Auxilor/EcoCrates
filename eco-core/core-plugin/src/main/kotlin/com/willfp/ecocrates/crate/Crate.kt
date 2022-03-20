@@ -10,7 +10,6 @@ import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
-import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
@@ -226,39 +225,11 @@ class Crate(
     }
 
     private fun canOpenAndNotify(player: Player, method: OpenMethod): Boolean {
-        return when (method) {
-            OpenMethod.PHYSICAL_KEY -> {
-                val hasKey = hasPhysicalKey(player)
-                if (!hasKey) {
-                    player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
-                }
-
-                hasKey
-            }
-
-            OpenMethod.VIRTUAL_KEY -> {
-                val hasKey = hasVirtualKey(player)
-                if (!hasKey) {
-                    player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
-                }
-
-                hasKey
-            }
-
-            OpenMethod.MONEY -> {
-                if (canPayToOpen) return canOpenAndNotify(player, OpenMethod.VIRTUAL_KEY) // Default to virtual key.
-
-                val hasAmount = EconomyManager.hasAmount(player, priceToOpen)
-
-                if (!hasAmount) {
-                    player.sendMessage(plugin.langYml.getMessage("cannot-afford").replace("%crate%", this.name))
-                }
-
-                hasAmount
-            }
-
-            OpenMethod.OTHER -> true
+        if (!canPayToOpen && method == OpenMethod.MONEY) {
+            return canOpenAndNotify(player, OpenMethod.VIRTUAL_KEY)
         }
+
+        return method.canUseAndNotify(this, player)
     }
 
     private fun hasPermissionAndNotify(player: Player): Boolean {
@@ -269,16 +240,6 @@ class Crate(
         }
 
         return hasPermission
-    }
-
-    private fun usePhysicalKey(player: Player) {
-        val itemStack = player.inventory.itemInMainHand
-        if (key.matches(itemStack)) {
-            itemStack.amount -= 1
-            if (itemStack.amount == 0) {
-                itemStack.type = Material.AIR
-            }
-        }
     }
 
     internal fun addToKeyGUI(builder: MenuBuilder) {
@@ -361,12 +322,7 @@ class Crate(
         }
 
         if (open(player, method, location = location)) {
-            when (method) {
-                OpenMethod.PHYSICAL_KEY -> usePhysicalKey(player)
-                OpenMethod.VIRTUAL_KEY -> adjustVirtualKeys(player, -1)
-                OpenMethod.MONEY -> EconomyManager.removeMoney(player, priceToOpen)
-                else -> {}
-            }
+            method.useMethod(this, player)
         }
     }
 
@@ -474,6 +430,16 @@ class Crate(
 
     fun getOpens(player: OfflinePlayer): Int {
         return player.profile.read(opensKey)
+    }
+
+    fun usePhysicalKey(player: Player) {
+        val itemStack = player.inventory.itemInMainHand
+        if (key.matches(itemStack)) {
+            itemStack.amount -= 1
+            if (itemStack.amount == 0) {
+                itemStack.type = Material.AIR
+            }
+        }
     }
 
     override fun equals(other: Any?): Boolean {
