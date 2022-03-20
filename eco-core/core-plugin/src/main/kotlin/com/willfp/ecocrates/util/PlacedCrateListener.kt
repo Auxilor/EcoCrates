@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.util
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import org.bukkit.event.EventHandler
@@ -31,14 +32,22 @@ class PlacedCrateListener(
 
         val crate = PlacedCrates.getCrateAt(block.location) ?: return
 
-        val physicalKey = crate.hasPhysicalKey(player)
+        val hasPhysicalKey = crate.hasPhysicalKey(player)
+        val hasVirtualKey = crate.getVirtualKeys(player) > 0
+        val openMethod = if (hasPhysicalKey) {
+            OpenMethod.PHYSICAL_KEY
+        } else if (hasVirtualKey) {
+            OpenMethod.VIRTUAL_KEY
+        } else {
+            OpenMethod.MONEY
+        }
 
         when (event.action) {
             Action.LEFT_CLICK_BLOCK -> crate.previewForPlayer(player)
             Action.RIGHT_CLICK_BLOCK -> crate.openPlaced(
                 player,
                 block.location,
-                if (physicalKey) OpenMethod.PHYSICAL_KEY else OpenMethod.VIRTUAL_KEY
+                openMethod
             )
             else -> return
         }

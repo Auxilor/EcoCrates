@@ -53,7 +53,7 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
                 .forceTelekinesis()
                 .push()
         } else {
-            crate.adjustKeys(player, amount)
+            crate.adjustVirtualKeys(player, amount)
         }
 
         sender.sendMessage(

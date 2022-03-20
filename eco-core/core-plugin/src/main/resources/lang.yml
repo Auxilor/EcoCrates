@@ -5,6 +5,7 @@ messages:
   invalid-command: "&cUnknown subcommand!"
   reloaded: "Reloaded! Took %time%ms"
   not-enough-keys: "&cYou don't have enough keys to open %crate%&c!"
+  cannot-afford: "&cYou don't have enough money to open %crate%&c!"
   must-specify-crate: "&cYou must specify a valid crate!"
   invalid-crate: "&cUnknown crate!"
   must-specify-player: "&cYou must specify a player!"

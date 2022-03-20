@@ -10,6 +10,7 @@ import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
+import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
@@ -97,6 +98,10 @@ class Crate(
 
     val canReroll = config.getBool("can-reroll")
 
+    val canPayToOpen = config.getBool("pay-to-open.enabled")
+
+    val priceToOpen = config.getDouble("pay-to-open.price")
+
     private val keysKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_keys"),
         PersistentDataKeyType.INT,
@@ -161,7 +166,7 @@ class Crate(
         PlayerPlaceholder(
             plugin,
             "${id}_keys",
-        ) { getKeys(it).toString() }.register()
+        ) { getVirtualKeys(it).toString() }.register()
 
         PlayerPlaceholder(
             plugin,
@@ -220,22 +225,40 @@ class Crate(
         return selection.first()
     }
 
-    private fun hasKeysAndNotify(player: Player, method: OpenMethod): Boolean {
-        if (getKeys(player) == 0) {
-            return if (method == OpenMethod.VIRTUAL_KEY) {
-                player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
-                false
-            } else if (method == OpenMethod.PHYSICAL_KEY) {
-                val physical = hasPhysicalKey(player)
-                if (!physical) {
+    private fun canOpenAndNotify(player: Player, method: OpenMethod): Boolean {
+        return when (method) {
+            OpenMethod.PHYSICAL_KEY -> {
+                val hasKey = hasPhysicalKey(player)
+                if (!hasKey) {
                     player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
                 }
 
-                physical
-            } else true
-        }
+                hasKey
+            }
 
-        return true
+            OpenMethod.VIRTUAL_KEY -> {
+                val hasKey = hasVirtualKey(player)
+                if (!hasKey) {
+                    player.sendMessage(plugin.langYml.getMessage("not-enough-keys").replace("%crate%", this.name))
+                }
+
+                hasKey
+            }
+
+            OpenMethod.MONEY -> {
+                if (canPayToOpen) return canOpenAndNotify(player, OpenMethod.VIRTUAL_KEY) // Default to virtual key.
+
+                val hasAmount = EconomyManager.hasAmount(player, priceToOpen)
+
+                if (!hasAmount) {
+                    player.sendMessage(plugin.langYml.getMessage("cannot-afford").replace("%crate%", this.name))
+                }
+
+                hasAmount
+            }
+
+            OpenMethod.OTHER -> true
+        }
     }
 
     private fun hasPermissionAndNotify(player: Player): Boolean {
@@ -295,7 +318,7 @@ class Crate(
                     previous.apply {
                         itemMeta = itemMeta?.apply {
                             lore = config.getStrings("keygui.lore")
-                                .map { it.replace("%keys%", getKeys(player).toString()) }
+                                .map { it.replace("%keys%", getVirtualKeys(player).toString()) }
                                 .map { it.formatEco(player) }
                         }
                     }
@@ -312,7 +335,7 @@ class Crate(
     fun openPlaced(player: Player, location: Location, method: OpenMethod) {
         val nicerLocation = location.clone().add(0.5, 1.5, 0.5)
 
-        if (!hasKeysAndNotify(player, method)) {
+        if (!canOpenAndNotify(player, method)) {
             val vector = player.location.clone().subtract(nicerLocation.toVector())
                 .toVector()
                 .normalize()
@@ -328,7 +351,7 @@ class Crate(
     }
 
     fun openWithMethod(player: Player, method: OpenMethod, location: Location? = null) {
-        if (!hasKeysAndNotify(player, method)) {
+        if (!canOpenAndNotify(player, method)) {
             return
         }
 
@@ -338,10 +361,11 @@ class Crate(
         }
 
         if (open(player, method, location = location)) {
-            if (method == OpenMethod.PHYSICAL_KEY) {
-                usePhysicalKey(player)
-            } else {
-                adjustKeys(player, -1)
+            when (method) {
+                OpenMethod.PHYSICAL_KEY -> usePhysicalKey(player)
+                OpenMethod.VIRTUAL_KEY -> adjustVirtualKeys(player, -1)
+                OpenMethod.MONEY -> EconomyManager.removeMoney(player, priceToOpen)
+                else -> {}
             }
         }
     }
@@ -432,16 +456,20 @@ class Crate(
             .forEach { Bukkit.broadcastMessage(it) }
     }
 
-    fun adjustKeys(player: OfflinePlayer, amount: Int) {
+    fun adjustVirtualKeys(player: OfflinePlayer, amount: Int) {
         player.profile.write(keysKey, player.profile.read(keysKey) + amount)
     }
 
-    fun getKeys(player: OfflinePlayer): Int {
+    fun getVirtualKeys(player: OfflinePlayer): Int {
         return player.profile.read(keysKey)
     }
 
     fun hasPhysicalKey(player: Player): Boolean {
         return key.matches(player.inventory.itemInMainHand)
+    }
+
+    fun hasVirtualKey(player: Player): Boolean {
+        return getVirtualKeys(player) > 0
     }
 
     fun getOpens(player: OfflinePlayer): Int {

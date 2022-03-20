@@ -38,6 +38,10 @@ crates:
       shift-left-click-messsage:
         - "Buy a Demo Crate key here! get lured into the trap of gambling addiction"
 
+    pay-to-open:
+      enabled: false
+      price: 5000
+
     placed:
       random-reward:
         enabled: true
