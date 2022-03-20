@@ -37,6 +37,25 @@ rewards:
       row: 4
       column: 2
 
+  - id: 1000_coins
+    commands:
+      - "eco give %player% 1000"
+    items: [ ]
+    messages: [ ]
+    weight:
+      permission-multipliers: false
+      actual: 10
+      display: 25
+    max-wins: -1
+    display:
+      name: "&a$1000"
+      item: paper 1 unbreaking:1 hide_enchants
+      lore:
+        - "&fDisplay Chance: &a%chance%%"
+        - "&fActual Chance: &a%actual_chance%%"
+      row: 2
+      column: 4
+
   - id: bedrock
     commands: [ ]
     items:
@@ -45,7 +64,7 @@ rewards:
       - 'You won the rare bedrock!'
     weight:
       permission-multipliers: false
-      actual: 98
+      actual: 88
       display: 0
     max-wins: -1
     display:
