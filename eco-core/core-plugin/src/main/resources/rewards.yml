@@ -6,6 +6,7 @@ rewards:
     messages:
       - 'amogus?'
     weight:
+      permission-multipliers: true
       actual: 1
       display: 25
     max-wins: -1
@@ -25,6 +26,7 @@ rewards:
     messages:
       - 'amogus?!!'
     weight:
+      permission-multipliers: false
       actual: 1
       display: 50
     max-wins: -1
@@ -44,6 +46,7 @@ rewards:
     messages:
       - 'amogus?!!'
     weight:
+      permission-multipliers: false
       actual: 98
       display: 0
     max-wins: -1

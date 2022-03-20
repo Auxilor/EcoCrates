@@ -14,11 +14,12 @@ import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.toNiceString
 import com.willfp.ecocrates.crate.Crate
+import com.willfp.ecocrates.crate.PermissionMultipliers
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.*
+import java.util.Objects
 
 class Reward(
     private val plugin: EcoPlugin,
@@ -43,6 +44,8 @@ class Reward(
         if (maxWins > 0) player()
     }
 
+    private val canPermissionMultiply = config.getBool("weight.permission-multipliers")
+
     private val baseDisplay = ItemStackBuilder(Items.lookup(config.getString("display.item")))
         .setDisplayName(config.getString("display.name"))
         .build()
@@ -51,9 +54,13 @@ class Reward(
         val item = baseDisplay.clone()
         val fis = FastItemStack.wrap(item)
         fis.lore = config.getStrings("display.lore").map {
-            it.replace("%chance%", getPercentageChance(player, crate.rewards, displayWeight = true).toNiceString())
-                .replace("%actual_chance%", getPercentageChance(player, crate.rewards, displayWeight = false).toNiceString())
-                .formatEco(player)
+            it.replace(
+                "%chance%",
+                getPercentageChance(player, crate.rewards, displayWeight = true).toNiceString()
+            ).replace(
+                "%actual_chance%",
+                getPercentageChance(player, crate.rewards, displayWeight = false).toNiceString()
+            ).formatEco(player)
         }
         return item
     }
@@ -86,7 +93,11 @@ class Reward(
         val others = among.toMutableList()
         others.remove(this)
 
-        val weight = if (displayWeight) this.getDisplayWeight(player) else this.getWeight(player)
+        var weight = (if (displayWeight) this.getDisplayWeight(player) else this.getWeight(player))
+
+        if (canPermissionMultiply) {
+            weight *= PermissionMultipliers.getForPlayer(player).multiplier
+        }
 
         var totalWeight = weight
         for (other in others) {

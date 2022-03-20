@@ -5,6 +5,18 @@
 
 no-key-velocity: 1.5 # The speed at which a player should be launched away from a crate if they try to open it without a key. Set to 0 to disable.
 
+# If a reward allows permission multipliers, the weights
+# will be multiplied by highest-priority multiplier that a player
+# has permission for - i.e. if a player has both vip and mvp permissions,
+# than they'll have the mvp one applied as it has a higher priority.
+permission-multipliers:
+  - permission: ecocrates.mutliplier.vip
+    multiplier: 1.5
+    priority: 1
+  - permission: ecocrates.mutliplier.mvp
+    multiplier: 2
+    priority: 2
+
 reroll:
   rows: 3
   mask:
