@@ -169,7 +169,13 @@ class Crate(
         ) { getOpens(it).toString() }.register()
     }
 
-    private fun makeRoll(player: Player, location: Location, reward: Reward, isReroll: Boolean = false): Roll {
+    private fun makeRoll(
+        player: Player,
+        location: Location,
+        reward: Reward,
+        method: OpenMethod,
+        isReroll: Boolean = false
+    ): Roll {
         val display = mutableListOf<Reward>()
 
         // Add three to the scroll times so that it lines up
@@ -184,7 +190,8 @@ class Crate(
                 this.plugin,
                 player,
                 location,
-                isReroll
+                isReroll,
+                method
             )
         )
     }
@@ -375,7 +382,7 @@ class Crate(
                 .forEach { Bukkit.broadcastMessage(it) }
         }
 
-        val roll = makeRoll(player, loc, event.reward, isReroll = isReroll)
+        val roll = makeRoll(player, loc, event.reward, method, isReroll = isReroll)
         var tick = 0
 
         plugin.runnableFactory.create {

@@ -3,6 +3,7 @@ package com.willfp.ecocrates.crate.roll
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.Crate
+import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.util.lerp
 import org.bukkit.Location
@@ -18,7 +19,8 @@ class RollEncircle private constructor(
     override val plugin: EcoPlugin,
     override val player: Player,
     override val location: Location,
-    override val isReroll: Boolean
+    override val isReroll: Boolean,
+    override val method: OpenMethod
 ) : Roll {
     private val riseVelocity = plugin.configYml.getDouble("rolls.encircle.rise-velocity")
     private val spinVelocity = plugin.configYml.getDouble("rolls.encircle.spin-velocity")
@@ -176,7 +178,8 @@ class RollEncircle private constructor(
                 options.plugin,
                 options.player,
                 options.location,
-                options.isReroll
+                options.isReroll,
+                options.method
             )
     }
 }

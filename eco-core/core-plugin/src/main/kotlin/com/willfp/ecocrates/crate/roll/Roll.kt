@@ -2,6 +2,7 @@ package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.ecocrates.crate.Crate
+import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.reward.Reward
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -36,6 +37,11 @@ interface Roll {
      * If the roll is a reroll.
      */
     val isReroll: Boolean
+
+    /**
+     * The open method
+     */
+    val method: OpenMethod
 
     /**
      * Called on start - once the player begins opening the crate.

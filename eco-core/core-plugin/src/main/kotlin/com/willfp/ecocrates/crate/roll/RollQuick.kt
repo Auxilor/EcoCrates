@@ -2,6 +2,7 @@ package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.ecocrates.crate.Crate
+import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.reward.Reward
 import org.bukkit.Location
 import org.bukkit.entity.Item
@@ -14,7 +15,8 @@ class RollQuick private constructor(
     override val plugin: EcoPlugin,
     override val player: Player,
     override val location: Location,
-    override val isReroll: Boolean
+    override val isReroll: Boolean,
+    override val method: OpenMethod
 ) : Roll {
     private val riseVelocity = plugin.configYml.getDouble("rolls.quick.rise-velocity")
     private val height = plugin.configYml.getDouble("rolls.quick.height")
@@ -73,7 +75,8 @@ class RollQuick private constructor(
                 options.plugin,
                 options.player,
                 options.location,
-                options.isReroll
+                options.isReroll,
+                options.method
             )
     }
 }

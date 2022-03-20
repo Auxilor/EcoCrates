@@ -3,6 +3,7 @@ package com.willfp.ecocrates.crate.roll
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.Crate
+import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.reward.Reward
 import org.bukkit.Location
 import org.bukkit.entity.Item
@@ -15,7 +16,8 @@ class RollSemiInstant private constructor(
     override val plugin: EcoPlugin,
     override val player: Player,
     override val location: Location,
-    override val isReroll: Boolean
+    override val isReroll: Boolean,
+    override val method: OpenMethod
 ) : Roll {
     private val itemLifespan = plugin.configYml.getInt("rolls.semi_instant.item-lifespan")
 
@@ -68,7 +70,8 @@ class RollSemiInstant private constructor(
                 options.plugin,
                 options.player,
                 options.location,
-                options.isReroll
+                options.isReroll,
+                options.method
             )
     }
 }

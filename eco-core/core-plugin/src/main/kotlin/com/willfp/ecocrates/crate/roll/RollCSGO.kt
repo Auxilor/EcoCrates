@@ -8,6 +8,7 @@ import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.Crate
+import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.reward.Reward
 import org.bukkit.Location
@@ -22,7 +23,8 @@ class RollCSGO private constructor(
     override val plugin: EcoPlugin,
     override val player: Player,
     override val location: Location,
-    override val isReroll: Boolean
+    override val isReroll: Boolean,
+    override val method: OpenMethod
 ) : Roll {
     private val scrollTimes = plugin.configYml.getInt("rolls.csgo.scrolls")
     private val bias = plugin.configYml.getDouble("rolls.csgo.bias")
@@ -128,7 +130,8 @@ class RollCSGO private constructor(
                 options.plugin,
                 options.player,
                 options.location,
-                options.isReroll
+                options.isReroll,
+                options.method
             )
     }
 }
