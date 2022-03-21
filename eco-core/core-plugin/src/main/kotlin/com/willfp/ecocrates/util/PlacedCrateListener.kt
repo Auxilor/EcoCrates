@@ -79,10 +79,4 @@ class PlacedCrateListener(
         player.sendMessage(plugin.langYml.getMessage("removed-crate"))
         event.isCancelled = true
     }
-
-    @EventHandler
-    fun preventUnload(event: ChunkUnloadEvent) {
-        val chunk = event.chunk
-
-    }
 }
