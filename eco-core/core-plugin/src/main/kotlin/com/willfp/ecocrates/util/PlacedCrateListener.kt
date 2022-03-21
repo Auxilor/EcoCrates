@@ -9,6 +9,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.world.ChunkUnloadEvent
 import java.util.UUID
 
 class PlacedCrateListener(
@@ -77,5 +78,11 @@ class PlacedCrateListener(
         PlacedCrates.removeCrate(block.location)
         player.sendMessage(plugin.langYml.getMessage("removed-crate"))
         event.isCancelled = true
+    }
+
+    @EventHandler
+    fun preventUnload(event: ChunkUnloadEvent) {
+        val chunk = event.chunk
+
     }
 }

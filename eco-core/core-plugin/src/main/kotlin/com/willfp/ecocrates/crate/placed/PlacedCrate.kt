@@ -74,6 +74,7 @@ class PlacedCrate(
 
     private fun tickRandomReward(tick: Int) {
         if (tick % crate.randomRewardDelay == 0) {
+            item?.remove()
             spawnRandomReward()
             item?.itemStack = crate.rewards.random().getDisplay()
             item?.teleport(location.clone().add(0.0, crate.randomRewardHeight, 0.0))
