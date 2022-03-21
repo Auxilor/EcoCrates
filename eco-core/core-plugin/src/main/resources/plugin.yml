@@ -8,6 +8,8 @@ load: STARTUP
 depend:
   - eco
   - ProtocolLib
+softdepend:
+  - CrateReloaded
 
 commands:
   ecocrates:
