@@ -6,7 +6,7 @@ import com.willfp.eco.core.config.TransientConfig
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.ecocrates.EcoCratesPlugin
 import com.willfp.ecocrates.converters.Converter
-import com.willfp.ecocrates.converters.util.CrateSchema
+import com.willfp.ecocrates.converters.util.ConversionHelpers
 import com.willfp.ecocrates.converters.util.toLookupString
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.PlacedCrates
@@ -22,8 +22,9 @@ class CrateReloadedConverter(
     override fun convert() {
         val crateConfig = TransientConfig(
             YamlConfiguration.loadConfiguration(
-                CrateAPI.getInstance()
-                    .dataFolder.resolve("crates").resolve("crate.yml")
+                CrateAPI.getInstance().dataFolder
+                    .resolve("crates")
+                    .resolve("crate.yml")
             )
         )
 
@@ -44,39 +45,37 @@ class CrateReloadedConverter(
             val id = CrateAPI.getBlockCrateRegistrar().getFirstCrate(it).uuid.split(":")[0]
             val crate = Crates.getByID(id)
             if (crate != null) {
-                CrateAPI.getBlockCrateRegistrar().getCrates(it)
+                CrateAPI.getBlockCrateRegistrar().getCrates(it).toList()
                     .forEach { i1 -> CrateAPI.getBlockCrateRegistrar().removeCrate(it, i1) }
                 PlacedCrates.setAsCrate(it, crate)
             }
         }
     }
 
-    private class BuildingCrate(val id: String, val config: Config)
-
     private fun convertCrate(buildingCrate: BuildingCrate): Config {
         val id = buildingCrate.id
 
-        val result = CrateSchema.createDefaultCrate()
+        val crateConfig = ConversionHelpers.createEmptyCrate()
 
-        result.set("id", id)
+        crateConfig.set("id", id)
 
-        result.set("name", buildingCrate.config.getString("display-name"))
+        crateConfig.set("name", buildingCrate.config.getString("display-name"))
 
         val roll = Rolls.getByID(buildingCrate.config.getString("animation").lowercase()) ?: Rolls.CSGO
 
-        result.set("roll", roll.id)
+        crateConfig.set("roll", roll.id)
 
         val frame = TransientConfig().apply {
-            this.set("tick", 0)
-            this.set("lines", buildingCrate.config.getStrings("holographic"))
+            set("tick", 0)
+            set("lines", buildingCrate.config.getStrings("holographic"))
         }
 
-        result.set("placed.hologram.frames", mutableListOf(frame))
+        crateConfig.set("placed.hologram.frames", mutableListOf(frame))
 
         val crateToConvert = CrateAPI.getCrateRegistrar().getCrate(id)
 
-        result.set("pay-to-open.enabled", crateToConvert.isBuyable)
-        result.set("pay-to-open.price", crateToConvert.cost)
+        crateConfig.set("pay-to-open.enabled", crateToConvert.isBuyable)
+        crateConfig.set("pay-to-open.price", crateToConvert.cost)
 
         var row = 2
         var col = 2
@@ -95,70 +94,70 @@ class CrateReloadedConverter(
             counter++
         }
 
-        result.set("rewards", newRewards.map { it.getString("id") })
+        crateConfig.set("rewards", newRewards.map { it.getString("id") })
 
-        result.set("key", TransientConfig().apply {
-            this.set("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${result.getString("name")} Key\"")
-            this.set(
+        crateConfig.set("key", TransientConfig().apply {
+            set("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")} Key\"")
+            set(
                 "lore",
                 mutableListOf(
                     "&fUse this key to open",
-                    "&fthe ${result.getString("name")}"
+                    "&fthe ${crateConfig.getString("name")}"
                 )
             )
         })
 
-        result.set("keygui", TransientConfig().apply {
-            this.set("enabled", true)
-            this.set("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${result.getString("name")}\"")
-            this.set(
+        crateConfig.set("keygui", TransientConfig().apply {
+            set("enabled", true)
+            set("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")}\"")
+            set(
                 "lore", mutableListOf(
-                    result.getString("name"),
+                    crateConfig.getString("name"),
                     "&fYou have %keys% keys",
                     "&fGet more at &astore.example.net"
                 )
             )
-            this.set("row", 2)
-            this.set("column", 3)
-            this.set("right-click-previews", true)
-            this.set("left-click-opens", true)
-            this.set(
+            set("row", 2)
+            set("column", 3)
+            set("right-click-previews", true)
+            set("left-click-opens", true)
+            set(
                 "shift-left-click-messsage",
-                mutableListOf("Buy a ${result.getString("name")} key here! &astore.example.net")
+                mutableListOf("Buy a ${crateConfig.getString("name")} key here! &astore.example.net")
             )
         })
 
-        result.set("open", TransientConfig().apply {
-            this.set("messages", mutableListOf("Good luck!"))
-            this.set("broadcasts", mutableListOf("%player%&f is opening the ${result.getString("name")}!"))
-            this.set("commands", mutableListOf<String>())
+        crateConfig.set("open", TransientConfig().apply {
+            set("messages", mutableListOf("Good luck!"))
+            set("broadcasts", mutableListOf("%player%&f is opening the ${crateConfig.getString("name")}!"))
+            set("commands", mutableListOf<String>())
             val sound = TransientConfig().apply {
-                this.set("sound", "entity_villager_yes")
-                this.set("volume", 10)
-                this.set("pitch", 1)
+                set("sound", "entity_villager_yes")
+                set("volume", 10)
+                set("pitch", 1)
             }
-            this.set("sounds", mutableListOf(sound))
+            set("sounds", mutableListOf(sound))
         })
 
-        result.set("finish", TransientConfig().apply {
-            this.set("messages", mutableListOf("You won %reward%&f!"))
-            this.set("broadcasts", mutableListOf("%player%&f won %reward%&f from the ${result.getString("name")}!"))
-            this.set("commands", mutableListOf<String>())
+        crateConfig.set("finish", TransientConfig().apply {
+            set("messages", mutableListOf("You won %reward%&f!"))
+            set("broadcasts", mutableListOf("%player%&f won %reward%&f from the ${crateConfig.getString("name")}!"))
+            set("commands", mutableListOf<String>())
             val firework = TransientConfig().apply {
-                this.set("power", 2)
-                this.set("type", "ball_large")
-                this.set("colors", mutableListOf("00ffff", "00ff00"))
-                this.set("fade-colors", mutableListOf("ffffff", "999999"))
-                this.set("trail", true)
-                this.set("flicker", true)
+                set("power", 2)
+                set("type", "ball_large")
+                set("colors", mutableListOf("00ffff", "00ff00"))
+                set("fade-colors", mutableListOf("ffffff", "999999"))
+                set("trail", true)
+                set("flicker", true)
             }
-            this.set("fireworks", mutableListOf(firework))
+            set("fireworks", mutableListOf(firework))
             val sound = TransientConfig().apply {
-                this.set("sound", "entity_generic_explode")
-                this.set("volume", 10)
-                this.set("pitch", 1)
+                set("sound", "entity_generic_explode")
+                set("volume", 10)
+                set("pitch", 1)
             }
-            this.set("sounds", mutableListOf(sound))
+            set("sounds", mutableListOf(sound))
         })
 
         val rewards = plugin.rewardsYml.getSubsections("rewards").toMutableList()
@@ -167,19 +166,19 @@ class CrateReloadedConverter(
 
         plugin.rewardsYml.set("rewards", rewards)
 
-        return result
+        return crateConfig
     }
 
     private fun convertReward(reward: Reward, salt: String, row: Int, col: Int): Config {
-        val result = CrateSchema.createDefaultReward()
+        val resultConfig = ConversionHelpers.createEmptyReward()
 
-        result.set("id", salt)
-        result.set("commands", reward.commands.map {
+        resultConfig.set("id", salt)
+        resultConfig.set("commands", reward.commands.map {
             it.replace("/", "")
                 .replace("{player}", "%player%")
         })
 
-        result.set("items", reward.items.map { it.toLookupString() })
+        resultConfig.set("items", reward.items.map { it.toLookupString() })
 
         val messages = mutableListOf<String>()
 
@@ -187,15 +186,17 @@ class CrateReloadedConverter(
             messages.addAll(it)
         }
 
-        result.set("messages", messages.map { it.replace("{player}", "%player%") })
-        result.set("weight.display", reward.chance)
-        result.set("weight.actual", reward.chance)
-        result.set("display.name", reward.displayItem.itemMeta?.displayName)
-        result.set("display.item", reward.displayItem.toLookupString())
-        result.set("display.lore", reward.displayItem.itemMeta?.lore)
-        result.set("display.row", row)
-        result.set("display.column", col)
+        resultConfig.set("messages", messages.map { it.replace("{player}", "%player%") })
+        resultConfig.set("weight.display", reward.chance)
+        resultConfig.set("weight.actual", reward.chance)
+        resultConfig.set("display.name", reward.displayItem.itemMeta?.displayName)
+        resultConfig.set("display.item", reward.displayItem.toLookupString())
+        resultConfig.set("display.lore", reward.displayItem.itemMeta?.lore)
+        resultConfig.set("display.row", row)
+        resultConfig.set("display.column", col)
 
-        return result
+        return resultConfig
     }
+
+    private data class BuildingCrate(val id: String, val config: Config)
 }

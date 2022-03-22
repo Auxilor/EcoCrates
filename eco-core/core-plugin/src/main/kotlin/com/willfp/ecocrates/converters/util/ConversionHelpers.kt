@@ -5,8 +5,8 @@ import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.items.Items
 import org.bukkit.inventory.ItemStack
 
-object CrateSchema {
-    fun createDefaultReward(): Config {
+object ConversionHelpers {
+    fun createEmptyReward(): Config {
         val result = TransientConfig()
 
         result.set("id", "default")
@@ -34,7 +34,7 @@ object CrateSchema {
         return result
     }
 
-    fun createDefaultCrate(): Config {
+    fun createEmptyCrate(): Config {
         val result = TransientConfig()
 
         result.set("id", "default")
