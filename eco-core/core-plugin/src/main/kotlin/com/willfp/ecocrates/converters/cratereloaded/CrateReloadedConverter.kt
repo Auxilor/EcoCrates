@@ -70,7 +70,7 @@ class CrateReloadedConverter(
             set("lines", buildingCrate.config.getStrings("holographic"))
         }
 
-        crateConfig.set("placed.hologram.frames", mutableListOf(frame))
+        crateConfig.set("placed.hologram.frames", listOf(frame))
 
         val crateToConvert = CrateAPI.getCrateRegistrar().getCrate(id)
 
@@ -100,7 +100,7 @@ class CrateReloadedConverter(
             set("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")} Key\"")
             set(
                 "lore",
-                mutableListOf(
+                listOf(
                     "&fUse this key to open",
                     "&fthe ${crateConfig.getString("name")}"
                 )
@@ -111,7 +111,7 @@ class CrateReloadedConverter(
             set("enabled", true)
             set("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")}\"")
             set(
-                "lore", mutableListOf(
+                "lore", listOf(
                     crateConfig.getString("name"),
                     "&fYou have %keys% keys",
                     "&fGet more at &astore.example.net"
@@ -123,41 +123,41 @@ class CrateReloadedConverter(
             set("left-click-opens", true)
             set(
                 "shift-left-click-messsage",
-                mutableListOf("Buy a ${crateConfig.getString("name")} key here! &astore.example.net")
+                listOf("Buy a ${crateConfig.getString("name")} key here! &astore.example.net")
             )
         })
 
         crateConfig.set("open", TransientConfig().apply {
-            set("messages", mutableListOf("Good luck!"))
-            set("broadcasts", mutableListOf("%player%&f is opening the ${crateConfig.getString("name")}!"))
-            set("commands", mutableListOf<String>())
+            set("messages", listOf("Good luck!"))
+            set("broadcasts", listOf("%player%&f is opening the ${crateConfig.getString("name")}!"))
+            set("commands", listOf<String>())
             val sound = TransientConfig().apply {
                 set("sound", "entity_villager_yes")
                 set("volume", 10)
                 set("pitch", 1)
             }
-            set("sounds", mutableListOf(sound))
+            set("sounds", listOf(sound))
         })
 
         crateConfig.set("finish", TransientConfig().apply {
-            set("messages", mutableListOf("You won %reward%&f!"))
-            set("broadcasts", mutableListOf("%player%&f won %reward%&f from the ${crateConfig.getString("name")}!"))
-            set("commands", mutableListOf<String>())
+            set("messages", listOf("You won %reward%&f!"))
+            set("broadcasts", listOf("%player%&f won %reward%&f from the ${crateConfig.getString("name")}!"))
+            set("commands", listOf<String>())
             val firework = TransientConfig().apply {
                 set("power", 2)
                 set("type", "ball_large")
-                set("colors", mutableListOf("00ffff", "00ff00"))
-                set("fade-colors", mutableListOf("ffffff", "999999"))
+                set("colors", listOf("ffffff"))
+                set("fade-colors", listOf("ffffff"))
                 set("trail", true)
                 set("flicker", true)
             }
-            set("fireworks", mutableListOf(firework))
+            set("fireworks", listOf(firework))
             val sound = TransientConfig().apply {
                 set("sound", "entity_generic_explode")
                 set("volume", 10)
                 set("pitch", 1)
             }
-            set("sounds", mutableListOf(sound))
+            set("sounds", listOf(sound))
         })
 
         val rewards = plugin.rewardsYml.getSubsections("rewards").toMutableList()
