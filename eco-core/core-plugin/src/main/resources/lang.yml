@@ -18,3 +18,6 @@ messages:
   resetting-wins: "&fResetting wins for %user%&f..."
   reset-wins: "&fReset wins for %user%&f!"
   no-crate-permission: "&cYou don't have permission to open this crate!"
+  must-specify-converter: "&cYou must specify a valid converter!"
+  invalid-converter: "&cUnknown converter!"
+  converted: "&aConverted successfully!"

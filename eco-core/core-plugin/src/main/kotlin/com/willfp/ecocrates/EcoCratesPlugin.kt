@@ -3,9 +3,12 @@ package com.willfp.ecocrates
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.display.DisplayModule
+import com.willfp.eco.core.integrations.IntegrationLoader
 import com.willfp.ecocrates.commands.CommandEcoCrates
 import com.willfp.ecocrates.config.CratesYml
 import com.willfp.ecocrates.config.RewardsYml
+import com.willfp.ecocrates.converters.Converters
+import com.willfp.ecocrates.converters.cratereloaded.CrateReloadedConverter
 import com.willfp.ecocrates.crate.CrateKeyListener
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
@@ -44,6 +47,13 @@ class EcoCratesPlugin : EcoPlugin() {
 
     override fun createDisplayModule(): DisplayModule {
         return KeyDisplay(this)
+    }
+
+    override fun loadIntegrationLoaders(): MutableList<IntegrationLoader> {
+        return mutableListOf(
+            IntegrationLoader("CrateReloaded") {Converters.registerConverter("CrateReloaded",
+                CrateReloadedConverter())}
+        )
     }
 
     companion object {
