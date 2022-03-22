@@ -1,21 +1,21 @@
 rewards:
-  - id: diamond_sword
-    commands: [ ]
-    items:
+  - id: diamond_sword # The ID of the reward, must be unique
+    commands: [ ] # The commands to run (as console) when won, use %player% as a placeholder
+    items: # The items to win, check here: https://plugins.auxilor.io/all-plugins/the-item-lookup-system
       - diamond_sword sharpness:5 unbreaking:3
-    messages: [ ]
-    weight:
-      permission-multipliers: true
-      actual: 1
-      display: 25
-    max-wins: -1
-    display:
-      name: "&bDiamond Sword"
-      item: diamond_sword sharpness:5 unbreaking:3
-      lore:
+    messages: [ ] # The messages to send the player
+    weight: # The actual chances / probabilities
+      permission-multipliers: true # If permission multipliers should affect the reward chance
+      actual: 1 # The actual chance of winning the crate, can use maths and placeholders (eg %player_y% * 25) for reactive chance
+      display: 25 # The display chance, used in animations - lets you rig crates however you want
+    max-wins: -1 # The max amount of times any player can win the reward, useful for giving permissions / perks
+    display: # The display item shown in animations and GUIs
+      name: "&bDiamond Sword" # The item name
+      item: diamond_sword sharpness:5 unbreaking:3 # The shown item
+      lore: # Can use %chance% and %actual_chance% as placeholders
         - "&fDisplay Chance: &a%chance%%"
         - "&fActual Chance: &a%actual_chance%%"
-      row: 3
+      row: 3 # The position in the crate preview GUI
       column: 2
 
   - id: stack_of_emeralds
