@@ -43,7 +43,7 @@ class PlacedCrate(
     }
 
     private fun spawnRandomReward() {
-        if ((item == null || item?.isDead == true) && crate.isShowingRandomReward) {
+        if ((item == null || item?.isDead == true) && crate.isShowingRandomReward && crate.rewards.isNotEmpty()) {
             val entity = world.dropItem(
                 location.clone().add(0.0, crate.randomRewardHeight, 0.0),
                 crate.rewards.first().getDisplay()
