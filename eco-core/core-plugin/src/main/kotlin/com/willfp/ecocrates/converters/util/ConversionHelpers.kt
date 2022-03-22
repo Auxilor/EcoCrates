@@ -144,17 +144,17 @@ object ConversionHelpers {
 }
 
 fun ItemStack.toLookupString(): String {
-    if (Items.isCustomItem(this)) {
-        val custom = Items.getCustomItem(this)!!
-        return "${custom.key.namespace}:${custom.key.key}"
+    val custom = Items.getCustomItem(this)
+    if (custom != null) {
+        return "${custom.key.namespace}:${custom.key.key} ${this.amount}"
     }
 
     var result = "${this.type.name.lowercase()} ${this.amount}"
 
     val meta = this.itemMeta ?: return result
 
-    meta.enchants.forEach {
-        result += " ${it.key.key.key}:${it.value}"
+    meta.enchants.forEach { (enchant, level) ->
+        result += " ${enchant.key.key}:${level}"
     }
 
     if (meta.hasDisplayName()) {
