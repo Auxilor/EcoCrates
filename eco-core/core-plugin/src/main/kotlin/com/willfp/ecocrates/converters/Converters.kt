@@ -1,18 +1,11 @@
 package com.willfp.ecocrates.converters
 
 object Converters {
+    private val BY_ID = mutableMapOf<String, Converter>()
 
     @JvmStatic
-    val BY_ID = mutableMapOf<String, Converter>()
-
-    @JvmStatic
-    fun values(): List<Converter> {
-        return BY_ID.values.toList()
-    }
-
-    @JvmStatic
-    fun registerConverter(id: String, converter: Converter) {
-        BY_ID[id] = converter
+    fun registerConverter(converter: Converter) {
+        BY_ID[converter.id.lowercase()] = converter
     }
 
     @JvmStatic
@@ -22,7 +15,11 @@ object Converters {
 
     @JvmStatic
     fun getById(id: String): Converter? {
-        return BY_ID.filter { it.key.equals(id, true) }.values.firstOrNull()
+        return BY_ID[id.lowercase()]
     }
 
+    @JvmStatic
+    fun values(): List<Converter> {
+        return BY_ID.values.toList()
+    }
 }

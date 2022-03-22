@@ -33,6 +33,7 @@ permissions:
       ecocrates.command.set: true
       ecocrates.command.forceopen: true
       ecocrates.command.resetwins: true
+      ecocrates.command.convert: true
       ecocrates.break: true
       ecocrates.open.*: true
 
@@ -62,6 +63,9 @@ permissions:
     default: op
   ecocrates.command.resetwins:
     description: Allows resetting a players tracked reward wins
+    default: op
+  ecocrates.command.convert:
+    description: Allows converting crates over from other plugins
     default: op
   ecocrates.break:
     description: Allows breaking crate blocks

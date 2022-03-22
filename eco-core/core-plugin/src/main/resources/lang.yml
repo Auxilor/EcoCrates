@@ -21,3 +21,4 @@ messages:
   must-specify-converter: "&cYou must specify a valid converter!"
   invalid-converter: "&cUnknown converter!"
   converted: "&aConverted successfully!"
+  converting: "Attempting to convert..."

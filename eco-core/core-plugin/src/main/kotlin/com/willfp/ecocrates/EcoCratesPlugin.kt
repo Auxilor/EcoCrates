@@ -51,8 +51,9 @@ class EcoCratesPlugin : EcoPlugin() {
 
     override fun loadIntegrationLoaders(): MutableList<IntegrationLoader> {
         return mutableListOf(
-            IntegrationLoader("CrateReloaded") {Converters.registerConverter("CrateReloaded",
-                CrateReloadedConverter())}
+            IntegrationLoader("CrateReloaded") {
+                Converters.registerConverter(CrateReloadedConverter(this))
+            }
         )
     }
 

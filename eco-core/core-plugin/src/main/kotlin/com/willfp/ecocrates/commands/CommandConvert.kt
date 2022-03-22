@@ -13,7 +13,6 @@ class CommandConvert(plugin: EcoPlugin) : Subcommand(
     false
 ) {
     override fun onExecute(sender: CommandSender, args: List<String>) {
-
         if (args.isEmpty()) {
             sender.sendMessage(plugin.langYml.getMessage("must-specify-converter"))
             return
@@ -26,6 +25,7 @@ class CommandConvert(plugin: EcoPlugin) : Subcommand(
             return
         }
 
+        sender.sendMessage(plugin.langYml.getMessage("converting"))
         converter.convert()
         sender.sendMessage(plugin.langYml.getMessage("converted"))
     }
@@ -35,7 +35,7 @@ class CommandConvert(plugin: EcoPlugin) : Subcommand(
         if (args.size == 1) {
             StringUtil.copyPartialMatches(
                 args[0],
-                Converters.BY_ID.keys,
+                Converters.values().map { it.id },
                 values
             )
         }
