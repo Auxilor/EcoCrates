@@ -166,6 +166,8 @@ class CrateReloadedConverter(
 
         plugin.rewardsYml.set("rewards", rewards)
 
+        crateConfig.set("id", id) // Put it here again because ordering things is weird
+
         return crateConfig
     }
 
