@@ -57,6 +57,10 @@ class EcoCratesPlugin : EcoPlugin() {
         )
     }
 
+    override fun getMinimumEcoVersion(): String {
+        return "6.30.0"
+    }
+
     companion object {
         /**
          * Instance of the plugin.
