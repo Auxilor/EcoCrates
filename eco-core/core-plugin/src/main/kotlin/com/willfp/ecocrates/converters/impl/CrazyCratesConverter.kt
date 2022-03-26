@@ -1,4 +1,4 @@
-package com.willfp.ecocrates.converters.crazycrates
+package com.willfp.ecocrates.converters.impl
 
 import com.badbones69.crazycrates.api.CrazyManager
 import com.badbones69.crazycrates.api.objects.Crate

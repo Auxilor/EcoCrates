@@ -1,4 +1,4 @@
-package com.willfp.ecocrates.converters.excellentcrates
+package com.willfp.ecocrates.converters.impl
 
 import com.willfp.eco.core.config.BuildableConfig
 import com.willfp.eco.core.config.interfaces.Config
@@ -7,7 +7,6 @@ import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
 import com.willfp.ecocrates.converters.util.toLookupString
 import com.willfp.ecocrates.crate.Crates
-import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import org.bukkit.Location
 import su.nightexpress.excellentcrates.api.GoldenCratesAPI

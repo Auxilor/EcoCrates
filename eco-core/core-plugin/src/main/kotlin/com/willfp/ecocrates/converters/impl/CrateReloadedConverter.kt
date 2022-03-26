@@ -1,4 +1,4 @@
-package com.willfp.ecocrates.converters.cratereloaded
+package com.willfp.ecocrates.converters.impl
 
 import com.hazebyte.crate.api.CrateAPI
 import com.hazebyte.crate.api.crate.reward.Reward
