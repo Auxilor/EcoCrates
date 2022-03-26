@@ -10,6 +10,8 @@ depend:
   - ProtocolLib
 softdepend:
   - CrateReloaded
+  - ExcellentCrates
+  - CrazyCrates
 
 commands:
   ecocrates:
