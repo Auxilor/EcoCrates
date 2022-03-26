@@ -11,6 +11,7 @@ depend:
 softdepend:
   - CrateReloaded
   - ExcellentCrates
+  - CrazyCrates
 
 commands:
   ecocrates:
