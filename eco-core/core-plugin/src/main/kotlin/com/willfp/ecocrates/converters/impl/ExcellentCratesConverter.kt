@@ -9,18 +9,18 @@ import com.willfp.ecocrates.converters.util.toLookupString
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import org.bukkit.Location
-import su.nightexpress.excellentcrates.api.GoldenCratesAPI
+import su.nightexpress.excellentcrates.ExcellentCrates
 import su.nightexpress.excellentcrates.api.OpenCostType
 import su.nightexpress.excellentcrates.api.crate.ICrate
 import su.nightexpress.excellentcrates.api.crate.ICrateReward
 
-@Suppress("UNCHECKED_CAST", "DEPRECATION")
+@Suppress("UNCHECKED_CAST")
 class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
-
     override val id = "ExcellentCrates"
+    private val crateManager = ExcellentCrates.getInstance().crateManager
 
     override fun convert() {
-        val newCrates = GoldenCratesAPI.getCrateManager().crates.map { convertCrate(it) }
+        val newCrates = crateManager.crates.map { convertCrate(it) }
 
         val crates = plugin.cratesYml.getSubsections("crates").toMutableList()
 
@@ -31,11 +31,11 @@ class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter 
         plugin.rewardsYml.save()
         plugin.reload()
 
-        GoldenCratesAPI.getCrateManager().crates.forEach {
+        crateManager.crates.forEach {
             val jank = mutableListOf<Location>()
             jank.addAll(it.blockLocations)
             jank.forEach { it1 -> it.removeBlockLocation(it1) }
-            jank.forEach { it1 -> PlacedCrates.setAsCrate(it1, Crates.getByID(it.id)!!)}
+            jank.forEach { it1 -> PlacedCrates.setAsCrate(it1, Crates.getByID(it.id)!!) }
         }
     }
 
@@ -54,7 +54,7 @@ class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter 
         }
 
         if (crate.keyIds.isNotEmpty()) {
-            val key = GoldenCratesAPI.getKeyManager().getKeyById(crate.keyIds.first())!!
+            val key = ExcellentCrates.getInstance().keyManager.getKeyById(crate.keyIds.first())!!
             result.set("key.item", key.item.toLookupString())
             result.set("key.lore", key.item.itemMeta?.lore)
         } else {
@@ -66,11 +66,13 @@ class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter 
         result.set("keygui.lore", crate.item.itemMeta?.lore)
 
         result.set("placed.hologram.height", crate.blockHologramOffsetY)
-        result.set("placed.hologram.frames", mutableListOf(
-            BuildableConfig()
-                .add("tick", 0)
-                .add("lines", crate.blockHologramText)
-        ))
+        result.set(
+            "placed.hologram.frames", mutableListOf(
+                BuildableConfig()
+                    .add("tick", 0)
+                    .add("lines", crate.blockHologramText)
+            )
+        )
 
         result.set("preview.title", crate.name)
 
