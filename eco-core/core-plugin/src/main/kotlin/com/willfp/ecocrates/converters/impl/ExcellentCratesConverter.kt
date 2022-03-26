@@ -17,10 +17,9 @@ import su.nightexpress.excellentcrates.api.crate.ICrateReward
 @Suppress("UNCHECKED_CAST")
 class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
     override val id = "ExcellentCrates"
-    private val crateManager = ExcellentCrates.getInstance().crateManager
 
     override fun convert() {
-        val newCrates = crateManager.crates.map { convertCrate(it) }
+        val newCrates = ExcellentCrates.getInstance().crateManager.crates.map { convertCrate(it) }
 
         val crates = plugin.cratesYml.getSubsections("crates").toMutableList()
 
@@ -31,7 +30,7 @@ class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter 
         plugin.rewardsYml.save()
         plugin.reload()
 
-        crateManager.crates.forEach {
+        ExcellentCrates.getInstance().crateManager.crates.forEach {
             val jank = mutableListOf<Location>()
             jank.addAll(it.blockLocations)
             jank.forEach { it1 -> it.removeBlockLocation(it1) }
