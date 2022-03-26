@@ -27,15 +27,15 @@ class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
         plugin.rewardsYml.save()
         plugin.reload()
 
-        val jank = CrazyManager.getInstance().crateLocations.associate { it.crate.name.lowercase() to it.location}
+        val jank = ArrayList(CrazyManager.getInstance().crateLocations)
 
-        CrazyManager.getInstance().crateLocations.forEach {
+        jank.forEach {
             CrazyManager.getInstance().removeCrateLocation(it.id)
         }
 
         jank.forEach {
-            val crate = Crates.getByID(it.key)!!
-            PlacedCrates.setAsCrate(it.value, crate)
+            val crate = Crates.getByID(it.crate.name.lowercase())!!
+            PlacedCrates.setAsCrate(it.location, crate)
         }
     }
 
@@ -62,7 +62,7 @@ class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
         result.set("placed.hologram.frames", mutableListOf(
             BuildableConfig()
                 .add("tick", 0)
-                .add("lines", mutableListOf(crate.hologram.messages))
+                .add("lines", crate.hologram.messages)
         ))
         result.set("open.broadcasts", mutableListOf("%player%&f is opening the ${crate.name}!"))
         result.set("finish.broadcasts", mutableListOf("%player%&f won %reward%&f from the ${crate.name}!"))
