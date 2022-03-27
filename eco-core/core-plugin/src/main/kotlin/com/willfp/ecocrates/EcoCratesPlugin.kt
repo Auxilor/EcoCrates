@@ -11,6 +11,7 @@ import com.willfp.ecocrates.converters.Converters
 import com.willfp.ecocrates.converters.impl.CrateReloadedConverter
 import com.willfp.ecocrates.converters.impl.CrazyCratesConverter
 import com.willfp.ecocrates.converters.impl.ExcellentCratesConverter
+import com.willfp.ecocrates.converters.impl.SpecializedCratesConverter
 import com.willfp.ecocrates.crate.CrateKeyListener
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
@@ -61,6 +62,9 @@ class EcoCratesPlugin : EcoPlugin() {
             },
             IntegrationLoader("CrazyCrates") {
                 Converters.registerConverter(CrazyCratesConverter(this))
+            },
+            IntegrationLoader("SpecializedCrates") {
+                Converters.registerConverter(SpecializedCratesConverter(this))
             }
         )
     }
