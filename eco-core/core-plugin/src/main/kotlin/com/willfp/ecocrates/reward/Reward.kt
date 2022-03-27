@@ -11,15 +11,17 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
+import com.willfp.eco.core.recipe.parts.MaterialTestableItem
 import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.toNiceString
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.PermissionMultipliers
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.Objects
+import java.util.*
 
 class Reward(
     private val plugin: EcoPlugin,
@@ -46,8 +48,10 @@ class Reward(
 
     private val canPermissionMultiply = config.getBool("weight.permission-multipliers")
 
-    private val baseDisplay = ItemStackBuilder(Items.lookup(config.getString("display.item")))
-        .setDisplayName(config.getString("display.name"))
+    private val baseDisplay = ItemStackBuilder(
+        Items.lookup(config.getString("display.item"))
+            .let { if (it is EmptyTestableItem) MaterialTestableItem(Material.STONE) else it }
+    ).setDisplayName(config.getString("display.name"))
         .build()
 
     fun getDisplay(player: Player, crate: Crate): ItemStack {
