@@ -70,7 +70,7 @@ class EcoCratesPlugin : EcoPlugin() {
     }
 
     override fun getMinimumEcoVersion(): String {
-        return "6.30.0"
+        return "6.31.0"
     }
 
     companion object {

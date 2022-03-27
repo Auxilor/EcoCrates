@@ -5,10 +5,10 @@ import com.badbones69.crazycrates.api.objects.Crate
 import com.badbones69.crazycrates.api.objects.Prize
 import com.willfp.eco.core.config.BuildableConfig
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.items.toLookupString
 import com.willfp.ecocrates.EcoCratesPlugin
 import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
-import com.willfp.ecocrates.converters.util.toLookupString
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 

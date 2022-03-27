@@ -2,10 +2,10 @@ package com.willfp.ecocrates.converters.impl
 
 import com.willfp.eco.core.config.BuildableConfig
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.items.toLookupString
 import com.willfp.ecocrates.EcoCratesPlugin
 import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
-import com.willfp.ecocrates.converters.util.toLookupString
 import com.willfp.ecocrates.crate.Crates
 import me.PM2.customcrates.crates.Crate
 import me.PM2.customcrates.crates.PlacedCrate
