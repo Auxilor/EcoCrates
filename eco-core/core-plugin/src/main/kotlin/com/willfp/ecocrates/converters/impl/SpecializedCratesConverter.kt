@@ -27,7 +27,7 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
         plugin.rewardsYml.save()
         plugin.reload()
 
-        val pCrates = PlacedCrate.getPlacedCrates().map { PCrate(it.key, Crates.getByID(it.value.crate.name.lowercase())!!) }
+        val pCrates = PlacedCrate.getPlacedCrates().mapNotNull { PCrate(it.key, Crates.getByID(it.value.crate.name.lowercase()) ?: return@mapNotNull null) }
 
         val toDelete = ArrayList(PlacedCrate.getPlacedCrates().values)
 
