@@ -7,14 +7,14 @@ import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
 import com.willfp.ecocrates.converters.util.toLookupString
 import com.willfp.ecocrates.crate.Crates
-import com.willfp.ecocrates.crate.placed.PlacedCrates
 import me.PM2.customcrates.crates.Crate
 import me.PM2.customcrates.crates.PlacedCrate
 import me.PM2.customcrates.crates.options.rewards.Reward
 import org.bukkit.Location
 
-class SpecializedCratesConverter(private val plugin: EcoCratesPlugin,
-                                 override val id: String = "SpecializedCrates") : Converter {
+class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
+    override val id: String = "SpecializedCrates"
+
     override fun convert() {
         val newCrates = Crate.getLoadedCrates().map { convertCrate(it.value) }
 
@@ -34,7 +34,7 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin,
         toDelete.forEach { it.delete() }
 
         pCrates.forEach {
-            PlacedCrates.setAsCrate(it.location, it.crate)
+            com.willfp.ecocrates.crate.placed.PlacedCrates.setAsCrate(it.location, it.crate)
         }
     }
 
