@@ -23,9 +23,13 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
             return
         }
 
-        val player = Bukkit.getPlayer(args[0])
+        val players = if (args[0].equals("all", true)) {
+            Bukkit.getOnlinePlayers().toList()
+        } else {
+            mutableListOf(Bukkit.getPlayer(args[0])).filterNotNull()
+        }
 
-        if (player == null) {
+        if (players.isEmpty()) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return
         }
@@ -49,31 +53,45 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
         if (physical) {
             val items = mutableListOf<ItemStack>().apply { repeat(amount) { add(crate.key.item) } }
 
-            if (plugin.configYml.getBool("track-player-keys")) {
-                items.map {
-                    val meta = it.itemMeta!!
-                    meta.persistentDataContainer.set(
-                        plugin.namespacedKeyFactory.create("player"),
-                        PersistentDataType.STRING,
-                        player.uniqueId.toString()
-                    )
-                    it.itemMeta = meta
+            players.forEach { player ->
+                run {
+                    if (plugin.configYml.getBool("track-player-keys")) {
+                        items.map {
+                            val meta = it.itemMeta!!
+                            meta.persistentDataContainer.set(
+                                plugin.namespacedKeyFactory.create("player"),
+                                PersistentDataType.STRING,
+                                player.uniqueId.toString()
+                            )
+                            it.itemMeta = meta
+                        }
+                    }
+
+                    DropQueue(player)
+                        .addItems(items)
+                        .forceTelekinesis()
+                        .push()
                 }
             }
-
-            DropQueue(player)
-                .addItems(items)
-                .forceTelekinesis()
-                .push()
         } else {
-            crate.adjustVirtualKeys(player, amount)
+            players.forEach { player ->
+                run {
+                    crate.adjustVirtualKeys(player, amount)
+                }
+            }
+        }
+
+        val replacement = if (players.size > 1) {
+            "everyone"
+        } else {
+            players.first().savedDisplayName
         }
 
         sender.sendMessage(
             plugin.langYml.getMessage("gave-keys")
                 .replace("%amount%", amount.toString())
                 .replace("%crate%", crate.name)
-                .replace("%user%", player.savedDisplayName)
+                .replace("%user%", replacement)
         )
     }
 
@@ -87,7 +105,7 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
         if (args.size == 1) {
             StringUtil.copyPartialMatches(
                 args[0],
-                Bukkit.getOnlinePlayers().map { it.name },
+                Bukkit.getOnlinePlayers().map { it.name }.toMutableList().apply { this.add("all") },
                 completions
             )
 
