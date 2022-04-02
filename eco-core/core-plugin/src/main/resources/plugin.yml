@@ -37,6 +37,7 @@ permissions:
       ecocrates.command.forceopen: true
       ecocrates.command.resetwins: true
       ecocrates.command.convert: true
+      ecocrates.command.giveall: true
       ecocrates.break: true
       ecocrates.open.*: true
 
@@ -48,6 +49,9 @@ permissions:
     default: op
   ecocrates.command.give:
     description: Allows giving players keys
+    default: op
+  ecocrates.command.giveall:
+    description: Allows giving all players keys
     default: op
   ecocrates.command.open:
     description: Allows opening crates with /ecocrates open
