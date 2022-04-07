@@ -32,17 +32,12 @@ import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.ConfiguredFirework
 import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.OfflinePlayer
-import org.bukkit.Particle
+import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.Vector
-import java.util.Objects
-import java.util.UUID
+import java.util.*
 
 class Crate(
     private val config: Config,
@@ -96,6 +91,16 @@ class Crate(
         }
 
     val canReroll = config.getBool("can-reroll")
+
+    val rerollPermission: Permission =
+        Bukkit.getPluginManager().getPermission("ecocrates.reroll.$id") ?: Permission(
+            "ecocrates.reroll.$id",
+            "Allows rerolling the $id crate",
+            PermissionDefault.TRUE
+        ).apply {
+            addParent(Bukkit.getPluginManager().getPermission("ecocrates.reroll.*")!!, true)
+            Bukkit.getPluginManager().addPermission(this)
+        }
 
     val canPayToOpen = config.getBool("pay-to-open.enabled")
 
@@ -373,7 +378,7 @@ class Crate(
                 it.cancel()
                 roll.onFinish()
                 player.isOpeningCrate = false
-                if (!canReroll || roll.isReroll) handleFinish(roll) else ReRollGUI.open(roll)
+                if (!canReroll(player) || roll.isReroll) handleFinish(roll) else ReRollGUI.open(roll)
             }
         }.runTaskTimer(1, 1)
 
@@ -410,6 +415,14 @@ class Crate(
             .map { it.replace("%player%", player.savedDisplayName) }
             .map { plugin.langYml.prefix + StringUtils.format(it, player) }
             .forEach { Bukkit.broadcastMessage(it) }
+    }
+
+    fun canReroll(player: Player): Boolean {
+        if (!canReroll) {
+            return false
+        }
+
+        return player.hasPermission(rerollPermission)
     }
 
     fun adjustVirtualKeys(player: OfflinePlayer, amount: Int) {

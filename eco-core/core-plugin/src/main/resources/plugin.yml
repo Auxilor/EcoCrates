@@ -40,6 +40,7 @@ permissions:
       ecocrates.command.giveall: true
       ecocrates.break: true
       ecocrates.open.*: true
+      ecocrates.reroll.*: true
 
   ecocrates.command.ecocrates:
     description: Allows the use of /ecocrates (base command)
@@ -79,4 +80,7 @@ permissions:
     default: op
   ecocrates.open.*:
     description: Allows opening all crates
+    default: true
+  ecocrates.reroll.*:
+    description: Allows rerolling all crates
     default: true
