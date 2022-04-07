@@ -31,10 +31,12 @@ permissions:
       ecocrates.command.ecocrates: true
       ecocrates.command.give: true
       ecocrates.command.open: true
+      ecocrates.command.open.others: true
       ecocrates.command.preview: true
       ecocrates.command.keys: true
       ecocrates.command.set: true
       ecocrates.command.forceopen: true
+      ecocrates.command.forceopen.others: true
       ecocrates.command.resetwins: true
       ecocrates.command.convert: true
       ecocrates.command.giveall: true
@@ -57,8 +59,14 @@ permissions:
   ecocrates.command.open:
     description: Allows opening crates with /ecocrates open
     default: true
+  ecocrates.command.open.others:
+    description: Allows opening crates for other people with /ecocrates open
+    default: op
   ecocrates.command.forceopen:
     description: Allows opening crates with /ecocrates forceopen
+    default: op
+  ecocrates.command.forceopen.others:
+    description: Allows opening crates for other people with /ecocrates forceopen
     default: op
   ecocrates.command.preview:
     description: Allows previewing crates with /ecocrates preview
