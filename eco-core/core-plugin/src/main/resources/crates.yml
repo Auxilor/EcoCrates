@@ -18,6 +18,19 @@ crates:
           - "201010102"
           - "201111102"
           - "222222222"
+      rewards: # Where to put rewards in the GUI
+        - id: diamond_sword # The reward ID
+          row: 3 # The row
+          column: 2 # The column
+        - id: stack_of_emeralds
+          row: 4
+          column: 2
+        - id: bedrock
+          row: 3
+          column: 2
+        - id: 1000_coins
+          row: 5
+          column: 2
 
     key: # The physical key to be given to players
       item: tripwire_hook unbreaking:1 hide_enchants name:"&aDemo Crate Key" # The item

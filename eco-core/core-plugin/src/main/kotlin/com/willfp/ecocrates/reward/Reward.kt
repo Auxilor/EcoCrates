@@ -111,9 +111,9 @@ class Reward(
         return (weight / totalWeight) * 100
     }
 
-    val displayRow = config.getInt("display.row")
-
-    val displayColumn = config.getInt("display.column")
+    // Legacy
+    val displayRow = config.getIntOrNull("display.row")
+    val displayColumn = config.getIntOrNull("display.column")
 
     val displayName = config.getFormattedString("display.name")
 

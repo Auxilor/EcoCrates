@@ -130,10 +130,34 @@ class Crate(
 
         setTitle(config.getFormattedString("preview.title"))
 
+        /*
+        Legacy reward config.
+         */
         for (reward in rewards) {
+            if (reward.displayRow == null || reward.displayColumn == null) {
+                continue
+            }
+
             setSlot(
                 reward.displayRow,
                 reward.displayColumn,
+                slot(reward.getDisplay()) {
+                    setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
+                }
+            )
+        }
+
+        /*
+        Modern reward config.
+         */
+        for (previewReward in config.getSubsections("preview.rewards")) {
+            val reward = Rewards.getByID(previewReward.getString("id")) ?: continue
+            val row = previewReward.getInt("row")
+            val column = previewReward.getInt("column")
+
+            setSlot(
+                row,
+                column,
                 slot(reward.getDisplay()) {
                     setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
                 }
