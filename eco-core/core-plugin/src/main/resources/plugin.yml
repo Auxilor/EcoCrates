@@ -10,6 +10,9 @@ depend:
   - ProtocolLib
 softdepend:
   - CrateReloaded
+  - ExcellentCrates
+  - CrazyCrates
+  - SpecializedCrates
 
 commands:
   ecocrates:
@@ -28,14 +31,18 @@ permissions:
       ecocrates.command.ecocrates: true
       ecocrates.command.give: true
       ecocrates.command.open: true
+      ecocrates.command.open.others: true
       ecocrates.command.preview: true
       ecocrates.command.keys: true
       ecocrates.command.set: true
       ecocrates.command.forceopen: true
+      ecocrates.command.forceopen.others: true
       ecocrates.command.resetwins: true
       ecocrates.command.convert: true
+      ecocrates.command.giveall: true
       ecocrates.break: true
       ecocrates.open.*: true
+      ecocrates.reroll.*: true
 
   ecocrates.command.ecocrates:
     description: Allows the use of /ecocrates (base command)
@@ -46,11 +53,20 @@ permissions:
   ecocrates.command.give:
     description: Allows giving players keys
     default: op
+  ecocrates.command.giveall:
+    description: Allows giving all players keys
+    default: op
   ecocrates.command.open:
     description: Allows opening crates with /ecocrates open
     default: true
+  ecocrates.command.open.others:
+    description: Allows opening crates for other people with /ecocrates open
+    default: op
   ecocrates.command.forceopen:
     description: Allows opening crates with /ecocrates forceopen
+    default: op
+  ecocrates.command.forceopen.others:
+    description: Allows opening crates for other people with /ecocrates forceopen
     default: op
   ecocrates.command.preview:
     description: Allows previewing crates with /ecocrates preview
@@ -72,4 +88,7 @@ permissions:
     default: op
   ecocrates.open.*:
     description: Allows opening all crates
+    default: true
+  ecocrates.reroll.*:
+    description: Allows rerolling all crates
     default: true

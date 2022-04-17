@@ -1,13 +1,14 @@
-package com.willfp.ecocrates.converters.cratereloaded
+package com.willfp.ecocrates.converters.impl
 
 import com.hazebyte.crate.api.CrateAPI
 import com.hazebyte.crate.api.crate.reward.Reward
+import com.willfp.eco.core.config.BuildableConfig
 import com.willfp.eco.core.config.TransientConfig
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.items.toLookupString
 import com.willfp.ecocrates.EcoCratesPlugin
 import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
-import com.willfp.ecocrates.converters.util.toLookupString
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.roll.Rolls
@@ -65,10 +66,9 @@ class CrateReloadedConverter(
 
         crateConfig.set("roll", roll.id)
 
-        val frame = TransientConfig().apply {
-            set("tick", 0)
-            set("lines", buildingCrate.config.getStrings("holographic"))
-        }
+        val frame = BuildableConfig()
+            .add("tick", 0)
+            .add("lines", buildingCrate.config.getStrings("holographic"))
 
         crateConfig.set("placed.hologram.frames", listOf(frame))
 
@@ -96,75 +96,87 @@ class CrateReloadedConverter(
 
         crateConfig.set("rewards", newRewards.map { it.getString("id") })
 
-        crateConfig.set("key", TransientConfig().apply {
-            set("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")} Key\"")
-            set(
-                "lore",
-                listOf(
-                    "&fUse this key to open",
-                    "&fthe ${crateConfig.getString("name")}"
+        crateConfig.set(
+            "key", BuildableConfig()
+                .add("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")} Key\"")
+                .add(
+                    "lore",
+                    listOf(
+                        "&fUse this key to open",
+                        "&fthe ${crateConfig.getString("name")}"
+                    )
                 )
-            )
-        })
+        )
 
-        crateConfig.set("keygui", TransientConfig().apply {
-            set("enabled", true)
-            set("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")}\"")
-            set(
-                "lore", listOf(
-                    crateConfig.getString("name"),
-                    "&fYou have %keys% keys",
-                    "&fGet more at &astore.example.net"
+        crateConfig.set(
+            "keygui", BuildableConfig()
+                .add("enabled", true)
+                .add("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")}\"")
+                .add(
+                    "lore", listOf(
+                        crateConfig.getString("name"),
+                        "&fYou have %keys% keys",
+                        "&fGet more at &astore.example.net"
+                    )
                 )
-            )
-            set("row", 2)
-            set("column", 3)
-            set("right-click-previews", true)
-            set("left-click-opens", true)
-            set(
-                "shift-left-click-messsage",
-                listOf("Buy a ${crateConfig.getString("name")} key here! &astore.example.net")
-            )
-        })
+                .add("row", 2)
+                .add("column", 3)
+                .add("right-click-previews", true)
+                .add("left-click-opens", true)
+                .add(
+                    "shift-left-click-messsage",
+                    listOf("Buy a ${crateConfig.getString("name")} key here! &astore.example.net")
+                )
+        )
 
-        crateConfig.set("open", TransientConfig().apply {
-            set("messages", listOf("Good luck!"))
-            set("broadcasts", listOf("%player%&f is opening the ${crateConfig.getString("name")}!"))
-            set("commands", listOf<String>())
-            val sound = TransientConfig().apply {
-                set("sound", "entity_villager_yes")
-                set("volume", 10)
-                set("pitch", 1)
-            }
-            set("sounds", listOf(sound))
-        })
+        crateConfig.set(
+            "open", BuildableConfig()
+                .add("messages", listOf("Good luck!"))
+                .add("broadcasts", listOf("%player%&f is opening the ${crateConfig.getString("name")}!"))
+                .add("commands", listOf<String>())
+                .add(
+                    "sounds", listOf(
+                        BuildableConfig()
+                            .add("sound", "entity_villager_yes")
+                            .add("volume", 10)
+                            .add("pitch", 1)
+                    )
+                )
+        )
 
-        crateConfig.set("finish", TransientConfig().apply {
-            set("messages", listOf("You won %reward%&f!"))
-            set("broadcasts", listOf("%player%&f won %reward%&f from the ${crateConfig.getString("name")}!"))
-            set("commands", listOf<String>())
-            val firework = TransientConfig().apply {
-                set("power", 2)
-                set("type", "ball_large")
-                set("colors", listOf("ffffff"))
-                set("fade-colors", listOf("ffffff"))
-                set("trail", true)
-                set("flicker", true)
-            }
-            set("fireworks", listOf(firework))
-            val sound = TransientConfig().apply {
-                set("sound", "entity_generic_explode")
-                set("volume", 10)
-                set("pitch", 1)
-            }
-            set("sounds", listOf(sound))
-        })
+        crateConfig.set(
+            "finish", BuildableConfig()
+                .add("messages", listOf("You won %reward%&f!"))
+                .add("broadcasts", listOf("%player%&f won %reward%&f from the ${crateConfig.getString("name")}!"))
+                .add("commands", listOf<String>())
+                .add(
+                    "fireworks", listOf(
+                        BuildableConfig()
+                            .add("power", 2)
+                            .add("type", "ball_large")
+                            .add("colors", listOf("ffffff"))
+                            .add("fade-colors", listOf("ffffff"))
+                            .add("trail", true)
+                            .add("flicker", true)
+                    )
+                )
+                .add(
+                    "sounds", listOf(
+                        BuildableConfig()
+                            .add("sound", "entity_generic_explode")
+                            .add("volume", 10)
+                            .add("pitch", 1)
+                    )
+                )
+        )
 
         val rewards = plugin.rewardsYml.getSubsections("rewards").toMutableList()
 
         rewards.addAll(newRewards)
 
         plugin.rewardsYml.set("rewards", rewards)
+
+        crateConfig.set("id", id) // Put it here again because ordering things is weird
 
         return crateConfig
     }

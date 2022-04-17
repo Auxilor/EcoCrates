@@ -15,8 +15,6 @@ rewards:
       lore: # Can use %chance% and %actual_chance% as placeholders
         - "&fDisplay Chance: &a%chance%%"
         - "&fActual Chance: &a%actual_chance%%"
-      row: 3 # The position in the crate preview GUI
-      column: 2
 
   - id: stack_of_emeralds
     commands: [ ]
@@ -34,8 +32,6 @@ rewards:
       lore:
         - "&fDisplay Chance: &a%chance%%"
         - "&fActual Chance: &a%actual_chance%%"
-      row: 4
-      column: 2
 
   - id: 1000_coins
     commands:
@@ -53,8 +49,6 @@ rewards:
       lore:
         - "&fDisplay Chance: &a%chance%%"
         - "&fActual Chance: &a%actual_chance%%"
-      row: 2
-      column: 4
 
   - id: bedrock
     commands: [ ]
@@ -73,5 +67,3 @@ rewards:
       lore:
         - "&fDisplay Chance: &a%chance%%"
         - "&fActual Chance: &a%actual_chance%%"
-      row: 5
-      column: 2

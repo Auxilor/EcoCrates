@@ -8,7 +8,10 @@ import com.willfp.ecocrates.commands.CommandEcoCrates
 import com.willfp.ecocrates.config.CratesYml
 import com.willfp.ecocrates.config.RewardsYml
 import com.willfp.ecocrates.converters.Converters
-import com.willfp.ecocrates.converters.cratereloaded.CrateReloadedConverter
+import com.willfp.ecocrates.converters.impl.CrateReloadedConverter
+import com.willfp.ecocrates.converters.impl.CrazyCratesConverter
+import com.willfp.ecocrates.converters.impl.ExcellentCratesConverter
+import com.willfp.ecocrates.converters.impl.SpecializedCratesConverter
 import com.willfp.ecocrates.crate.CrateKeyListener
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
@@ -53,8 +56,21 @@ class EcoCratesPlugin : EcoPlugin() {
         return mutableListOf(
             IntegrationLoader("CrateReloaded") {
                 Converters.registerConverter(CrateReloadedConverter(this))
+            },
+            IntegrationLoader("ExcellentCrates") {
+                Converters.registerConverter(ExcellentCratesConverter(this))
+            },
+            IntegrationLoader("CrazyCrates") {
+                Converters.registerConverter(CrazyCratesConverter(this))
+            },
+            IntegrationLoader("SpecializedCrates") {
+                Converters.registerConverter(SpecializedCratesConverter(this))
             }
         )
+    }
+
+    override fun getMinimumEcoVersion(): String {
+        return "6.31.0"
     }
 
     companion object {

@@ -4,6 +4,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.OpenMethod
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
@@ -14,8 +15,8 @@ class CommandForceOpen(plugin: EcoPlugin) : Subcommand(
     "ecocrates.command.forceopen",
     true
 ) {
-    override fun onExecute(player: CommandSender, args: List<String>) {
-        player as Player
+    override fun onExecute(sender: CommandSender, args: List<String>) {
+        var player: Player = sender as Player
 
         if (args.isEmpty()) {
             player.sendMessage(plugin.langYml.getMessage("must-specify-crate"))
@@ -27,6 +28,17 @@ class CommandForceOpen(plugin: EcoPlugin) : Subcommand(
         if (crate == null) {
             player.sendMessage(plugin.langYml.getMessage("invalid-crate"))
             return
+        }
+
+        if (args.size >= 2 && sender.hasPermission("ecocrates.command.forceopen.others")) {
+            val specificPlayer = Bukkit.getPlayer(args[1])
+
+            if (specificPlayer == null) {
+                sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
+                return
+            }
+
+            player = specificPlayer
         }
 
         crate.open(player, OpenMethod.OTHER)
@@ -43,6 +55,16 @@ class CommandForceOpen(plugin: EcoPlugin) : Subcommand(
             StringUtil.copyPartialMatches(
                 args[0],
                 Crates.values().map { it.id },
+                completions
+            )
+
+            return completions
+        }
+
+        if (args.size == 2 && sender.hasPermission("ecocrates.command.forceopen.others")) {
+            StringUtil.copyPartialMatches(
+                args[1],
+                Bukkit.getOnlinePlayers().map { it.name },
                 completions
             )
 
