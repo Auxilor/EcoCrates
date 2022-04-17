@@ -21,7 +21,7 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.*
+import java.util.Objects
 
 class Reward(
     private val plugin: EcoPlugin,
@@ -64,6 +64,12 @@ class Reward(
             ).replace(
                 "%actual_chance%",
                 getPercentageChance(player, crate.rewards, displayWeight = false).toNiceString()
+            ).replace(
+                "%weight%",
+                this.getDisplayWeight(player).toNiceString()
+            ).replace(
+                "%actual_weight%",
+                this.getWeight(player).toNiceString()
             ).formatEco(player)
         }
         return item

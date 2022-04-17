@@ -12,7 +12,7 @@ rewards:
     display: # The display item shown in animations and GUIs
       name: "&bDiamond Sword" # The item name
       item: diamond_sword sharpness:5 unbreaking:3 # The shown item
-      lore: # Can use %chance% and %actual_chance% as placeholders
+      lore: # Can use %chance%, %actual_chance%, %weight%, and %actual_weight% as placeholders
         - "&fDisplay Chance: &a%chance%%"
         - "&fActual Chance: &a%actual_chance%%"
 
