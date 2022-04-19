@@ -24,8 +24,6 @@ object ConversionHelpers {
                 this.set("name", "Unknown Reward")
                 this.set("item", "stone")
                 this.set("lore", emptyList<String>())
-                this.set("row", 1)
-                this.set("column", 1)
             }
         )
 
@@ -57,6 +55,7 @@ object ConversionHelpers {
                 )
             }
             this.set("mask", mask)
+            this.set("rewards", emptyList<Config>())
         }
 
         result.set("preview", preview)
