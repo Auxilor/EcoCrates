@@ -75,7 +75,7 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
             var counter = 1
             crate.settings.reward.crateRewards.forEach {
                 val salt = id + "_" + counter
-                newRewards.add(convertReward(it, salt, row, col))
+                newRewards.add(convertReward(it, salt, row, col, result))
                 col++
                 if (col >= 8) {
                     col = 2
@@ -98,7 +98,7 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
         return result
     }
 
-    private fun convertReward(reward: Reward, salt: String, row: Int, col: Int): Config {
+    private fun convertReward(reward: Reward, salt: String, row: Int, col: Int, crateConfig: Config): Config {
         val result = ConversionHelpers.createEmptyReward()
 
         result.set("id", salt)
@@ -126,8 +126,15 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
         result.set("display.name", reward.displayBuilder.getDisplayName(false))
         result.set("display.item", reward.displayBuilder.stack.toLookupString())
         result.set("display.lore", reward.displayBuilder.lore)
-        result.set("display.row", row)
-        result.set("display.column", col)
+
+        val rewards = crateConfig.getSubsections("preview.rewards").toMutableList()
+        rewards.add(
+            BuildableConfig()
+                .add("id", salt)
+                .add("row", row)
+                .add("column", col)
+        )
+        crateConfig.set("preview.rewards", rewards)
 
         return result
     }
