@@ -83,7 +83,7 @@ class PlacedCrate(
     }
 
     private fun tickParticles(tick: Int) {
-        for ((particle, animation) in crate.particles) {
+        for ((particle, animation) in crate.particles.toList()) { // Anti ConcurrentModification
             animation.spawnParticle(location, tick, particle)
         }
     }
