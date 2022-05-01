@@ -1,7 +1,6 @@
 package com.willfp.ecocrates.util
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import org.bukkit.event.EventHandler
@@ -9,8 +8,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.world.ChunkUnloadEvent
-import java.util.UUID
+import java.util.*
 
 class PlacedCrateListener(
     private val plugin: EcoPlugin
@@ -22,10 +20,6 @@ class PlacedCrateListener(
     fun handleClick(event: PlayerInteractEvent) {
         val player = event.player
         val block = event.clickedBlock ?: return
-
-        if (player.isSneaking) {
-            return
-        }
 
         if (preventDoubles.contains(player.uniqueId)) {
             return
@@ -41,6 +35,11 @@ class PlacedCrateListener(
             OpenMethod.VIRTUAL_KEY
         } else {
             OpenMethod.MONEY
+        }
+
+        if (player.isSneaking) {
+            event.isCancelled = true
+            return
         }
 
         when (event.action) {
