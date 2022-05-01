@@ -37,7 +37,7 @@ class PlacedCrateListener(
             OpenMethod.MONEY
         }
 
-        if (player.isSneaking) {
+        if (player.isSneaking && event.action == Action.RIGHT_CLICK_BLOCK) {
             event.isCancelled = true
             return
         }
