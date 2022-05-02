@@ -8,7 +8,7 @@ class CommandEcoCrates(plugin: EcoPlugin) : PluginCommand(
     plugin,
     "ecocrates",
     "ecocrates.command.ecocrates",
-    true
+    false
 ) {
     init {
         this.addSubcommand(CommandReload(plugin))
