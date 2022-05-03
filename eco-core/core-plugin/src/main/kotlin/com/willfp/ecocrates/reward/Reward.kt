@@ -57,21 +57,24 @@ class Reward(
     fun getDisplay(player: Player, crate: Crate): ItemStack {
         val item = baseDisplay.clone()
         val fis = FastItemStack.wrap(item)
-        fis.lore = config.getStrings("display.lore").map {
-            it.replace(
-                "%chance%",
-                getPercentageChance(player, crate.rewards, displayWeight = true).toNiceString()
-            ).replace(
-                "%actual_chance%",
-                getPercentageChance(player, crate.rewards, displayWeight = false).toNiceString()
-            ).replace(
-                "%weight%",
-                this.getDisplayWeight(player).toNiceString()
-            ).replace(
-                "%actual_weight%",
-                this.getWeight(player).toNiceString()
-            ).formatEco(player)
+        if (!config.getBool("display.inherit-lore")) {
+            fis.lore = config.getStrings("display.lore").map {
+                it.replace(
+                    "%chance%",
+                    getPercentageChance(player, crate.rewards, displayWeight = true).toNiceString()
+                ).replace(
+                    "%actual_chance%",
+                    getPercentageChance(player, crate.rewards, displayWeight = false).toNiceString()
+                ).replace(
+                    "%weight%",
+                    this.getDisplayWeight(player).toNiceString()
+                ).replace(
+                    "%actual_weight%",
+                    this.getWeight(player).toNiceString()
+                ).formatEco(player)
+            }
         }
+
         return item
     }
 
