@@ -21,7 +21,7 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.Objects
+import java.util.*
 
 class Reward(
     private val plugin: EcoPlugin,
@@ -57,22 +57,26 @@ class Reward(
     fun getDisplay(player: Player, crate: Crate): ItemStack {
         val item = baseDisplay.clone()
         val fis = FastItemStack.wrap(item)
-        if (!config.getBool("display.inherit-lore")) {
-            fis.lore = config.getStrings("display.lore").map {
-                it.replace(
-                    "%chance%",
-                    getPercentageChance(player, crate.rewards, displayWeight = true).toNiceString()
-                ).replace(
-                    "%actual_chance%",
-                    getPercentageChance(player, crate.rewards, displayWeight = false).toNiceString()
-                ).replace(
-                    "%weight%",
-                    this.getDisplayWeight(player).toNiceString()
-                ).replace(
-                    "%actual_weight%",
-                    this.getWeight(player).toNiceString()
-                ).formatEco(player)
-            }
+        val lore = config.getStrings("display.lore").map {
+            it.replace(
+                "%chance%",
+                getPercentageChance(player, crate.rewards, displayWeight = true).toNiceString()
+            ).replace(
+                "%actual_chance%",
+                getPercentageChance(player, crate.rewards, displayWeight = false).toNiceString()
+            ).replace(
+                "%weight%",
+                this.getDisplayWeight(player).toNiceString()
+            ).replace(
+                "%actual_weight%",
+                this.getWeight(player).toNiceString()
+            ).formatEco(player)
+        }
+
+        if (config.getBool("display.dont-keep-lore")) {
+            fis.lore = lore
+        } else {
+            fis.lore = fis.lore + lore
         }
 
         return item
