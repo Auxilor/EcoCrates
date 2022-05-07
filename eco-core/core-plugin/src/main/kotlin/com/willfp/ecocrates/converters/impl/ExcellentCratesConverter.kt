@@ -10,6 +10,7 @@ import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import org.bukkit.Location
 import su.nightexpress.excellentcrates.ExcellentCrates
+import su.nightexpress.excellentcrates.ExcellentCratesAPI
 import su.nightexpress.excellentcrates.api.OpenCostType
 import su.nightexpress.excellentcrates.api.crate.ICrate
 import su.nightexpress.excellentcrates.api.crate.ICrateReward
@@ -19,7 +20,7 @@ class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter 
     override val id = "ExcellentCrates"
 
     override fun convert() {
-        val newCrates = ExcellentCrates.getInstance().crateManager.crates.map { convertCrate(it) }
+        val newCrates = ExcellentCratesAPI.getCrateManager().crates.map { convertCrate(it) }
 
         val crates = plugin.cratesYml.getSubsections("crates").toMutableList()
 
@@ -30,7 +31,7 @@ class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter 
         plugin.rewardsYml.save()
         plugin.reload()
 
-        ExcellentCrates.getInstance().crateManager.crates.forEach {
+        ExcellentCratesAPI.getCrateManager().crates.forEach {
             val jank = mutableListOf<Location>()
             jank.addAll(it.blockLocations)
             jank.forEach { it1 -> it.removeBlockLocation(it1) }
@@ -53,7 +54,7 @@ class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter 
         }
 
         if (crate.keyIds.isNotEmpty()) {
-            val key = ExcellentCrates.getInstance().keyManager.getKeyById(crate.keyIds.first())!!
+            val key = ExcellentCratesAPI.getKeyManager().getKeyById(crate.keyIds.first())!!
             result.set("key.item", key.item.toLookupString())
             result.set("key.lore", key.item.itemMeta?.lore)
         } else {
