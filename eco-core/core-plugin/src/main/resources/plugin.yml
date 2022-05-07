@@ -19,6 +19,8 @@ commands:
     aliases:
       - crates
       - crate
+      - key
+      - keys
     description: Base plugin command
     permission: ecocrates.command.ecocrates
 
