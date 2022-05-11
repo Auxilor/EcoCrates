@@ -13,6 +13,11 @@ class KeyDisplay(
 ) : DisplayModule(plugin, DisplayPriority.LOW) {
     override fun display(itemStack: ItemStack, vararg args: Any) {
         val crate = itemStack.getAsKey() ?: return
+
+        if (crate.keyIsCustomItem) {
+            return
+        }
+
         val fis = FastItemStack.wrap(itemStack)
 
         fis.lore = crate.keyLore.map { Display.PREFIX + it }
