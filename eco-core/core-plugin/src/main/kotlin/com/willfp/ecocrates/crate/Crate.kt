@@ -12,6 +12,7 @@ import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
+import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.util.NumberUtils
@@ -32,12 +33,17 @@ import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.ConfiguredFirework
 import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
-import org.bukkit.*
+import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.OfflinePlayer
+import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.Vector
-import java.util.*
+import java.util.Objects
+import java.util.UUID
 
 class Crate(
     private val config: Config,
@@ -69,12 +75,18 @@ class Crate(
         )
     }
 
-    val key = CustomItem(
-        plugin.namespacedKeyFactory.create("${id}_key"),
-        { it.getAsKey() == this },
-        Items.lookup(config.getString("key.item")).item
-            .clone().apply { setAsKeyFor(this@Crate) }
-    ).apply { register() }
+    val keyIsCustomItem = config.getBool("key.use-custom-item")
+
+    val key: TestableItem = if (keyIsCustomItem) {
+        Items.lookup(config.getString("key.item"))
+    } else {
+        CustomItem(
+            plugin.namespacedKeyFactory.create("${id}_key"),
+            { it.getAsKey() == this },
+            Items.lookup(config.getString("key.item")).item
+                .clone().apply { setAsKeyFor(this@Crate) }
+        ).apply { register() }
+    }
 
     val keyLore = config.getFormattedStrings("key.lore")
 

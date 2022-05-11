@@ -37,6 +37,8 @@ crates:
       lore: # Lore for the key to have
         - "&fUse this key to open"
         - "&fthe <g:#56ab2f>Demo Crate</g:#a8e063>"
+      use-custom-item: false # Set this to true in order to use a custom item as the key;
+      # For example making all ecoitems:blue_shards function as keys. This will prevent lore from being applied.
 
     keygui: # Options for showing up in /crate keys
       enabled: true # If the crate should be in the key gui

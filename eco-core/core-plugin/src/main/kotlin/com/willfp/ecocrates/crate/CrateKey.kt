@@ -18,13 +18,23 @@ fun ItemStack.setAsKeyFor(crate: Crate) {
 }
 
 fun ItemStack.getAsKey(): Crate? {
+    for (crate in Crates.values()) {
+        if (!crate.keyIsCustomItem) {
+            continue
+        }
+
+        if (crate.key.matches(this)) {
+            return crate
+        }
+    }
+
     val meta = this.itemMeta ?: return null
     val pdc = meta.persistentDataContainer
     val id = pdc.get(key, PersistentDataType.STRING) ?: return null
     return Crates.getByID(id)
 }
 
-class CrateKeyListener: Listener {
+class CrateKeyListener : Listener {
     @EventHandler
     fun handle(event: BlockPlaceEvent) {
         if (event.itemInHand.getAsKey() != null) {
