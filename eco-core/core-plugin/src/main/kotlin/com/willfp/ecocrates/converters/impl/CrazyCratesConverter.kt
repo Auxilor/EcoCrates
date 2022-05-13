@@ -108,7 +108,7 @@ class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
 
         val meta = reward.displayItem.itemMeta
 
-        result.set("display.name", reward.name)
+        result.set("display.name", reward.displayItem.itemMeta?.displayName?: reward.displayItem.type.name)
         result.set("display.item", reward.displayItem.toLookupString())
         result.set("display.lore", meta?.lore)
 
