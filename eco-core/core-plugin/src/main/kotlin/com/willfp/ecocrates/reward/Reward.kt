@@ -41,8 +41,14 @@ class Reward(
         "ecocrates.reward.$id",
         "Allows getting $id as a reward",
         PermissionDefault.TRUE
-    ).addParent("ecocrates.reward.*", true)
-        .apply { Bukkit.getPluginManager().addPermission(this) }
+    ).apply {
+        if (Bukkit.getPluginManager().getPermission("ecocrates.reward.*") == null) {
+            addParent("ecocrates.reward.*", true)
+        }
+        if (Bukkit.getPluginManager().getPermission("ecocrates.reward.$id") == null) {
+            Bukkit.getPluginManager().addPermission(this)
+        }
+    }
 
     private val maxWins = config.getInt("max-wins")
 
@@ -193,4 +199,5 @@ class Reward(
     override fun hashCode(): Int {
         return Objects.hash(id)
     }
+}
 }
