@@ -21,6 +21,8 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.permissions.Permission
+import org.bukkit.permissions.PermissionDefault
 import java.util.*
 
 class Reward(
@@ -34,6 +36,13 @@ class Reward(
     private val items = config.getStrings("items").map { Items.lookup(it) }.filterNot { it is EmptyTestableItem }
 
     private val messages = config.getFormattedStrings("messages")
+
+    private val permission = Permission(
+        "ecocrates.reward.$id",
+        "Allows getting $id as a reward",
+        PermissionDefault.TRUE
+    ).addParent("ecocrates.reward.*", true)
+        .apply { Bukkit.getPluginManager().addPermission(this) }
 
     private val maxWins = config.getInt("max-wins")
 
@@ -93,6 +102,9 @@ class Reward(
                 return 0.0
             }
         }
+        if (!player.hasPermission(permission)) {
+            return 0.0
+        }
         return weight
     }
 
@@ -102,6 +114,9 @@ class Reward(
             if (player.profile.read(winsKey) >= maxWins) {
                 return 0.0
             }
+        }
+        if (!player.hasPermission(permission)) {
+            return 0.0
         }
         return weight
     }
