@@ -200,4 +200,3 @@ class Reward(
         return Objects.hash(id)
     }
 }
-}
