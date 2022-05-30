@@ -3,6 +3,7 @@ package com.willfp.ecocrates.util
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrates
+import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -39,6 +40,11 @@ class PlacedCrateListener(
 
         if (player.isSneaking && event.action == Action.RIGHT_CLICK_BLOCK) {
             event.isCancelled = true
+            return
+        }
+
+        // Fix breaking
+        if (player.gameMode == GameMode.CREATIVE && player.isSneaking && event.action == Action.LEFT_CLICK_BLOCK) {
             return
         }
 
