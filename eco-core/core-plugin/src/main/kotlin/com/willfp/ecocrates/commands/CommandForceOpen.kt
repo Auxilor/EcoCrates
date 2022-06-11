@@ -13,20 +13,20 @@ class CommandForceOpen(plugin: EcoPlugin) : Subcommand(
     plugin,
     "forceopen",
     "ecocrates.command.forceopen",
-    true
+    false
 ) {
     override fun onExecute(sender: CommandSender, args: List<String>) {
-        var player: Player = sender as Player
+        var player = sender
 
         if (args.isEmpty()) {
-            player.sendMessage(plugin.langYml.getMessage("must-specify-crate"))
+            sender.sendMessage(plugin.langYml.getMessage("must-specify-crate"))
             return
         }
 
         val crate = Crates.getByID(args[0])
 
         if (crate == null) {
-            player.sendMessage(plugin.langYml.getMessage("invalid-crate"))
+            sender.sendMessage(plugin.langYml.getMessage("invalid-crate"))
             return
         }
 
@@ -40,8 +40,9 @@ class CommandForceOpen(plugin: EcoPlugin) : Subcommand(
 
             player = specificPlayer
         }
-
-        crate.open(player, OpenMethod.OTHER)
+        if (player is Player) {
+            crate.open(player, OpenMethod.OTHER)
+        }
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
