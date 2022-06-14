@@ -21,6 +21,7 @@ class CommandEcoCrates(plugin: EcoPlugin) : PluginCommand(
             .addSubcommand(CommandResetWins(plugin))
             .addSubcommand(CommandConvert(plugin))
             .addSubcommand(CommandGiveall(plugin))
+            .addSubcommand(CommandTake(plugin))
     }
 
     override fun onExecute(sender: CommandSender, args: List<String>) {
