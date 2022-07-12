@@ -26,10 +26,6 @@ object ReRollGUI {
 
             setTitle(plugin.configYml.getFormattedString("reroll.title"))
 
-            for (crate in Crates.values()) {
-                crate.addToKeyGUI(this)
-            }
-
             setSlot(
                 plugin.configYml.getInt("reroll.accept.row"),
                 plugin.configYml.getInt("reroll.accept.column"),
