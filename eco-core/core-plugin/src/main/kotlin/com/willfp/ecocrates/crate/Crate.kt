@@ -5,8 +5,10 @@ import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
+import com.willfp.eco.core.gui.addPage
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
+import com.willfp.eco.core.gui.page.PageChanger
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
@@ -46,11 +48,10 @@ import java.util.Objects
 import java.util.UUID
 
 class Crate(
+    val id: String,
     private val config: Config,
     private val plugin: EcoPlugin
 ) {
-    val id = config.getString("id")
-
     val name = config.getFormattedString("name")
 
     val hologramFrames = config.getSubsections("placed.hologram.frames")
@@ -122,58 +123,111 @@ class Crate(
         plugin.namespacedKeyFactory.create("${id}_keys"),
         PersistentDataKeyType.INT,
         0
-    ).player()
+    )
 
     private val opensKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_opens"),
         PersistentDataKeyType.INT,
         0
-    ).player()
+    )
 
     private val rollFactory = Rolls.getByID(config.getString("roll"))!!
 
     private val previewGUI = menu(config.getInt("preview.rows")) {
-        setMask(
-            FillerMask(
-                MaskItems.fromItemNames(config.getStrings("preview.mask.items")),
-                *config.getStrings("preview.mask.pattern").toTypedArray()
+        title = config.getFormattedString("preview.title")
+
+        if (config.has("preview.pages")) {
+            val pages = config.getSubsections("preview.pages")
+
+            maxPages(pages.size)
+
+            val forwardsArrow = PageChanger(
+                Items.lookup(config.getString("preview.forwards-arrow.item")).item,
+                PageChanger.Direction.FORWARDS
             )
-        )
 
-        setTitle(config.getFormattedString("preview.title"))
+            val backwardsArrow = PageChanger(
+                Items.lookup(config.getString("preview.backwards-arrow.item")).item,
+                PageChanger.Direction.BACKWARDS
+            )
 
-        /*
-        Legacy reward config.
-         */
-        for (reward in rewards) {
-            if (reward.displayRow == null || reward.displayColumn == null) {
-                continue
+            for (page in pages) {
+                addPage(page.getInt("page")) {
+                    setMask(
+                        FillerMask(
+                            MaskItems.fromItemNames(page.getStrings("mask.items")),
+                            *page.getStrings("mask.pattern").toTypedArray()
+                        )
+                    )
+
+                    addComponent(
+                        config.getInt("preview.forwards-arrow.row"),
+                        config.getInt("preview.forwards-arrow.column"),
+                        forwardsArrow
+                    )
+
+                    addComponent(
+                        config.getInt("preview.backwards-arrow.row"),
+                        config.getInt("preview.backwards-arrow.column"),
+                        backwardsArrow
+                    )
+
+                    for (previewReward in page.getSubsections("rewards")) {
+                        val reward = Rewards.getByID(previewReward.getString("id")) ?: continue
+                        val row = previewReward.getInt("row")
+                        val column = previewReward.getInt("column")
+
+                        setSlot(
+                            row,
+                            column,
+                            slot(reward.getDisplay()) {
+                                setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
+                            }
+                        )
+                    }
+                }
+            }
+        } else {
+            setMask(
+                FillerMask(
+                    MaskItems.fromItemNames(config.getStrings("preview.mask.items")),
+                    *config.getStrings("preview.mask.pattern").toTypedArray()
+                )
+            )
+
+            /*
+            Legacy reward config.
+             */
+            for (reward in rewards) {
+                if (reward.displayRow == null || reward.displayColumn == null) {
+                    continue
+                }
+
+                setSlot(
+                    reward.displayRow,
+                    reward.displayColumn,
+                    slot(reward.getDisplay()) {
+                        setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
+                    }
+                )
             }
 
-            setSlot(
-                reward.displayRow,
-                reward.displayColumn,
-                slot(reward.getDisplay()) {
-                    setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
-                }
-            )
-        }
+            /*
+            Modern reward config.
+             */
+            for (previewReward in config.getSubsections("preview.rewards")) {
+                val reward = Rewards.getByID(previewReward.getString("id")) ?: continue
+                val row = previewReward.getInt("row")
+                val column = previewReward.getInt("column")
 
-        /*
-        Modern reward config.
-         */
-        for (previewReward in config.getSubsections("preview.rewards")) {
-            val reward = Rewards.getByID(previewReward.getString("id")) ?: continue
-            val row = previewReward.getInt("row")
-            val column = previewReward.getInt("column")
-
-            setSlot(
-                row,
-                column,
-                slot(reward.getDisplay()) {
-                    setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
-                }
-            )
+                setSlot(
+                    row,
+                    column,
+                    slot(reward.getDisplay()) {
+                        setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
+                    }
+                )
+            }
         }
     }
 

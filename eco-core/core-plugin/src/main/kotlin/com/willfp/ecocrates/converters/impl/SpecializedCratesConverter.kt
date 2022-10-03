@@ -11,6 +11,7 @@ import me.PM2.customcrates.crates.Crate
 import me.PM2.customcrates.crates.PlacedCrate
 import me.PM2.customcrates.crates.options.rewards.Reward
 import org.bukkit.Location
+import java.io.File
 
 class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
     override val id: String = "SpecializedCrates"
@@ -18,16 +19,17 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
     override fun convert() {
         val newCrates = Crate.getLoadedCrates().map { convertCrate(it.value) }
 
-        val crates = plugin.cratesYml.getSubsections("crates").toMutableList()
+        for (crate in newCrates) {
+            File(plugin.dataFolder, "${crate.id}.yml").writeText(
+                crate.config.toPlaintext()
+            )
+        }
 
-        crates.addAll(newCrates)
-
-        plugin.cratesYml.set("crates", crates)
-        plugin.cratesYml.save()
         plugin.rewardsYml.save()
         plugin.reload()
 
-        val pCrates = PlacedCrate.getPlacedCrates().mapNotNull { PCrate(it.key, Crates.getByID(it.value.crate.name.lowercase()) ?: return@mapNotNull null) }
+        val pCrates = PlacedCrate.getPlacedCrates()
+            .mapNotNull { PCrate(it.key, Crates.getByID(it.value.crate.name.lowercase()) ?: return@mapNotNull null) }
 
         val toDelete = ArrayList(PlacedCrate.getPlacedCrates().values)
 
@@ -40,31 +42,36 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
 
     private data class PCrate(val location: Location, val crate: com.willfp.ecocrates.crate.Crate)
 
-    private fun convertCrate(crate: Crate): Config {
+    private fun convertCrate(crate: Crate): ConvertedCrateConfig {
         val result = ConversionHelpers.createEmptyCrate()
 
         val id = crate.name.lowercase()
 
-        result.set("id", id)
         result.set("name", crate.name)
         result.set("preview.title", crate.settings.crateInventoryName)
         result.set("key.item", crate.settings.keyItemHandler.item.stack.toLookupString())
         result.set("key.lore", crate.settings.keyItemHandler.item.lore)
         result.set("keygui.item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crate.name}\"")
-        result.set("keygui.lore", mutableListOf(
-            "<g:#56ab2f>${crate.name}</g:#a8e063>",
-            "&fYou have %keys% keys",
-            "&fGet more at &astore.example.net"
-        ))
-        result.set("keygui.shift-left-click-messsage", mutableListOf(
-            "Buy a ${crate.name}&r key here! &astore.example.net"
-        ))
+        result.set(
+            "keygui.lore", mutableListOf(
+                "<g:#56ab2f>${crate.name}</g:#a8e063>",
+                "&fYou have %keys% keys",
+                "&fGet more at &astore.example.net"
+            )
+        )
+        result.set(
+            "keygui.shift-left-click-messsage", mutableListOf(
+                "Buy a ${crate.name}&r key here! &astore.example.net"
+            )
+        )
         result.set("placed.hologram.height", crate.settings.hologramOffset)
-        result.set("placed.hologram.frames", mutableListOf(
-            BuildableConfig()
-                .add("tick", 0)
-                .add("lines", crate.settings.hologram.lines)
-        ))
+        result.set(
+            "placed.hologram.frames", mutableListOf(
+                BuildableConfig()
+                    .add("tick", 0)
+                    .add("lines", crate.settings.hologram.lines)
+            )
+        )
         result.set("open.broadcasts", mutableListOf("%player%&f is opening the ${crate.name}!"))
         result.set("finish.broadcasts", mutableListOf("%player%&f won %reward%&f from the ${crate.name}!"))
 
@@ -95,7 +102,7 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
             result.set("rewards", newRewards.map { it.getString("id") })
         }
 
-        return result
+        return ConvertedCrateConfig(id, result)
     }
 
     private fun convertReward(reward: Reward, salt: String, row: Int, col: Int, crateConfig: Config): Config {
@@ -104,9 +111,11 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
         result.set("id", salt)
 
         result.set("commands", reward.commands
-            .map { it.replace(
-                "{name}", "%player%"
-            ) }
+            .map {
+                it.replace(
+                    "{name}", "%player%"
+                )
+            }
         )
         if (reward.isGiveDisplayItem) {
             val item = reward.displayBuilder.stack

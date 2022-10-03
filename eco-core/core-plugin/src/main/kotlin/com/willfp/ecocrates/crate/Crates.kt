@@ -2,8 +2,11 @@ package com.willfp.ecocrates.crate
 
 import com.google.common.collect.HashBiMap
 import com.google.common.collect.ImmutableList
+import com.willfp.eco.core.config.ConfigType
+import com.willfp.eco.core.config.TransientConfig
 import com.willfp.ecocrates.EcoCratesPlugin
 import com.willfp.ecocrates.crate.placed.PlacedCrates
+import java.io.File
 
 @Suppress("UNUSED")
 object Crates {
@@ -34,9 +37,16 @@ object Crates {
     internal fun update(plugin: EcoCratesPlugin) {
         BY_ID.clear()
 
-        for (config in plugin.cratesYml.getSubsections("crates")) {
-            val crate = Crate(config, plugin)
+        val cratesYml = TransientConfig(File(plugin.dataFolder, "crates.yml"), ConfigType.YAML)
+
+        for (config in cratesYml.getSubsections("crates")) {
+            val crate = Crate(config.getString("id"), config, plugin)
             BY_ID[crate.id] = crate
+        }
+
+        for ((id, config) in plugin.getCrateConfigs("crates")) {
+            val crate = Crate(id, config, plugin)
+            BY_ID[id] = crate
         }
 
         PlacedCrates.reload()

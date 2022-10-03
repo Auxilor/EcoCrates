@@ -7,6 +7,7 @@ import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Crates
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.StringUtil
@@ -23,9 +24,10 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
             return
         }
 
-        val player = Bukkit.getPlayer(args[0])
+        @Suppress("DEPRECATION")
+        val player = Bukkit.getOfflinePlayer(args[0])
 
-        if (player == null) {
+        if (!player.hasPlayedBefore()) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return
         }
@@ -47,6 +49,11 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
         val amount = args.getOrNull(3)?.toIntOrNull() ?: 1
 
         if (physical) {
+            if (player !is Player) {
+                sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
+                return
+            }
+
             val items = mutableListOf<ItemStack>().apply { repeat(amount) { add(crate.key.item) } }
 
             if (plugin.configYml.getBool("track-player-keys")) {

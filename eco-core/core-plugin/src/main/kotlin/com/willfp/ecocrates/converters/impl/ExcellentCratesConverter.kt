@@ -14,6 +14,7 @@ import su.nightexpress.excellentcrates.ExcellentCratesAPI
 import su.nightexpress.excellentcrates.api.OpenCostType
 import su.nightexpress.excellentcrates.api.crate.ICrate
 import su.nightexpress.excellentcrates.api.crate.ICrateReward
+import java.io.File
 
 @Suppress("UNCHECKED_CAST")
 class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
@@ -22,12 +23,12 @@ class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter 
     override fun convert() {
         val newCrates = ExcellentCratesAPI.getCrateManager().crates.map { convertCrate(it) }
 
-        val crates = plugin.cratesYml.getSubsections("crates").toMutableList()
+        for (crate in newCrates) {
+            File(plugin.dataFolder, "${crate.id}.yml").writeText(
+                crate.config.toPlaintext()
+            )
+        }
 
-        crates.addAll(newCrates)
-
-        plugin.cratesYml.set("crates", crates)
-        plugin.cratesYml.save()
         plugin.rewardsYml.save()
         plugin.reload()
 
@@ -39,12 +40,10 @@ class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter 
         }
     }
 
-    private fun convertCrate(crate: ICrate): Config {
+    private fun convertCrate(crate: ICrate): ConvertedCrateConfig {
         val result = ConversionHelpers.createEmptyCrate()
 
         val id = crate.id
-
-        result.set("id", id)
 
         result.set("name", crate.name)
 
@@ -103,7 +102,7 @@ class ExcellentCratesConverter(private val plugin: EcoCratesPlugin) : Converter 
 
         result.set("rewards", newRewards.map { it.getString("id") })
 
-        return result
+        return ConvertedCrateConfig(id, result)
     }
 
     private fun convertReward(reward: ICrateReward, salt: String, row: Int, col: Int, crateConfig: Config): Config {

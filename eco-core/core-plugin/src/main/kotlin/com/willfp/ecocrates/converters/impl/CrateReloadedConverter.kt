@@ -13,6 +13,7 @@ import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.roll.Rolls
 import org.bukkit.configuration.file.YamlConfiguration
+import java.io.File
 
 @Suppress("UNCHECKED_CAST")
 class CrateReloadedConverter(
@@ -33,12 +34,12 @@ class CrateReloadedConverter(
             .map { BuildingCrate(it, crateConfig.getSubsection(it)) }
             .map { convertCrate(it) }
 
-        val crates = plugin.cratesYml.getSubsections("crates").toMutableList()
+        for (crate in newCrates) {
+            File(plugin.dataFolder, "${crate.id}.yml").writeText(
+                crate.config.toPlaintext()
+            )
+        }
 
-        crates.addAll(newCrates)
-
-        plugin.cratesYml.set("crates", crates)
-        plugin.cratesYml.save()
         plugin.rewardsYml.save()
         plugin.reload()
 
@@ -53,12 +54,10 @@ class CrateReloadedConverter(
         }
     }
 
-    private fun convertCrate(buildingCrate: BuildingCrate): Config {
+    private fun convertCrate(buildingCrate: BuildingCrate): ConvertedCrateConfig {
         val id = buildingCrate.id
 
         val crateConfig = ConversionHelpers.createEmptyCrate()
-
-        crateConfig.set("id", id)
 
         crateConfig.set("name", buildingCrate.config.getString("display-name"))
 
@@ -176,9 +175,7 @@ class CrateReloadedConverter(
 
         plugin.rewardsYml.set("rewards", rewards)
 
-        crateConfig.set("id", id) // Put it here again because ordering things is weird
-
-        return crateConfig
+        return ConvertedCrateConfig(id, crateConfig)
     }
 
     private fun convertReward(reward: Reward, salt: String, row: Int, col: Int, crateConfig: Config): Config {

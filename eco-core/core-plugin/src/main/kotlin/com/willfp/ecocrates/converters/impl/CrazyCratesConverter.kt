@@ -11,6 +11,7 @@ import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.PlacedCrates
+import java.io.File
 
 class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
     override val id = "CrazyCrates"
@@ -18,12 +19,12 @@ class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
     override fun convert() {
         val newCrates = CrazyManager.getInstance().crates.map { convertCrate(it) }
 
-        val crates = plugin.cratesYml.getSubsections("crates").toMutableList()
+        for (crate in newCrates) {
+            File(plugin.dataFolder, "${crate.id}.yml").writeText(
+                crate.config.toPlaintext()
+            )
+        }
 
-        crates.addAll(newCrates)
-
-        plugin.cratesYml.set("crates", crates)
-        plugin.cratesYml.save()
         plugin.rewardsYml.save()
         plugin.reload()
 
@@ -39,31 +40,36 @@ class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
         }
     }
 
-    private fun convertCrate(crate: Crate): Config {
+    private fun convertCrate(crate: Crate): ConvertedCrateConfig {
         val result = ConversionHelpers.createEmptyCrate()
 
         val id = crate.name.lowercase()
 
-        result.set("id", id)
         result.set("name", crate.name)
         result.set("preview.title", crate.crateInventoryName)
         result.set("key.item", crate.key.toLookupString())
         result.set("key.lore", crate.key.itemMeta?.lore)
         result.set("keygui.item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crate.name}\"")
-        result.set("keygui.lore", mutableListOf(
-            "<g:#56ab2f>${crate.name}</g:#a8e063>",
-            "&fYou have %keys% keys",
-            "&fGet more at &astore.example.net"
-        ))
-        result.set("keygui.shift-left-click-messsage", mutableListOf(
-            "Buy a ${crate.name}&r key here! &astore.example.net"
-        ))
+        result.set(
+            "keygui.lore", mutableListOf(
+                "<g:#56ab2f>${crate.name}</g:#a8e063>",
+                "&fYou have %keys% keys",
+                "&fGet more at &astore.example.net"
+            )
+        )
+        result.set(
+            "keygui.shift-left-click-messsage", mutableListOf(
+                "Buy a ${crate.name}&r key here! &astore.example.net"
+            )
+        )
         result.set("placed.hologram.height", crate.hologram.height)
-        result.set("placed.hologram.frames", mutableListOf(
-            BuildableConfig()
-                .add("tick", 0)
-                .add("lines", crate.hologram.messages)
-        ))
+        result.set(
+            "placed.hologram.frames", mutableListOf(
+                BuildableConfig()
+                    .add("tick", 0)
+                    .add("lines", crate.hologram.messages)
+            )
+        )
         result.set("open.broadcasts", mutableListOf("%player%&f is opening the ${crate.name}!"))
         result.set("finish.broadcasts", mutableListOf("%player%&f won %reward%&f from the ${crate.name}!"))
 
@@ -92,7 +98,7 @@ class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
         plugin.rewardsYml.set("rewards", rewards)
         result.set("rewards", newRewards.map { it.getString("id") })
 
-        return result
+        return ConvertedCrateConfig(id, result)
     }
 
     private fun convertReward(reward: Prize, salt: String, row: Int, col: Int, crateConfig: Config): Config {
@@ -108,7 +114,7 @@ class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
 
         val meta = reward.displayItem.itemMeta
 
-        result.set("display.name", reward.displayItem.itemMeta?.displayName?: reward.displayItem.type.name)
+        result.set("display.name", reward.displayItem.itemMeta?.displayName ?: reward.displayItem.type.name)
         result.set("display.item", reward.displayItem.toLookupString())
         result.set("display.lore", meta?.lore)
 
