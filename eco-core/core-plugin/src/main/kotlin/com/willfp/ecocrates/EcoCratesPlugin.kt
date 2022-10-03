@@ -16,9 +16,11 @@ import com.willfp.ecocrates.converters.impl.CrazyCratesConverter
 import com.willfp.ecocrates.converters.impl.ExcellentCratesConverter
 import com.willfp.ecocrates.converters.impl.SpecializedCratesConverter
 import com.willfp.ecocrates.crate.CrateKeyListener
+import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.display.KeyDisplay
+import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.PlacedCrateListener
 import org.bukkit.event.Listener
 import java.io.File
@@ -40,6 +42,12 @@ class EcoCratesPlugin : EcoPlugin() {
     }
 
     override fun handleReload() {
+        // Extra reload
+        this.scheduler.runLater(2) {
+            Rewards.update(this)
+            Crates.update(this)
+        }
+
         CrateDisplay(this).start()
     }
 
