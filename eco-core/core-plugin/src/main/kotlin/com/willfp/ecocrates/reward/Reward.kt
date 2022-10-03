@@ -56,10 +56,7 @@ class Reward(
         plugin.namespacedKeyFactory.create("${id}_wins"),
         PersistentDataKeyType.INT,
         0
-    ).apply {
-        // Only register if max wins are being limited
-        if (maxWins > 0) player()
-    }
+    )
 
     private val canPermissionMultiply = config.getBool("weight.permission-multipliers")
 
