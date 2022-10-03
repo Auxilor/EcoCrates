@@ -8,6 +8,7 @@ import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.gui.addPage
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
+import com.willfp.eco.core.gui.menu.MenuLayer
 import com.willfp.eco.core.gui.page.PageChanger
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
@@ -151,6 +152,20 @@ class Crate(
                 PageChanger.Direction.BACKWARDS
             )
 
+            addComponent(
+                MenuLayer.TOP,
+                config.getInt("preview.forwards-arrow.row"),
+                config.getInt("preview.forwards-arrow.column"),
+                forwardsArrow
+            )
+
+            addComponent(
+                MenuLayer.TOP,
+                config.getInt("preview.backwards-arrow.row"),
+                config.getInt("preview.backwards-arrow.column"),
+                backwardsArrow
+            )
+
             for (page in pages) {
                 addPage(page.getInt("page")) {
                     setMask(
@@ -158,18 +173,6 @@ class Crate(
                             MaskItems.fromItemNames(page.getStrings("mask.items")),
                             *page.getStrings("mask.pattern").toTypedArray()
                         )
-                    )
-
-                    addComponent(
-                        config.getInt("preview.forwards-arrow.row"),
-                        config.getInt("preview.forwards-arrow.column"),
-                        forwardsArrow
-                    )
-
-                    addComponent(
-                        config.getInt("preview.backwards-arrow.row"),
-                        config.getInt("preview.backwards-arrow.column"),
-                        backwardsArrow
                     )
 
                     for (previewReward in page.getSubsections("rewards")) {
