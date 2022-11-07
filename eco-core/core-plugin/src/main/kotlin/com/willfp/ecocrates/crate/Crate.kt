@@ -17,6 +17,7 @@ import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.builder.ItemStackBuilder
+import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.StringUtils
@@ -72,7 +73,7 @@ class Crate(
 
     val particles = config.getSubsections("placed.particles").map {
         ParticleData(
-            Particle.valueOf(it.getString("particle").uppercase()),
+            Particles.lookup(it.getString("particle")),
             ParticleAnimations.getByID(it.getString("animation")) ?: ParticleAnimations.SPIRAL
         )
     }

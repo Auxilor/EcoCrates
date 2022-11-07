@@ -1,9 +1,9 @@
 package com.willfp.ecocrates.crate.placed.particle
 
-import org.bukkit.Particle
+import com.willfp.eco.core.particle.SpawnableParticle
 
 data class ParticleData(
-    val particle: Particle,
+    val particle: SpawnableParticle,
     val animation: ParticleAnimation
 ) {
 }
