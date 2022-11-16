@@ -32,7 +32,7 @@ class CommandResetWins(plugin: EcoPlugin) : Subcommand(
     }
 
     private fun resetWinsFor(sender: CommandSender, player: OfflinePlayer) {
-        if (!player.hasPlayedBefore()) {
+        if (!player.hasPlayedBefore() && !player.isOnline) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return
         }
