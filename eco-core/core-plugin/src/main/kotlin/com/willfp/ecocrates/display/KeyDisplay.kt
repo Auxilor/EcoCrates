@@ -20,8 +20,6 @@ class KeyDisplay(
 
         val fis = FastItemStack.wrap(itemStack)
 
-        fis.lore = crate.keyLore.map { Display.PREFIX + it }.toMutableList().apply { this.addAll(
-            fis.lore
-        ) }
+        fis.lore = crate.keyLore.map { Display.PREFIX + it } + fis.lore
     }
 }
