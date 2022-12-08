@@ -44,6 +44,7 @@ class PlacedCrate(
 
     internal fun handleChunkUnload() {
         hologram.remove()
+        item?.remove()
     }
 
     private fun tickHolograms(tick: Int) {
