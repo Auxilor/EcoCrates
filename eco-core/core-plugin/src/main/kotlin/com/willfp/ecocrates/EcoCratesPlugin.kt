@@ -18,6 +18,7 @@ import com.willfp.ecocrates.converters.impl.SpecializedCratesConverter
 import com.willfp.ecocrates.crate.CrateKeyListener
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.CrateDisplay
+import com.willfp.ecocrates.crate.placed.HologramBugFixer
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.display.KeyDisplay
 import com.willfp.ecocrates.reward.Rewards
@@ -110,7 +111,8 @@ class EcoCratesPlugin : EcoPlugin() {
     override fun loadListeners(): List<Listener> {
         return listOf(
             PlacedCrateListener(this),
-            CrateKeyListener()
+            CrateKeyListener(),
+            HologramBugFixer
         )
     }
 
