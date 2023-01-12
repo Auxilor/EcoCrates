@@ -17,6 +17,8 @@ class PlacedCrate(
         z += 0.5
     }
 
+    val chunkKey = location.chunk.key
+
     private val world = location.world!!
 
     private val hologram = HologramManager.createHologram(
