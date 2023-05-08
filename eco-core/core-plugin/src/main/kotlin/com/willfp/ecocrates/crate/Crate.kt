@@ -133,6 +133,12 @@ class Crate(
         0
     )
 
+    private val toGetKey: PersistentDataKey<Int> = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("${id}_to_get"),
+        PersistentDataKeyType.INT,
+        0
+    )
+
     private val rollFactory = Rolls.getByID(config.getString("roll"))!!
 
     private val previewGUI = menu(config.getInt("preview.rows")) {
@@ -529,6 +535,18 @@ class Crate(
 
     fun hasPhysicalKey(player: Player): Boolean {
         return key.matches(player.inventory.itemInMainHand)
+    }
+
+    fun getKeysToGet(player: OfflinePlayer): Int {
+        return player.profile.read(this.toGetKey)
+    }
+
+    fun setKeysToGet(player: OfflinePlayer, amount: Int) {
+        player.profile.write(this.toGetKey, amount)
+    }
+
+    fun adjustKeysToGet(player: OfflinePlayer, amount: Int) {
+        this.setKeysToGet(player, this.getKeysToGet(player) + amount)
     }
 
     fun hasVirtualKey(player: Player): Boolean {

@@ -12,6 +12,7 @@ messages:
   invalid-player: "&cUnknown player!"
   gave-keys: "Gave %amount%&f %crate%&f key(s) to %user%&f!"
   gave-keys-all: "Gave %amount%&f %crate%&f key(s) to all online players!"
+  gave-keys-offline: "Gave %amount%&f %crate%&f key(s) to all online and offline players!"
   took-keys: "Took %amount%&f %crate%&f key(s) from %user%&f!"
   not-enough-took-keys: "&c%user%&f has not enough %crate% key(s) to take!"
   must-target-block: "&cYou must be looking at a block!"
@@ -25,3 +26,4 @@ messages:
   invalid-converter: "&cUnknown converter!"
   converted: "&aConverted successfully!"
   converting: "Attempting to convert..."
+  offline-keys-received: "You have received %amount%&f %crate%&f key(s) while being offline!"

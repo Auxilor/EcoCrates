@@ -41,6 +41,7 @@ permissions:
       ecocrates.command.resetwins: true
       ecocrates.command.convert: true
       ecocrates.command.giveall: true
+      ecocrates.command.giveoffline: true
       ecocrates.rewards.*: true
       ecocrates.break: true
       ecocrates.open.*: true
@@ -56,7 +57,10 @@ permissions:
     description: Allows giving players keys
     default: op
   ecocrates.command.giveall:
-    description: Allows giving all players keys
+    description: Allows giving all online players keys
+    default: op
+  ecocrates.command.giveoffline:
+    description: Allows giving all online and offline players keys
     default: op
   ecocrates.command.take:
     description: Allows taking players keys
