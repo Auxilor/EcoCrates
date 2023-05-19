@@ -306,7 +306,7 @@ class Crate(
     }
 
     private fun hasRanOutOfRewardsAndNotify(player: Player): Boolean {
-        val ranOut = rewards.all { it.getWeight(player) <= 0 || it.getDisplayWeight(player) <= 0 }
+        val ranOut = rewards.all { it.getChance(player) <= 0 }
 
         if (ranOut) {
             player.sendMessage(plugin.langYml.getMessage("all-rewards-used"))
@@ -321,7 +321,7 @@ class Crate(
         // Limit to 1024 in case RNG breaks.
         for (i in 0..1024) {
             val reward = selection[i % rewards.size]
-            if (NumberUtils.randFloat(0.0, 100.0) < reward.getPercentageChance(player, selection, displayWeight)) {
+            if (NumberUtils.randFloat(0.0, 100.0) < reward.getPercentageChance(player, selection)) {
                 return reward
             }
         }

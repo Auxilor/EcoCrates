@@ -37,6 +37,11 @@ class Reward(
 
     private val messages = config.getFormattedStrings("messages")
 
+    private val actualChance = config.getInt("chance.actual")
+
+    private val displayChance = config.getInt("chance.display")
+
+
     private val permission = Permission(
         "ecocrates.reward.$id",
         "Allows getting $id as a reward",
@@ -58,7 +63,7 @@ class Reward(
         0
     )
 
-    private val canPermissionMultiply = config.getBool("weight.permission-multipliers")
+    private val canPermissionMultiply = config.getBool("chance.permission-multipliers")
 
     private val baseDisplay = ItemStackBuilder(
         Items.lookup(config.getString("display.item"))
@@ -72,16 +77,10 @@ class Reward(
         val lore = config.getStrings("display.lore").map {
             it.replace(
                 "%chance%",
-                getPercentageChance(player, crate.rewards, displayWeight = true).toNiceString()
+                displayChance.toString()
             ).replace(
                 "%actual_chance%",
-                getPercentageChance(player, crate.rewards, displayWeight = false).toNiceString()
-            ).replace(
-                "%weight%",
-                this.getDisplayWeight(player).toNiceString()
-            ).replace(
-                "%actual_weight%",
-                this.getWeight(player).toNiceString()
+                (actualChance / 100.0).toString()
             ).formatEco(player)
         }
 
@@ -98,8 +97,8 @@ class Reward(
         return baseDisplay.clone()
     }
 
-    fun getWeight(player: Player): Double {
-        val weight = config.getDoubleFromExpression("weight.actual", player)
+    fun getChance(player: Player): Double {
+        val chance = actualChance.toDouble() / 100
         if (maxWins > 0) {
             if (player.profile.read(winsKey) >= maxWins) {
                 return 0.0
@@ -108,38 +107,25 @@ class Reward(
         if (!player.hasPermission(permission)) {
             return 0.0
         }
-        return weight
+        return chance
     }
 
-    fun getDisplayWeight(player: Player): Double {
-        val weight = config.getDoubleFromExpression("weight.display", player)
-        if (maxWins > 0) {
-            if (player.profile.read(winsKey) >= maxWins) {
-                return 0.0
-            }
-        }
-        if (!player.hasPermission(permission)) {
-            return 0.0
-        }
-        return weight
-    }
-
-    fun getPercentageChance(player: Player, among: Collection<Reward>, displayWeight: Boolean = false): Double {
+    fun getPercentageChance(player: Player, among: Collection<Reward>): Double {
         val others = among.toMutableList()
         others.remove(this)
 
-        var weight = (if (displayWeight) this.getDisplayWeight(player) else this.getWeight(player))
+        var chance = this.getChance(player)
 
         if (canPermissionMultiply) {
-            weight *= PermissionMultipliers.getForPlayer(player).multiplier
+            chance *= PermissionMultipliers.getForPlayer(player).multiplier
         }
 
-        var totalWeight = weight
-        for (other in others) {
-            totalWeight += if (displayWeight) other.getDisplayWeight(player) else other.getWeight(player)
+        var totalChance = 0.0
+        for (reward in among) {
+            totalChance += reward.getChance(player)
         }
 
-        return (weight / totalWeight) * 100
+        return (chance / totalChance) * 100
     }
 
     // Legacy

@@ -4,7 +4,7 @@ rewards:
     items: # The items to win, check here: https://plugins.auxilor.io/all-plugins/the-item-lookup-system
       - diamond_sword sharpness:5 unbreaking:3
     messages: [ ] # The messages to send the player
-    weight: # The actual chances / probabilities
+    chance: # The actual chances / probabilities
       permission-multipliers: true # If permission multipliers should affect the reward chance
       actual: 1 # The actual chance of winning the crate, can use maths and placeholders (eg %player_y% * 25) for reactive chance
       display: 25 # The display chance, used in animations - lets you rig crates however you want
@@ -13,7 +13,7 @@ rewards:
       name: "&bDiamond Sword" # The item name
       item: diamond_sword sharpness:5 unbreaking:3 # The shown item
       dont-keep-lore: false # Optional config, set to true to only show the custom lore
-      lore: # Can use %chance%, %actual_chance%, %weight%, and %actual_weight% as placeholders
+      lore: # Can use %chance% and %actual_chance% as placeholders
         - "&fDisplay Chance: &a%chance%%"
         - "&fActual Chance: &a%actual_chance%%"
 
@@ -22,7 +22,7 @@ rewards:
     items:
       - emerald 64
     messages: [ ]
-    weight:
+    chance:
       permission-multipliers: false
       actual: 1
       display: 50
@@ -39,7 +39,7 @@ rewards:
       - "eco give %player% 1000"
     items: [ ]
     messages: [ ]
-    weight:
+    chance:
       permission-multipliers: false
       actual: 10
       display: 25
@@ -57,7 +57,7 @@ rewards:
       - bedrock
     messages:
       - 'You won the rare bedrock!'
-    weight:
+    chance:
       permission-multipliers: false
       actual: 88
       display: 0
