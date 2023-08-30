@@ -3,6 +3,11 @@
 # by Auxilor
 #
 
+# Even if eco is set up to use a database, you can
+# force EcoCrates to save to local storage to disable
+# cross-server sync.
+use-local-storage: false
+
 no-key-velocity: 1.5 # The speed at which a player should be launched away from a crate if they try to open it without a key. Set to 0 to disable.
 track-player-keys: false # If an NBT tag should be added to keys that links them to a player - will prevent stacking some keys.
 
