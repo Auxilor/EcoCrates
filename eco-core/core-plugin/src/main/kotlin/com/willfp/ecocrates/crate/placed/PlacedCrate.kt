@@ -60,7 +60,8 @@ class PlacedCrate(
 
         if (currentFrame != frameToShow && frameToShow != null) {
             currentFrame = frameToShow
-            hologram.setContents(frameToShow.lines)
+            @Suppress("USELESS_ELVIS")
+            hologram.setContents(frameToShow.lines ?: emptyList())
         }
     }
 
