@@ -1,14 +1,14 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Crates
+import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
 
-class CommandTake(plugin: EcoPlugin) : Subcommand(
+object CommandTake : Subcommand(
     plugin,
     "take",
     "ecocrates.command.take",
@@ -28,13 +28,13 @@ class CommandTake(plugin: EcoPlugin) : Subcommand(
         }
 
         if (args.size < 2) {
-            sender.sendMessage("must-specify-crate")
+            sender.sendMessage(plugin.langYml.getMessage("must-specify-crate"))
             return
         }
 
         val crate = Crates.getByID(args[1])
 
-        if(crate == null) {
+        if (crate == null) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-crate"))
             return
         }
@@ -80,7 +80,7 @@ class CommandTake(plugin: EcoPlugin) : Subcommand(
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
         val completions = mutableListOf<String>()
 
-        if (args.isEmpty()){
+        if (args.isEmpty()) {
             return Crates.values().map { it.id }
         }
 

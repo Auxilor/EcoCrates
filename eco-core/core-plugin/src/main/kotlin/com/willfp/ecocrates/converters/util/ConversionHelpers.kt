@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.willfp.ecocrates.converters.util
 
 import com.willfp.eco.core.config.TransientConfig
@@ -7,7 +9,6 @@ object ConversionHelpers {
     fun createEmptyReward(): Config {
         val result = TransientConfig()
 
-        result.set("id", "default")
         result.set("commands", mutableListOf<String>())
         result.set("items", mutableListOf("stone"))
         result.set("messages", mutableListOf<String>())
@@ -33,7 +34,6 @@ object ConversionHelpers {
     fun createEmptyCrate(): Config {
         val result = TransientConfig()
 
-        result.set("id", "default")
         result.set("name", "default")
         result.set("roll", "csgo")
         result.set("can-reroll", false)

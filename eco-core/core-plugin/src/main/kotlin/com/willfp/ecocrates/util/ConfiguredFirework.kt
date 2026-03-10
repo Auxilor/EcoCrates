@@ -1,4 +1,4 @@
-package com.willfp.ecocrates.util;
+package com.willfp.ecocrates.util
 
 import com.willfp.eco.core.config.interfaces.Config
 import org.bukkit.Color

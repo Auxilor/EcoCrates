@@ -1,0 +1,17 @@
+name: "<g:#00ffff>Rare Bedrock</g:#00ff00>"
+win-effects:
+  - id: give_item
+    args:
+      item: bedrock
+  - id: send_message
+    args:
+      message: "You won the rare bedrock!"
+weight:
+  permission-multipliers: false
+  value: 40
+max-wins: -1
+display:
+  name: "<g:#00ffff>Rare Bedrock</g:#00ff00>"
+  item: bedrock
+  lore:
+    - "&fChance: &a%chance%%"

@@ -1,11 +1,9 @@
 package com.willfp.ecocrates.crate
 
 import com.willfp.eco.core.config.updating.ConfigUpdater
-import com.willfp.ecocrates.EcoCratesPlugin
-import com.willfp.ecocrates.crate.placed.PlacedCrates
+import com.willfp.ecocrates.plugin
 import org.bukkit.entity.Player
 
-@Suppress("UNUSED")
 object PermissionMultipliers {
     private val REGISTRY = mutableListOf<PermissionMultiplier>()
     private val NO_MULTIPLIER = PermissionMultiplier("none", 1.0, 0)
@@ -45,9 +43,10 @@ object PermissionMultipliers {
         return REGISTRY.toList()
     }
 
+    @Suppress("DEPRECATION")
     @ConfigUpdater
     @JvmStatic
-    fun update(plugin: EcoCratesPlugin) {
+    fun update() {
         REGISTRY.clear()
 
         for (config in plugin.configYml.getSubsections("permission-multipliers")) {

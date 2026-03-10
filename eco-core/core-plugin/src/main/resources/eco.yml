@@ -1,4 +1,8 @@
-resource-id: 2149
-bstats-id: 14691
-color: '&#6dd5ed'
-supports-extensions: true
+environment:
+  - name: libreforge version
+    value: ${libreforgeVersion}
+
+options:
+  resource-id: 2149
+  bstats-id: 14691
+  color: '&#6dd5ed'

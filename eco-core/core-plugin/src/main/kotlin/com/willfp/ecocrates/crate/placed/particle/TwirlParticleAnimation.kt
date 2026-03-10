@@ -5,7 +5,7 @@ import com.willfp.ecocrates.util.lerp
 import org.bukkit.util.Vector
 import kotlin.math.PI
 
-class TwirlParticleAnimation : ParticleAnimation("twirl") {
+object TwirlParticleAnimation : ParticleAnimation("twirl") {
     override fun getOffset(tick: Int): Vector {
         val small = config.getDouble("small-radius")
         val large = config.getDouble("large-radius")

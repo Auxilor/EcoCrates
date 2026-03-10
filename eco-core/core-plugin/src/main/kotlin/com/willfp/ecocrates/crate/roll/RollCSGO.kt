@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
@@ -10,6 +9,7 @@ import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
+import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import org.bukkit.Location
 import org.bukkit.Material
@@ -20,7 +20,6 @@ import org.bukkit.inventory.ItemStack
 class RollCSGO private constructor(
     override val reward: Reward,
     override val crate: Crate,
-    override val plugin: EcoPlugin,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -47,10 +46,10 @@ class RollCSGO private constructor(
         .toList()
 
     // Add three so it lines up
-    private val display = crate.getRandomRewards(player, scrollTimes + 3, displayWeight = true)
+    private val display = crate.getRandomRewards(player, scrollTimes + 3)
         .toMutableList().apply {
             add(reward)
-            addAll(crate.getRandomRewards(player, 5, displayWeight = true))
+            addAll(crate.getRandomRewards(player, 5))
         }
 
     private var scroll = 0
@@ -69,7 +68,7 @@ class RollCSGO private constructor(
             )
         )
 
-        setTitle(crate.name)
+        title = crate.name
 
         for (i in 1..9) {
             setSlot(
@@ -127,7 +126,6 @@ class RollCSGO private constructor(
             RollCSGO(
                 options.reward,
                 options.crate,
-                options.plugin,
                 options.player,
                 options.location,
                 options.isReroll,

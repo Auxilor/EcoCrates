@@ -1,19 +1,21 @@
+@file:Suppress("DEPRECATION")
+
 package com.willfp.ecocrates.converters.impl
 
 import com.willfp.eco.core.config.BuildableConfig
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.items.toLookupString
-import com.willfp.ecocrates.EcoCratesPlugin
 import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
 import com.willfp.ecocrates.crate.Crates
+import com.willfp.ecocrates.plugin
 import me.PM2.customcrates.crates.Crate
 import me.PM2.customcrates.crates.PlacedCrate
 import me.PM2.customcrates.crates.options.rewards.Reward
 import org.bukkit.Location
 import java.io.File
 
-class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
+object SpecializedCratesConverter : Converter {
     override val id: String = "SpecializedCrates"
 
     override fun convert() {
@@ -25,7 +27,6 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
             )
         }
 
-        plugin.rewardsYml.save()
         plugin.reload()
 
         val pCrates = PlacedCrate.getPlacedCrates()
@@ -75,8 +76,9 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
         result.set("open.broadcasts", mutableListOf("%player%&f is opening the ${crate.name}!"))
         result.set("finish.broadcasts", mutableListOf("%player%&f won %reward%&f from the ${crate.name}!"))
 
+        val newRewards = mutableListOf<ConvertedRewardConfig>()
+
         if (crate.settings.reward != null) {
-            val newRewards = mutableListOf<Config>()
             var row = 2
             var col = 2
             var counter = 1
@@ -94,28 +96,28 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
                 counter++
             }
 
-            val rewards = plugin.rewardsYml.getSubsections("rewards").toMutableList()
-
-            rewards.addAll(newRewards)
-
-            plugin.rewardsYml.set("rewards", rewards)
-            result.set("rewards", newRewards.map { it.getString("id") })
+            result.set("rewards", newRewards.map { it.id })
         }
 
-        return ConvertedCrateConfig(id, result)
+        return ConvertedCrateConfig(id, result, newRewards)
     }
 
-    private fun convertReward(reward: Reward, salt: String, row: Int, col: Int, crateConfig: Config): Config {
+    private fun convertReward(
+        reward: Reward,
+        salt: String,
+        row: Int,
+        col: Int,
+        crateConfig: Config
+    ): ConvertedRewardConfig {
         val result = ConversionHelpers.createEmptyReward()
 
-        result.set("id", salt)
-
-        result.set("commands", reward.commands
-            .map {
-                it.replace(
-                    "{name}", "%player%"
-                )
-            }
+        result.set(
+            "commands", reward.commands
+                .map {
+                    it.replace(
+                        "{name}", "%player%"
+                    )
+                }
         )
         if (reward.isGiveDisplayItem) {
             val item = reward.displayBuilder.stack
@@ -145,6 +147,6 @@ class SpecializedCratesConverter(private val plugin: EcoCratesPlugin) : Converte
         )
         crateConfig.set("preview.rewards", rewards)
 
-        return result
+        return ConvertedRewardConfig(salt, result)
     }
 }

@@ -1,22 +1,18 @@
 package com.willfp.ecocrates.crate.placed.particle
 
 import com.willfp.eco.core.particle.SpawnableParticle
-import com.willfp.ecocrates.EcoCratesPlugin
+import com.willfp.eco.core.registry.Registrable
+import com.willfp.ecocrates.plugin
 import org.bukkit.Location
-import org.bukkit.Particle
 import org.bukkit.util.Vector
 
 abstract class ParticleAnimation(
     val id: String
-) {
-    protected open val config = EcoCratesPlugin.instance.configYml.getSubsection("animations.$id")
+) : Registrable {
+    protected open val config = plugin.configYml.getSubsection("animations.$id")
 
     init {
-        register()
-    }
-
-    private fun register() {
-        ParticleAnimations.addNewAnimation(this)
+        ParticleAnimations.register(this)
     }
 
     fun spawnParticle(center: Location, tick: Int, particle: SpawnableParticle) {
@@ -25,4 +21,8 @@ abstract class ParticleAnimation(
     }
 
     protected abstract fun getOffset(tick: Int): Vector
+
+    override fun getID(): String {
+        return id
+    }
 }

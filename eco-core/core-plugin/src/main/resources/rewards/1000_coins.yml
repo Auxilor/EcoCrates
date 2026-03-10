@@ -1,0 +1,15 @@
+name: "&a$1000"
+win-effects:
+  - id: give_price
+    args:
+      value: 1000
+      type: coins
+weight:
+  permission-multipliers: false
+  value: 10
+max-wins: -1
+display:
+  name: "&a$1000"
+  item: paper 1 unbreaking:1 hide_enchants
+  lore:
+    - "&fChance: &a%chance%%"

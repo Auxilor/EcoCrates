@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.reward.Reward
@@ -22,11 +21,6 @@ interface Roll {
      * The crate.
      */
     val crate: Crate
-
-    /**
-     * The plugin.
-     */
-    val plugin: EcoPlugin
 
     /**
      * The location.

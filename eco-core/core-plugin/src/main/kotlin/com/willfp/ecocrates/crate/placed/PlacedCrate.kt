@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.crate.placed
 
+import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.ecocrates.crate.Crate
 import org.bukkit.Location
@@ -21,10 +22,7 @@ class PlacedCrate(
 
     private val world = location.world!!
 
-    private val hologram = HologramManager.createHologram(
-        location.clone().add(0.0, crate.hologramHeight, 0.0),
-        crate.hologramFrames.firstOrNull()?.lines ?: emptyList()
-    )
+    private var hologram: Hologram? = null
 
     private var currentFrame: HologramFrame? = null
 
@@ -40,16 +38,20 @@ class PlacedCrate(
     }
 
     internal fun onRemove() {
-        hologram.remove()
+        hologram?.remove()
+        hologram = null
         item?.remove()
-    }
-
-    internal fun handleChunkUnload() {
-        hologram.remove()
-        item?.remove()
+        item = null
     }
 
     private fun tickHolograms(tick: Int) {
+        if (hologram == null) {
+            hologram = HologramManager.createHologram(
+                location.clone().add(0.0, crate.hologramHeight, 0.0),
+                crate.hologramFrames.firstOrNull()?.lines ?: emptyList()
+            )
+        }
+
         var frameToShow: HologramFrame? = null
 
         for (hologramFrame in crate.hologramFrames) {
@@ -61,16 +63,23 @@ class PlacedCrate(
         if (currentFrame != frameToShow && frameToShow != null) {
             currentFrame = frameToShow
             @Suppress("USELESS_ELVIS")
-            hologram.setContents(frameToShow.lines ?: emptyList())
+            hologram?.setContents(frameToShow.lines ?: emptyList())
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun tickRandomReward(tick: Int) {
         if (!crate.isShowingRandomReward || crate.rewards.isEmpty()) {
             return
         }
 
         fun ensureItemSpawned() {
+            // clear the other items
+            item?.let { item ->
+                item.getNearbyEntities(0.5, 0.5, 0.5).filterIsInstance<Item>().filter { !it.hasGravity() }
+                    .forEach { it.remove() }
+            }
+
             if (item == null) {
                 val scan = world.getNearbyEntities(
                     location.clone().add(0.0, crate.randomRewardHeight, 0.0),

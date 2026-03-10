@@ -1,15 +1,15 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.OpenMethod
+import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 
-class CommandForceOpen(plugin: EcoPlugin) : Subcommand(
+object CommandForceOpen : Subcommand(
     plugin,
     "forceopen",
     "ecocrates.command.forceopen",

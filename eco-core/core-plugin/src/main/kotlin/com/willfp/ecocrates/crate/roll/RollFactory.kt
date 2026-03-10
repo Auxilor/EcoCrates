@@ -1,15 +1,17 @@
 package com.willfp.ecocrates.crate.roll
 
+import com.willfp.eco.core.registry.Registrable
+
 abstract class RollFactory<T : Roll>(
     val id: String
-) {
+) : Registrable {
     init {
-        register()
-    }
-
-    private fun register() {
-        Rolls.addNewFactory(this)
+        Rolls.register(this)
     }
 
     abstract fun create(options: RollOptions): T
+
+    override fun getID(): String {
+        return id
+    }
 }

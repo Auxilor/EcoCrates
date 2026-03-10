@@ -1,0 +1,27 @@
+# The ID of the reward is the name of the .yml file,
+# for example mythic.yml has the ID of mythic
+# You can place rewards anywhere in this folder,
+# including in subfolders if you want to organize your reward configs
+# _example.yml is not loaded.
+
+name: "&bDiamond Sword" # The name of the reward
+
+win-effects: # The effects to run when winning the reward
+  - id: give_item
+    args:
+      item: diamond_sword sharpness:5 unbreaking:3
+  - id: send_message
+    args:
+      message: "&fYou won the %reward% &fin %crate%&f!"
+
+weight: # The chances / probabilities
+  permission-multipliers: true # If permission multipliers should affect the reward chance
+  value: 1 # The chance of winning the crate, can use maths and placeholders (eg %player_y% * 25) for reactive chance
+max-wins: -1 # The max amount of times any player can win the reward, useful for giving permissions / perks
+
+display: # The display item shown in animations and GUIs
+  name: "&bDiamond Sword" # The item name
+  item: diamond_sword sharpness:5 unbreaking:3 # The shown item
+  dont-keep-lore: false # Optional config, set to true to only show the custom lore
+  lore: # Can use %chance% and %weight% as placeholders
+    - "&fChance: &a%chance%%"

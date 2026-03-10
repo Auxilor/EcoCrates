@@ -4,7 +4,7 @@ import com.willfp.eco.util.NumberUtils
 import org.bukkit.util.Vector
 import kotlin.math.PI
 
-class TiltedRingsParticleAnimation : ParticleAnimation("tilted_rings") {
+object TiltedRingsParticleAnimation : ParticleAnimation("tilted_rings") {
     override fun getOffset(tick: Int): Vector {
         val baseVector = if (tick % 2 == 0) {
             Vector(

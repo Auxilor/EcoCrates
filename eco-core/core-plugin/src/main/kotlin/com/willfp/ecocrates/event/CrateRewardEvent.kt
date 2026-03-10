@@ -8,9 +8,9 @@ import org.bukkit.event.player.PlayerEvent
 
 class CrateRewardEvent(
     player: Player,
-    val crate: Crate,
+    override val crate: Crate,
     var reward: Reward
-) : PlayerEvent(player) {
+) : PlayerEvent(player), CrateEvent {
     override fun getHandlers(): HandlerList {
         return Companion.handlers
     }

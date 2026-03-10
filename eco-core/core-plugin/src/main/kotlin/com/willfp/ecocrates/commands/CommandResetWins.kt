@@ -1,15 +1,15 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Crates
+import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
 
-class CommandResetWins(plugin: EcoPlugin) : Subcommand(
+object CommandResetWins : Subcommand(
     plugin,
     "resetwins",
     "ecocrates.command.resetwins",

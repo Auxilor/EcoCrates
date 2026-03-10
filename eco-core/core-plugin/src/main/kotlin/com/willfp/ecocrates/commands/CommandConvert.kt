@@ -1,12 +1,12 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.converters.Converters
+import com.willfp.ecocrates.plugin
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
 
-class CommandConvert(plugin: EcoPlugin) : Subcommand(
+object CommandConvert : Subcommand(
     plugin,
     "convert",
     "ecocrates.command.convert",
@@ -18,7 +18,7 @@ class CommandConvert(plugin: EcoPlugin) : Subcommand(
             return
         }
 
-        val converter = Converters.getById(args[0])
+        val converter = Converters.get(args[0])
 
         if (converter == null) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-converter"))

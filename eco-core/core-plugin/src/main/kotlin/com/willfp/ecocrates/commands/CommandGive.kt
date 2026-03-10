@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Crates
+import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.StringUtil
 
-class CommandGive(plugin: EcoPlugin) : Subcommand(
+object CommandGive : Subcommand(
     plugin,
     "give",
     "ecocrates.command.give",
@@ -33,7 +33,7 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
         }
 
         if (args.size < 2) {
-            sender.sendMessage("must-specify-crate")
+            sender.sendMessage(plugin.langYml.getMessage("must-specify-crate"))
             return
         }
 
@@ -57,7 +57,7 @@ class CommandGive(plugin: EcoPlugin) : Subcommand(
             val items = mutableListOf<ItemStack>().apply { repeat(amount) { add(crate.key.item) } }
 
             if (plugin.configYml.getBool("track-player-keys")) {
-                items.map {
+                items.forEach {
                     val meta = it.itemMeta!!
                     meta.persistentDataContainer.set(
                         plugin.namespacedKeyFactory.create("player"),

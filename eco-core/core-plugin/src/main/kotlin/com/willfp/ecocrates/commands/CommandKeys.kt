@@ -1,12 +1,12 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.crate.KeyGUI
+import com.willfp.ecocrates.plugin
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class CommandKeys(plugin: EcoPlugin) : Subcommand(
+object CommandKeys : Subcommand(
     plugin,
     "keys",
     "ecocrates.command.keys",

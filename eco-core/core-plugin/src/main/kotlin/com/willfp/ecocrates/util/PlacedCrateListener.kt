@@ -1,8 +1,8 @@
 package com.willfp.ecocrates.util
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrates
+import com.willfp.ecocrates.plugin
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -11,9 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import java.util.*
 
-class PlacedCrateListener(
-    private val plugin: EcoPlugin
-) : Listener {
+object PlacedCrateListener : Listener {
     // Janky fix to interact events firing twice
     private val preventDoubles = mutableSetOf<UUID>()
 
@@ -55,6 +53,7 @@ class PlacedCrateListener(
                 block.location,
                 openMethod
             )
+
             else -> return
         }
 

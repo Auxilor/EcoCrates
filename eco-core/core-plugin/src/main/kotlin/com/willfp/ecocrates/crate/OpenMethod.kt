@@ -1,9 +1,9 @@
 package com.willfp.ecocrates.crate
 
-import com.willfp.eco.core.integrations.economy.EconomyManager
-import com.willfp.ecocrates.EcoCratesPlugin
+import com.willfp.eco.core.price.Prices
+import com.willfp.ecocrates.plugin
 import org.bukkit.entity.Player
-import java.util.*
+import java.util.Objects
 
 abstract class OpenMethod(
     val id: String
@@ -24,7 +24,6 @@ abstract class OpenMethod(
     }
 
     companion object {
-        private val plugin = EcoCratesPlugin.instance
 
         val PHYSICAL_KEY = object : OpenMethod("physical_key") {
             override fun canUseAndNotify(crate: Crate, player: Player): Boolean {
@@ -58,8 +57,7 @@ abstract class OpenMethod(
 
         val MONEY = object : OpenMethod("money") {
             override fun canUseAndNotify(crate: Crate, player: Player): Boolean {
-                val hasAmount = EconomyManager.hasAmount(player, crate.priceToOpen)
-
+                val hasAmount = Prices.create(crate.priceToOpen.toString(), crate.currencyType).canAfford(player)
                 if (!hasAmount) {
                     player.sendMessage(plugin.langYml.getMessage("cannot-afford").replace("%crate%", crate.name))
                 }
@@ -68,7 +66,7 @@ abstract class OpenMethod(
             }
 
             override fun useMethod(crate: Crate, player: Player) {
-                EconomyManager.removeMoney(player, crate.priceToOpen)
+                Prices.create(crate.priceToOpen.toString(), crate.currencyType).pay(player)
             }
         }
 

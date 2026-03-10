@@ -1,9 +1,9 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
+import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.util.lerp
 import org.bukkit.Location
@@ -16,7 +16,6 @@ import kotlin.math.PI
 class RollEncircle private constructor(
     override val reward: Reward,
     override val crate: Crate,
-    override val plugin: EcoPlugin,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -31,8 +30,7 @@ class RollEncircle private constructor(
     private val itemCount = plugin.configYml.getInt("rolls.encircle.items")
     private val fillerItems = crate.getRandomRewards(
         player,
-        itemCount - 2, // Take two (?) off as the actual reward is in the display
-        displayWeight = true
+        itemCount - 2 // Take two (?) off as the actual reward is in the display
     )
     private val radius = plugin.configYml.getDouble("rolls.encircle.radius")
     private val height = plugin.configYml.getDouble("rolls.encircle.height")
@@ -47,6 +45,7 @@ class RollEncircle private constructor(
 
     private val display = mutableListOf<Item>()
 
+    @Suppress("DEPRECATION")
     override fun roll() {
         val world = location.world!!
 
@@ -91,6 +90,7 @@ class RollEncircle private constructor(
                     }
                 }
             }
+
             EncircleState.SPIN -> {
                 for ((index, item) in display.withIndex()) {
                     val endPosition = circleCenter.clone().add(
@@ -117,6 +117,7 @@ class RollEncircle private constructor(
                     state = EncircleState.REVEAL
                 }
             }
+
             EncircleState.REVEAL -> {
                 for (item in display.toSet()) {
                     if (item.itemStack != reward.getDisplay(player, crate)) {
@@ -140,6 +141,7 @@ class RollEncircle private constructor(
                     state = EncircleState.DONE
                 }
             }
+
             else -> {
                 // Do nothing
             }
@@ -175,7 +177,6 @@ class RollEncircle private constructor(
             RollEncircle(
                 options.reward,
                 options.crate,
-                options.plugin,
                 options.player,
                 options.location,
                 options.isReroll,

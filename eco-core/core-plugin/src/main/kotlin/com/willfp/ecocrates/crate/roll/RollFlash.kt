@@ -1,8 +1,8 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
+import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import org.bukkit.Location
 import org.bukkit.Sound
@@ -15,7 +15,6 @@ import org.bukkit.util.Vector
 class RollFlash private constructor(
     override val reward: Reward,
     override val crate: Crate,
-    override val plugin: EcoPlugin,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -23,7 +22,7 @@ class RollFlash private constructor(
 ) : Roll {
     private val duration = plugin.configYml.getInt("rolls.flash.duration")
     private val wait = plugin.configYml.getInt("rolls.flash.wait")
-    private val display = crate.getRandomRewards(player, 100, displayWeight = true)
+    private val display = crate.getRandomRewards(player, 100)
 
     private lateinit var item: Item
 
@@ -49,6 +48,7 @@ class RollFlash private constructor(
         )
     }
 
+    @Suppress("DEPRECATION")
     override fun tick(tick: Int) {
         if (tick % 5 == 0) {
             if (tick < duration) {
@@ -91,7 +91,6 @@ class RollFlash private constructor(
             RollFlash(
                 options.reward,
                 options.crate,
-                options.plugin,
                 options.player,
                 options.location,
                 options.isReroll,

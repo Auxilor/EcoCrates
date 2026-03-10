@@ -6,14 +6,15 @@ import com.badbones69.crazycrates.api.objects.Prize
 import com.willfp.eco.core.config.BuildableConfig
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.items.toLookupString
-import com.willfp.ecocrates.EcoCratesPlugin
 import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.PlacedCrates
+import com.willfp.ecocrates.plugin
 import java.io.File
 
-class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
+@Suppress("DEPRECATION")
+object CrazyCratesConverter : Converter {
     override val id = "CrazyCrates"
 
     override fun convert() {
@@ -25,7 +26,6 @@ class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
             )
         }
 
-        plugin.rewardsYml.save()
         plugin.reload()
 
         val jank = ArrayList(CrazyManager.getInstance().crateLocations)
@@ -73,7 +73,7 @@ class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
         result.set("open.broadcasts", mutableListOf("%player%&f is opening the ${crate.name}!"))
         result.set("finish.broadcasts", mutableListOf("%player%&f won %reward%&f from the ${crate.name}!"))
 
-        val newRewards = mutableListOf<Config>()
+        val newRewards = mutableListOf<ConvertedRewardConfig>()
         var row = 2
         var col = 2
         var counter = 1
@@ -91,20 +91,19 @@ class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
             counter++
         }
 
-        val rewards = plugin.rewardsYml.getSubsections("rewards").toMutableList()
+        result.set("rewards", newRewards.map { it.id })
 
-        rewards.addAll(newRewards)
-
-        plugin.rewardsYml.set("rewards", rewards)
-        result.set("rewards", newRewards.map { it.getString("id") })
-
-        return ConvertedCrateConfig(id, result)
+        return ConvertedCrateConfig(id, result, newRewards)
     }
 
-    private fun convertReward(reward: Prize, salt: String, row: Int, col: Int, crateConfig: Config): Config {
+    private fun convertReward(
+        reward: Prize,
+        salt: String,
+        row: Int,
+        col: Int,
+        crateConfig: Config
+    ): ConvertedRewardConfig {
         val result = ConversionHelpers.createEmptyReward()
-
-        result.set("id", salt)
 
         result.set("commands", reward.commands)
         result.set("items", reward.items.map { it.toLookupString() })
@@ -127,6 +126,6 @@ class CrazyCratesConverter(private val plugin: EcoCratesPlugin) : Converter {
         )
         crateConfig.set("preview.rewards", rewards)
 
-        return result
+        return ConvertedRewardConfig(salt, result)
     }
 }

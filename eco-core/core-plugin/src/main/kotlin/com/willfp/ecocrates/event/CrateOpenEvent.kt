@@ -9,11 +9,11 @@ import org.bukkit.event.player.PlayerEvent
 
 class CrateOpenEvent(
     player: Player,
-    val crate: Crate,
+    override val crate: Crate,
     val method: OpenMethod,
     var reward: Reward,
     val isReroll: Boolean
-) : PlayerEvent(player) {
+) : PlayerEvent(player), CrateEvent {
     override fun getHandlers(): HandlerList {
         return Companion.handlers
     }

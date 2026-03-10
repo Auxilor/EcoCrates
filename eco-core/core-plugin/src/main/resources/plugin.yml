@@ -1,5 +1,5 @@
-name: EcoCrates
-version: ${projectVersion}
+name: ${pluginName}
+version: ${version}
 main: com.willfp.ecocrates.EcoCratesPlugin
 api-version: 1.17
 authors: [ Auxilor ]
@@ -7,6 +7,7 @@ website: willfp.com
 depend:
   - eco
 softdepend:
+  - libreforge
   - CrateReloaded
   - ExcellentCrates
   - CrazyCrates

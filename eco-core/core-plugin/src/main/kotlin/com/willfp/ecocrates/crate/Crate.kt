@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.crate
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
@@ -19,6 +18,7 @@ import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
+import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.formatEco
@@ -32,16 +32,22 @@ import com.willfp.ecocrates.crate.roll.RollOptions
 import com.willfp.ecocrates.crate.roll.Rolls
 import com.willfp.ecocrates.event.CrateOpenEvent
 import com.willfp.ecocrates.event.CrateRewardEvent
+import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.ConfiguredFirework
 import com.willfp.ecocrates.util.ConfiguredSound
 import com.willfp.ecocrates.util.PlayableSound
+import com.willfp.libreforge.NamedValue
+import com.willfp.libreforge.ViolationContext
+import com.willfp.libreforge.effects.Effects
+import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
+import com.willfp.libreforge.toDispatcher
+import com.willfp.libreforge.triggers.TriggerData
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
-import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
@@ -50,10 +56,20 @@ import java.util.Objects
 import java.util.UUID
 
 class Crate(
-    val id: String,
-    private val config: Config,
-    private val plugin: EcoPlugin
-) {
+    override val id: String,
+    private val config: Config
+) : KRegistrable {
+    private val openEffects = Effects.compileChain(
+        config.getSubsections("open-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Crate $id Opening Effects")
+    )
+    private val finishEffects = Effects.compileChain(
+        config.getSubsections("finish-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Crate $id Finish Effects")
+    )
+
     val name = config.getFormattedString("name")
 
     val hologramFrames = config.getSubsections("placed.hologram.frames")
@@ -74,7 +90,7 @@ class Crate(
     val particles = config.getSubsections("placed.particles").map {
         ParticleData(
             Particles.lookup(it.getString("particle")),
-            ParticleAnimations.getByID(it.getString("animation")) ?: ParticleAnimations.SPIRAL
+            ParticleAnimations.get(it.getString("animation")) ?: ParticleAnimations.SPIRAL
         )
     }
 
@@ -85,9 +101,9 @@ class Crate(
     } else {
         CustomItem(
             plugin.namespacedKeyFactory.create("${id}_key"),
-            { it.getAsKey() == this },
+            { it.crate == this },
             Items.lookup(config.getString("key.item")).item
-                .clone().apply { setAsKeyFor(this@Crate) }
+                .clone().apply { crate = this@Crate }
         ).apply { register() }
     }
 
@@ -121,6 +137,8 @@ class Crate(
 
     val priceToOpen = config.getDouble("pay-to-open.price")
 
+    val currencyType = config.getString("pay-to-open.type")
+
     private val keysKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_keys"),
         PersistentDataKeyType.INT,
@@ -139,7 +157,7 @@ class Crate(
         0
     )
 
-    private val rollFactory = Rolls.getByID(config.getString("roll"))!!
+    private val rollFactory = Rolls.get(config.getString("roll"))!!
 
     private val previewGUI = menu(config.getInt("preview.rows")) {
         title = config.getFormattedString("preview.title")
@@ -183,7 +201,7 @@ class Crate(
                     )
 
                     for (previewReward in page.getSubsections("rewards")) {
-                        val reward = Rewards.getByID(previewReward.getString("id")) ?: continue
+                        val reward = Rewards[previewReward.getString("id")] ?: continue
                         val row = previewReward.getInt("row")
                         val column = previewReward.getInt("column")
 
@@ -208,6 +226,7 @@ class Crate(
             /*
             Legacy reward config.
              */
+            @Suppress("DEPRECATION")
             for (reward in rewards) {
                 if (reward.displayRow == null || reward.displayColumn == null) {
                     continue
@@ -241,29 +260,38 @@ class Crate(
         }
     }
 
+    @Deprecated("Use openEffects instead.")
     private val openSound = PlayableSound(
         config.getSubsections("open.sounds")
             .map { ConfiguredSound.fromConfig(it) }
     )
 
+    @Deprecated("Use openEffects instead.")
     private val openMessages = config.getStrings("open.messages")
 
+    @Deprecated("Use openEffects instead.")
     private val openBroadcasts = config.getStrings("open.broadcasts")
 
+    @Deprecated("Use openEffects instead.")
     private val openCommands = config.getStrings("open.commands")
 
+    @Deprecated("Use finishEffects instead.")
     private val finishSound = PlayableSound(
         config.getSubsections("finish.sounds")
             .map { ConfiguredSound.fromConfig(it) }
     )
 
+    @Deprecated("Use finishEffects instead.")
     private val finishFireworks = config.getSubsections("finish.fireworks")
         .map { ConfiguredFirework.fromConfig(it) }
 
+    @Deprecated("Use finishEffects instead.")
     private val finishMessages = config.getStrings("finish.messages")
 
+    @Deprecated("Use finishEffects instead.")
     private val finishBroadcasts = config.getStrings("finish.broadcasts")
 
+    @Deprecated("Use finishEffects instead.")
     private val finishCommands = config.getStrings("finish.commands")
 
     init {
@@ -276,6 +304,52 @@ class Crate(
             plugin,
             "${id}_opens",
         ) { getOpens(it).toString() }.register()
+
+        if (config.has("open.sounds")) {
+            plugin.logger.warning(
+                "Crate '$id' uses deprecated 'open.sounds'. Please switch to 'open-effects'."
+            )
+        }
+        if (config.has("open.messages")) {
+            plugin.logger.warning(
+                "Crate '$id' uses deprecated 'open.messages'. Please switch to 'open-effects'."
+            )
+        }
+        if (config.has("open.commands")) {
+            plugin.logger.warning(
+                "Crate '$id' uses deprecated 'open.commands'. Please switch to 'open-effects'."
+            )
+        }
+        if (config.has("open.broadcasts")) {
+            plugin.logger.warning(
+                "Crate '$id' uses deprecated 'open.broadcasts'. Please switch to 'open-effects'."
+            )
+        }
+        if (config.has("finish.sounds")) {
+            plugin.logger.warning(
+                "Crate '$id' uses deprecated 'finish.sounds'. Please switch to 'open-effects'."
+            )
+        }
+        if (config.has("finish.messages")) {
+            plugin.logger.warning(
+                "Crate '$id' uses deprecated 'finish.messages'. Please switch to 'open-effects'."
+            )
+        }
+        if (config.has("finish.commands")) {
+            plugin.logger.warning(
+                "Crate '$id' uses deprecated 'finish.commands'. Please switch to 'open-effects'."
+            )
+        }
+        if (config.has("finish.broadcasts")) {
+            plugin.logger.warning(
+                "Crate '$id' uses deprecated 'finish.broadcasts'. Please switch to 'open-effects'."
+            )
+        }
+        if (config.has("finish.fireworks")) {
+            plugin.logger.warning(
+                "Crate '$id' uses deprecated 'finish.fireworks'. Please switch to 'open-effects'."
+            )
+        }
     }
 
     private fun makeRoll(
@@ -289,14 +363,13 @@ class Crate(
 
         // Add three to the scroll times so that it lines up
         for (i in 0..(35 + 3)) {
-            display.add(getRandomReward(player, displayWeight = true)) // Fill roll with display weight items
+            display.add(getRandomReward(player)) // Fill roll with display weight items
         }
 
         return rollFactory.create(
             RollOptions(
                 reward,
                 this,
-                this.plugin,
                 player,
                 location,
                 isReroll,
@@ -306,7 +379,7 @@ class Crate(
     }
 
     private fun hasRanOutOfRewardsAndNotify(player: Player): Boolean {
-        val ranOut = rewards.all { it.getWeight(player) <= 0 || it.getDisplayWeight(player) <= 0 }
+        val ranOut = rewards.all { it.getWeight(player) <= 0 }
 
         if (ranOut) {
             player.sendMessage(plugin.langYml.getMessage("all-rewards-used"))
@@ -315,13 +388,13 @@ class Crate(
         return ranOut
     }
 
-    private fun getRandomReward(player: Player, displayWeight: Boolean = false): Reward {
+    private fun getRandomReward(player: Player): Reward {
         val selection = rewards.toList().shuffled()
 
         // Limit to 1024 in case RNG breaks.
         for (i in 0..1024) {
             val reward = selection[i % rewards.size]
-            if (NumberUtils.randFloat(0.0, 100.0) < reward.getPercentageChance(player, selection, displayWeight)) {
+            if (NumberUtils.randFloat(0.0, 100.0) < reward.getPercentageChance(player, selection)) {
                 return reward
             }
         }
@@ -347,6 +420,7 @@ class Crate(
         return hasPermission
     }
 
+    @Suppress("DEPRECATION")
     internal fun addToKeyGUI(builder: MenuBuilder) {
         if (!config.getBool("keygui.enabled")) {
             return
@@ -394,8 +468,8 @@ class Crate(
         )
     }
 
-    fun getRandomRewards(player: Player, amount: Int, displayWeight: Boolean = false): List<Reward> {
-        return (0..amount).map { getRandomReward(player, displayWeight) }
+    fun getRandomRewards(player: Player, amount: Int): List<Reward> {
+        return (0..amount).map { getRandomReward(player) }
     }
 
     fun openPlaced(player: Player, location: Location, method: OpenMethod) {
@@ -431,6 +505,7 @@ class Crate(
         }
     }
 
+    @Suppress("DEPRECATION")
     fun open(
         player: Player,
         method: OpenMethod,
@@ -452,6 +527,21 @@ class Crate(
         Bukkit.getPluginManager().callEvent(event)
 
         if (!isReroll) {
+            openEffects?.trigger(
+                TriggerData(
+                    player = player,
+                    location = loc
+                ).dispatch(player.toDispatcher())
+                    .apply {
+                        addPlaceholders(
+                            listOf(
+                                NamedValue("crate", name),
+                                NamedValue("crate_id", id)
+                            )
+                        )
+                    }
+            )
+
             openSound.play(loc)
 
             openCommands.map { it.replace("%player%", player.name) }
@@ -493,6 +583,7 @@ class Crate(
         previewGUI.open(player)
     }
 
+    @Suppress("DEPRECATION")
     fun handleFinish(roll: Roll) {
         val player = roll.player
         val location = roll.location
@@ -500,20 +591,47 @@ class Crate(
         val event = CrateRewardEvent(player, this, roll.reward)
         Bukkit.getPluginManager().callEvent(event)
 
-        event.reward.giveTo(player)
+        finishEffects?.trigger(
+            TriggerData(player = player)
+                .dispatch(player.toDispatcher())
+                .apply {
+                    addPlaceholders(
+                        listOf(
+                            NamedValue("crate", name),
+                            NamedValue("crate_id", id),
+                            NamedValue("reward", roll.reward.name),
+                            NamedValue("reward_id", roll.reward.id)
+                        )
+                    )
+                }
+        )
+
+        event.reward.giveTo(player, this)
         finishSound.play(location)
         finishFireworks.forEach { it.launch(location) }
 
-        finishCommands.map { it.replace("%player%", player.name) }
+        finishCommands.map {
+            it.replace("%reward%", event.reward.name)
+                .replace("%reward_id%", event.reward.id)
+                .replace("%crate%", name)
+                .replace("%crate_id%", id)
+        }.map { plugin.langYml.prefix + StringUtils.format(it, player) }
             .forEach { Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it) }
 
-        finishMessages.map { it.replace("%reward%", event.reward.displayName) }
-            .map { plugin.langYml.prefix + StringUtils.format(it, player) }
+        finishMessages.map {
+            it.replace("%reward%", event.reward.name)
+                .replace("%reward_id%", event.reward.id)
+                .replace("%crate%", name)
+                .replace("%crate_id%", id)
+        }.map { plugin.langYml.prefix + StringUtils.format(it, player) }
             .forEach { player.sendMessage(it) }
 
-        finishBroadcasts.map { it.replace("%reward%", event.reward.displayName) }
-            .map { it.replace("%player%", player.savedDisplayName) }
-            .map { plugin.langYml.prefix + StringUtils.format(it, player) }
+        finishBroadcasts.map {
+            it.replace("%reward%", event.reward.name)
+                .replace("%reward_id%", event.reward.id)
+                .replace("%crate%", name)
+                .replace("%crate_id%", id)
+        }.map { plugin.langYml.prefix + StringUtils.format(it, player) }
             .forEach { Bukkit.broadcastMessage(it) }
     }
 
@@ -581,6 +699,10 @@ class Crate(
 
     override fun toString(): String {
         return "Crate{id=$id}"
+    }
+
+    override fun getID(): String {
+        return id
     }
 }
 

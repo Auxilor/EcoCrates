@@ -1,10 +1,8 @@
 package com.willfp.ecocrates.crate.placed
 
-import com.willfp.eco.core.EcoPlugin
+import com.willfp.ecocrates.plugin
 
-class CrateDisplay(
-    private val plugin: EcoPlugin
-) {
+object CrateDisplay {
     private var tick = 0
 
     fun start() {

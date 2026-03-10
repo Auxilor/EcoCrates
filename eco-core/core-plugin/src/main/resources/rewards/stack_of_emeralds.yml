@@ -1,0 +1,14 @@
+name: "&aA Stack of Emeralds"
+win-effects:
+  - id: give_item
+    args:
+      item: emerald 64
+weight:
+  permission-multipliers: false
+  value: 10
+max-wins: -1
+display:
+  name: "&aStack of Emeralds"
+  item: emerald 64
+  lore:
+    - "&fChance: &a%chance%%"

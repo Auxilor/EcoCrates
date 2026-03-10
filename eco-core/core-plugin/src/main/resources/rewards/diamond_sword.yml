@@ -1,0 +1,18 @@
+name: "&bDiamond Sword"
+win-effects:
+  - id: give_item
+    args:
+      item: diamond_sword sharpness:5 unbreaking:3
+  - id: send_message
+    args:
+      message: "&fYou won the %reward% &fin %crate%&f!"
+weight:
+  permission-multipliers: true
+  value: 10
+max-wins: -1
+display:
+  name: "&bDiamond Sword"
+  item: diamond_sword sharpness:5 unbreaking:3
+  dont-keep-lore: false
+  lore:
+    - "&fChance: &a%chance%%"

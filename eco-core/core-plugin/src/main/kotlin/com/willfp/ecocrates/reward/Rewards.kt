@@ -1,46 +1,22 @@
 package com.willfp.ecocrates.reward
 
-import com.google.common.collect.HashBiMap
-import com.google.common.collect.ImmutableList
-import com.willfp.eco.core.config.updating.ConfigUpdater
-import com.willfp.ecocrates.EcoCratesPlugin
-import com.willfp.ecocrates.crate.Crates
+import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.libreforge.loader.LibreforgePlugin
+import com.willfp.libreforge.loader.configs.LegacyLocation
+import com.willfp.libreforge.loader.configs.RegistrableCategory
 
-@Suppress("UNUSED")
-object Rewards {
-    private val BY_ID = HashBiMap.create<String, Reward>()
+object Rewards : RegistrableCategory<Reward>("reward", "rewards") {
 
-    /**
-     * Get reward matching id.
-     *
-     * @param id The id to query.
-     * @return The matching reward, or null if not found.
-     */
-    @JvmStatic
-    fun getByID(id: String): Reward? {
-        return BY_ID[id]
+    override val legacyLocation = LegacyLocation(
+        "rewards.yml",
+        "rewards"
+    )
+
+    override fun clear(plugin: LibreforgePlugin) {
+        registry.clear()
     }
 
-    /**
-     * List of all registered rewards.
-     *
-     * @return The rewards.
-     */
-    @JvmStatic
-    fun values(): List<Reward> {
-        return ImmutableList.copyOf(BY_ID.values)
-    }
-
-    @JvmStatic
-    @ConfigUpdater
-    fun update(plugin: EcoCratesPlugin) {
-        BY_ID.clear()
-
-        for (config in plugin.rewardsYml.getSubsections("rewards")) {
-            val reward = Reward(plugin, config)
-            BY_ID[reward.id] = reward
-        }
-
-        Crates.update(plugin)
+    override fun acceptConfig(plugin: LibreforgePlugin, id: String, config: Config) {
+        registry.register(Reward(id, config))
     }
 }

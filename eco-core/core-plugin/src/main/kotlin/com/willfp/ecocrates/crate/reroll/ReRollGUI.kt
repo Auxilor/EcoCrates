@@ -6,14 +6,13 @@ import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
-import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.roll.Roll
+import com.willfp.ecocrates.plugin
 
 object ReRollGUI {
     private const val metaKey = "ecocrates-reroll-fix"
 
     fun open(roll: Roll) {
-        val plugin = roll.plugin
         val player = roll.player
 
         val menu = menu(plugin.configYml.getInt("reroll.rows")) {
@@ -24,7 +23,7 @@ object ReRollGUI {
                 )
             )
 
-            setTitle(plugin.configYml.getFormattedString("reroll.title"))
+            title = plugin.configYml.getFormattedString("reroll.title")
 
             setSlot(
                 plugin.configYml.getInt("reroll.accept.row"),

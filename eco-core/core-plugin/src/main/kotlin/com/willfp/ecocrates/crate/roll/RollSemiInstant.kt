@@ -1,9 +1,9 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
+import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import org.bukkit.Location
 import org.bukkit.entity.Item
@@ -13,7 +13,6 @@ import org.bukkit.util.Vector
 class RollSemiInstant private constructor(
     override val reward: Reward,
     override val crate: Crate,
-    override val plugin: EcoPlugin,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -35,6 +34,7 @@ class RollSemiInstant private constructor(
 
     private lateinit var item: Item
 
+    @Suppress("DEPRECATION")
     override fun roll() {
         val world = location.world!!
 
@@ -67,7 +67,6 @@ class RollSemiInstant private constructor(
             RollSemiInstant(
                 options.reward,
                 options.crate,
-                options.plugin,
                 options.player,
                 options.location,
                 options.isReroll,

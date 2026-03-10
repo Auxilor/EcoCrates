@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.willfp.ecocrates.converters.impl
 
 import com.hazebyte.crate.api.CrateAPI
@@ -6,19 +8,16 @@ import com.willfp.eco.core.config.BuildableConfig
 import com.willfp.eco.core.config.TransientConfig
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.items.toLookupString
-import com.willfp.ecocrates.EcoCratesPlugin
 import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.roll.Rolls
+import com.willfp.ecocrates.plugin
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
-@Suppress("UNCHECKED_CAST")
-class CrateReloadedConverter(
-    private val plugin: EcoCratesPlugin
-) : Converter {
+object CrateReloadedConverter : Converter {
     override val id = "CrateReloaded"
 
     override fun convert() {
@@ -35,12 +34,17 @@ class CrateReloadedConverter(
             .map { convertCrate(it) }
 
         for (crate in newCrates) {
-            File(plugin.dataFolder, "${crate.id}.yml").writeText(
+            File("${plugin.dataFolder}${File.pathSeparator}crates", "${crate.id}.yml").writeText(
                 crate.config.toPlaintext()
             )
+
+            for (reward in crate.rewards) {
+                File("${plugin.dataFolder}${File.pathSeparator}rewards", "${reward.id}.yml").writeText(
+                    reward.config.toPlaintext()
+                )
+            }
         }
 
-        plugin.rewardsYml.save()
         plugin.reload()
 
         CrateAPI.getBlockCrateRegistrar().locations.forEach {
@@ -61,7 +65,7 @@ class CrateReloadedConverter(
 
         crateConfig.set("name", buildingCrate.config.getString("display-name"))
 
-        val roll = Rolls.getByID(buildingCrate.config.getString("animation").lowercase()) ?: Rolls.CSGO
+        val roll = Rolls.get(buildingCrate.config.getString("animation").lowercase()) ?: Rolls.CSGO
 
         crateConfig.set("roll", roll.id)
 
@@ -75,25 +79,6 @@ class CrateReloadedConverter(
 
         crateConfig.set("pay-to-open.enabled", crateToConvert.isBuyable)
         crateConfig.set("pay-to-open.price", crateToConvert.cost)
-
-        var row = 2
-        var col = 2
-        var counter = 1
-
-        val newRewards = mutableListOf<Config>()
-
-        crateToConvert.rewards.forEach {
-            val salt = id + "_" + counter
-            newRewards.add(convertReward(it, salt, row, col, crateConfig))
-            col++
-            if (col >= 8) {
-                col = 2
-                row++
-            }
-            counter++
-        }
-
-        crateConfig.set("rewards", newRewards.map { it.getString("id") })
 
         crateConfig.set(
             "key", BuildableConfig()
@@ -169,19 +154,38 @@ class CrateReloadedConverter(
                 )
         )
 
-        val rewards = plugin.rewardsYml.getSubsections("rewards").toMutableList()
+        var row = 2
+        var col = 2
+        var counter = 1
 
-        rewards.addAll(newRewards)
+        val newRewards = mutableListOf<ConvertedRewardConfig>()
 
-        plugin.rewardsYml.set("rewards", rewards)
+        crateToConvert.rewards.forEach {
+            val salt = id + "_" + counter
+            newRewards.add(convertReward(it, salt, row, col, crateConfig))
+            col++
+            if (col >= 8) {
+                col = 2
+                row++
+            }
+            counter++
+        }
 
-        return ConvertedCrateConfig(id, crateConfig)
+        crateConfig.set("rewards", newRewards.map { it.id })
+
+        return ConvertedCrateConfig(id, crateConfig, newRewards)
     }
 
-    private fun convertReward(reward: Reward, salt: String, row: Int, col: Int, crateConfig: Config): Config {
+    @Suppress("DEPRECATION")
+    private fun convertReward(
+        reward: Reward,
+        salt: String,
+        row: Int,
+        col: Int,
+        crateConfig: Config
+    ): ConvertedRewardConfig {
         val resultConfig = ConversionHelpers.createEmptyReward()
 
-        resultConfig.set("id", salt)
         resultConfig.set("commands", reward.commands.map {
             it.replace("/", "")
                 .replace("{player}", "%player%")
@@ -211,7 +215,7 @@ class CrateReloadedConverter(
         )
         crateConfig.set("preview.rewards", rewards)
 
-        return resultConfig
+        return ConvertedRewardConfig(salt, resultConfig)
     }
 
     private data class BuildingCrate(val id: String, val config: Config)

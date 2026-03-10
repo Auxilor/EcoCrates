@@ -1,24 +1,24 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.ecocrates.crate.Crates
+import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.StringUtil
 
-class CommandGiveall(plugin: EcoPlugin) : Subcommand(
+object CommandGiveall : Subcommand(
     plugin,
     "giveall",
     "ecocrates.command.giveall",
     false
 ) {
     override fun onExecute(sender: CommandSender, args: List<String>) {
-        if (args.size < 1) {
-            sender.sendMessage("must-specify-crate")
+        if (args.isEmpty()) {
+            sender.sendMessage(plugin.langYml.getMessage("must-specify-crate"))
             return
         }
 
@@ -38,7 +38,7 @@ class CommandGiveall(plugin: EcoPlugin) : Subcommand(
                 val items = mutableListOf<ItemStack>().apply { repeat(amount) { add(crate.key.item) } }
 
                 if (plugin.configYml.getBool("track-player-keys")) {
-                    items.map {
+                    items.forEach {
                         val meta = it.itemMeta!!
                         meta.persistentDataContainer.set(
                             plugin.namespacedKeyFactory.create("player"),

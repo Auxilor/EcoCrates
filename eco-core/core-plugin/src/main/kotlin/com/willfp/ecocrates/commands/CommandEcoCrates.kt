@@ -1,28 +1,28 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.impl.PluginCommand
+import com.willfp.ecocrates.plugin
 import org.bukkit.command.CommandSender
 
-class CommandEcoCrates(plugin: EcoPlugin) : PluginCommand(
+object CommandEcoCrates : PluginCommand(
     plugin,
     "ecocrates",
     "ecocrates.command.ecocrates",
     false
 ) {
     init {
-        this.addSubcommand(CommandReload(plugin))
-            .addSubcommand(CommandOpen(plugin))
-            .addSubcommand(CommandPreview(plugin))
-            .addSubcommand(CommandGive(plugin))
-            .addSubcommand(CommandKeys(plugin))
-            .addSubcommand(CommandSet(plugin))
-            .addSubcommand(CommandForceOpen(plugin))
-            .addSubcommand(CommandResetWins(plugin))
-            .addSubcommand(CommandConvert(plugin))
-            .addSubcommand(CommandGiveall(plugin))
-            .addSubcommand(CommandTake(plugin))
-            .addSubcommand(CommandGiveoffline(plugin))
+        this.addSubcommand(CommandReload)
+            .addSubcommand(CommandOpen)
+            .addSubcommand(CommandPreview)
+            .addSubcommand(CommandGive)
+            .addSubcommand(CommandKeys)
+            .addSubcommand(CommandSet)
+            .addSubcommand(CommandForceOpen)
+            .addSubcommand(CommandResetWins)
+            .addSubcommand(CommandConvert)
+            .addSubcommand(CommandGiveall)
+            .addSubcommand(CommandTake)
+            .addSubcommand(CommandGiveoffline)
     }
 
     override fun onExecute(sender: CommandSender, args: List<String>) {

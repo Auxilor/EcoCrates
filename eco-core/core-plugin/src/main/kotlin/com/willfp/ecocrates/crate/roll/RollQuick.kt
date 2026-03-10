@@ -1,8 +1,8 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
+import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import org.bukkit.Location
 import org.bukkit.entity.Item
@@ -12,7 +12,6 @@ import org.bukkit.util.Vector
 class RollQuick private constructor(
     override val reward: Reward,
     override val crate: Crate,
-    override val plugin: EcoPlugin,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -28,6 +27,7 @@ class RollQuick private constructor(
     private val end = location.toVector()
         .add(Vector(0.0, height, 0.0))
 
+    @Suppress("DEPRECATION")
     override fun roll() {
         val world = location.world!!
 
@@ -72,7 +72,6 @@ class RollQuick private constructor(
             RollQuick(
                 options.reward,
                 options.crate,
-                options.plugin,
                 options.player,
                 options.location,
                 options.isReroll,
