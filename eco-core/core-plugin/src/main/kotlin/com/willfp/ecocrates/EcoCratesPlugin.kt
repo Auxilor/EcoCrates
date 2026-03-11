@@ -10,6 +10,7 @@ import com.willfp.ecocrates.converters.impl.CrazyCratesConverter
 import com.willfp.ecocrates.converters.impl.ExcellentCratesConverter
 import com.willfp.ecocrates.converters.impl.SpecializedCratesConverter
 import com.willfp.ecocrates.crate.Crates
+import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.KeyGUI
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
@@ -61,6 +62,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
 
     override fun loadConfigCategories(): List<ConfigCategory> {
         return listOf(
+            Keys,
             Crates,
             Rewards
         )

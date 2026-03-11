@@ -22,8 +22,8 @@ object KeyGUI {
 
             title = plugin.configYml.getFormattedString("keygui.title")
 
-            for (crate in Crates.values()) {
-                crate.addToKeyGUI(this)
+            for (key in Keys.values()) {
+                key.addToKeyGUI(this)
             }
         }
     }

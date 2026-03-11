@@ -14,3 +14,14 @@ object Crates : RegistrableCategory<Crate>("crate", "crates") {
         registry.register(Crate(id, config))
     }
 }
+
+object Keys : RegistrableCategory<SharedKey>("key", "keys") {
+
+    override fun clear(plugin: LibreforgePlugin) {
+        registry.clear()
+    }
+
+    override fun acceptConfig(plugin: LibreforgePlugin, id: String, config: Config) {
+        registry.register(SharedKey(id, config))
+    }
+}

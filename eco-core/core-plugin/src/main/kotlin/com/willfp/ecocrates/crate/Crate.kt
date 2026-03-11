@@ -12,9 +12,7 @@ import com.willfp.eco.core.gui.page.PageChanger
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
-import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
@@ -94,20 +92,9 @@ class Crate(
         )
     }
 
-    val keyIsCustomItem = config.getBool("key.use-custom-item")
-
-    val key: TestableItem = if (keyIsCustomItem) {
-        Items.lookup(config.getString("key.item"))
-    } else {
-        CustomItem(
-            plugin.namespacedKeyFactory.create("${id}_key"),
-            { it.crate == this },
-            Items.lookup(config.getString("key.item")).item
-                .clone().apply { crate = this@Crate }
-        ).apply { register() }
-    }
-
-    val keyLore = config.getFormattedStrings("key.lore")
+    // The ID of the shared key this crate uses, defined in keys/ folder
+    val sharedKey: SharedKey = Keys[config.getString("key")]
+        ?: throw IllegalStateException("Crate '$id' references unknown key '${config.getString("key")}' - make sure a matching file exists in the keys/ folder")
 
     val rewards = config.getStrings("rewards").mapNotNull { Rewards.getByID(it) }
 
@@ -139,20 +126,8 @@ class Crate(
 
     val currencyType = config.getString("pay-to-open.type")
 
-    private val keysKey: PersistentDataKey<Int> = PersistentDataKey(
-        plugin.namespacedKeyFactory.create("${id}_keys"),
-        PersistentDataKeyType.INT,
-        0
-    )
-
     private val opensKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_opens"),
-        PersistentDataKeyType.INT,
-        0
-    )
-
-    private val toGetKey: PersistentDataKey<Int> = PersistentDataKey(
-        plugin.namespacedKeyFactory.create("${id}_to_get"),
         PersistentDataKeyType.INT,
         0
     )
@@ -298,13 +273,18 @@ class Crate(
         PlayerPlaceholder(
             plugin,
             "${id}_keys",
-        ) { getVirtualKeys(it).toString() }.register()
+        ) { sharedKey.getVirtualKeys(it).toString() }.register()
 
         PlayerPlaceholder(
             plugin,
             "${id}_opens",
         ) { getOpens(it).toString() }.register()
 
+        if (config.has("keygui")) {
+            plugin.logger.warning(
+                "Crate '$id' has a 'keygui' section - this should now be configured in the key file (keys/${config.getString("key")}.yml), not the crate."
+            )
+        }
         if (config.has("open.sounds")) {
             plugin.logger.warning(
                 "Crate '$id' uses deprecated 'open.sounds'. Please switch to 'open-effects'."
@@ -420,53 +400,6 @@ class Crate(
         return hasPermission
     }
 
-    @Suppress("DEPRECATION")
-    internal fun addToKeyGUI(builder: MenuBuilder) {
-        if (!config.getBool("keygui.enabled")) {
-            return
-        }
-
-        builder.setSlot(
-            config.getInt("keygui.row"),
-            config.getInt("keygui.column"),
-            slot(
-                ItemStackBuilder(Items.lookup(config.getString("keygui.item"))).build()
-            ) {
-                onLeftClick { event, _, _ ->
-                    if (config.getBool("keygui.left-click-opens")) {
-                        val player = event.whoClicked as Player
-                        player.closeInventory()
-                        openWithMethod(player, OpenMethod.VIRTUAL_KEY)
-                    }
-                }
-
-                onRightClick { event, _, _ ->
-                    if (config.getBool("keygui.right-click-previews")) {
-                        val player = event.whoClicked as Player
-                        player.closeInventory()
-                        previewForPlayer(player)
-                    }
-                }
-
-                onShiftLeftClick { event, _, _ ->
-                    event.whoClicked.closeInventory()
-                    config.getFormattedStrings("keygui.shift-left-click-message")
-                        .forEach { event.whoClicked.sendMessage(it) }
-                }
-
-                setUpdater { player, _, previous ->
-                    previous.apply {
-                        itemMeta = itemMeta?.apply {
-                            lore = config.getStrings("keygui.lore")
-                                .map { it.replace("%keys%", getVirtualKeys(player).toString()) }
-                                .map { it.formatEco(player) }
-                        }
-                    }
-                    previous
-                }
-            }
-        )
-    }
 
     fun getRandomRewards(player: Player, amount: Int): List<Reward> {
         return (0..amount).map { getRandomReward(player) }
@@ -644,23 +577,23 @@ class Crate(
     }
 
     fun adjustVirtualKeys(player: OfflinePlayer, amount: Int) {
-        player.profile.write(keysKey, player.profile.read(keysKey) + amount)
+        sharedKey.adjustVirtualKeys(player, amount)
     }
 
     fun getVirtualKeys(player: OfflinePlayer): Int {
-        return player.profile.read(keysKey)
+        return sharedKey.getVirtualKeys(player)
     }
 
     fun hasPhysicalKey(player: Player): Boolean {
-        return key.matches(player.inventory.itemInMainHand)
+        return sharedKey.matches(player.inventory.itemInMainHand)
     }
 
     fun getKeysToGet(player: OfflinePlayer): Int {
-        return player.profile.read(this.toGetKey)
+        return sharedKey.getKeysToGet(player)
     }
 
     fun setKeysToGet(player: OfflinePlayer, amount: Int) {
-        player.profile.write(this.toGetKey, amount)
+        sharedKey.setKeysToGet(player, amount)
     }
 
     fun adjustKeysToGet(player: OfflinePlayer, amount: Int) {
@@ -668,7 +601,7 @@ class Crate(
     }
 
     fun hasVirtualKey(player: Player): Boolean {
-        return getVirtualKeys(player) > 0
+        return sharedKey.getVirtualKeys(player) > 0
     }
 
     fun getOpens(player: OfflinePlayer): Int {
@@ -677,13 +610,14 @@ class Crate(
 
     fun usePhysicalKey(player: Player) {
         val itemStack = player.inventory.itemInMainHand
-        if (key.matches(itemStack)) {
+        if (sharedKey.matches(itemStack)) {
             itemStack.amount -= 1
             if (itemStack.amount == 0) {
                 itemStack.type = Material.AIR
             }
         }
     }
+
 
     override fun equals(other: Any?): Boolean {
         if (other !is Crate) {

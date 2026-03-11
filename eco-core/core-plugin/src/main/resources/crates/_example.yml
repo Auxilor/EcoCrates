@@ -8,8 +8,10 @@ name: "Demo Crate" # The display name of the crate
 roll: csgo # The opening style, check here: https://plugins.auxilor.io/ecocrates/animationsandrolls
 can-reroll: true # If once you win a reward, you can choose to reroll
 
+key: demo_crate # The ID of the key for this crate (configure in /keys/demo_crate.yml)
+                # Multiple crates can share the same key by using the same key ID here.
 preview: # The preview GUI, when left-clicking a crate or using /crates preview
-  title: Demo Crate # The GUI title
+  title: Demo Crate # The title of the preview GUI
   rows: 6 # The amount of rows for the gui, between 1 and 6
   forwards-arrow: # The arrow for switching between pages. If on the last page, this will not show up.
     item: arrow name:"&fNext Page"
@@ -59,27 +61,6 @@ preview: # The preview GUI, when left-clicking a crate or using /crates preview
           row: 4
           column: 4
 
-key: # The physical key to be given to players
-  item: tripwire_hook unbreaking:1 hide_enchants name:"&aDemo Crate Key" # The item
-  lore: # Lore for the key to have
-    - "&fUse this key to open"
-    - "&fthe <g:#56ab2f>Demo Crate</g:#a8e063>"
-  use-custom-item: false # Set this to true in order to use a custom item as the key;
-  # For example making all ecoitems:blue_shards function as keys. This will prevent lore from being applied.
-
-keygui: # Options for showing up in /crate keys
-  enabled: true # If the crate should be in the key gui
-  item: tripwire_hook unbreaking:1 hide_enchants name:"Demo Crate" # The item in the gui
-  lore: # The GUI lore
-    - "<g:#56ab2f>Demo Crate</g:#a8e063>"
-    - "&fYou have %keys% keys"
-    - "&fGet more at &astore.example.net"
-  row: 2 # The position in the gui
-  column: 3
-  right-click-previews: true # If right click opens the preview
-  left-click-opens: true # If left click open the crate virtually
-  shift-left-click-messsage: # The messages to send on shift-left-click
-    - "Buy a Demo Crate key here! &astore.example.net"
 
 pay-to-open: # If people can pay to open if they have no keys
   enabled: false # If it should be allowed

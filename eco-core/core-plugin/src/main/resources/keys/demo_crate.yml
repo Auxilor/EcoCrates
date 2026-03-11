@@ -1,0 +1,21 @@
+item: tripwire_hook unbreaking:1 hide_enchants name:"&aDemo Crate Key"
+lore:
+  - "&fUse this key to open"
+  - "&fthe <g:#56ab2f>Demo Crate</g:#a8e063>"
+use-custom-item: false
+
+keygui: # Options for showing up in /keys GUI
+  enabled: true # If this key should appear in the key GUI
+  crate: demo_crate # Which crate to open/preview on click (defaults to key ID if omitted)
+  item: tripwire_hook unbreaking:1 hide_enchants name:"Demo Crate" # The item shown in the GUI
+  lore:
+    - "<g:#56ab2f>Demo Crate</g:#a8e063>"
+    - "&fYou have %keys% keys"
+    - "&fGet more at &astore.example.net"
+  row: 2 # Row position in the GUI
+  column: 3 # Column position in the GUI
+  right-click-previews: true # Right-click to preview the crate
+  left-click-opens: true # Left-click to open the crate with a virtual key
+  shift-left-click-message:
+    - "Buy a Demo Crate key here! &astore.example.net"
+
