@@ -35,18 +35,8 @@ object CommandGiveall : Subcommand(
 
         for (player in Bukkit.getOnlinePlayers()) {
             if (physical) {
-                val items = mutableListOf<ItemStack>().apply { repeat(amount) { add(crate.key.item) } }
-
-                if (plugin.configYml.getBool("track-player-keys")) {
-                    items.forEach {
-                        val meta = it.itemMeta!!
-                        meta.persistentDataContainer.set(
-                            plugin.namespacedKeyFactory.create("player"),
-                            PersistentDataType.STRING,
-                            player.uniqueId.toString()
-                        )
-                        it.itemMeta = meta
-                    }
+                val items = mutableListOf<ItemStack>().apply {
+                    repeat(amount) { add(crate.sharedKey.createItem(player)) }
                 }
 
                 DropQueue(player)

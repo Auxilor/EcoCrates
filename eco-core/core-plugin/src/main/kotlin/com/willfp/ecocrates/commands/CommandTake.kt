@@ -46,7 +46,7 @@ object CommandTake : Subcommand(
         var taken = false
         if (physical) {
             for (item in player.inventory.contents) {
-                if (item != null && crate.key.matches(item)) {
+                if (item != null && crate.sharedKey.matches(item)) {
                     if (item.amount >= takeAmount) {
                         item.amount = item.amount - takeAmount
                         taken = true

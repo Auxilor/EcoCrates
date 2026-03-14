@@ -7,30 +7,30 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
-private val CRATE_KEY = plugin.createNamespacedKey("key")
+private val KEY_ID = plugin.createNamespacedKey("key_id")
 
-var ItemStack.crate: Crate?
-    get() = this.fast().crate
+var ItemStack.key: SharedKey?
+    get() = this.fast().key
     set(value) {
-        this.fast().crate = value
+        this.fast().key = value
     }
 
-var FastItemStack.crate: Crate?
-    get() = this.persistentDataContainer.crate
+var FastItemStack.key: SharedKey?
+    get() = this.persistentDataContainer.key
     set(value) {
-        this.persistentDataContainer.crate = value
+        this.persistentDataContainer.key = value
     }
 
-var PersistentDataContainer.crate: Crate?
+var PersistentDataContainer.key: SharedKey?
     get() {
-        val id = this.get(CRATE_KEY, PersistentDataType.STRING) ?: return null
-        return Crates[id]
+        val id = this.get(KEY_ID, PersistentDataType.STRING) ?: return null
+        return Keys[id]
     }
     set(value) {
         if (value == null) {
-            this.remove(CRATE_KEY)
+            this.remove(KEY_ID)
             return
         }
 
-        this.set(CRATE_KEY, PersistentDataType.STRING, value.id)
+        this.set(KEY_ID, PersistentDataType.STRING, value.id)
     }

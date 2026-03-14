@@ -1,0 +1,30 @@
+# The ID of the key is the name of the .yml file.
+# For example demo_key.yml has the ID of demo_key.
+# _example.yml is not loaded.
+#
+# Multiple crates can share the same key. Simply set
+#   key: <this-key-id>
+# in each crate's config file.
+
+item: tripwire_hook unbreaking:1 hide_enchants name:"&aDemo Key" # The physical key item
+lore: # Lore applied to physical key items
+  - "&fUse this key to open"
+  - "&fdemonstration crates"
+use-custom-item: false # Set to true to use an existing custom item (e.g. ecoitems:...) as the key.
+                       # Lore will NOT be applied when use-custom-item is true.
+
+keygui: # Options for the /keys GUI slot
+  enabled: true # Whether this key appears in the GUI
+  crate: demo_crate # The crate to open/preview on click (defaults to the key ID if not set)
+  item: tripwire_hook unbreaking:1 hide_enchants name:"Demo Key" # Item shown in the GUI
+  lore:
+    - "<g:#56ab2f>Demo Key</g:#a8e063>"
+    - "&fYou have %keys% keys"
+    - "&fGet more at &astore.example.net"
+  row: 2 # Row in the GUI (1-indexed)
+  column: 3 # Column in the GUI (1-indexed)
+  right-click-previews: true # Right-click to open the crate preview
+  left-click-opens: true # Left-click to open the crate using a virtual key
+  shift-left-click-message: # Messages sent on shift-left-click
+    - "Buy a key here! &astore.example.net"
+
