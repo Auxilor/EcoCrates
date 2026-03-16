@@ -95,6 +95,15 @@ rolls:
     bias: 0.65
     scrolls: 35
     max-delay: 25
+  slot_machine:
+    filler: black_stained_glass_pane name:""
+    selector: yellow_stained_glass_pane name:""
+    symbols: 18
+    spin-ticks: 36
+    reel-stop-delay: 8
+    spin-interval: 2
+    start-pitch: 0.9
+    pitch-step: 0.08
   flash:
     duration: 80
     wait: 20

@@ -4,6 +4,7 @@ import com.willfp.eco.core.registry.Registry
 
 object Rolls : Registry<RollFactory<*>>() {
     val CSGO: RollFactory<*> = RollCSGO.Factory
+    val SLOT_MACHINE: RollFactory<*> = RollSlotMachine.Factory
     val FLASH: RollFactory<*> = RollFlash.Factory
     val ENCIRCLE: RollFactory<*> = RollEncircle.Factory
     val QUICK: RollFactory<*> = RollQuick.Factory
