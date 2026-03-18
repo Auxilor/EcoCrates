@@ -5,7 +5,7 @@
 # _example.yml is not loaded.
 
 name: "Demo Crate" # The display name of the crate
-roll: csgo # The opening style (csgo, slot_machine, flash, encircle, quick, instant, semi_instant)
+roll: csgo # The opening style, check here: https://plugins.auxilor.io/ecocrates/animationsandrolls
 can-reroll: true # If once you win a reward, you can choose to reroll
 
 key: demo_crate # The ID of the key for this crate (configure in /keys/demo_crate.yml)
