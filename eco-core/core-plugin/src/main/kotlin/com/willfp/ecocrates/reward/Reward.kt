@@ -4,7 +4,6 @@ import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
@@ -85,15 +84,7 @@ class Reward(
             ).replace(
                 "%weight%",
                 this.getWeight(player).toNiceString()
-            )
-                // legacy + illegal
-                .replace(
-                    "%actual_chance%",
-                    getPercentageChance(player, crate.rewards).toNiceString()
-                ).replace(
-                    "%actual_weight%",
-                    this.getWeight(player).toNiceString()
-                ).formatEco(player)
+            ).formatEco(player)
         }
 
         if (config.getBool("display.dont-keep-lore")) {
@@ -110,12 +101,7 @@ class Reward(
     }
 
     fun getWeight(player: Player): Double {
-
-        val weight =
-            if (config.has("weight.value"))
-                config.getDoubleFromExpression("weight.value", player)
-            // legacy
-            else config.getDoubleFromExpression("weight.actual", player)
+        val weight = config.getDoubleFromExpression("weight.value", player)
         if (maxWins > 0) {
             if (player.profile.read(winsKey) >= maxWins) {
                 return 0.0
@@ -149,56 +135,13 @@ class Reward(
         return (weight / totalWeight) * 100
     }
 
-    // Legacy
-    @Deprecated("Use previewReward instead.")
-    val displayRow = config.getIntOrNull("display.row")
-
-    @Deprecated("Use previewReward instead.")
-    val displayColumn = config.getIntOrNull("display.column")
-
-    @Deprecated("Use winEffects instead.")
-    private val commands = config.getStrings("commands")
-
-    @Deprecated("Use winEffects instead.")
-    private val items = config.getStrings("items").map { Items.lookup(it) }.filterNot { it is EmptyTestableItem }
-
-    @Deprecated("Use winEffects instead.")
-    private val messages = config.getFormattedStrings("messages")
-
     init {
         PlayerPlaceholder(
             plugin,
             "${id}_wins",
         ) { getWins(it).toString() }.register()
-
-        if (config.has("display.row")) {
-            plugin.logger.warning(
-                "Reward '$id' uses deprecated 'display.row'."
-            )
-        }
-        if (config.has("display.column")) {
-            plugin.logger.warning(
-                "Reward '$id' uses deprecated 'display.column'."
-            )
-        }
-        if (config.has("commands")) {
-            plugin.logger.warning(
-                "Reward '$id' uses deprecated 'commands'. Please switch to 'win-effects'."
-            )
-        }
-        if (config.has("items")) {
-            plugin.logger.warning(
-                "Reward '$id' uses deprecated 'items'. Please switch to 'win-effects'."
-            )
-        }
-        if (config.has("messages")) {
-            plugin.logger.warning(
-                "Reward '$id' uses deprecated 'messages'. Please switch to 'win-effects'."
-            )
-        }
     }
 
-    @Suppress("DEPRECATION")
     fun giveTo(player: Player, crate: Crate) {
         winEffects?.trigger(
             TriggerData(player = player)
@@ -215,30 +158,6 @@ class Reward(
                 }
         )
 
-        // Legacy
-        for (command in commands) {
-            Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                command.replace("%player%", player.name)
-                    .replace("%reward%", name)
-                    .replace("%reward_id%", id)
-                    .replace("%crate%", crate.name)
-                    .replace("%crate_id%", crate.id)
-            )
-        }
-
-        DropQueue(player)
-            .addItems(items.map { it.item })
-            .forceTelekinesis()
-            .push()
-
-        messages.map {
-            it.replace("%player%", player.name)
-                .replace("%reward%", name)
-                .replace("%reward_id%", id)
-                .replace("%crate%", crate.name)
-                .replace("%crate_id%", crate.id)
-        }.forEach { player.sendMessage(plugin.langYml.prefix + it) }
 
         if (maxWins > 0) {
             player.profile.write(winsKey, player.profile.read(winsKey) + 1)

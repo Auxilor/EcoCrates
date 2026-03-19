@@ -6,21 +6,16 @@ import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.gui.addPage
 import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.menu.MenuLayer
 import com.willfp.eco.core.gui.page.PageChanger
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.eco.util.NumberUtils
-import com.willfp.eco.util.StringUtils
-import com.willfp.eco.util.formatEco
-import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.placed.HologramFrame
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.crate.placed.particle.ParticleData
@@ -33,9 +28,6 @@ import com.willfp.ecocrates.event.CrateRewardEvent
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.Rewards
-import com.willfp.ecocrates.util.ConfiguredFirework
-import com.willfp.ecocrates.util.ConfiguredSound
-import com.willfp.ecocrates.util.PlayableSound
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.ViolationContext
 import com.willfp.libreforge.effects.Effects
@@ -198,27 +190,6 @@ class Crate(
                 )
             )
 
-            /*
-            Legacy reward config.
-             */
-            @Suppress("DEPRECATION")
-            for (reward in rewards) {
-                if (reward.displayRow == null || reward.displayColumn == null) {
-                    continue
-                }
-
-                setSlot(
-                    reward.displayRow,
-                    reward.displayColumn,
-                    slot(reward.getDisplay()) {
-                        setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
-                    }
-                )
-            }
-
-            /*
-            Modern reward config.
-             */
             for (previewReward in config.getSubsections("preview.rewards")) {
                 val reward = Rewards.getByID(previewReward.getString("id")) ?: continue
                 val row = previewReward.getInt("row")
@@ -235,39 +206,7 @@ class Crate(
         }
     }
 
-    @Deprecated("Use openEffects instead.")
-    private val openSound = PlayableSound(
-        config.getSubsections("open.sounds")
-            .map { ConfiguredSound.fromConfig(it) }
-    )
 
-    @Deprecated("Use openEffects instead.")
-    private val openMessages = config.getStrings("open.messages")
-
-    @Deprecated("Use openEffects instead.")
-    private val openBroadcasts = config.getStrings("open.broadcasts")
-
-    @Deprecated("Use openEffects instead.")
-    private val openCommands = config.getStrings("open.commands")
-
-    @Deprecated("Use finishEffects instead.")
-    private val finishSound = PlayableSound(
-        config.getSubsections("finish.sounds")
-            .map { ConfiguredSound.fromConfig(it) }
-    )
-
-    @Deprecated("Use finishEffects instead.")
-    private val finishFireworks = config.getSubsections("finish.fireworks")
-        .map { ConfiguredFirework.fromConfig(it) }
-
-    @Deprecated("Use finishEffects instead.")
-    private val finishMessages = config.getStrings("finish.messages")
-
-    @Deprecated("Use finishEffects instead.")
-    private val finishBroadcasts = config.getStrings("finish.broadcasts")
-
-    @Deprecated("Use finishEffects instead.")
-    private val finishCommands = config.getStrings("finish.commands")
 
     init {
         PlayerPlaceholder(
@@ -285,51 +224,6 @@ class Crate(
                 "Crate '$id' has a 'keygui' section - this should now be configured in the key file (keys/${config.getString("key")}.yml), not the crate."
             )
         }
-        if (config.has("open.sounds")) {
-            plugin.logger.warning(
-                "Crate '$id' uses deprecated 'open.sounds'. Please switch to 'open-effects'."
-            )
-        }
-        if (config.has("open.messages")) {
-            plugin.logger.warning(
-                "Crate '$id' uses deprecated 'open.messages'. Please switch to 'open-effects'."
-            )
-        }
-        if (config.has("open.commands")) {
-            plugin.logger.warning(
-                "Crate '$id' uses deprecated 'open.commands'. Please switch to 'open-effects'."
-            )
-        }
-        if (config.has("open.broadcasts")) {
-            plugin.logger.warning(
-                "Crate '$id' uses deprecated 'open.broadcasts'. Please switch to 'open-effects'."
-            )
-        }
-        if (config.has("finish.sounds")) {
-            plugin.logger.warning(
-                "Crate '$id' uses deprecated 'finish.sounds'. Please switch to 'open-effects'."
-            )
-        }
-        if (config.has("finish.messages")) {
-            plugin.logger.warning(
-                "Crate '$id' uses deprecated 'finish.messages'. Please switch to 'open-effects'."
-            )
-        }
-        if (config.has("finish.commands")) {
-            plugin.logger.warning(
-                "Crate '$id' uses deprecated 'finish.commands'. Please switch to 'open-effects'."
-            )
-        }
-        if (config.has("finish.broadcasts")) {
-            plugin.logger.warning(
-                "Crate '$id' uses deprecated 'finish.broadcasts'. Please switch to 'open-effects'."
-            )
-        }
-        if (config.has("finish.fireworks")) {
-            plugin.logger.warning(
-                "Crate '$id' uses deprecated 'finish.fireworks'. Please switch to 'open-effects'."
-            )
-        }
     }
 
     private fun makeRoll(
@@ -342,7 +236,7 @@ class Crate(
         val display = mutableListOf<Reward>()
 
         // Add three to the scroll times so that it lines up
-        for (i in 0..(35 + 3)) {
+        repeat(35 + 4) {
             display.add(getRandomReward(player)) // Fill roll with display weight items
         }
 
@@ -438,7 +332,6 @@ class Crate(
         }
     }
 
-    @Suppress("DEPRECATION")
     fun open(
         player: Player,
         method: OpenMethod,
@@ -474,20 +367,6 @@ class Crate(
                         )
                     }
             )
-
-            openSound.play(loc)
-
-            openCommands.map { it.replace("%player%", player.name) }
-                .forEach { Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it) }
-
-            openMessages.map { it.replace("%reward%", event.reward.displayName) }
-                .map { plugin.langYml.prefix + StringUtils.format(it, player) }
-                .forEach { player.sendMessage(it) }
-
-            openBroadcasts.map { it.replace("%reward%", event.reward.displayName) }
-                .map { it.replace("%player%", player.savedDisplayName) }
-                .map { plugin.langYml.prefix + StringUtils.format(it, player) }
-                .forEach { Bukkit.broadcastMessage(it) }
         }
 
         val roll = makeRoll(player, loc, event.reward, method, isReroll = isReroll)
@@ -516,10 +395,8 @@ class Crate(
         previewGUI.open(player)
     }
 
-    @Suppress("DEPRECATION")
     fun handleFinish(roll: Roll) {
         val player = roll.player
-        val location = roll.location
 
         val event = CrateRewardEvent(player, this, roll.reward)
         Bukkit.getPluginManager().callEvent(event)
@@ -540,32 +417,6 @@ class Crate(
         )
 
         event.reward.giveTo(player, this)
-        finishSound.play(location)
-        finishFireworks.forEach { it.launch(location) }
-
-        finishCommands.map {
-            it.replace("%reward%", event.reward.name)
-                .replace("%reward_id%", event.reward.id)
-                .replace("%crate%", name)
-                .replace("%crate_id%", id)
-        }.map { plugin.langYml.prefix + StringUtils.format(it, player) }
-            .forEach { Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it) }
-
-        finishMessages.map {
-            it.replace("%reward%", event.reward.name)
-                .replace("%reward_id%", event.reward.id)
-                .replace("%crate%", name)
-                .replace("%crate_id%", id)
-        }.map { plugin.langYml.prefix + StringUtils.format(it, player) }
-            .forEach { player.sendMessage(it) }
-
-        finishBroadcasts.map {
-            it.replace("%reward%", event.reward.name)
-                .replace("%reward_id%", event.reward.id)
-                .replace("%crate%", name)
-                .replace("%crate_id%", id)
-        }.map { plugin.langYml.prefix + StringUtils.format(it, player) }
-            .forEach { Bukkit.broadcastMessage(it) }
     }
 
     fun canReroll(player: Player): Boolean {
