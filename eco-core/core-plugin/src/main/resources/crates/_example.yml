@@ -8,7 +8,7 @@ name: "Demo Crate" # The display name of the crate
 roll: csgo # The opening style, check here: https://plugins.auxilor.io/ecocrates/animationsandrolls
 can-reroll: true # If once you win a reward, you can choose to reroll
 
-key: demo_crate # The ID of the key for this crate (configure in /keys/demo_crate.yml)
+key: demo_key # The ID of the key for this crate (configure in /keys/demo_key.yml)
                 # Multiple crates can share the same key by using the same key ID here.
 preview: # The preview GUI, when left-clicking a crate or using /crates preview
   title: Demo Crate # The title of the preview GUI
@@ -117,7 +117,9 @@ finish-effects:
       volume: 10
       pitch: 1
 
-rewards: # The rewards to give, configure in /rewards/ folder
+# The rewards to give, configure in /rewards/ folder
+# This is separate to the reward locations so that you could have secret rewards that don't show up in the preview GUI
+rewards:
   - diamond_sword
   - stack_of_emeralds
   - bedrock

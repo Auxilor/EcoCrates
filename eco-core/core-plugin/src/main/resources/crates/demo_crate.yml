@@ -2,7 +2,7 @@ name: "Demo Crate"
 roll: csgo
 can-reroll: true
 
-key: demo_crate # The ID of the key for this crate (configured in /keys/demo_crate.yml)
+key: demo_key # The ID of the key for this crate (configured in /keys/demo_key.yml)
 
 preview:
   title: Demo Crate
