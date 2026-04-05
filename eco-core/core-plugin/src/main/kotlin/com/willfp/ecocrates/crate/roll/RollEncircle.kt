@@ -72,6 +72,12 @@ class RollEncircle private constructor(
     }
 
     override fun tick(tick: Int) {
+        display.removeIf { !it.isValid }
+        if (display.isEmpty()) {
+            state = EncircleState.DONE
+            return
+        }
+
         when (state) {
             EncircleState.RISE -> {
                 for ((index, item) in display.withIndex()) {

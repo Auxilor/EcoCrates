@@ -291,7 +291,7 @@ class Crate(
 
 
     fun getRandomRewards(player: Player, amount: Int): List<Reward> {
-        return (0..amount).map { getRandomReward(player) }
+        return List(amount.coerceAtLeast(0)) { getRandomReward(player) }
     }
 
     fun openPlaced(player: Player, location: Location, method: OpenMethod) {
@@ -366,6 +366,7 @@ class Crate(
 
         val roll = makeRoll(player, loc, event.reward, method, isReroll = isReroll)
         var tick = 0
+        val maxRollTicks = 20 * 60
         var hasFinalized = false
 
         fun finalizeRoll(forceFinish: Boolean) {
@@ -395,6 +396,13 @@ class Crate(
                 roll.tick(tick)
 
                 tick++
+                if (tick > maxRollTicks) {
+                    plugin.logger.severe("Roll '${roll::class.simpleName}' exceeded $maxRollTicks ticks for crate '$id' and player '${player.name}', force-finishing")
+                    it.cancel()
+                    finalizeRoll(true)
+                    return@create
+                }
+
                 if (!roll.shouldContinueTicking(tick) || !player.isOpeningCrate) {
                     it.cancel()
                     finalizeRoll(false)
