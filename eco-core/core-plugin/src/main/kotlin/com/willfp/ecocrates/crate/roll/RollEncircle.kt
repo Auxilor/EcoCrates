@@ -27,7 +27,7 @@ class RollEncircle private constructor(
     private val spinTime = plugin.configYml.getInt("rolls.encircle.spin-time")
     private val revealTime = plugin.configYml.getInt("rolls.encircle.reveal-time")
     private val spinsPerSecond = plugin.configYml.getDouble("rolls.encircle.spins-per-second")
-    private val itemCount = plugin.configYml.getInt("rolls.encircle.items")
+    private val itemCount = plugin.configYml.getInt("rolls.encircle.items").coerceAtLeast(1)
     private val fillerItems = crate.getRandomRewards(
         player,
         itemCount - 1 // One slot is reserved for the winning reward.
@@ -42,6 +42,7 @@ class RollEncircle private constructor(
     private var state = EncircleState.RISE
     private var timeSpentSpinning = 0
     private var timeSpentRevealing = 0
+    private var rewardItem: Item? = null
 
     private val display = mutableListOf<Item>()
 
@@ -63,10 +64,20 @@ class RollEncircle private constructor(
             entity.isCustomNameVisible = true
             entity.customName = item.displayName
             display.add(entity)
+
+            if (item == reward) {
+                rewardItem = entity
+            }
         }
     }
 
     override fun tick(tick: Int) {
+        display.removeIf { !it.isValid }
+        if (display.isEmpty()) {
+            state = EncircleState.DONE
+            return
+        }
+
         when (state) {
             EncircleState.RISE -> {
                 for ((index, item) in display.withIndex()) {
@@ -119,18 +130,22 @@ class RollEncircle private constructor(
             }
 
             EncircleState.REVEAL -> {
+                val winner = rewardItem
+                if (winner == null || !winner.isValid) {
+                    state = EncircleState.DONE
+                    return
+                }
+
                 for (item in display.toSet()) {
-                    if (item.itemStack != reward.getDisplay(player, crate)) {
+                    if (item != winner) {
                         item.remove()
                         display.remove(item)
                     }
                 }
 
-                val rewardItem = display.first()
-
-                if (circleCenter.distance(rewardItem.location.toVector()) > 0.2) {
-                    rewardItem.velocity = circleCenter.clone()
-                        .subtract(rewardItem.location.toVector())
+                if (circleCenter.distance(winner.location.toVector()) > 0.2) {
+                    winner.velocity = circleCenter.clone()
+                        .subtract(winner.location.toVector())
                         .normalize()
                         .multiply(revealVelocity)
                 }
