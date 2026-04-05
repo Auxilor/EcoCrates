@@ -74,9 +74,10 @@ class PlacedCrate(
         }
 
         fun ensureItemSpawned(reward: com.willfp.ecocrates.reward.Reward) {
-            // clear the other items
+            // clear the other items, but not roll animation items
             item?.let { item ->
-                item.getNearbyEntities(0.5, 0.5, 0.5).filterIsInstance<Item>().filter { !it.hasGravity() }
+                item.getNearbyEntities(0.5, 0.5, 0.5).filterIsInstance<Item>()
+                    .filter { !it.hasGravity() && !it.hasMetadata("ecocrates-roll-item") }
                     .forEach { it.remove() }
             }
 

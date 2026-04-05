@@ -36,6 +36,7 @@ class RollQuick private constructor(
         item.setGravity(false)
         item.isCustomNameVisible = true
         item.customName = reward.displayName
+        item.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
 
         player.closeInventory()
     }

@@ -42,6 +42,7 @@ class RollSemiInstant private constructor(
         item.pickupDelay = Int.MAX_VALUE
         item.isCustomNameVisible = true
         item.customName = reward.displayName
+        item.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
 
         player.closeInventory()
 

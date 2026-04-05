@@ -63,6 +63,7 @@ class RollEncircle private constructor(
             entity.setGravity(false)
             entity.isCustomNameVisible = true
             entity.customName = item.displayName
+            entity.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
             display.add(entity)
 
             if (item == reward) {

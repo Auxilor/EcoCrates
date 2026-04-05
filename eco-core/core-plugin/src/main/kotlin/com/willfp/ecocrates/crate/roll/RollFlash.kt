@@ -33,6 +33,7 @@ class RollFlash private constructor(
         item.pickupDelay = Int.MAX_VALUE
         item.setGravity(false)
         item.isCustomNameVisible = true
+        item.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
 
         player.closeInventory()
 

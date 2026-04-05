@@ -360,7 +360,6 @@ class Crate(
 
         val roll = makeRoll(player, loc, event.reward, method, isReroll = isReroll)
         var tick = 0
-        val maxRollTicks = 20 * 60
         var hasFinalized = false
 
         fun finalizeRoll(forceFinish: Boolean) {
@@ -370,12 +369,7 @@ class Crate(
 
             hasFinalized = true
 
-            try {
-                roll.onFinish()
-            } catch (exception: Exception) {
-                plugin.logger.severe("Failed to finish roll '${roll::class.simpleName}' for crate '$id': ${exception.message}")
-            }
-
+            roll.onFinish()
             player.isOpeningCrate = false
 
             if (forceFinish || !canReroll(player) || roll.isReroll) {
@@ -386,37 +380,19 @@ class Crate(
         }
 
         val task = plugin.runnableFactory.create {
-            try {
-                roll.tick(tick)
+            roll.tick(tick)
 
-                tick++
-                if (tick > maxRollTicks) {
-                    plugin.logger.severe("Roll '${roll::class.simpleName}' exceeded $maxRollTicks ticks for crate '$id' and player '${player.name}', force-finishing")
-                    it.cancel()
-                    finalizeRoll(true)
-                    return@create
-                }
+            tick++
 
-                if (!roll.shouldContinueTicking(tick) || !player.isOpeningCrate) {
-                    it.cancel()
-                    finalizeRoll(false)
-                }
-            } catch (exception: Exception) {
-                plugin.logger.severe("Roll '${roll::class.simpleName}' crashed for crate '$id' and player '${player.name}': ${exception.message}")
+            if (!roll.shouldContinueTicking(tick) || !player.isOpeningCrate) {
                 it.cancel()
-                finalizeRoll(true)
+                finalizeRoll(false)
             }
         }.runTaskTimer(1, 1)
 
         player.isOpeningCrate = true
         player.profile.write(opensKey, getOpens(player) + 1)
-        try {
-            roll.roll()
-        } catch (exception: Exception) {
-            plugin.logger.severe("Failed to start roll '${roll::class.simpleName}' for crate '$id' and player '${player.name}': ${exception.message}")
-            task.cancel()
-            finalizeRoll(true)
-        }
+        roll.roll()
 
         return true
     }
