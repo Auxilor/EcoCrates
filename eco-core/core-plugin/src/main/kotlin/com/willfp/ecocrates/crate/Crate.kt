@@ -213,12 +213,6 @@ class Crate(
             plugin,
             "${id}_opens",
         ) { getOpens(it).toString() }.register()
-
-        if (config.has("keygui")) {
-            plugin.logger.warning(
-                "Crate '$id' has a 'keygui' section - this should now be configured in the key file (keys/${config.getString("key")}.yml), not the crate."
-            )
-        }
     }
 
     private fun makeRoll(
