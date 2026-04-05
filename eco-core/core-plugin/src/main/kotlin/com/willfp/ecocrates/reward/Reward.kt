@@ -133,6 +133,10 @@ class Reward(
             totalWeight += other.getWeight(player)
         }
 
+        if (totalWeight <= 0.0) {
+            return 0.0
+        }
+
         return (weight / totalWeight) * 100
     }
 
