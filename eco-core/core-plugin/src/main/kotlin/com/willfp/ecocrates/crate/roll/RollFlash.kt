@@ -58,8 +58,9 @@ class RollFlash private constructor(
                     .multiply(tick.toDouble() / duration)
                     .multiply(0.5)
 
-                item.itemStack = display[tick.floorDiv(5)].getDisplay(player, crate)
-                item.customName = display[tick.floorDiv(5)].displayName
+                val index = tick.floorDiv(5).coerceAtMost(display.lastIndex)
+                item.itemStack = display[index].getDisplay(player, crate)
+                item.customName = display[index].displayName
             } else {
                 item.itemStack = reward.getDisplay(player, crate)
                 item.customName = reward.displayName
