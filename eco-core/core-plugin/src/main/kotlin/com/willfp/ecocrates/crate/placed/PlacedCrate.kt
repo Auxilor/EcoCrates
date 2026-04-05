@@ -73,7 +73,7 @@ class PlacedCrate(
             return
         }
 
-        fun ensureItemSpawned() {
+        fun ensureItemSpawned(reward: com.willfp.ecocrates.reward.Reward) {
             // clear the other items
             item?.let { item ->
                 item.getNearbyEntities(0.5, 0.5, 0.5).filterIsInstance<Item>().filter { !it.hasGravity() }
@@ -94,24 +94,28 @@ class PlacedCrate(
             if (item == null || item?.isDead == true) {
                 val entity = world.dropItem(
                     location.clone().add(0.0, crate.randomRewardHeight, 0.0),
-                    crate.rewards.first().getDisplay()
+                    reward.getDisplay()
                 )
                 entity.velocity = Vector(0.0, 0.0, 0.0)
                 entity.pickupDelay = Int.MAX_VALUE
                 entity.setGravity(false)
                 entity.isCustomNameVisible = true
-                entity.customName = crate.randomRewardName
+                entity.customName = crate.randomRewardName.replace("%reward%", reward.displayName)
                 item = entity
             }
         }
 
         if (tick % crate.randomRewardDelay == 0) {
+            val reward = crate.rewards.random()
+
             /*
             Spawn item if item is gone
              */
-            ensureItemSpawned()
+            ensureItemSpawned(reward)
 
-            item?.itemStack = crate.rewards.random().getDisplay()
+            item?.itemStack = reward.getDisplay()
+            item?.customName = crate.randomRewardName.replace("%reward%", reward.displayName)
+            item?.isCustomNameVisible = true
             item?.teleport(location.clone().add(0.0, crate.randomRewardHeight, 0.0))
         }
     }
