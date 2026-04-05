@@ -8,6 +8,7 @@ import com.willfp.eco.core.gui.addPage
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.MenuLayer
 import com.willfp.eco.core.gui.page.PageChanger
+import com.willfp.eco.core.gui.slot.ConfigSlot
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
@@ -129,79 +130,73 @@ class Crate(
     private val previewGUI = menu(config.getInt("preview.rows")) {
         title = config.getFormattedString("preview.title")
 
-        if (config.has("preview.pages")) {
-            val pages = config.getSubsections("preview.pages")
+        val sharedCustomSlots = config.getSubsections("preview.custom-slots")
+        val pages = config.getSubsections("preview.pages")
 
-            maxPages(pages.size)
+        maxPages(pages.size)
 
-            val forwardsArrow = PageChanger(
-                Items.lookup(config.getString("preview.forwards-arrow.item")).item,
-                PageChanger.Direction.FORWARDS
-            )
+        val forwardsArrow = PageChanger(
+            Items.lookup(config.getString("preview.forwards-arrow.item")).item,
+            PageChanger.Direction.FORWARDS
+        )
 
-            val backwardsArrow = PageChanger(
-                Items.lookup(config.getString("preview.backwards-arrow.item")).item,
-                PageChanger.Direction.BACKWARDS
-            )
+        val backwardsArrow = PageChanger(
+            Items.lookup(config.getString("preview.backwards-arrow.item")).item,
+            PageChanger.Direction.BACKWARDS
+        )
 
-            addComponent(
-                MenuLayer.TOP,
-                config.getInt("preview.forwards-arrow.row"),
-                config.getInt("preview.forwards-arrow.column"),
-                forwardsArrow
-            )
+        addComponent(
+            MenuLayer.TOP,
+            config.getInt("preview.forwards-arrow.row"),
+            config.getInt("preview.forwards-arrow.column"),
+            forwardsArrow
+        )
 
-            addComponent(
-                MenuLayer.TOP,
-                config.getInt("preview.backwards-arrow.row"),
-                config.getInt("preview.backwards-arrow.column"),
-                backwardsArrow
-            )
+        addComponent(
+            MenuLayer.TOP,
+            config.getInt("preview.backwards-arrow.row"),
+            config.getInt("preview.backwards-arrow.column"),
+            backwardsArrow
+        )
 
-            for (page in pages) {
-                addPage(page.getInt("page")) {
-                    setMask(
-                        FillerMask(
-                            MaskItems.fromItemNames(page.getStrings("mask.items")),
-                            *page.getStrings("mask.pattern").toTypedArray()
-                        )
+        for (page in pages) {
+            addPage(page.getInt("page")) {
+                setMask(
+                    FillerMask(
+                        MaskItems.fromItemNames(page.getStrings("mask.items")),
+                        *page.getStrings("mask.pattern").toTypedArray()
                     )
+                )
 
-                    for (previewReward in page.getSubsections("rewards")) {
-                        val reward = Rewards[previewReward.getString("id")] ?: continue
-                        val row = previewReward.getInt("row")
-                        val column = previewReward.getInt("column")
+                for (previewReward in page.getSubsections("rewards")) {
+                    val reward = Rewards[previewReward.getString("id")] ?: continue
+                    val row = previewReward.getInt("row")
+                    val column = previewReward.getInt("column")
 
-                        setSlot(
-                            row,
-                            column,
-                            slot(reward.getDisplay()) {
-                                setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
-                            }
-                        )
-                    }
+                    setSlot(
+                        row,
+                        column,
+                        slot(reward.getDisplay()) {
+                            setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
+                        }
+                    )
                 }
-            }
-        } else {
-            setMask(
-                FillerMask(
-                    MaskItems.fromItemNames(config.getStrings("preview.mask.items")),
-                    *config.getStrings("preview.mask.pattern").toTypedArray()
-                )
-            )
 
-            for (previewReward in config.getSubsections("preview.rewards")) {
-                val reward = Rewards.getByID(previewReward.getString("id")) ?: continue
-                val row = previewReward.getInt("row")
-                val column = previewReward.getInt("column")
+                for (config in sharedCustomSlots) {
+                    setSlot(
+                        config.getInt("row"),
+                        config.getInt("column"),
+                        ConfigSlot(config)
+                    )
+                }
 
-                setSlot(
-                    row,
-                    column,
-                    slot(reward.getDisplay()) {
-                        setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
-                    }
-                )
+                for (config in page.getSubsections("custom-slots")) {
+                    setSlot(
+                        config.getInt("row"),
+                        config.getInt("column"),
+                        ConfigSlot(config)
+                    )
+                }
             }
         }
     }

@@ -2,6 +2,7 @@ package com.willfp.ecocrates.crate
 
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
+import com.willfp.eco.core.gui.slot.ConfigSlot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.ecocrates.plugin
@@ -21,6 +22,14 @@ object KeyGUI {
             )
 
             title = plugin.configYml.getFormattedString("keygui.title")
+
+            for (config in plugin.configYml.getSubsections("keygui.custom-slots")) {
+                setSlot(
+                    config.getInt("row"),
+                    config.getInt("column"),
+                    ConfigSlot(config)
+                )
+            }
 
             for (key in Keys.values()) {
                 key.addToKeyGUI(this)

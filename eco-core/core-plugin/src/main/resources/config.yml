@@ -60,6 +60,9 @@ keygui:
       - "111111111"
   title: "Your Keys"
 
+  # Custom GUI slots; see here for a how-to: https://plugins.auxilor.io/all-plugins/custom-gui-slots
+  custom-slots: [ ]
+
 animations:
   spiral:
     spirals-per-second: 0.5
