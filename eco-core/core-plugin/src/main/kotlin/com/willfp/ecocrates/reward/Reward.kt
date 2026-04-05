@@ -46,14 +46,15 @@ class Reward(
     val displayName = config.getFormattedString("display.name")
 
     private val permission = Permission(
-        "ecocrates.reward.$id",
+        "ecocrates.rewards.$id",
         "Allows getting $id as a reward",
         PermissionDefault.TRUE
     ).apply {
-        if (Bukkit.getPluginManager().getPermission("ecocrates.reward.*") == null) {
-            addParent("ecocrates.reward.*", true)
+        val wildcard = Bukkit.getPluginManager().getPermission("ecocrates.rewards.*")
+        if (wildcard != null) {
+            addParent(wildcard, true)
         }
-        if (Bukkit.getPluginManager().getPermission("ecocrates.reward.$id") == null) {
+        if (Bukkit.getPluginManager().getPermission("ecocrates.rewards.$id") == null) {
             Bukkit.getPluginManager().addPermission(this)
         }
     }
