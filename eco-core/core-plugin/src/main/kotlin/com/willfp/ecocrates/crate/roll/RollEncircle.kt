@@ -30,7 +30,7 @@ class RollEncircle private constructor(
     private val itemCount = plugin.configYml.getInt("rolls.encircle.items")
     private val fillerItems = crate.getRandomRewards(
         player,
-        itemCount - 2 // Take two (?) off as the actual reward is in the display
+        itemCount - 1 // One slot is reserved for the winning reward.
     )
     private val radius = plugin.configYml.getDouble("rolls.encircle.radius")
     private val height = plugin.configYml.getDouble("rolls.encircle.height")

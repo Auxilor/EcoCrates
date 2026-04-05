@@ -291,7 +291,7 @@ class Crate(
 
 
     fun getRandomRewards(player: Player, amount: Int): List<Reward> {
-        return List(amount) { getRandomReward(player) }
+        return List(amount.coerceAtLeast(0)) { getRandomReward(player) }
     }
 
     fun openPlaced(player: Player, location: Location, method: OpenMethod) {
