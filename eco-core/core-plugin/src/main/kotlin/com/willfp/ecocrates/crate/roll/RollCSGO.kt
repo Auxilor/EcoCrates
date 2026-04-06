@@ -94,20 +94,26 @@ class RollCSGO private constructor(
     }
 
     override fun tick(tick: Int) {
-        val currentDelay = delays[scroll.coerceAtMost(delays.lastIndex)]
+        if (scroll > scrollTimes) {
+            return
+        }
+
+        val currentDelay = delays[scroll]
 
         if (ticksSinceLastScroll % currentDelay == 0) {
             ticksSinceLastScroll = 0
             scroll++
 
-            gui.refresh(player)
+            if (scroll <= scrollTimes) {
+                gui.refresh(player)
 
-            player.playSound(
-                player.location,
-                Sound.BLOCK_STONE_BUTTON_CLICK_ON,
-                1.0f,
-                1.0f
-            )
+                player.playSound(
+                    player.location,
+                    Sound.BLOCK_STONE_BUTTON_CLICK_ON,
+                    1.0f,
+                    1.0f
+                )
+            }
         }
 
         ticksSinceLastScroll++
