@@ -42,6 +42,8 @@ object CommandForceOpen : Subcommand(
         }
         if (player is Player) {
             crate.open(player, OpenMethod.OTHER)
+        } else {
+            sender.sendMessage(plugin.langYml.getMessage("must-specify-player"))
         }
     }
 
