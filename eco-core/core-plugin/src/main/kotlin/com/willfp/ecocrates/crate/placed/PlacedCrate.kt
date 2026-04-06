@@ -20,8 +20,6 @@ class PlacedCrate(
 
     val chunkKey = location.chunk.key
 
-    private val world = location.world!!
-
     private var hologram: Hologram? = null
 
     private var currentFrame: HologramFrame? = null
@@ -72,6 +70,8 @@ class PlacedCrate(
         if (!crate.isShowingRandomReward || crate.rewards.isEmpty()) {
             return
         }
+
+        val world = location.world ?: return
 
         fun ensureItemSpawned(reward: com.willfp.ecocrates.reward.Reward) {
             // clear the other items, but not roll animation items
