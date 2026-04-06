@@ -97,7 +97,7 @@ class Crate(
             "Allows opening the $id crate",
             PermissionDefault.TRUE
         ).apply {
-            addParent(Bukkit.getPluginManager().getPermission("ecocrates.open.*")!!, true)
+            Bukkit.getPluginManager().getPermission("ecocrates.open.*")?.let { addParent(it, true) }
             Bukkit.getPluginManager().addPermission(this)
         }
 
@@ -109,7 +109,7 @@ class Crate(
             "Allows rerolling the $id crate",
             PermissionDefault.TRUE
         ).apply {
-            addParent(Bukkit.getPluginManager().getPermission("ecocrates.reroll.*")!!, true)
+            Bukkit.getPluginManager().getPermission("ecocrates.reroll.*")?.let { addParent(it, true) }
             Bukkit.getPluginManager().addPermission(this)
         }
 
