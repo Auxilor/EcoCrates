@@ -3,7 +3,7 @@ package com.willfp.ecocrates.crate.placed
 import com.willfp.ecocrates.plugin
 
 object CrateDisplay {
-    private var tick = 0
+    @Volatile private var tick = 0
 
     fun start() {
         plugin.scheduler.runTimer(1, 1) { tick() }
