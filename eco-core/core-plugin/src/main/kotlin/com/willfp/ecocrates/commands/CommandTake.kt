@@ -5,6 +5,7 @@ import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
 
@@ -49,6 +50,9 @@ object CommandTake : Subcommand(
                 if (item != null && crate.sharedKey.matches(item)) {
                     if (item.amount >= takeAmount) {
                         item.amount = item.amount - takeAmount
+                        if (item.amount == 0) {
+                            item.type = Material.AIR
+                        }
                         taken = true
                         break
                     }
