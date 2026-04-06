@@ -94,7 +94,7 @@ class RollCSGO private constructor(
     }
 
     override fun tick(tick: Int) {
-        val currentDelay = delays[scroll]
+        val currentDelay = delays[scroll.coerceAtMost(delays.lastIndex)]
 
         if (ticksSinceLastScroll % currentDelay == 0) {
             ticksSinceLastScroll = 0
