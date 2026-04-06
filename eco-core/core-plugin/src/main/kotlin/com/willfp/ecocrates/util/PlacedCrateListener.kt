@@ -20,7 +20,7 @@ object PlacedCrateListener : Listener {
         val player = event.player
         val block = event.clickedBlock ?: return
 
-        if (preventDoubles.contains(player.uniqueId)) {
+        if (!preventDoubles.add(player.uniqueId)) {
             return
         }
 
@@ -57,7 +57,6 @@ object PlacedCrateListener : Listener {
             else -> return
         }
 
-        preventDoubles.add(player.uniqueId)
         plugin.scheduler.run { preventDoubles.remove(player.uniqueId) }
 
         event.isCancelled = true
