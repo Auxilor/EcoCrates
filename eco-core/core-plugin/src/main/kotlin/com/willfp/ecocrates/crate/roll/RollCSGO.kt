@@ -78,7 +78,7 @@ class RollCSGO private constructor(
                     ItemStack(Material.AIR)
                 ) {
                     setUpdater { _, _, _ ->
-                        display[(9 - i) + scroll].getDisplay(player, crate)
+                        display[((9 - i) + scroll).coerceAtMost(display.lastIndex)].getDisplay(player, crate)
                     }
                 }
             )
@@ -120,7 +120,7 @@ class RollCSGO private constructor(
     }
 
     override fun shouldContinueTicking(tick: Int): Boolean {
-        return scroll <= scrollTimes
+        return scroll < scrollTimes
     }
 
     override fun onFinish() {
