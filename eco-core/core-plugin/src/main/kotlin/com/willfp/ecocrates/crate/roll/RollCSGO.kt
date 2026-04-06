@@ -78,7 +78,7 @@ class RollCSGO private constructor(
                     ItemStack(Material.AIR)
                 ) {
                     setUpdater { _, _, _ ->
-                        display[(9 - i) + scroll].getDisplay(player, crate)
+                        display[((9 - i) + scroll).coerceAtMost(display.lastIndex)].getDisplay(player, crate)
                     }
                 }
             )
@@ -94,27 +94,33 @@ class RollCSGO private constructor(
     }
 
     override fun tick(tick: Int) {
+        if (scroll > scrollTimes) {
+            return
+        }
+
         val currentDelay = delays[scroll]
 
         if (ticksSinceLastScroll % currentDelay == 0) {
             ticksSinceLastScroll = 0
             scroll++
 
-            gui.refresh(player)
+            if (scroll <= scrollTimes) {
+                gui.refresh(player)
 
-            player.playSound(
-                player.location,
-                Sound.BLOCK_STONE_BUTTON_CLICK_ON,
-                1.0f,
-                1.0f
-            )
+                player.playSound(
+                    player.location,
+                    Sound.BLOCK_STONE_BUTTON_CLICK_ON,
+                    1.0f,
+                    1.0f
+                )
+            }
         }
 
         ticksSinceLastScroll++
     }
 
     override fun shouldContinueTicking(tick: Int): Boolean {
-        return scroll <= scrollTimes
+        return scroll < scrollTimes
     }
 
     override fun onFinish() {
