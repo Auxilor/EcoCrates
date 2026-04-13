@@ -2,10 +2,12 @@ package com.willfp.ecocrates.commands
 
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.core.drops.DropQueue
+import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.StringUtil
@@ -33,18 +35,23 @@ object CommandGiveoffline : Subcommand(
 
         val amount = args.getOrNull(2)?.toIntOrNull() ?: 1
 
+        plugin.scheduler.runAsync { giveOfflineAll(physical, crate, amount) }
+
+        sender.sendMessage(
+            plugin.langYml.getMessage("gave-keys-all-offline")
+                .replace("%amount%", amount.toString())
+                .replace("%crate%", crate.name)
+        )
+    }
+
+    private fun giveOfflineAll(physical: Boolean, crate: Crate, amount: Int) {
         for (player in Bukkit.getOfflinePlayers()) {
             if (physical) {
                 val online = player.player
                 if (online != null) {
-                    val items = mutableListOf<ItemStack>().apply {
-                        repeat(amount) { add(crate.sharedKey.createItem(player)) }
+                    plugin.scheduler.run {
+                        giveOnline(online, crate, amount)
                     }
-
-                    DropQueue(online)
-                        .addItems(items)
-                        .forceTelekinesis()
-                        .push()
                 } else {
                     crate.adjustKeysToGet(player, amount)
                 }
@@ -52,12 +59,17 @@ object CommandGiveoffline : Subcommand(
                 crate.adjustVirtualKeys(player, amount)
             }
         }
+    }
 
-        sender.sendMessage(
-            plugin.langYml.getMessage("gave-keys-all-offline")
-                .replace("%amount%", amount.toString())
-                .replace("%crate%", crate.name)
-        )
+    private fun giveOnline(player: Player, crate: Crate, amount: Int) {
+        val items = mutableListOf<ItemStack>().apply {
+            repeat(amount) { add(crate.sharedKey.createItem(player)) }
+        }
+
+        DropQueue(player)
+            .addItems(items)
+            .forceTelekinesis()
+            .push()
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
