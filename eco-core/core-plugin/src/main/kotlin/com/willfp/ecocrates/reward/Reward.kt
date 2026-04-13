@@ -118,20 +118,19 @@ class Reward(
         return event.weight
     }
 
-    fun getPercentageChance(player: Player, among: Collection<Reward>): Double {
-        val others = among.toMutableList()
-        others.remove(this)
-
+    fun getEffectiveWeight(player: Player): Double {
         var weight = this.getWeight(player)
 
         if (canPermissionMultiply) {
             weight *= PermissionMultipliers.getForPlayer(player).multiplier
         }
 
-        var totalWeight = weight
-        for (other in others) {
-            totalWeight += other.getWeight(player)
-        }
+        return weight
+    }
+
+    fun getPercentageChance(player: Player, among: Collection<Reward>): Double {
+        val weight = this.getEffectiveWeight(player)
+        val totalWeight = among.sumOf { it.getEffectiveWeight(player) }
 
         if (totalWeight <= 0.0) {
             return 0.0

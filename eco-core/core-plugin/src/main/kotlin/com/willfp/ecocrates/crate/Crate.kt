@@ -252,8 +252,8 @@ class Crate(
     }
 
     private fun getRandomReward(player: Player): Reward {
-        val weighted = rewards.associateWithTo(LinkedHashMap()) { it.getWeight(player) }
-        val totalWeight = weighted.values.sum()
+        val weighted = rewards.map { it to it.getEffectiveWeight(player) }
+        val totalWeight = weighted.sumOf { it.second }
 
         if (totalWeight <= 0.0) {
             return rewards.random()
@@ -268,7 +268,7 @@ class Crate(
                 return reward
             }
         }
-        return weighted.lastEntry().key
+        return weighted.last().first
     }
 
     private fun canOpenAndNotify(player: Player, method: OpenMethod): Boolean {
