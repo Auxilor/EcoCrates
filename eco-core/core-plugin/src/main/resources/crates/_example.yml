@@ -81,7 +81,7 @@ placed: # Options for physically placed crates
     name: "&fYou could win:" # The text above the item
   particles: # The particle effects around the crate, add as many as you want
     - particle: flame # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
-      animation: spiral # spiral, double_spiral, circle, or twirl
+      animation: spiral # spiral, double_spiral, circle, twirl, or tilted_rings
   hologram: # The text hologram, requires a hologram plugin to be installed
     height: 1.5 # The height above the crate
     ticks: 200 # The total ticks to cycle all frames

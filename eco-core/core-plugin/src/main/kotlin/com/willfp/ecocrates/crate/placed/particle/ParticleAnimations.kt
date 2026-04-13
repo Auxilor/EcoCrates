@@ -3,6 +3,12 @@ package com.willfp.ecocrates.crate.placed.particle
 import com.willfp.eco.core.registry.Registry
 
 object ParticleAnimations : Registry<ParticleAnimation>() {
+    fun reload() {
+        this.forEach { animation ->
+            animation.reload()
+        }
+    }
+
     val SPIRAL: ParticleAnimation = SpiralParticleAnimation
     val DOUBLE_SPIRAL: ParticleAnimation = DoubleSpiralParticleAnimation
     val CIRCLE: ParticleAnimation = CircleParticleAnimation

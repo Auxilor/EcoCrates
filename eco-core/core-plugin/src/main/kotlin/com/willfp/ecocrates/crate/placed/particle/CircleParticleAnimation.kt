@@ -5,11 +5,25 @@ import org.bukkit.util.Vector
 import kotlin.math.PI
 
 object CircleParticleAnimation : ParticleAnimation("circle") {
+    private var spiralsPerSecond: Double = 0.0
+    private var radius: Double = 0.0
+    private var height: Double = 0.0
+
+    init {
+        reload()
+    }
+
     override fun getOffset(tick: Int): Vector {
         return Vector(
-            NumberUtils.fastSin(config.getDouble("spirals-per-second") * 2 * PI * tick / 20) * config.getDouble("radius"),
-            config.getDouble("height"),
-            NumberUtils.fastCos(config.getDouble("spirals-per-second") * 2 * PI * tick / 20) * config.getDouble("radius")
+            NumberUtils.fastSin(spiralsPerSecond * 2 * PI * tick / 20) * radius,
+            height,
+            NumberUtils.fastCos(spiralsPerSecond * 2 * PI * tick / 20) * radius
         )
+    }
+
+    override fun reload() {
+        spiralsPerSecond = config.getDouble("spirals-per-second")
+        radius = config.getDouble("radius")
+        height = config.getDouble("height")
     }
 }

@@ -22,6 +22,8 @@ abstract class ParticleAnimation(
 
     protected abstract fun getOffset(tick: Int): Vector
 
+    abstract fun reload()
+
     override fun getID(): String {
         return id
     }
