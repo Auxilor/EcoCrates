@@ -18,6 +18,7 @@ object CrateDisplay {
 
     private fun tick() {
         for (crate in PlacedCrates.values()) {
+            if (!(crate.location.isChunkLoaded)) continue
             crate.tick(tick)
         }
 
@@ -26,6 +27,7 @@ object CrateDisplay {
 
     private fun tickAsync() {
         for (crate in PlacedCrates.values()) {
+            if (!(crate.location.isChunkLoaded)) continue
             crate.tickAsync(tick)
         }
     }
