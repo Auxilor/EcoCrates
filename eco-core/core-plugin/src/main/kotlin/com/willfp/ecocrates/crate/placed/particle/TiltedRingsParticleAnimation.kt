@@ -34,7 +34,7 @@ object TiltedRingsParticleAnimation : ParticleAnimation("tilted_rings") {
             .rotateAroundX(NumberUtils.fastCos(xOffset))
     }
 
-    override fun reload() {
+    override fun reloadAnimation() {
         spiralsPerSecond = config.getDouble("spirals-per-second")
         radius = config.getDouble("radius")
         xOffset = config.getDouble("x-offset")

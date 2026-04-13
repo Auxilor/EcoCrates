@@ -69,15 +69,18 @@ animations:
     rises-per-second: 0.25
     radius: 1.5
     height: 1
+    count: 1
   double_spiral:
     spirals-per-second: 0.25
     rises-per-second: 0.125
     radius: 1.5
     height: 1
+    count: 1
   circle:
     spirals-per-second: 0.5
     radius: 1.5
     height: 1
+    count: 1
   twirl:
     spirals-per-second: 0.5
     ticks: 80
@@ -85,11 +88,13 @@ animations:
     large-radius: 1.2
     start-height: 2
     end-height: 0.7
+    count: 1
   tilted_rings:
     spirals-per-second: 0.5
     radius: 1.5
     y-offset: 1
     x-offset: 1
+    count: 1
 
 rolls:
   csgo:

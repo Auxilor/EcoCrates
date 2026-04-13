@@ -18,7 +18,6 @@ object CommandReload : Subcommand(
     false
 ) {
     override fun onExecute(sender: CommandSender, args: List<String>) {
-        ParticleAnimations.reload()
         sender.sendMessage(
             plugin.langYml.getMessage("reloaded", StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
                 .replace("%time%", plugin.reloadWithTime().toNiceString())
@@ -26,5 +25,6 @@ object CommandReload : Subcommand(
                 .replace("%keys%", Keys.values().size.toString())
                 .replace("%rewards%", Rewards.values().size.toString())
         )
+        ParticleAnimations.reload()
     }
 }

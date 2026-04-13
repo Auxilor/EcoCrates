@@ -33,7 +33,7 @@ object TwirlParticleAnimation : ParticleAnimation("twirl") {
         }
     }
 
-    override fun reload() {
+    override fun reloadAnimation() {
         smallRadius = config.getDouble("small-radius")
         largeRadius = config.getDouble("large-radius")
         ticks = config.getDouble("ticks")

@@ -22,7 +22,7 @@ object SpiralParticleAnimation : ParticleAnimation("spiral") {
         )
     }
 
-    override fun reload() {
+    override fun reloadAnimation() {
         spiralsPerSecond = config.getDouble("spirals-per-second")
         risesPerSecond = config.getDouble("rises-per-second")
         radius = config.getDouble("radius")

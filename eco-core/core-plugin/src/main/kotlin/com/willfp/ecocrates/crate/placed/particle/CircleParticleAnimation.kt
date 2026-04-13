@@ -21,7 +21,7 @@ object CircleParticleAnimation : ParticleAnimation("circle") {
         )
     }
 
-    override fun reload() {
+    override fun reloadAnimation() {
         spiralsPerSecond = config.getDouble("spirals-per-second")
         radius = config.getDouble("radius")
         height = config.getDouble("height")
