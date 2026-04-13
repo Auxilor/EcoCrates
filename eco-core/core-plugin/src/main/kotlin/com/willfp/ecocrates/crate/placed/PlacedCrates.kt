@@ -29,7 +29,7 @@ private fun locationFromShortString(string: String): Location? {
         return null
     }
 
-    val world = Bukkit.getWorld(split[0]) ?: return null
+    val world = Bukkit.getWorlds().firstOrNull { it.name.equals(split[0], true) } ?: return null
     val x = coords[0].toIntOrNull() ?: return null
     val y = coords[1].toIntOrNull() ?: return null
     val z = coords[2].toIntOrNull() ?: return null
@@ -73,7 +73,6 @@ object PlacedCrates {
             val location = locationFromShortString(shortString) ?: continue
             val id = PlacedCratesYml.getString("crates.$shortString")
             val crate = Crates[id] ?: continue
-            // Sometimes this code doesn't run and I literally don't get it.
             loaded[location] = PlacedCrate(crate, location)
         }
     }
