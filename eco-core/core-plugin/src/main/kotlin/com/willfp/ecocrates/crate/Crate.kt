@@ -252,17 +252,23 @@ class Crate(
     }
 
     private fun getRandomReward(player: Player): Reward {
-        val selection = rewards.toList().shuffled()
+        val weighted = rewards.associateWithTo(LinkedHashMap()) { it.getWeight(player) }
+        val totalWeight = weighted.values.sum()
 
-        // Limit to 1024 in case RNG breaks.
-        for (i in 0..1024) {
-            val reward = selection[i % rewards.size]
-            if (NumberUtils.randFloat(0.0, 100.0) < reward.getPercentageChance(player, selection)) {
+        if (totalWeight <= 0.0) {
+            return rewards.random()
+        }
+        val roll = NumberUtils.randFloat(0.0, totalWeight)
+        var cum = 0.0
+
+        for ((reward, weight) in weighted) {
+            cum += weight
+
+            if (roll < cum) {
                 return reward
             }
         }
-
-        return selection.first()
+        return weighted.lastEntry().key
     }
 
     private fun canOpenAndNotify(player: Player, method: OpenMethod): Boolean {
