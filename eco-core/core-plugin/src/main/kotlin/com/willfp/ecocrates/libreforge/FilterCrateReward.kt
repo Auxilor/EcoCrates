@@ -15,7 +15,7 @@ object FilterCrateReward : Filter<NoCompileData, Collection<String>>("crate_rewa
         val event = data.event as? CrateRewardEvent ?: return true
 
         return value.any { id ->
-            id.equals(event.crate.id, ignoreCase = true)
+            id.equals(event.reward.id, ignoreCase = true)
         }
     }
 }
