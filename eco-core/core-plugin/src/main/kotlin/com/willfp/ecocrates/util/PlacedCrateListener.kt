@@ -4,6 +4,7 @@ import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.plugin
 import org.bukkit.GameMode
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -24,7 +25,11 @@ object PlacedCrateListener : Listener {
             return
         }
 
-        val crate = PlacedCrates.getCrateAt(block.location) ?: return
+        fun removeFromPreventDoubles(player: Player): Unit = run {
+            plugin.scheduler.run { preventDoubles.remove(player.uniqueId) }
+        }
+
+        val crate = PlacedCrates.getCrateAt(block.location) ?: return removeFromPreventDoubles(player)
 
         val hasPhysicalKey = crate.hasPhysicalKey(player)
         val hasVirtualKey = crate.getVirtualKeys(player) > 0
@@ -38,12 +43,12 @@ object PlacedCrateListener : Listener {
 
         if (player.isSneaking && event.action == Action.RIGHT_CLICK_BLOCK) {
             event.isCancelled = true
-            return
+            return removeFromPreventDoubles(player)
         }
 
         // Fix breaking
         if (player.gameMode == GameMode.CREATIVE && player.isSneaking && event.action == Action.LEFT_CLICK_BLOCK) {
-            return
+            return removeFromPreventDoubles(player)
         }
 
         when (event.action) {
@@ -54,10 +59,10 @@ object PlacedCrateListener : Listener {
                 openMethod
             )
 
-            else -> return
+            else -> return removeFromPreventDoubles(player)
         }
 
-        plugin.scheduler.run { preventDoubles.remove(player.uniqueId) }
+        removeFromPreventDoubles(player)
 
         event.isCancelled = true
     }
