@@ -46,17 +46,25 @@ object CommandTake : Subcommand(
 
         var taken = false
         if (physical) {
-            for (item in player.inventory.contents) {
-                if (item != null && crate.sharedKey.matches(item)) {
-                    if (item.amount >= takeAmount) {
-                        item.amount = item.amount - takeAmount
+            val matchingSlots = player.inventory.contents
+                .filterNotNull()
+                .filter { crate.sharedKey.matches(it) }
+            val totalKeys = matchingSlots.sumOf { it.amount }
+
+            if (totalKeys >= takeAmount) {
+                var remaining = takeAmount
+                for (item in player.inventory.contents) {
+                    if (remaining <= 0) break
+                    if (item != null && crate.sharedKey.matches(item)) {
+                        val toRemove = minOf(remaining, item.amount)
+                        item.amount -= toRemove
                         if (item.amount == 0) {
                             item.type = Material.AIR
                         }
-                        taken = true
-                        break
+                        remaining -= toRemove
                     }
                 }
+                taken = true
             }
         } else {
             if (crate.getVirtualKeys(player) >= takeAmount) {
