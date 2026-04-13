@@ -66,7 +66,7 @@ class RollEncircle private constructor(
             entity.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
             display.add(entity)
 
-            if (item == reward) {
+            if (item === reward) {
                 rewardItem = entity
             }
         }
