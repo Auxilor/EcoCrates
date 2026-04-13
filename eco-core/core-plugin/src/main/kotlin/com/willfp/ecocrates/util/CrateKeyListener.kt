@@ -2,12 +2,14 @@ package com.willfp.ecocrates.util
 
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.ecocrates.crate.Crates
+import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.crate.key
 import com.willfp.ecocrates.plugin
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 
 object CrateKeyListener : Listener {
@@ -41,5 +43,10 @@ object CrateKeyListener : Listener {
                 )
             }
         }
+    }
+
+    @EventHandler
+    fun onQuit(event: PlayerQuitEvent) {
+        event.player.isOpeningCrate = false
     }
 }
