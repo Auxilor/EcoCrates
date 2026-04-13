@@ -7,6 +7,7 @@ import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import java.util.concurrent.ConcurrentHashMap
 
 private object PlacedCratesYml : StaticBaseConfig(
     "placedcrates",
@@ -37,7 +38,7 @@ private fun locationFromShortString(string: String): Location? {
 }
 
 object PlacedCrates {
-    private val loaded = mutableMapOf<Location, PlacedCrate>()
+    private val loaded = ConcurrentHashMap<Location, PlacedCrate>()
 
     fun getCrateAt(location: Location): Crate? {
         return loaded[location]?.crate
