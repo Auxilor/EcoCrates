@@ -202,7 +202,6 @@ class Crate(
     }
 
 
-
     init {
         PlayerPlaceholder(
             plugin,
@@ -385,16 +384,16 @@ class Crate(
             }
         }
 
-        val task = plugin.runnableFactory.create {
+        plugin.runnableFactory.create {
             roll.tick(tick)
 
             tick++
 
             if (!roll.shouldContinueTicking(tick) || !player.isOpeningCrate) {
-                it.cancel()
+                it.cancelTask()
                 finalizeRoll(false)
             }
-        }.runTaskTimer(1, 1)
+        }.runTaskTimer(player, 1, 1)
 
         player.isOpeningCrate = true
         player.profile.write(opensKey, getOpens(player) + 1)

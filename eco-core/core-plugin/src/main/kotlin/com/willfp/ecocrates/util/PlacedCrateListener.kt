@@ -26,7 +26,7 @@ object PlacedCrateListener : Listener {
         }
 
         fun removeFromPreventDoubles(player: Player): Unit = run {
-            plugin.scheduler.run { preventDoubles.remove(player.uniqueId) }
+            plugin.scheduler.runTask(player) { preventDoubles.remove(player.uniqueId) }
         }
 
         val crate = PlacedCrates.getCrateAt(block.location) ?: return removeFromPreventDoubles(player)

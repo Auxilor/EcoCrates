@@ -139,7 +139,9 @@ class RollEncircle private constructor(
 
                 for (item in display.toSet()) {
                     if (item != winner) {
-                        item.remove()
+                        plugin.scheduler.runTask(item) {
+                            item.remove()
+                        }
                         display.remove(item)
                     }
                 }
@@ -178,7 +180,7 @@ class RollEncircle private constructor(
     }
 
     override fun onFinish() {
-        display.forEach { it.remove() }
+        display.forEach { plugin.scheduler.runTask(it) { it.remove() } }
     }
 
     private enum class EncircleState {

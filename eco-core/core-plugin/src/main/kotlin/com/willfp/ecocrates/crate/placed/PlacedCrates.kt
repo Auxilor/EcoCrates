@@ -73,7 +73,9 @@ object PlacedCrates {
             val location = locationFromShortString(shortString) ?: continue
             val id = PlacedCratesYml.getString("crates.$shortString")
             val crate = Crates[id] ?: continue
-            loaded[location] = PlacedCrate(crate, location)
+            plugin.scheduler.runTask(location) { // folia issue
+                loaded[location] = PlacedCrate(crate, location)
+            }
         }
     }
 
