@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.crate.roll
 
+import com.willfp.eco.core.Prerequisite
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
@@ -43,7 +44,10 @@ class RollQuick private constructor(
 
     override fun tick(tick: Int) {
         if (item.location.toVector().distance(end) < 0.1) {
-            item.teleport(end.toLocation(item.world))
+            if (Prerequisite.HAS_PAPER.isMet)
+                item.teleportAsync(end.toLocation(item.world))
+            else
+                item.teleport(end.toLocation(item.world)) // damn spigot!
             item.velocity = Vector(0, 0, 0)
             suspendTicks++
 

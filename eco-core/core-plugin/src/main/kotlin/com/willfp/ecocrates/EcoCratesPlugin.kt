@@ -14,6 +14,7 @@ import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.KeyGUI
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
+import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.display.KeyDisplay
 import com.willfp.ecocrates.libreforge.EffectGiveVirtualKey
 import com.willfp.ecocrates.libreforge.EffectResetRewardWins
@@ -50,14 +51,11 @@ class EcoCratesPlugin : LibreforgePlugin() {
         Triggers.register(TriggerCrateWin)
     }
 
-    override fun handleDisable() {
-        PlacedCrates.removeAll()
-    }
-
     override fun handleReload() {
         KeyGUI.update()
         PlacedCrates.reload()
         CrateDisplay.start()
+        ParticleAnimations.reload()
     }
 
     override fun loadConfigCategories(): List<ConfigCategory> {

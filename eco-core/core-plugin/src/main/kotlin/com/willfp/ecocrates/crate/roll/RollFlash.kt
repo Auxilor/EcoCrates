@@ -85,7 +85,9 @@ class RollFlash private constructor(
 
     override fun onFinish() {
         player.removePotionEffect(PotionEffectType.BLINDNESS)
-        item.remove()
+        plugin.scheduler.runTask(item) {
+            item.remove()
+        }
     }
 
     object Factory : RollFactory<RollFlash>("flash") {
