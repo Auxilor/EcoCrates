@@ -58,7 +58,7 @@ class RollSemiInstant private constructor(
     }
 
     override fun onFinish() {
-        plugin.scheduler.runTaskLater(item, itemLifespan.toLong()) {
+        plugin.scheduler.runLater(itemLifespan.toLong()) {
             item.remove()
         }
     }

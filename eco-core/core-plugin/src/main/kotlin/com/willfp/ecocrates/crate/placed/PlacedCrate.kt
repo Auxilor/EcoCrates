@@ -1,10 +1,8 @@
 package com.willfp.ecocrates.crate.placed
 
-import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.ecocrates.crate.Crate
-import com.willfp.ecocrates.plugin
 import org.bukkit.Location
 import org.bukkit.entity.Item
 import org.bukkit.util.Vector
@@ -29,10 +27,8 @@ class PlacedCrate(
     private var item: Item? = null
 
     internal fun tick(tick: Int) {
-        plugin.scheduler.runTask(location) { // folia issue
-            tickRandomReward(tick)
-            tickHolograms(tick)
-        }
+        tickRandomReward(tick)
+        tickHolograms(tick)
     }
 
     internal fun tickAsync(tick: Int) {
@@ -40,16 +36,10 @@ class PlacedCrate(
     }
 
     internal fun onRemove() {
-        hologram?.let {
-            it.remove()
-            hologram = null
-        }
-        item?.let {
-            plugin.scheduler.runTask(it) {
-                it.remove()
-                item = null
-            }
-        }
+        hologram?.remove()
+        hologram = null
+        item?.remove()
+        item = null
     }
 
     private fun tickHolograms(tick: Int) {
@@ -88,7 +78,7 @@ class PlacedCrate(
             item?.let { item ->
                 item.getNearbyEntities(0.5, 0.5, 0.5).filterIsInstance<Item>()
                     .filter { !it.hasGravity() && !it.hasMetadata("ecocrates-roll-item") }
-                    .forEach { plugin.scheduler.runTask(it) { it.remove() } }
+                    .forEach { it.remove() }
             }
 
             if (item == null) {
@@ -112,7 +102,6 @@ class PlacedCrate(
                 entity.setGravity(false)
                 entity.isCustomNameVisible = true
                 entity.customName = crate.randomRewardName.replace("%reward%", reward.displayName)
-                entity.isPersistent = false
                 item = entity
             }
         }
@@ -128,11 +117,7 @@ class PlacedCrate(
             item?.itemStack = reward.getDisplay()
             item?.customName = crate.randomRewardName.replace("%reward%", reward.displayName)
             item?.isCustomNameVisible = true
-            val location = location.clone().add(0.0, crate.randomRewardHeight, 0.0)
-            if (Prerequisite.HAS_PAPER.isMet)
-                item?.teleportAsync(location)
-            else
-                item?.teleport(location) // damn spigot!
+            item?.teleport(location.clone().add(0.0, crate.randomRewardHeight, 0.0))
         }
     }
 

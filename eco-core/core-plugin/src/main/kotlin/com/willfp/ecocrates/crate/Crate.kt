@@ -202,6 +202,7 @@ class Crate(
     }
 
 
+
     init {
         PlayerPlaceholder(
             plugin,
@@ -390,10 +391,10 @@ class Crate(
             tick++
 
             if (!roll.shouldContinueTicking(tick) || !player.isOpeningCrate) {
-                it.cancelTask()
+                it.cancel()
                 finalizeRoll(false)
             }
-        }.runTaskTimer(player, 1, 1)
+        }.runTaskTimer(1, 1)
 
         player.isOpeningCrate = true
         player.profile.write(opensKey, getOpens(player) + 1)
