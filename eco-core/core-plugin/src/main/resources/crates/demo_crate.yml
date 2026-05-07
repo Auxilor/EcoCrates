@@ -67,8 +67,7 @@ placed:
     delay: 30
     name: "&fYou could win:"
   particles:
-    - particle: flame
-      animation: spiral
+    - particle: eco:spiral
   hologram:
     height: 1.5
     ticks: 200

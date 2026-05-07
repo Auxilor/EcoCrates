@@ -1,0 +1,86 @@
+# EcoCrates built-in particle presets.
+# Registered as ecocrates:<name> — reference in crate configs with e.g. particle: ecocrates:circle
+#
+# eco:circle  — iterate-based (static ring burst, 16 points at once)
+# eco:helix   — iterate-based (static helix snapshot)
+# The versions below are tick-based continuous animations, matching the original EcoCrates behaviour.
+#
+
+# A single point orbiting at a fixed height — continuous tick-based rotation.
+# (eco:circle is an iterate-based static ring; this matches the original EcoCrates behaviour.)
+circle:
+  parameters:
+    child: flame
+    spirals_per_second: 0.5
+    radius: 1.5
+    height: 1.0
+  type: tick
+  interval: 1
+  offset_x: "{{sin(2 * pi * $spirals_per_second * t / 20) * $radius}}"
+  offset_y: $height
+  offset_z: "{{cos(2 * pi * $spirals_per_second * t / 20) * $radius}}"
+  child: $child
+
+# A spiral that rises linearly then resets — continuous tick-based ascending helix.
+# (eco:helix is an iterate-based static snapshot; this matches the original EcoCrates behaviour.)
+helix:
+  parameters:
+    child: flame
+    spirals_per_second: 0.5
+    period: 40
+    radius: 1.5
+    height: 2.0
+  type: tick
+  interval: 1
+  offset_x: "{{sin(2 * pi * $spirals_per_second * t / 20) * $radius}}"
+  offset_y: "{{$height * (t % $period) / $period}}"
+  offset_z: "{{cos(2 * pi * $spirals_per_second * t / 20) * $radius}}"
+  child: $child
+
+# A ring that snaps out from the centre and resets — like a pulse or shockwave.
+nova:
+  parameters:
+    particle: end_rod
+    period: 30
+    max_radius: 2.0
+    height: 0.7
+    spin_speed: 0.3
+  type: tick
+  interval: 1
+  offset_x: "{{ sin($spin_speed * 2 * pi * t / 20) * ($max_radius * (t % $period) / $period) }}"
+  offset_y: "$height"
+  offset_z: "{{ cos($spin_speed * 2 * pi * t / 20) * ($max_radius * (t % $period) / $period) }}"
+  child: "$particle"
+
+# A smoke funnel that rises and flares outward — looks like a miniature tornado.
+vortex:
+  parameters:
+    particle: campfire_cosy_smoke
+    period: 60
+    base_radius: 0.3
+    flare_radius: 1.5
+    max_height: 2.5
+    spin_speed: 0.8
+  type: tick
+  interval: 1
+  offset_x: "{{ sin($spin_speed * 2 * pi * t / 20) * ($base_radius + ($flare_radius - $base_radius) * ((t % $period) / $period)) }}"
+  offset_y: "{{ $max_height * (t % $period) / $period }}"
+  offset_z: "{{ cos($spin_speed * 2 * pi * t / 20) * ($base_radius + ($flare_radius - $base_radius) * ((t % $period) / $period)) }}"
+  child: "$particle"
+
+# Traces a Lissajous figure-8 (infinity symbol) in the horizontal plane.
+figure_eight:
+  parameters:
+    color: "4444ff"
+    speed: 0.5
+    radius: 1.5
+    height: 0.8
+  type: tick
+  interval: 1
+  offset_x: "{{ sin($speed * 2 * pi * t / 20) * $radius }}"
+  offset_y: "$height"
+  offset_z: "{{ sin($speed * 4 * pi * t / 20) * $radius * 0.5 }}"
+  child:
+    type: simple
+    particle: dust
+    dust_color: "$color"

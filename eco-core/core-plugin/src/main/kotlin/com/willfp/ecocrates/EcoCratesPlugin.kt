@@ -3,6 +3,7 @@ package com.willfp.ecocrates
 import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.display.DisplayModule
 import com.willfp.eco.core.integrations.IntegrationLoader
+import com.willfp.eco.core.particle.Particles
 import com.willfp.ecocrates.commands.CommandEcoCrates
 import com.willfp.ecocrates.converters.Converters
 import com.willfp.ecocrates.converters.impl.CrateReloadedConverter
@@ -55,6 +56,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
     }
 
     override fun handleReload() {
+        Particles.loadFromConfig(this, "particles")
         KeyGUI.update()
         PlacedCrates.reload()
         CrateDisplay.start()
