@@ -3,10 +3,8 @@ package com.willfp.ecocrates.commands
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.toNiceString
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.Keys
-import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Rewards
 import org.bukkit.command.CommandSender
@@ -25,6 +23,5 @@ object CommandReload : Subcommand(
                 .replace("%keys%", Keys.values().size.toString())
                 .replace("%rewards%", Rewards.values().size.toString())
         )
-        ParticleAnimations.reload()
     }
 }

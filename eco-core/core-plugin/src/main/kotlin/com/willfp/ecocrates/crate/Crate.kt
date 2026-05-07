@@ -14,12 +14,11 @@ import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.particle.Particles
+import com.willfp.eco.core.particle.SpawnableParticle
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.placed.HologramFrame
-import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
-import com.willfp.ecocrates.crate.placed.particle.ParticleData
 import com.willfp.ecocrates.crate.reroll.ReRollGUI
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollOptions
@@ -78,12 +77,8 @@ class Crate(
 
     val randomRewardName = config.getFormattedString("placed.random-reward.name")
 
-    val particles = config.getSubsections("placed.particles").map {
-        ParticleData(
-            Particles.lookup(it.getString("particle")),
-            ParticleAnimations.get(it.getString("animation")) ?: ParticleAnimations.SPIRAL
-        )
-    }
+    val particles: List<SpawnableParticle> = config.getSubsections("placed.particles")
+        .map { Particles.lookup(it.getString("particle")) }
 
     // The ID of the shared key this crate uses, defined in keys/ folder
     val sharedKey: SharedKey = Keys[config.getString("key")]

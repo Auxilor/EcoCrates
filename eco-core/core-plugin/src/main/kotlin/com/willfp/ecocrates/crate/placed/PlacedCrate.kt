@@ -5,6 +5,7 @@ import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.ecocrates.crate.Crate
 import org.bukkit.Location
 import org.bukkit.entity.Item
+import org.bukkit.event.Cancellable
 import org.bukkit.util.Vector
 
 class PlacedCrate(
@@ -26,13 +27,11 @@ class PlacedCrate(
 
     private var item: Item? = null
 
+    private val particleCancellables: List<Cancellable> = crate.particles.map { it.spawn(location) }
+
     internal fun tick(tick: Int) {
         tickRandomReward(tick)
         tickHolograms(tick)
-    }
-
-    internal fun tickAsync(tick: Int) {
-        tickParticles(tick)
     }
 
     internal fun onRemove() {
@@ -40,6 +39,7 @@ class PlacedCrate(
         hologram = null
         item?.remove()
         item = null
+        particleCancellables.forEach { it.setCancelled(true) }
     }
 
     private fun tickHolograms(tick: Int) {
@@ -118,12 +118,6 @@ class PlacedCrate(
             item?.customName = crate.randomRewardName.replace("%reward%", reward.displayName)
             item?.isCustomNameVisible = true
             item?.teleport(location.clone().add(0.0, crate.randomRewardHeight, 0.0))
-        }
-    }
-
-    private fun tickParticles(tick: Int) {
-        for ((particle, animation) in crate.particles.toList()) { // Anti ConcurrentModification
-            animation.spawnParticle(location, tick, particle)
         }
     }
 
