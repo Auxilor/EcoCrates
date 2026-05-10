@@ -3,6 +3,10 @@ lore:
   - "&fUse this key to open"
   - "&fthe <g:#56ab2f>Demo Crate</g:#a8e063>"
 use-custom-item: false
+craftable: false # Whether this key should be craftable
+recipe-permission: "" # (Optional) The permission required to see the crafting recipe
+shapeless: false # (Optional) Whether the crafting recipe is shapeless, defaults to false
+recipe: [] # The crafting recipe ingredients
 
 keygui: # Options for showing up in /keys GUI
   enabled: true # If this key should appear in the key GUI

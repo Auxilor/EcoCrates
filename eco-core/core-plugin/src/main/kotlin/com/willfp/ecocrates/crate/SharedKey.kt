@@ -10,6 +10,8 @@ import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.builder.ItemStackBuilder
+import com.willfp.eco.core.recipe.Recipes
+import com.willfp.eco.core.recipe.recipes.CraftingRecipe
 import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.eco.util.formatEco
 import com.willfp.ecocrates.plugin
@@ -43,6 +45,20 @@ class SharedKey(
 
     val item: ItemStack
         get() = testableItem.item.clone()
+
+    val recipe: CraftingRecipe? = run {
+        if (!config.getBool("craftable")) return@run null
+        val recipeStrings = config.getStrings("recipe")
+        if (recipeStrings.isEmpty()) return@run null
+        Recipes.createAndRegisterRecipe(
+            plugin,
+            "${id}_key",
+            item,
+            recipeStrings,
+            config.getStringOrNull("recipe-permission"),
+            config.getBool("shapeless")
+        )
+    }
 
     fun createItem(owner: OfflinePlayer? = null): ItemStack {
         val itemStack = item

@@ -12,6 +12,10 @@ lore: # Lore applied to physical key items
   - "&fdemonstration crates"
 use-custom-item: false # Set to true to use an existing custom item (e.g. ecoitems:...) as the key.
                        # Lore will NOT be applied when use-custom-item is true.
+craftable: false # Whether this key should be craftable
+recipe-permission: "" # (Optional) The permission required to see the crafting recipe
+shapeless: false # (Optional) Whether the crafting recipe is shapeless, defaults to false
+recipe: [] # The crafting recipe ingredients
 
 keygui: # Options for the /keys GUI slot
   enabled: true # Whether this key appears in the GUI
