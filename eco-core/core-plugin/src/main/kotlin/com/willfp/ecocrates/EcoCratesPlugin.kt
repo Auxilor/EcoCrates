@@ -1,5 +1,6 @@
 package com.willfp.ecocrates
 
+import com.willfp.eco.core.bstats.EcoMetricsChart
 import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.display.DisplayModule
 import com.willfp.eco.core.integrations.IntegrationLoader
@@ -14,6 +15,7 @@ import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.KeyGUI
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
+import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.display.KeyDisplay
 import com.willfp.ecocrates.libreforge.EffectGiveVirtualKey
 import com.willfp.ecocrates.libreforge.EffectResetRewardWins
@@ -95,4 +97,12 @@ class EcoCratesPlugin : LibreforgePlugin() {
             IntegrationLoader("SpecializedCrates") { Converters.register(SpecializedCratesConverter) }
         )
     }
+
+    override fun getCustomCharts() = listOf(
+        EcoMetricsChart.SingleLine("total_crates") { Crates.values().size },
+        EcoMetricsChart.SingleLine("total_keys") { Keys.values().size },
+        EcoMetricsChart.SingleLine("total_rewards") { Rewards.values().size },
+        EcoMetricsChart.SingleLine("total_particle_animations") { ParticleAnimations.values().size },
+        EcoMetricsChart.SingleLine("placed_crates") { PlacedCrates.values().size }
+    )
 }
