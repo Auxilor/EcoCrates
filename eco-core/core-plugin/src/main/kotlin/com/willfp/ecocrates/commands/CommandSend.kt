@@ -24,9 +24,10 @@ object CommandSend : Subcommand(
             return
         }
 
-        val recipient = Bukkit.getPlayer(args[0])
+        @Suppress("DEPRECATION")
+        val recipient = Bukkit.getOfflinePlayer(args[0])
 
-        if (recipient == null || recipient == sender) {
+        if ((!recipient.hasPlayedBefore() && !recipient.isOnline) || recipient.uniqueId == sender.uniqueId) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return
         }
@@ -71,7 +72,7 @@ object CommandSend : Subcommand(
                 .replace("%player%", recipient.savedDisplayName)
         )
 
-        recipient.sendMessage(
+        recipient.player?.sendMessage(
             plugin.langYml.getMessage("key-trade-received")
                 .replace("%amount%", amount.toString())
                 .replace("%key%", key.displayName)
