@@ -15,6 +15,7 @@ import com.willfp.eco.core.recipe.recipes.CraftingRecipe
 import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.eco.util.formatEco
 import com.willfp.ecocrates.plugin
+import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -28,6 +29,8 @@ class SharedKey(
 
     val isCustomItem = config.getBool("use-custom-item")
 
+    val isTradeable = config.getBool("tradeable")
+
     private val testableItem: TestableItem = if (isCustomItem) {
         Items.lookup(config.getString("item"))
     } else {
@@ -39,6 +42,10 @@ class SharedKey(
     }
 
     val lore = config.getFormattedStrings("lore")
+
+    val displayName: String = testableItem.item.itemMeta?.displayName ?: id
+
+    val name: String = ChatColor.stripColor(displayName) ?: id
 
     private val keysKey = makeIntKey("${id}_keys")
     private val toGetKey = makeIntKey("${id}_to_get")
