@@ -1,0 +1,142 @@
+---
+title: "Plugin Config"
+sidebar_position: 8
+---
+
+## Default config.yml
+
+```yaml
+# Even if eco is set up to use a database, you can
+# force EcoCrates to save to local storage to disable
+# cross-server sync.
+use-local-storage: false
+
+no-key-velocity: 1.5 # The speed at which a player should be launched away from a crate if they try to open it without a key. Set to 0 to disable.
+track-player-keys: false # If an NBT tag should be added to keys that links them to a player - will prevent stacking some keys.
+
+# If a reward allows permission multipliers, the weights
+# will be multiplied by highest-priority multiplier that a player
+# has permission for - i.e. if a player has both vip and mvp permissions,
+# than they'll have the mvp one applied as it has a higher priority.
+permission-multipliers:
+  - permission: ecocrates.mutliplier.vip
+    multiplier: 1.5
+    priority: 1
+  - permission: ecocrates.mutliplier.mvp
+    multiplier: 2
+    priority: 2
+
+reroll:
+  rows: 3
+  mask:
+    items:
+      - black_stained_glass_pane
+      - green_stained_glass_pane
+    pattern:
+      - "122211111"
+      - "120211011"
+      - "122211111"
+  title: "Accept your reward?"
+  accept:
+    row: 2
+    column: 3
+  reroll:
+    row: 2
+    column: 7
+    item: orange_stained_glass_pane
+    name: "&6Reroll"
+    lore:
+      - "&fNot happy with your item?"
+      - "&fClick to try again for"
+      - "&fa chance at something else!"
+      - ""
+      - "&cYou can only reroll once!"
+
+keygui:
+  rows: 3
+  mask:
+    items:
+      - black_stained_glass_pane
+    pattern:
+      - "111111111"
+      - "110101011"
+      - "111111111"
+  title: "Your Keys"
+
+  # Custom GUI slots; see here for a how-to: https://plugins.auxilor.io/all-plugins/custom-gui-slots
+  custom-slots: [ ]
+
+animations:
+  spiral:
+    spirals-per-second: 0.5
+    rises-per-second: 0.25
+    radius: 1.5
+    height: 1
+    count: 1
+  double_spiral:
+    spirals-per-second: 0.25
+    rises-per-second: 0.125
+    radius: 1.5
+    height: 1
+    count: 1
+  circle:
+    spirals-per-second: 0.5
+    radius: 1.5
+    height: 1
+    count: 1
+  twirl:
+    spirals-per-second: 0.5
+    ticks: 80
+    small-radius: 0.2
+    large-radius: 1.2
+    start-height: 2
+    end-height: 0.7
+    count: 1
+  tilted_rings:
+    spirals-per-second: 0.5
+    radius: 1.5
+    y-offset: 1
+    x-offset: 1
+    count: 1
+
+rolls:
+  csgo:
+    filler: black_stained_glass_pane name:""
+    selector: lime_stained_glass_pane name:""
+    bias: 0.65
+    scrolls: 35
+    max-delay: 25
+  flash:
+    duration: 80
+    wait: 20
+  encircle:
+    spin-time: 100
+    reveal-time: 80
+    items: 12
+    radius: 3
+    height: 1
+    spins-per-second: 0.5
+    rise-velocity: 0.05
+    spin-velocity: 0.4
+    reveal-velocity: 0.2
+  quick:
+    height: 1.5
+    rise-velocity: 0.05
+    suspend: 10
+  semi_instant:
+    velocity:
+      randomness: 0.2
+      x: 0
+      y: 0.3
+      z: 0
+    item-lifespan: 30
+  slot_machine:
+    filler: black_stained_glass_pane name:""
+    selector: yellow_stained_glass_pane name:""
+    symbols: 18
+    spin-ticks: 36
+    reel-stop-delay: 8
+    spin-interval: 2
+    start-pitch: 0.9
+    pitch-step: 0.08
+```
