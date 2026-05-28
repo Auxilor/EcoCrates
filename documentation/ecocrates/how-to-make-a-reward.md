@@ -1,4 +1,4 @@
----
+﻿---
 title: "How to make a Reward"
 sidebar_position: 1
 ---
@@ -42,7 +42,7 @@ display:
 ## Understanding the Sections
 
 #### The Reward Basics Section
-:::dangerEffects Section
+:::danger Effects Section
 
 The effects section is the core functionality of the crate reward. You can configure effects, conditions, and filters to run when the crate reward is won.
 
