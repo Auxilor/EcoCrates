@@ -1,4 +1,4 @@
----
+﻿---
 title: "How to make a Crate"
 sidebar_position: 3
 ---
@@ -178,7 +178,7 @@ placed: # Options for physically placed crates
 ```
 
 #### The Open and Finish Effects Section
-:::dangerEffects Section
+:::danger Effects Section
 
 The effects section is the core functionality of the crate. You can configure effects, conditions, and filters to run when the crate is opened or when it finishes rolling.
 
