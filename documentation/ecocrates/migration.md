@@ -1,33 +1,26 @@
 ---
-title: "Migrating/Converting from other crate plugins"
+title: "Migrating / Converting from Other Crate Plugins"
 sidebar_position: 7
 ---
 
-Want to start using EcoCrates but do not have much time to convert all your configs from the old crate plugin?
-EcoCrates will kindly do that for you with a single command!
+Switching to EcoCrates doesn't mean rebuilding every crate by hand. EcoCrates can convert your existing setup from several other crate plugins with a single command. This page lists the supported plugins and how to run a conversion.
 
 ## Supported plugins
 
-- CrateReloaded
-  - Command: **/ecocrates convert CrateReloaded**
-  
-  - Requires CrateReloaded to be enabled as well!
+Run the matching command while both EcoCrates and the source plugin are enabled. The source plugin must stay installed and enabled during the conversion so EcoCrates can read its data.
 
-- CrazyCrates
-  - Command: **/ecocrates convert CrazyCrates**
+- **CrateReloaded:** `/ecocrates convert CrateReloaded`
+- **CrazyCrates:** `/ecocrates convert CrazyCrates`
+- **ExcellentCrates** (formerly GoldenCrates): `/ecocrates convert ExcellentCrates`
+- **SpecializedCrates:** `/ecocrates convert SpecializedCrates`
 
-  - Requires CrazyCrates to be enabled as well!
+## Requesting another converter
 
-- ExcellentCrates (ex. GoldenCrates)
-  - Command: **/ecocrates convert ExcellentCrates**
+If your current crate plugin isn't listed, you can request a converter for it in our [Discord Server](https://hub.auxilor.io/discord).
 
-  - Requires ExcellentCrates to be enabled as well!
+<hr/>
 
-- SpecializedCrates
-  - Command: **/ecocrates convert SpecializedCrates**
+## Where to go next
 
-  - Requires SpecializedCrates to be enabled as well!
-
-## Did not find your crates plugin in the list?
-
-Feel free to request a converter for any crate plugin on our [GitHub issues section](https://github.com/Auxilor/EcoCrates/issues/new?assignees=&labels=enhancement&template=request-a-feature.md&title=)
+- **Review the result:** check your converted crates against [How to Make a Crate](how-to-make-a-crate).
+- **Hand out keys:** give keys for your crates via [Commands and Permissions](commands-and-permissions).
