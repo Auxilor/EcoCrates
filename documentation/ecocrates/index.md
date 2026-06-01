@@ -2,14 +2,26 @@
 title: "EcoCrates"
 ---
 
-## What sets EcoCrates apart from other crate plugins?
+## What is EcoCrates?
 
-EcoCrates is designed to get rid of the pain in making crates. No more dealing with terribly made in-game editors, a lack of custom item / custom enchant support, poor performance, and all the other issues that you usually get with other crate plugins. Instead, EcoCrates gives you a fast, polished platform to make as many crates as you want.
+EcoCrates is a crate plugin for Spigot and Paper servers. You define crates, keys, and rewards in flat config files, then players open crates to win randomised rewards through a range of opening animations. It supports custom items, custom enchants, virtual and physical keys, and the shared eco effects system.
 
-### Designed to maximize engagement
+## What sets EcoCrates apart?
 
-EcoCrates gives you a plethora of ways to rig your crates any way you want - give certain ranks chance multipliers for certain rewards, have fake display chances that affect animations to hone in on the near-miss effect, use placeholders to calculate chances, and more. It also gives you sounds, animations, fireworks, broadcasts, messages, and all the rest of it in order to maximize the dopamine from opening crates and get your players opening as many as they can.
+Crates are configured entirely in files, so there's no in-game editor to fight with, and configs are easy to copy, version, and share.
 
-### Great for gameplay too
+- **Reward control:** weight rewards with maths and placeholders, give ranks chance multipliers, and cap how many times a reward can be won.
+- **Opening animations:** several built-in rolls (CS:GO style, encircle, flash, and more), plus rerolls so players don't feel cheated by a bad pull.
+- **Flexible access:** open with physical keys, virtual keys, or by paying a currency, and make vote or milestone crates.
+- **Shared keys:** multiple crates can share one key when configured to, so a single key type can open several crates.
+- **eco integration:** uses the shared effects, conditions, and item systems, so crates work with custom items and enchants out of the box.
 
-That's not to say it's all about profit - it's great for gameplay systems as well. Players can pay money to open crates rather than using keys (if you want), add rerolls to stop people feeling hard done by, make vote crates, and more. It's a complete variable-reward system.
+<hr/>
+
+## Where to go next
+
+- **Make a crate:** start with [How to Make a Crate](how-to-make-a-crate).
+- **Make a key:** define crate access in [How to Make a Key](how-to-make-a-key).
+- **Make a reward:** define what players win in [How to Make a Reward](how-to-make-a-reward).
+- **Pick an animation:** browse the [Animations / Rolls](roll-animations).
+- **Server config:** tune global settings in [Plugin Config](plugin-config).
