@@ -7,6 +7,8 @@ import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.gui.addPage
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.MenuLayer
+import com.willfp.eco.core.gui.onEvent
+import com.willfp.eco.core.gui.page.PageChangeEvent
 import com.willfp.eco.core.gui.page.PageChanger
 import com.willfp.eco.core.gui.slot.ConfigSlot
 import com.willfp.eco.core.gui.slot
@@ -17,6 +19,7 @@ import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.eco.util.NumberUtils
+import com.willfp.eco.util.StringUtils
 import com.willfp.ecocrates.crate.placed.HologramFrame
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.crate.placed.particle.ParticleData
@@ -128,10 +131,23 @@ class Crate(
     private val rollFactory = Rolls.get(config.getString("roll"))!!
 
     private val previewGUI = menu(config.getInt("preview.rows")) {
-        title = config.getFormattedString("preview.title")
-
         val sharedCustomSlots = config.getSubsections("preview.custom-slots")
         val pages = config.getSubsections("preview.pages")
+
+        val maxPage = pages.size.coerceAtLeast(1)
+
+        fun renderTitle(page: Int) = StringUtils.format(
+            config.getString("preview.title")
+                .replace("%page%", page.toString())
+                .replace("%max_page%", maxPage.toString())
+        )
+
+        title = renderTitle(1)
+
+        onEvent<PageChangeEvent> { eventPlayer, _, event ->
+            @Suppress("DEPRECATION")
+            eventPlayer.openInventory.setTitle(renderTitle(event.newPage))
+        }
 
         maxPages(pages.size)
 

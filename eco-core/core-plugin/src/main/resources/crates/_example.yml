@@ -11,7 +11,7 @@ can-reroll: true # If once you win a reward, you can choose to reroll
 key: demo_key # The ID of the key for this crate (configure in /keys/demo_key.yml)
                 # Multiple crates can share the same key by using the same key ID here.
 preview: # The preview GUI, when left-clicking a crate or using /crates preview
-  title: Demo Crate # The title of the preview GUI
+  title: Demo Crate # The title of the preview GUI. Supports %page% and %max_page% placeholders.
   rows: 6 # The amount of rows for the gui, between 1 and 6
   # Custom GUI slots shared across all preview pages; see here for a how-to: https://plugins.auxilor.io/all-plugins/custom-gui-slots
   custom-slots: [ ]
