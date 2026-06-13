@@ -69,7 +69,26 @@ keygui:
       - "111111111"
       - "110101011"
       - "111111111"
-  title: "Your Keys" # The GUI title
+  title: "Your Keys (%page%/%max_page%)" # Supports %page% and %max_page% placeholders.
+
+  page-change-sound: # The sound played when changing pages. Remove or set enabled to false to disable.
+    enabled: true
+    sound: ui.button.click
+    pitch: 1.0
+    volume: 1.0
+
+  forwards-arrow: # The arrow for switching to the next page.
+    item: arrow name:"&fNext Page" # Shown when there is a next page
+    item-inactive: gray_dye name:"&7Next Page" # Shown on the last page. Remove to hide the button instead.
+    row: 2
+    column: 9
+
+  backwards-arrow: # The arrow for switching to the previous page.
+    item: arrow name:"&fPrevious Page" # Shown when there is a previous page
+    item-inactive: gray_dye name:"&7Previous Page" # Shown on the first page. Remove to hide the button instead.
+    row: 2
+    column: 1
+
   custom-slots: [] # Custom GUI slots; see https://plugins.auxilor.io/all-plugins/custom-gui-slots
 
 # Particle animations used by placed crates; referenced by name in a crate's placed.particles.
