@@ -5,17 +5,15 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.gui.addPage
+import com.willfp.eco.core.gui.addPageChanger
 import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.menu.MenuLayer
-import com.willfp.eco.core.gui.onEvent
-import com.willfp.eco.core.gui.page.PageChangeEvent
 import com.willfp.eco.core.gui.page.PageChanger
 import com.willfp.eco.core.gui.slot.ConfigSlot
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
-import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.particle.Particles
+import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.eco.util.NumberUtils
@@ -134,46 +132,14 @@ class Crate(
         val sharedCustomSlots = config.getSubsections("preview.custom-slots")
         val pages = config.getSubsections("preview.pages")
 
-        val maxPage = pages.size.coerceAtLeast(1)
-
-        fun renderTitle(page: Int) = StringUtils.format(
-            config.getString("preview.title")
-                .replace("%page%", page.toString())
-                .replace("%max_page%", maxPage.toString())
-        )
-
-        title = renderTitle(1)
-
-        onEvent<PageChangeEvent> { eventPlayer, _, event ->
-            @Suppress("DEPRECATION")
-            eventPlayer.openInventory.setTitle(renderTitle(event.newPage))
-        }
+        title = StringUtils.format(config.getString("preview.title"))
 
         maxPages(pages.size)
 
-        val forwardsArrow = PageChanger(
-            Items.lookup(config.getString("preview.forwards-arrow.item")).item,
-            PageChanger.Direction.FORWARDS
-        )
+        val pageChangeSound = PlayableSound.create(config.getSubsection("preview.page-change-sound"))
 
-        val backwardsArrow = PageChanger(
-            Items.lookup(config.getString("preview.backwards-arrow.item")).item,
-            PageChanger.Direction.BACKWARDS
-        )
-
-        addComponent(
-            MenuLayer.TOP,
-            config.getInt("preview.forwards-arrow.row"),
-            config.getInt("preview.forwards-arrow.column"),
-            forwardsArrow
-        )
-
-        addComponent(
-            MenuLayer.TOP,
-            config.getInt("preview.backwards-arrow.row"),
-            config.getInt("preview.backwards-arrow.column"),
-            backwardsArrow
-        )
+        addPageChanger(config, "preview.forwards-arrow", PageChanger.Direction.FORWARDS, pageChangeSound)
+        addPageChanger(config, "preview.backwards-arrow", PageChanger.Direction.BACKWARDS, pageChangeSound)
 
         for (page in pages) {
             addPage(page.getInt("page")) {
