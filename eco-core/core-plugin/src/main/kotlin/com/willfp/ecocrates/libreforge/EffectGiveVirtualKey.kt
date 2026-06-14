@@ -25,7 +25,7 @@ object EffectGiveVirtualKey : Effect<NoCompileData>("give_virtual_key") {
         require(
             "amount",
             "You must specify the amount!",
-            description = "The number of virtual keys to give. Supports expressions.",
+            description = "The number of virtual keys to give.",
             type = ArgType.EXPRESSION
         )
     }
