@@ -2,6 +2,7 @@ package com.willfp.ecocrates.libreforge
 
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.ecocrates.crate.Crates
+import com.willfp.libreforge.ArgType
 import com.willfp.libreforge.NoCompileData
 import com.willfp.libreforge.arguments
 import com.willfp.libreforge.effects.Effect
@@ -10,9 +11,23 @@ import com.willfp.libreforge.getIntFromExpression
 import com.willfp.libreforge.triggers.TriggerData
 
 object EffectGiveVirtualKey : Effect<NoCompileData>("give_virtual_key") {
+    override val description = "Gives the player a number of virtual keys for the specified crate."
+
+    override val categories = setOf("inventory")
+
     override val arguments = arguments {
-        require("crate", "You must specify the crate!")
-        require("amount", "You must specify the amount!")
+        require(
+            "crate",
+            "You must specify the crate!",
+            description = "The ID of the crate to give virtual keys for.",
+            type = ArgType.STRING
+        )
+        require(
+            "amount",
+            "You must specify the amount!",
+            description = "The number of virtual keys to give.",
+            type = ArgType.EXPRESSION
+        )
     }
 
     override fun onTrigger(config: Config, data: TriggerData, compileData: NoCompileData): Boolean {
