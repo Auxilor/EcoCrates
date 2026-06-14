@@ -2,6 +2,7 @@ package com.willfp.ecocrates.libreforge
 
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.ecocrates.reward.Rewards
+import com.willfp.libreforge.ArgType
 import com.willfp.libreforge.NoCompileData
 import com.willfp.libreforge.arguments
 import com.willfp.libreforge.effects.Effect
@@ -9,8 +10,17 @@ import com.willfp.libreforge.getFormattedString
 import com.willfp.libreforge.triggers.TriggerData
 
 object EffectResetRewardWins : Effect<NoCompileData>("reward_reset_wins") {
+    override val description = "Resets the player's win count for the specified reward, allowing it to be won again if it has a win limit."
+
+    override val categories = setOf("inventory")
+
     override val arguments = arguments {
-        require("reward", "You must specify the reward!")
+        require(
+            "reward",
+            "You must specify the reward!",
+            description = "The ID of the reward to reset the win count for.",
+            type = ArgType.STRING
+        )
     }
 
     override fun onTrigger(config: Config, data: TriggerData, compileData: NoCompileData): Boolean {

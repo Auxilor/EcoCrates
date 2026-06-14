@@ -8,6 +8,10 @@ import com.willfp.libreforge.triggers.TriggerParameter
 import org.bukkit.event.EventHandler
 
 object TriggerCrateOpen : Trigger("crate_open") {
+    override val description = "Fires when the player opens a crate."
+
+    override val categories = setOf("inventory")
+
     override val parameters = setOf(
         TriggerParameter.PLAYER,
         TriggerParameter.EVENT

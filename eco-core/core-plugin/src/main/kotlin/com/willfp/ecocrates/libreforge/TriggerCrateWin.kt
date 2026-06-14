@@ -8,6 +8,14 @@ import com.willfp.libreforge.triggers.TriggerParameter
 import org.bukkit.event.EventHandler
 
 object TriggerCrateWin : Trigger("crate_win") {
+    override val description = "Fires when the player wins a reward from a crate."
+
+    override val categories = setOf("inventory")
+
+    override val parameterDescriptions = mapOf(
+        TriggerParameter.VALUE to "The percentage chance of winning this reward out of all rewards in the crate."
+    )
+
     override val parameters = setOf(
         TriggerParameter.PLAYER,
         TriggerParameter.EVENT,
