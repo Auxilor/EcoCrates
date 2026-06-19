@@ -46,7 +46,7 @@ key: demo_crate # The key ID this crate uses (configure in /keys/demo_crate.yml)
 
 # === Preview: the GUI players browse before opening ===
 preview:
-  title: Demo Crate # The title of the preview GUI
+  title: "Demo Crate (%page%/%max_page%)" # The title of the preview GUI. Supports %page% and %max_page% placeholders.
   rows: 6 # Number of rows, between 1 and 6
   custom-slots: [] # GUI slots shared across all preview pages
   forwards-arrow: # Shown on every page except the last
@@ -144,7 +144,7 @@ The GUI players see when they preview the crate, laid out as one or more pages w
 
 ```yaml
 preview:
-  title: Demo Crate # The title of the preview GUI
+  title: "Demo Crate (%page%/%max_page%)" # The title of the preview GUI. Supports %page% and %max_page% placeholders.
   rows: 6 # Number of rows, between 1 and 6
   custom-slots: [] # GUI slots shared across all preview pages
   forwards-arrow: # Shown on every page except the last

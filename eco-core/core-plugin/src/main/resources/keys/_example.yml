@@ -28,6 +28,7 @@ keygui: # Options for the /keys GUI slot
     - "&fGet more at &astore.example.net"
   row: 2 # Row in the GUI (1-indexed)
   column: 3 # Column in the GUI (1-indexed)
+  page: 1 # Page in the GUI (1-indexed)
   right-click-previews: true # Right-click to open the crate preview
   left-click-opens: true # Left-click to open the crate using a virtual key
   shift-left-click-message: # Messages sent on shift-left-click

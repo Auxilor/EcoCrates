@@ -5,14 +5,21 @@ can-reroll: true
 key: demo_key # The ID of the key for this crate (configured in /keys/demo_key.yml)
 
 preview:
-  title: Demo Crate
+  title: "Demo Crate (%page%/%max_page%)"
   rows: 6
+  page-change-sound:
+    enabled: true
+    sound: ui.button.click
+    pitch: 1.0
+    volume: 1.0
   forwards-arrow:
     item: arrow name:"&fNext Page"
+    item-inactive: gray_dye name:"&7Next Page"
     row: 6
     column: 6
   backwards-arrow:
     item: arrow name:"&fPrevious Page"
+    item-inactive: gray_dye name:"&7Previous Page"
     row: 6
     column: 4
   pages:

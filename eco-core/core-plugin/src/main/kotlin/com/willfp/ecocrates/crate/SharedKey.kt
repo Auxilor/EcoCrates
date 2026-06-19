@@ -4,7 +4,7 @@ import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.gui.menu.MenuBuilder
+import com.willfp.eco.core.gui.page.PageBuilder
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
@@ -103,13 +103,19 @@ class SharedKey(
         player.profile.write(toGetKey, amount)
     }
 
+    val keyGuiEnabled: Boolean
+        get() = config.getBool("keygui.enabled")
+
+    val keyGuiPage: Int
+        get() = config.getInt("keygui.page").let { if (it < 1) 1 else it }
+
     /**
      * Adds this key's slot to the Key GUI.
      * The key config drives everything: item, lore, position, click actions.
      * The optional 'keygui.crate' field controls which crate is opened on left-click.
      */
-    internal fun addToKeyGUI(builder: MenuBuilder) {
-        if (!config.getBool("keygui.enabled")) {
+    internal fun addToKeyGUI(builder: PageBuilder) {
+        if (!keyGuiEnabled) {
             return
         }
 

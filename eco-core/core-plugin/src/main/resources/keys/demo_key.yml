@@ -18,6 +18,7 @@ keygui: # Options for showing up in /keys GUI
     - "&fGet more at &astore.example.net"
   row: 2 # Row position in the GUI
   column: 3 # Column position in the GUI
+  page: 1 # Page position in the GUI
   right-click-previews: true # Right-click to preview the crate
   left-click-opens: true # Left-click to open the crate with a virtual key
   shift-left-click-message:

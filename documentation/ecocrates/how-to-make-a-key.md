@@ -68,6 +68,7 @@ keygui:
     - "&fGet more at &astore.example.net"
   row: 2 # Row in the GUI, 1-indexed
   column: 3 # Column in the GUI, 1-indexed
+  page: 1 # Page in the GUI, 1-indexed
   right-click-previews: true # Right-click opens the crate preview
   left-click-opens: true # Left-click opens the crate with a virtual key
   shift-left-click-message: # Message sent on shift-left-click
@@ -125,6 +126,7 @@ keygui:
   crate: demo_crate # The crate to open/preview on click; defaults to the key ID
   row: 2 # Row in the GUI, 1-indexed
   column: 3 # Column in the GUI, 1-indexed
+  page: 1 # Page in the GUI, 1-indexed
   right-click-previews: true # Right-click opens the crate preview
   left-click-opens: true # Left-click opens the crate with a virtual key
   custom-slots: [] # GUI slots for extra buttons
