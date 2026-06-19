@@ -8,11 +8,16 @@ import com.willfp.libreforge.arguments
 import com.willfp.libreforge.effects.Effect
 import com.willfp.libreforge.getFormattedString
 import com.willfp.libreforge.triggers.TriggerData
+import com.willfp.libreforge.triggers.TriggerParameter
 
 object EffectResetRewardWins : Effect<NoCompileData>("reward_reset_wins") {
     override val description = "Resets the player's win count for the specified reward, allowing it to be won again if it has a win limit."
 
     override val categories = setOf("inventory")
+
+    override val parameters = setOf(
+        TriggerParameter.PLAYER
+    )
 
     override val arguments = arguments {
         require(
