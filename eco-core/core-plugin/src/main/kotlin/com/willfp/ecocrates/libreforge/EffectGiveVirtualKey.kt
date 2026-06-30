@@ -9,11 +9,16 @@ import com.willfp.libreforge.effects.Effect
 import com.willfp.libreforge.getFormattedString
 import com.willfp.libreforge.getIntFromExpression
 import com.willfp.libreforge.triggers.TriggerData
+import com.willfp.libreforge.triggers.TriggerParameter
 
 object EffectGiveVirtualKey : Effect<NoCompileData>("give_virtual_key") {
     override val description = "Gives the player a number of virtual keys for the specified crate."
 
     override val categories = setOf("inventory")
+
+    override val parameters = setOf(
+        TriggerParameter.PLAYER
+    )
 
     override val arguments = arguments {
         require(
