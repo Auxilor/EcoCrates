@@ -21,6 +21,7 @@ keygui: # Options for showing up in /keys GUI
   page: 1 # Page position in the GUI
   right-click-previews: true # Right-click to preview the crate
   left-click-opens: true # Left-click to open the crate with a virtual key
+  shift-right-click-open-all: true # Shift right-click to instantly open all virtual keys held, skipping the roll animation
   shift-left-click-message:
     - "Buy a Demo Crate key here! &astore.example.net"
 

@@ -31,6 +31,7 @@ keygui: # Options for the /keys GUI slot
   page: 1 # Page in the GUI (1-indexed)
   right-click-previews: true # Right-click to open the crate preview
   left-click-opens: true # Left-click to open the crate using a virtual key
+  shift-right-click-open-all: true # Shift right-click to instantly open all virtual keys held, skipping the roll animation
   shift-left-click-message: # Messages sent on shift-left-click
     - "Buy a key here! &astore.example.net"
 

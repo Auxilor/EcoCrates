@@ -43,6 +43,11 @@ object PlacedCrateListener : Listener {
 
         if (player.isSneaking && event.action == Action.RIGHT_CLICK_BLOCK) {
             event.isCancelled = true
+
+            if (hasPhysicalKey && crate.isShiftRightClickOpenAllEnabled) {
+                crate.openPlacedAll(player, block.location, OpenMethod.PHYSICAL_KEY)
+            }
+
             return removeFromPreventDoubles(player)
         }
 

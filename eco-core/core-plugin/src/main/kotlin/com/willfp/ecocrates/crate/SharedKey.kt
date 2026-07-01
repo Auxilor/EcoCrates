@@ -152,6 +152,15 @@ class SharedKey(
                         .forEach { event.whoClicked.sendMessage(it) }
                 }
 
+                onShiftRightClick { event, _, _ ->
+                    if (config.getBool("keygui.shift-right-click-open-all")) {
+                        val player = event.whoClicked as Player
+                        val crate = Crates[crateId] ?: return@onShiftRightClick
+                        player.closeInventory()
+                        crate.openAllWithMethod(player, OpenMethod.VIRTUAL_KEY)
+                    }
+                }
+
                 setUpdater { player, _, previous ->
                     previous.apply {
                         itemMeta = itemMeta?.apply {
