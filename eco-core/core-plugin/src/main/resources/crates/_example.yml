@@ -81,6 +81,7 @@ pay-to-open: # If people can pay to open if they have no keys
   type: coins # The type of currency to use
 
 placed: # Options for physically placed crates
+  shift-right-click-open-all: true # Shift right-click to instantly open the whole stack of physical keys held, skipping the roll animation
   random-reward: # The random reward hologram, shows an item
     enabled: true # If the random reward should be shown
     height: 1.5 # The height above the crate at which to show the reward

@@ -68,6 +68,7 @@ pay-to-open:
   type: coins
 
 placed:
+  shift-right-click-open-all: true # Shift right-click to instantly open the whole stack of physical keys held, skipping the roll animation
   random-reward:
     enabled: true
     height: 1.5

@@ -11,6 +11,8 @@ abstract class OpenMethod(
     abstract fun canUseAndNotify(crate: Crate, player: Player): Boolean
     abstract fun useMethod(crate: Crate, player: Player)
 
+    open fun getBulkAmount(crate: Crate, player: Player): Int = 1
+
     override fun equals(other: Any?): Boolean {
         if (other !is OpenMethod) {
             return false
@@ -38,6 +40,14 @@ abstract class OpenMethod(
             override fun useMethod(crate: Crate, player: Player) {
                 crate.usePhysicalKey(player)
             }
+
+            override fun getBulkAmount(crate: Crate, player: Player): Int {
+                if (!crate.hasPhysicalKey(player)) {
+                    return 0
+                }
+
+                return player.inventory.itemInMainHand.amount
+            }
         }
 
         val VIRTUAL_KEY = object : OpenMethod("virtual_key") {
@@ -52,6 +62,10 @@ abstract class OpenMethod(
 
             override fun useMethod(crate: Crate, player: Player) {
                 crate.adjustVirtualKeys(player, -1)
+            }
+
+            override fun getBulkAmount(crate: Crate, player: Player): Int {
+                return crate.getVirtualKeys(player)
             }
         }
 

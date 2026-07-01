@@ -71,6 +71,7 @@ keygui:
   page: 1 # Page in the GUI, 1-indexed
   right-click-previews: true # Right-click opens the crate preview
   left-click-opens: true # Left-click opens the crate with a virtual key
+  shift-right-click-open-all: true # Shift right-click instantly opens all virtual keys held, skipping the roll animation
   shift-left-click-message: # Message sent on shift-left-click
     - "Buy a key here! &astore.example.net"
   custom-slots: [] # GUI slots for extra buttons
@@ -129,6 +130,7 @@ keygui:
   page: 1 # Page in the GUI, 1-indexed
   right-click-previews: true # Right-click opens the crate preview
   left-click-opens: true # Left-click opens the crate with a virtual key
+  shift-right-click-open-all: true # Shift right-click instantly opens all virtual keys held, skipping the roll animation
   custom-slots: [] # GUI slots for extra buttons
 ```
 
