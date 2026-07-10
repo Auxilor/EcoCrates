@@ -281,7 +281,7 @@ class Crate(
     }
 
     fun openPlaced(player: Player, location: Location, method: OpenMethod) {
-        val nicerLocation = location.clone().add(0.5, 1.5, 0.5)
+        val nicerLocation = location.block.location.add(0.5, 1.5, 0.5)
 
         if (!canOpenAndNotify(player, method)) {
             pushAwayFromCrate(player, nicerLocation)
@@ -292,7 +292,7 @@ class Crate(
     }
 
     fun openPlacedAll(player: Player, location: Location, method: OpenMethod) {
-        val nicerLocation = location.clone().add(0.5, 1.5, 0.5)
+        val nicerLocation = location.block.location.add(0.5, 1.5, 0.5)
 
         if (!canOpenAndNotify(player, method)) {
             pushAwayFromCrate(player, nicerLocation)
