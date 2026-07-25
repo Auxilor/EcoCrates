@@ -19,6 +19,8 @@ import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.StringUtils
 import com.willfp.ecocrates.crate.placed.HologramFrame
+import com.willfp.ecocrates.crate.placed.PlacedCrate
+import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.crate.placed.particle.ParticleData
 import com.willfp.ecocrates.crate.reroll.ReRollGUI
@@ -132,6 +134,11 @@ class Crate(
 
     private val rollFactory = Rolls.get(config.getString("roll"))!!
 
+    // Whether to hide the placed crate's preview hologram/item from the player
+    // while this crate's roll animation is playing, configured per roll type.
+    private val hidesPlacedCrate = plugin.configYml
+        .getBool("rolls.${rollFactory.id}.hide-placed-crate")
+
     private val previewGUI = menu(config.getInt("preview.rows")) {
         val sharedCustomSlots = config.getSubsections("preview.custom-slots")
         val pages = config.getSubsections("preview.pages")
@@ -206,7 +213,8 @@ class Crate(
         location: Location,
         reward: Reward,
         method: OpenMethod,
-        isReroll: Boolean = false
+        isReroll: Boolean = false,
+        placedCrate: PlacedCrate? = null
     ): Roll {
         val display = mutableListOf<Reward>()
 
@@ -222,7 +230,8 @@ class Crate(
                 player,
                 location,
                 isReroll,
-                method
+                method,
+                placedCrate
             )
         )
     }
@@ -288,7 +297,7 @@ class Crate(
             return
         }
 
-        openWithMethod(player, method, nicerLocation)
+        openWithMethod(player, method, nicerLocation, PlacedCrates.getPlacedCrateAt(location.block.location))
     }
 
     fun openPlacedAll(player: Player, location: Location, method: OpenMethod) {
@@ -312,7 +321,12 @@ class Crate(
         player.velocity = vector
     }
 
-    fun openWithMethod(player: Player, method: OpenMethod, location: Location? = null) {
+    fun openWithMethod(
+        player: Player,
+        method: OpenMethod,
+        location: Location? = null,
+        placedCrate: PlacedCrate? = null
+    ) {
         if (!canOpenAndNotify(player, method)) {
             return
         }
@@ -322,7 +336,7 @@ class Crate(
             return
         }
 
-        if (open(player, method, location = location)) {
+        if (open(player, method, location = location, placedCrate = placedCrate)) {
             method.useMethod(this, player)
         }
     }
@@ -413,7 +427,8 @@ class Crate(
         player: Player,
         method: OpenMethod,
         location: Location? = null,
-        isReroll: Boolean = false
+        isReroll: Boolean = false,
+        placedCrate: PlacedCrate? = null
     ): Boolean {
         /* Prevent server crashes */
         if (hasRanOutOfRewardsAndNotify(player)) {
@@ -446,7 +461,7 @@ class Crate(
             )
         }
 
-        val roll = makeRoll(player, loc, event.reward, method, isReroll = isReroll)
+        val roll = makeRoll(player, loc, event.reward, method, isReroll = isReroll, placedCrate = placedCrate)
         var tick = 0
         var hasFinalized = false
 
@@ -460,6 +475,10 @@ class Crate(
             roll.onFinish()
             player.isOpeningCrate = false
 
+            if (hidesPlacedCrate) {
+                placedCrate?.showTo(player)
+            }
+
             if (forceFinish || !canReroll(player) || roll.isReroll) {
                 handleFinish(roll)
             } else {
@@ -468,7 +487,21 @@ class Crate(
         }
 
         plugin.runnableFactory.create {
-            roll.tick(tick)
+            try {
+                roll.tick(tick)
+            } catch (e: Exception) {
+                /*
+                Bukkit doesn't cancel repeating tasks that throw, so without this the
+                tick counter would never advance and the roll would repeat the same
+                tick (and its effects) forever.
+                 */
+                plugin.logger.warning("Error while ticking roll for ${player.name}, cancelling")
+                e.printStackTrace()
+
+                it.cancel()
+                finalizeRoll(true)
+                return@create
+            }
 
             tick++
 
@@ -480,6 +513,11 @@ class Crate(
 
         player.isOpeningCrate = true
         player.profile.write(opensKey, getOpens(player) + 1)
+
+        if (hidesPlacedCrate) {
+            placedCrate?.hideFrom(player)
+        }
+
         roll.roll()
 
         return true

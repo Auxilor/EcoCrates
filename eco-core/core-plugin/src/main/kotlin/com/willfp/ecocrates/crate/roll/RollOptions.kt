@@ -2,6 +2,7 @@ package com.willfp.ecocrates.crate.roll
 
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
+import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.reward.Reward
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -12,5 +13,6 @@ data class RollOptions(
     val player: Player,
     val location: Location,
     val isReroll: Boolean,
-    val method: OpenMethod
+    val method: OpenMethod,
+    val placedCrate: PlacedCrate? = null
 )

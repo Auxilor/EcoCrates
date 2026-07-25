@@ -33,6 +33,7 @@ class RollSlotMachine private constructor(
     private val spinInterval = plugin.configYml.getInt("rolls.slot_machine.spin-interval")
     private val startPitch = plugin.configYml.getDouble("rolls.slot_machine.start-pitch")
     private val pitchStep = plugin.configYml.getDouble("rolls.slot_machine.pitch-step")
+    private val holdTicks = plugin.configYml.getInt("rolls.slot_machine.hold-ticks")
 
     // Fixed five-column slot reel layout.
     private val reelColumns = listOf(3, 4, 5, 6, 7)
@@ -45,6 +46,7 @@ class RollSlotMachine private constructor(
     private val reelStopped = BooleanArray(reelColumns.size)
     private var ticksElapsed = 0
     private var ticksSinceSpin = 0
+    private var allStoppedTick = -1
 
     private val gui = menu(5) {
         setMask(
@@ -94,6 +96,11 @@ class RollSlotMachine private constructor(
 
     override fun tick(tick: Int) {
         ticksElapsed++
+
+        if (allStoppedTick >= 0) {
+            return
+        }
+
         ticksSinceSpin++
 
         if (ticksSinceSpin >= spinInterval) {
@@ -117,11 +124,20 @@ class RollSlotMachine private constructor(
             val stoppedCount = reelStopped.count { it }
             val pitch = (startPitch + (pitchStep * stoppedCount)).toFloat()
             player.playSound(player.location, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 0.9f, pitch)
+
+            if (reelStopped.all { it }) {
+                allStoppedTick = ticksElapsed
+                player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.4f)
+            }
         }
     }
 
     override fun shouldContinueTicking(tick: Int): Boolean {
-        return reelStopped.any { !it }
+        if (allStoppedTick < 0) {
+            return true
+        }
+
+        return ticksElapsed < allStoppedTick + holdTicks
     }
 
     override fun onFinish() {
