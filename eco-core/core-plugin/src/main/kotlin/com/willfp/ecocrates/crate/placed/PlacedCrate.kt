@@ -3,9 +3,13 @@ package com.willfp.ecocrates.crate.placed
 import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.ecocrates.crate.Crate
+import com.willfp.ecocrates.plugin
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Item
+import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import java.util.UUID
 
 class PlacedCrate(
     val crate: Crate,
@@ -26,6 +30,9 @@ class PlacedCrate(
 
     private var item: Item? = null
 
+    // Players who should not see the preview hologram/item, e.g. while they're rolling.
+    private val hiddenFrom = mutableSetOf<UUID>()
+
     internal fun tick(tick: Int) {
         tickRandomReward(tick)
         tickHolograms(tick)
@@ -40,6 +47,7 @@ class PlacedCrate(
         hologram = null
         item?.remove()
         item = null
+        hiddenFrom.clear()
     }
 
     private fun tickHolograms(tick: Int) {
@@ -65,6 +73,31 @@ class PlacedCrate(
         }
     }
 
+    // Hologram and entity hide state both persist for the lifetime of what they're
+    // hiding, so this is only needed when the preview item is replaced by a new entity.
+    private fun hideNewItemFromHiddenPlayers() {
+        val item = item ?: return
+
+        for (uuid in hiddenFrom) {
+            val player = Bukkit.getPlayer(uuid) ?: continue
+            player.hideEntity(plugin, item)
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    fun hideFrom(player: Player) {
+        hiddenFrom.add(player.uniqueId)
+        hologram?.hide(player)
+        item?.let { player.hideEntity(plugin, it) }
+    }
+
+    @Suppress("DEPRECATION")
+    fun showTo(player: Player) {
+        hiddenFrom.remove(player.uniqueId)
+        hologram?.show(player)
+        item?.let { player.showEntity(plugin, it) }
+    }
+
     @Suppress("DEPRECATION")
     private fun tickRandomReward(tick: Int) {
         if (!crate.isShowingRandomReward || crate.rewards.isEmpty()) {
@@ -73,7 +106,9 @@ class PlacedCrate(
 
         val world = location.world ?: return
 
-        fun ensureItemSpawned(reward: com.willfp.ecocrates.reward.Reward) {
+        // Returns true if [item] now points at an entity it wasn't pointing at before.
+        fun ensureItemSpawned(reward: com.willfp.ecocrates.reward.Reward): Boolean {
+            val previous = item
             // clear the other items, but not roll animation items
             item?.let { item ->
                 item.getNearbyEntities(0.5, 0.5, 0.5).filterIsInstance<Item>()
@@ -85,7 +120,10 @@ class PlacedCrate(
                 val scan = world.getNearbyEntities(
                     location.clone().add(0.0, crate.randomRewardHeight, 0.0),
                     0.5, 0.5, 0.5
-                ).filterIsInstance<Item>().firstOrNull { !it.hasGravity() }
+                ).filterIsInstance<Item>()
+                    // Roll animation items float here too, and adopting one would
+                    // both corrupt the roll and leave the crate without a preview.
+                    .firstOrNull { !it.hasGravity() && !it.hasMetadata("ecocrates-roll-item") }
 
                 if (scan != null) {
                     item = scan
@@ -104,6 +142,8 @@ class PlacedCrate(
                 entity.customName = crate.randomRewardName.replace("%reward%", reward.displayName)
                 item = entity
             }
+
+            return item !== previous
         }
 
         if (tick % crate.randomRewardDelay == 0) {
@@ -112,12 +152,16 @@ class PlacedCrate(
             /*
             Spawn item if item is gone
              */
-            ensureItemSpawned(reward)
+            val isNewItem = ensureItemSpawned(reward)
 
             item?.itemStack = reward.getDisplay()
             item?.customName = crate.randomRewardName.replace("%reward%", reward.displayName)
             item?.isCustomNameVisible = true
             item?.teleport(location.clone().add(0.0, crate.randomRewardHeight, 0.0))
+
+            if (isNewItem) {
+                hideNewItemFromHiddenPlayers()
+            }
         }
     }
 

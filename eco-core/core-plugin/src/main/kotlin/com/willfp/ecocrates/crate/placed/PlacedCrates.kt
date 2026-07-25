@@ -44,6 +44,10 @@ object PlacedCrates {
         return loaded[location]?.crate
     }
 
+    fun getPlacedCrateAt(location: Location): PlacedCrate? {
+        return loaded[location]
+    }
+
     fun setAsCrate(location: Location, crate: Crate) {
         loaded[location] = PlacedCrate(crate, location)
         saveCrate(location, crate)

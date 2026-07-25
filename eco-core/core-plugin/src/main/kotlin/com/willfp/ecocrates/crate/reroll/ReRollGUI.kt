@@ -48,7 +48,13 @@ object ReRollGUI {
                 ) {
                     onLeftClick { _, _, _ ->
                         player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
-                        roll.crate.open(player, roll.method, roll.location, isReroll = true)
+                        roll.crate.open(
+                            player,
+                            roll.method,
+                            roll.location,
+                            isReroll = true,
+                            placedCrate = roll.placedCrate
+                        )
                     }
                 }
             )

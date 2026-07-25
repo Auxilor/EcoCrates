@@ -2,6 +2,7 @@ package com.willfp.ecocrates.crate.roll
 
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
+import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.reward.Reward
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -36,6 +37,13 @@ interface Roll {
      * The open method
      */
     val method: OpenMethod
+
+    /**
+     * The placed crate this roll is happening at, if any. Lets physical rolls
+     * line up with where the crate's preview hologram/item normally sits.
+     */
+    val placedCrate: PlacedCrate?
+        get() = null
 
     /**
      * Called on start - once the player begins opening the crate.

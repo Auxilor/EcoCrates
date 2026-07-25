@@ -115,6 +115,9 @@ animations:
     count: 1
 
 rolls:
+  # hide-placed-crate hides the placed crate's hologram and preview item from the
+  # player who is rolling, for the duration of the roll. Only applies when opening
+  # a physically placed crate, and only to the player opening it.
   csgo:
     filler: black_stained_glass_pane name:""
     selector: lime_stained_glass_pane name:""
@@ -124,6 +127,13 @@ rolls:
   flash:
     duration: 80
     wait: 20
+    hide-placed-crate: false
+  cycle:
+    duration: 80
+    wait: 20
+    interval: 5
+    height-offset: -1.0
+    hide-placed-crate: true
   encircle:
     spin-time: 100
     reveal-time: 80
@@ -134,10 +144,105 @@ rolls:
     rise-velocity: 0.05
     spin-velocity: 0.4
     reveal-velocity: 0.2
+    hide-placed-crate: false
+  elimination:
+    candidates: 7
+    interval: 12
+    reveal-time: 30
+    filler: black_stained_glass_pane name:""
+    eliminated: red_stained_glass_pane name:"&cEliminated!"
+  pick:
+    boxes: 3
+    solo-reveal-time: 25 # How long only the picked box is shown before the others open
+    reveal-time: 40 # How long everything stays on screen after the other boxes open
+    auto-pick: 200
+    title: "Pick a box!"
+    box: chest name:"&e&lClick to pick!"
+    filler: black_stained_glass_pane name:""
+  match:
+    to-match: 2
+    min-scratches: 3
+    reveal-time: 40
+    auto-scratch: 100
+    title: "Find a pair!"
+    card: gray_stained_glass_pane name:"&e&lScratch!"
+    filler: black_stained_glass_pane name:""
+  hologram:
+    duration: 80
+    wait: 20
+    interval: 5
+    height: 1.5
+    rolling:
+      - "&8>> &f%reward% &8<<"
+    winner:
+      - "&a&lYou won!"
+      - "&f%reward%"
+    hide-placed-crate: true
+  vortex:
+    items: 8
+    start-radius: 3.0
+    end-radius: 0.4
+    start-height: 0.5
+    end-height: 2.5
+    spins-per-second: 1.0
+    duration: 120
+    eject-velocity: 0.6
+    reward-hold-time: 25
+    timeout: 400
+    hide-placed-crate: false
+  roulette:
+    items: 8
+    radius: 2.5
+    height: 1.0
+    steps: 32
+    bias: 0.65
+    max-delay: 12
+    reveal-time: 30
+    timeout: 400
+    hide-placed-crate: false
+  strike:
+    height: 2.0
+    rise-time: 30
+    hang-time: 15
+    reveal-time: 25
+    interval: 5
+    hide-placed-crate: false
+  delivery:
+    entity: allay
+    spawn-distance: 5
+    spawn-height: 1.5
+    speed: 0.25
+    hover-height: 1.4
+    hand-over-time: 25
+    timeout: 400
+    hide-placed-crate: false
+  orbit_collapse:
+    items: 8
+    radius: 2.5
+    height: 1.5
+    rise-velocity: 0.4
+    orbit-velocity: 0.4
+    collapse-velocity: 0.25
+    spins-per-second: 0.75
+    orbit-time: 100
+    reward-hold-time: 30
+    timeout: 400
+    hide-placed-crate: false
+  sky_drop:
+    launch-height: 6
+    rise-velocity: 0.6
+    drop-velocity: 0.5
+    pause: 20
+    settle: 20
+    decoy-count: 8
+    decoy-spread: 0.25
+    timeout: 400
+    hide-placed-crate: false
   quick:
     height: 1.5
     rise-velocity: 0.05
     suspend: 10
+    hide-placed-crate: false
   semi_instant:
     velocity:
       randomness: 0.2
@@ -145,6 +250,7 @@ rolls:
       y: 0.3
       z: 0
     item-lifespan: 30
+    hide-placed-crate: false
   slot_machine:
     filler: black_stained_glass_pane name:""
     selector: yellow_stained_glass_pane name:""
@@ -154,3 +260,4 @@ rolls:
     spin-interval: 2
     start-pitch: 0.9
     pitch-step: 0.08
+    hold-ticks: 30 # How long to show the won reward after the last reel stops
