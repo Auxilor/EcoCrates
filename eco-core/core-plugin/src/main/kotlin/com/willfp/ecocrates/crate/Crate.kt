@@ -564,10 +564,6 @@ class Crate(
         event.reward.giveTo(player, this)
     }
 
-    fun canReroll(player: Player): Boolean {
-        return rerollProfile.enabled && player.hasPermission(rerollPermission)
-    }
-
     fun adjustVirtualKeys(player: OfflinePlayer, amount: Int) {
         sharedKey.adjustVirtualKeys(player, amount)
     }

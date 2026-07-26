@@ -23,7 +23,8 @@ class RerollProfile(
         // Clone so simultaneous rerolls by different players don't clobber
         // each other's injected %reroll% value on the shared crate config.
         val injected = cfg.clone()
-        injected.injectPlaceholders(StaticPlaceholder("%reroll%") { rerollNumber.toString() })
+        // eco's StaticPlaceholder wraps the identifier in %...%, so pass the bare name.
+        injected.injectPlaceholders(StaticPlaceholder("reroll") { rerollNumber.toString() })
         return ConfiguredPrice.create(injected) ?: ConfiguredPrice.FREE
     }
 

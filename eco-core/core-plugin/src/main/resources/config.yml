@@ -47,7 +47,7 @@ reroll:
       - "&fClick to try again for"
       - "&fa chance at something else!"
       - ""
-      - "&fCost: &e%price%" # %price% shows the cost of the NEXT reroll (empty for free rerolls)
+      - "&fCost: &e%price%" # %price% shows the cost of the next reroll
 
 keygui:
   rows: 3
