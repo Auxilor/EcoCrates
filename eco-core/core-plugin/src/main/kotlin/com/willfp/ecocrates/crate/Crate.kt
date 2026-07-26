@@ -24,6 +24,7 @@ import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.crate.placed.particle.ParticleData
 import com.willfp.ecocrates.crate.reroll.ReRollGUI
+import com.willfp.ecocrates.crate.reroll.RerollProfile
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollOptions
 import com.willfp.ecocrates.crate.roll.Rolls
@@ -108,7 +109,13 @@ class Crate(
             Bukkit.getPluginManager().addPermission(this)
         }
 
-    val canReroll = config.getBool("can-reroll")
+    private val rerollProfile = RerollProfile.fromCrateConfig(config) {
+        plugin.logger.warning(
+            "Crate '$id' uses the deprecated 'can-reroll' option. " +
+                "Migrate to the 'rerolls:' block (see the _example.yml crate). " +
+                "The old option still works for now but will be removed in a future release."
+        )
+    }
 
     val rerollPermission: Permission =
         Bukkit.getPluginManager().getPermission("ecocrates.reroll.$id") ?: Permission(
@@ -552,11 +559,7 @@ class Crate(
     }
 
     fun canReroll(player: Player): Boolean {
-        if (!canReroll) {
-            return false
-        }
-
-        return player.hasPermission(rerollPermission)
+        return rerollProfile.enabled && player.hasPermission(rerollPermission)
     }
 
     fun adjustVirtualKeys(player: OfflinePlayer, amount: Int) {
