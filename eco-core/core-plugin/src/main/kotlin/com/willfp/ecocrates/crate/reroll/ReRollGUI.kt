@@ -15,7 +15,6 @@ object ReRollGUI {
     fun open(roll: Roll, rerollNumber: Int, profile: RerollProfile) {
         val player = roll.player
 
-        // Price for the next reroll (%reroll% is 1-based).
         val price = profile.priceFor(rerollNumber + 1)
         val priceDisplay = price.getDisplay(player)
 
@@ -67,7 +66,7 @@ object ReRollGUI {
 
                         price.pay(player)
                         player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
-                        // Close the GUI so the roll animation plays without it (bug fix).
+                        // Close the GUI so the roll animation plays without it.
                         player.closeInventory()
                         roll.crate.open(
                             player,
