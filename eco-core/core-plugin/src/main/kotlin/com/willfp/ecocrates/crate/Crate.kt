@@ -434,7 +434,7 @@ class Crate(
         player: Player,
         method: OpenMethod,
         location: Location? = null,
-        isReroll: Boolean = false,
+        rerollNumber: Int = 0,
         placedCrate: PlacedCrate? = null
     ): Boolean {
         /* Prevent server crashes */
@@ -447,6 +447,7 @@ class Crate(
         }
 
         val loc = location ?: player.eyeLocation
+        val isReroll = rerollNumber > 0
 
         val event = CrateOpenEvent(player, this, method, getRandomReward(player), isReroll)
         Bukkit.getPluginManager().callEvent(event)
@@ -486,10 +487,15 @@ class Crate(
                 placedCrate?.showTo(player)
             }
 
-            if (forceFinish || !canReroll(player) || roll.isReroll) {
+            val canRerollNow = rerollProfile.enabled
+                && rerollNumber < rerollProfile.maxRerolls
+                && player.hasPermission(rerollPermission)
+                && rerollProfile.priceFor(rerollNumber + 1).canAfford(player)
+
+            if (forceFinish || !canRerollNow) {
                 handleFinish(roll)
             } else {
-                ReRollGUI.open(roll)
+                ReRollGUI.open(roll, rerollNumber, rerollProfile)
             }
         }
 
