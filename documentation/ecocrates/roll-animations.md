@@ -95,10 +95,6 @@ rerolls:
 
 By default every player can reroll where it's enabled. To stop certain groups or players, negate the `ecocrates.reroll.<crate>` permission. The reroll GUI itself is configured in [Plugin Config](plugin-config).
 
-:::note Deprecated
-The old `can-reroll: true` option still works and gives one free reroll, but it is deprecated — the plugin logs a warning on startup for any crate still using it. Migrate to the `rerolls:` block above.
-:::
-
 <hr/>
 
 ## Where to go next

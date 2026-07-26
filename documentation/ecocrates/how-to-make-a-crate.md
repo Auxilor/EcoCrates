@@ -41,7 +41,7 @@ IDs may only contain lowercase letters, numbers, and underscores (a-z, 0-9, _). 
 # === Basics: identity and behaviour ===
 name: "Demo Crate" # The display name of the crate
 roll: csgo # The opening animation; see the Animations / Rolls page for options
-rerolls: # Reroll settings; see the Animations / Rolls page. (Legacy `can-reroll: true` still works but is deprecated.)
+rerolls: # Reroll settings; see the Animations / Rolls page
   enabled: true
   max-rerolls: 3
   price:
@@ -142,7 +142,7 @@ The identity of the crate: its name, the roll animation, the key it consumes, an
 ```yaml
 name: "Demo Crate" # The display name of the crate
 roll: csgo # The opening animation; see the Animations / Rolls page for options
-rerolls: # Reroll settings; see the Animations / Rolls page. (Legacy `can-reroll: true` still works but is deprecated.)
+rerolls: # Reroll settings; see the Animations / Rolls page
   enabled: true
   max-rerolls: 3
   price:
