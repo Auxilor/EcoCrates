@@ -31,7 +31,8 @@ object EffectGiveVirtualKey : Effect<NoCompileData>("give_virtual_key") {
             "amount",
             "You must specify the amount!",
             description = "The number of virtual keys to give.",
-            type = ArgType.EXPRESSION
+            type = ArgType.EXPRESSION,
+            example = "%level% * 10"
         )
     }
 
