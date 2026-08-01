@@ -4,6 +4,7 @@ import com.willfp.eco.core.drops.DropQueue
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.crate.key
+import com.willfp.ecocrates.envoy.EnvoyItems
 import com.willfp.ecocrates.plugin
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -43,6 +44,8 @@ object CrateKeyListener : Listener {
                 )
             }
         }
+
+        EnvoyItems.grantPending(event.player)
     }
 
     @EventHandler

@@ -3,10 +3,15 @@ package com.willfp.ecocrates.commands
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Crates
+import com.willfp.ecocrates.envoy.EnvoyItemType
+import com.willfp.ecocrates.envoy.EnvoyItems
+import com.willfp.ecocrates.envoy.Envoys
+import com.willfp.ecocrates.envoy.withEnvoyPlaceholders
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 
 object CommandTake : Subcommand(
@@ -30,6 +35,13 @@ object CommandTake : Subcommand(
 
         if (args.size < 2) {
             sender.sendMessage(plugin.langYml.getMessage("must-specify-crate"))
+            return
+        }
+
+        val envoyItemType = EnvoyItemType.fromToken(args.getOrNull(2))
+
+        if (envoyItemType != null) {
+            takeEnvoyItem(sender, player, args, envoyItemType)
             return
         }
 
@@ -89,6 +101,45 @@ object CommandTake : Subcommand(
         }
     }
 
+    private fun takeEnvoyItem(
+        sender: CommandSender,
+        player: Player,
+        args: List<String>,
+        type: EnvoyItemType
+    ) {
+        val category = Envoys[args[1]]
+
+        if (category == null) {
+            sender.sendMessage(plugin.langYml.getMessage("invalid-envoy"))
+            return
+        }
+
+        val item = EnvoyItems.itemFor(category, type)
+
+        if (item == null) {
+            sender.sendMessage(
+                plugin.langYml.getMessage("envoy-item-not-enabled").withEnvoyPlaceholders(category)
+            )
+            return
+        }
+
+        val amount = (args.getOrNull(3)?.toIntOrNull() ?: 1).coerceAtLeast(1)
+        val displayName = item.itemMeta?.displayName ?: type.token
+
+        // All-or-nothing, matching how taking keys already behaves.
+        val taken = EnvoyItems.take(player, category, type, amount)
+
+        val message = if (taken) "took-envoy-item" else "not-enough-took-envoy-item"
+
+        sender.sendMessage(
+            plugin.langYml.getMessage(message)
+                .replace("%amount%", amount.toString())
+                .replace("%item%", displayName)
+                .replace("%user%", player.savedDisplayName)
+                .withEnvoyPlaceholders(category)
+        )
+    }
+
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
         val completions = mutableListOf<String>()
 
@@ -109,7 +160,7 @@ object CommandTake : Subcommand(
         if (args.size == 2) {
             StringUtil.copyPartialMatches(
                 args[1],
-                Crates.values().map { it.id },
+                Crates.values().map { it.id } + Envoys.values().map { it.id },
                 completions
             )
 
@@ -119,7 +170,7 @@ object CommandTake : Subcommand(
         if (args.size == 3) {
             StringUtil.copyPartialMatches(
                 args[2],
-                listOf("physical", "virtual"),
+                listOf("physical", "virtual") + EnvoyItemType.tokens,
                 completions
             )
 

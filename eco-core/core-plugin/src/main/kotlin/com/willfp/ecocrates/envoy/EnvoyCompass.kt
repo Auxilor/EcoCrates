@@ -1,6 +1,8 @@
 package com.willfp.ecocrates.envoy
 
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
@@ -42,6 +44,13 @@ class EnvoyCompass(
     private val config: Config
 ) {
     val enabled = config.getBool("enabled")
+
+    /** Pending items for players who were offline when they were given some. */
+    internal val toGetKey = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("${categoryId}_compasses_to_get"),
+        PersistentDataKeyType.INT,
+        0
+    )
 
     val cooldownTicks = config.getInt("cooldown-ticks")
 
