@@ -28,11 +28,24 @@ start-flare:
   cooldown-ticks: 12000
   reset-schedule: true
 
+compass:
+  enabled: false
+  item: compass name:"&bEnvoy Compass"
+  lore:
+    - "&fRight click during an envoy to"
+    - "&ftrack the nearest crates."
+  duration: 1200
+  cooldown-ticks: 2400
+  max-tracked: 3
+  range: 500
+
 rarities:
   - id: common
     display_name: "&aCommon"
     weight: 100
     collection_cooldown: 100
+    show_on_compass: true
+    compass_color: lime
     rewards:
       - 1000_coins
       - stack_of_emeralds

@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.envoy.session
 
 import com.willfp.ecocrates.envoy.EnvoyCategory
+import com.willfp.ecocrates.envoy.compass.EnvoyCompasses
 import com.willfp.ecocrates.envoy.spawn.EnvoyPoints
 import com.willfp.ecocrates.envoy.spawn.SpawnLocationMode
 import com.willfp.ecocrates.envoy.spawn.SpawnLocator
@@ -100,6 +101,8 @@ object EnvoySessions {
     fun end() {
         val session = active ?: return
 
+        EnvoyCompasses.deactivateAll()
+
         // Snapshot before despawnAll clears the spawn list.
         val remaining = session.spawns.size
         val collected = session.collectedCount
@@ -180,6 +183,7 @@ object EnvoySessions {
     fun shutdown() {
         val session = active ?: return
 
+        EnvoyCompasses.deactivateAll()
         EnvoySessionStore.save(session)
         session.despawnAll()
         active = null

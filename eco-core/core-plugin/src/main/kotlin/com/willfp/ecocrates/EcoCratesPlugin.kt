@@ -18,10 +18,12 @@ import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.display.KeyDisplay
+import com.willfp.ecocrates.envoy.CompassListener
 import com.willfp.ecocrates.envoy.EnvoyListener
 import com.willfp.ecocrates.envoy.EnvoyPlaceholders
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.FlareListener
+import com.willfp.ecocrates.envoy.compass.EnvoyCompasses
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.session.EnvoyTicker
 import com.willfp.ecocrates.libreforge.ConditionEnvoyStarted
@@ -74,6 +76,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
 
     override fun handleDisable() {
         PlacedCrates.removeAll()
+        EnvoyCompasses.deactivateAll()
         EnvoySessions.shutdown()
     }
 
@@ -83,6 +86,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
         CrateDisplay.start()
 
         // Rebuild the session against the freshly loaded categories.
+        EnvoyCompasses.deactivateAll()
         EnvoySessions.shutdown()
         EnvoySessions.restore()
         EnvoyTicker.start()
@@ -109,7 +113,8 @@ class EcoCratesPlugin : LibreforgePlugin() {
             PlacedCrateListener,
             CrateKeyListener,
             EnvoyListener,
-            FlareListener
+            FlareListener,
+            CompassListener
         )
     }
 

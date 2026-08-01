@@ -44,6 +44,10 @@ class EnvoyCategory(
         ?.let { EnvoyFlare(id, it) }
         ?.takeIf { it.enabled }
 
+    val compass: EnvoyCompass? = config.getSubsectionOrNull("compass")
+        ?.let { EnvoyCompass(id, it) }
+        ?.takeIf { it.enabled }
+
     init {
         if (rarities.isEmpty()) {
             plugin.logger.warning("Envoy '$id' has no rarities - it will never spawn anything.")

@@ -73,6 +73,36 @@ start-flare: # An item players can use to start this envoy themselves.
     value: 5000
     display: "&e%value% coins"
 
+compass: # A consumable item that marks nearby envoy crates on the locator bar.
+  enabled: true
+  item: compass name:"&bEnvoy Compass" # An eco item lookup string
+  lore:
+    - "&fRight click during an envoy to"
+    - "&ftrack the nearest crates."
+  crafting: # Remove this whole block to make the compass uncraftable.
+    enabled: true
+    permission: ecocrates.craft.compass # Remove to let everyone craft it
+    shapeless: false
+    recipe:
+      - air
+      - redstone
+      - air
+      - redstone
+      - compass
+      - redstone
+      - air
+      - redstone
+      - air
+  duration: 1200 # How long one compass lasts once used, in ticks (1 minute)
+  cooldown-ticks: 2400 # Per-player cooldown between compass uses
+  max-tracked: 3 # How many crates one compass marks at once (nearest first)
+  range: 500 # Only mark crates within this many blocks. 0 for unlimited.
+  price: # Optional extra cost on top of consuming the compass item.
+         # Remove this block for the item to be the only cost.
+    type: coins
+    value: 1000
+    display: "&e%value% coins"
+
 # Effects for the session as a whole. These run globally, with no single
 # player attached, so player-scoped effects like send_message can't be used
 # directly here. Two ways round it:
@@ -114,6 +144,9 @@ rarities: # Add as many as you want.
     # Per-player cooldown, in ticks, between collecting crates of THIS rarity.
     # Not persisted across restarts.
     collection_cooldown: 100
+    show_on_compass: true # Whether this rarity shows up on envoy compasses
+    compass_color: "#a8e063" # The locator bar dot colour. Colour name or hex.
+                             # Remove to use the client's default colour.
     rewards: # Reward IDs from the /rewards folder. One is picked per open,
              # using each reward's own weight - the same as crates.
       - 1000_coins
@@ -145,6 +178,8 @@ rarities: # Add as many as you want.
     display_name: "&6&lLegendary"
     weight: 20
     collection_cooldown: 600
+    show_on_compass: false # Legendary crates are hidden from envoy compasses,
+                           # so finding one is down to luck, not tracking.
     rewards:
       - diamond_sword
     block: ender_chest

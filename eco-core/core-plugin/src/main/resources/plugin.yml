@@ -59,6 +59,7 @@ permissions:
       ecocrates.command.envoy.start: true
       ecocrates.command.envoy.end: true
       ecocrates.craft.flare: true
+      ecocrates.craft.compass: true
 
   ecocrates.command.ecocrates:
     description: Allows the use of /ecocrates (base command)
@@ -134,4 +135,7 @@ permissions:
     default: op
   ecocrates.craft.flare:
     description: Allows crafting envoy start flares
+    default: true
+  ecocrates.craft.compass:
+    description: Allows crafting envoy compasses
     default: true

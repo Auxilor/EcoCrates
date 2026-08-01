@@ -13,6 +13,7 @@ import com.willfp.libreforge.effects.Effects
 import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
 import com.willfp.libreforge.toDispatcher
 import com.willfp.libreforge.triggers.TriggerData
+import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -51,6 +52,20 @@ class EnvoyRarity(
     val itemDisplayName = config.getFormattedString("item-display.name")
 
     val fireworks = EnvoyFireworks.fromConfig(config.getSubsectionOrNull("fireworks"))
+
+    /** Whether crates of this rarity appear on envoy compasses. */
+    val showOnCompass = if (config.has("show_on_compass")) {
+        config.getBool("show_on_compass")
+    } else {
+        true
+    }
+
+    /**
+     * The locator-bar marker colour for this rarity. Null uses the client's
+     * default style colour.
+     */
+    val compassColor: Color? = config.getStringOrNull("compass_color")
+        ?.let { EnvoyFireworks.parseColorOrNull(it) }
 
     private val openEffects = Effects.compileChain(
         config.getSubsections("open-effects"),

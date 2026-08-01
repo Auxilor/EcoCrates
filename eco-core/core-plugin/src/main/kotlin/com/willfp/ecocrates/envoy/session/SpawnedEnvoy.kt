@@ -8,6 +8,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Item
 import org.bukkit.util.Vector
+import java.util.UUID
 
 /**
  * One envoy crate standing in the world.
@@ -25,6 +26,13 @@ class SpawnedEnvoy(
         y = blockY + 0.5
         z = blockZ + 0.5
     }
+
+    /**
+     * Identifies this crate's locator-bar waypoint. Not persisted - waypoints
+     * are per-viewer and re-sent when a compass is activated, so a fresh ID
+     * after a restart is harmless.
+     */
+    val waypointId: UUID = UUID.randomUUID()
 
     private var hologram: Hologram? = null
 

@@ -59,7 +59,7 @@ class EnvoyFireworks(
          * Parses a colour name (e.g. `lime`) or a hex code (e.g. `#a8e063`).
          * Unknown values are dropped rather than failing the whole config.
          */
-        private fun parseColor(raw: String): Color? {
+        internal fun parseColorOrNull(raw: String): Color? {
             namedColors[raw.trim().lowercase()]?.let { return it }
 
             val hex = raw.trim().removePrefix("#")
@@ -99,7 +99,7 @@ class EnvoyFireworks(
                 config.getBool("enabled"),
                 config.getInt("amount"),
                 type,
-                config.getStrings("colors").mapNotNull { parseColor(it) }
+                config.getStrings("colors").mapNotNull { parseColorOrNull(it) }
             )
         }
     }
