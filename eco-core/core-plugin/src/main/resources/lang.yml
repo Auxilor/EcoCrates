@@ -43,3 +43,5 @@ messages:
   envoy-no-top-collector: "Nobody"
   envoy-started: "&fStarted the %envoy_category% &fenvoy with %amount% &fcrates!"
   envoy-ended: "&fEnded the %envoy_category% &fenvoy."
+  envoy-on-cooldown: "&cYou must wait %seconds%s before opening another %envoy_rarity% &cenvoy!"
+  envoy-no-rewards: "&cThe %envoy_rarity% &cenvoy crate has no rewards configured!"

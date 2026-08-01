@@ -17,6 +17,7 @@ import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.display.KeyDisplay
+import com.willfp.ecocrates.envoy.EnvoyListener
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.session.EnvoyTicker
@@ -89,7 +90,8 @@ class EcoCratesPlugin : LibreforgePlugin() {
     override fun loadListeners(): List<Listener> {
         return listOf(
             PlacedCrateListener,
-            CrateKeyListener
+            CrateKeyListener,
+            EnvoyListener
         )
     }
 
