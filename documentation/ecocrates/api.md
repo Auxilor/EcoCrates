@@ -32,9 +32,10 @@ The latest version available on the repo can be found [here](https://github.com/
 
 Envoys add a `start_envoy` effect (arg: `category`) and an `end_envoy` effect (no args), an
 `envoy_started` condition (optional arg: `category`), an `open_envoy` trigger (parameters:
-player, event, location, text = the won reward's ID), and an `envoy_type` filter (a list of
-rarity IDs) to libreforge. Collecting an envoy crate fires `EnvoyOpenEvent`, whose `reward`
-field is mutable so listeners can swap it before it's given.
+player, event, location, text = the won reward's ID), an `envoy_type` filter (a list of
+rarity IDs), and an `envoy_reward` filter (a list of reward IDs) to libreforge. Collecting an
+envoy crate fires `EnvoyOpenEvent`, whose `reward` field is mutable so listeners can swap it
+before it's given.
 
 <hr/>
 

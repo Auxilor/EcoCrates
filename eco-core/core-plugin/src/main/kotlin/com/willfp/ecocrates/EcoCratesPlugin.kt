@@ -34,6 +34,7 @@ import com.willfp.ecocrates.libreforge.EffectRewardWeightMultiplier
 import com.willfp.ecocrates.libreforge.EffectStartEnvoy
 import com.willfp.ecocrates.libreforge.FilterCrate
 import com.willfp.ecocrates.libreforge.FilterCrateReward
+import com.willfp.ecocrates.libreforge.FilterEnvoyReward
 import com.willfp.ecocrates.libreforge.FilterEnvoyType
 import com.willfp.ecocrates.libreforge.TriggerCrateOpen
 import com.willfp.ecocrates.libreforge.TriggerCrateWin
@@ -67,6 +68,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
         Filters.register(FilterCrate)
         Filters.register(FilterCrateReward)
         Filters.register(FilterEnvoyType)
+        Filters.register(FilterEnvoyReward)
         Triggers.register(TriggerCrateOpen)
         Triggers.register(TriggerCrateWin)
         Triggers.register(TriggerOpenEnvoy)
