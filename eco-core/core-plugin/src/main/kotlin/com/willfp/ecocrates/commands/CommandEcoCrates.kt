@@ -24,6 +24,7 @@ object CommandEcoCrates : PluginCommand(
             .addSubcommand(CommandTake)
             .addSubcommand(CommandGiveoffline)
             .addSubcommand(CommandSend)
+            .addSubcommand(CommandEnvoy)
     }
 
     override fun onExecute(sender: CommandSender, args: List<String>) {

@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.envoy.session
 
+import com.willfp.ecocrates.envoy.EnvoyScheduler
 import com.willfp.ecocrates.plugin
 import org.bukkit.scheduler.BukkitTask
 
@@ -21,8 +22,12 @@ object EnvoyTicker {
         task = plugin.scheduler.runTimer(1, 1) {
             EnvoySessions.tick(tick)
 
-            // The schedule check is added in Task 11; leaving the hook here
-            // keeps the ticking surface in one place.
+            // Schedules only have minute resolution, so checking once a
+            // second is plenty and keeps the per-tick cost near zero.
+            if (tick % 20 == 0) {
+                EnvoyScheduler.check()
+            }
+
             tick++
         }
     }

@@ -5,6 +5,7 @@ import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.display.DisplayModule
 import com.willfp.eco.core.integrations.IntegrationLoader
 import com.willfp.ecocrates.commands.CommandEcoCrates
+import com.willfp.ecocrates.commands.CommandEcoEnvoy
 import com.willfp.ecocrates.converters.Converters
 import com.willfp.ecocrates.converters.impl.CrateReloadedConverter
 import com.willfp.ecocrates.converters.impl.CrazyCratesConverter
@@ -84,7 +85,8 @@ class EcoCratesPlugin : LibreforgePlugin() {
 
     override fun loadPluginCommands(): List<PluginCommand> {
         return listOf(
-            CommandEcoCrates
+            CommandEcoCrates,
+            CommandEcoEnvoy
         )
     }
 
