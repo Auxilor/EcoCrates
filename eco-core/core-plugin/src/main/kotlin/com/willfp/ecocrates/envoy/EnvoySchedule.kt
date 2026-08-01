@@ -49,6 +49,31 @@ class EnvoySchedule(
         return false
     }
 
+    /**
+     * Ticks until the next scheduled start. Times take priority over the
+     * interval, matching [isDueAt].
+     */
+    fun ticksUntilNext(now: LocalTime, ticksSinceLastStart: Long): Int? {
+        if (times.isNotEmpty()) {
+            val secondsNow = now.toSecondOfDay()
+
+            val secondsUntil = times
+                .map { it.toSecondOfDay() }
+                .minOf { target ->
+                    // Wrap to tomorrow if today's slot has already passed.
+                    if (target >= secondsNow) target - secondsNow else target - secondsNow + 86400
+                }
+
+            return secondsUntil * 20
+        }
+
+        if (intervalTicks > 0) {
+            return (intervalTicks - ticksSinceLastStart).coerceAtLeast(0).toInt()
+        }
+
+        return null
+    }
+
     companion object {
         private fun parseTime(raw: String): LocalTime? {
             val split = raw.trim().split(":")

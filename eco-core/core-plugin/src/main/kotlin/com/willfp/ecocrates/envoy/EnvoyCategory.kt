@@ -55,6 +55,8 @@ class EnvoyCategory(
                     "radius.center.world - it will never spawn anything."
             )
         }
+
+        EnvoyPlaceholders.registerFor(this)
     }
 
     /** Total number of crates to spawn for one session. Rolled once, per session. */

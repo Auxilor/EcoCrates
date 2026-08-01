@@ -61,3 +61,4 @@ messages:
   envoy-locate-empty: "&cThere are no envoy crates left."
   envoy-teleported: "&fTeleported to envoy crate &a#%number%&f."
   invalid-coordinates: "&cThose coordinates aren't valid numbers!"
+  envoy-placeholder-none: "None" # Shown by envoy placeholders when no envoy is running

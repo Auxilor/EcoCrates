@@ -19,20 +19,27 @@ import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.display.KeyDisplay
 import com.willfp.ecocrates.envoy.EnvoyListener
+import com.willfp.ecocrates.envoy.EnvoyPlaceholders
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.FlareListener
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.session.EnvoyTicker
+import com.willfp.ecocrates.libreforge.ConditionEnvoyStarted
+import com.willfp.ecocrates.libreforge.EffectEndEnvoy
 import com.willfp.ecocrates.libreforge.EffectGiveVirtualKey
 import com.willfp.ecocrates.libreforge.EffectResetRewardWins
 import com.willfp.ecocrates.libreforge.EffectRewardWeightMultiplier
+import com.willfp.ecocrates.libreforge.EffectStartEnvoy
 import com.willfp.ecocrates.libreforge.FilterCrate
 import com.willfp.ecocrates.libreforge.FilterCrateReward
+import com.willfp.ecocrates.libreforge.FilterEnvoyType
 import com.willfp.ecocrates.libreforge.TriggerCrateOpen
 import com.willfp.ecocrates.libreforge.TriggerCrateWin
+import com.willfp.ecocrates.libreforge.TriggerOpenEnvoy
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.CrateKeyListener
 import com.willfp.ecocrates.util.PlacedCrateListener
+import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
 import com.willfp.libreforge.filters.Filters
 import com.willfp.libreforge.loader.LibreforgePlugin
@@ -52,10 +59,17 @@ class EcoCratesPlugin : LibreforgePlugin() {
         Effects.register(EffectRewardWeightMultiplier)
         Effects.register(EffectGiveVirtualKey)
         Effects.register(EffectResetRewardWins)
+        Effects.register(EffectStartEnvoy)
+        Effects.register(EffectEndEnvoy)
+        Conditions.register(ConditionEnvoyStarted)
         Filters.register(FilterCrate)
         Filters.register(FilterCrateReward)
+        Filters.register(FilterEnvoyType)
         Triggers.register(TriggerCrateOpen)
         Triggers.register(TriggerCrateWin)
+        Triggers.register(TriggerOpenEnvoy)
+
+        EnvoyPlaceholders.register()
     }
 
     override fun handleDisable() {

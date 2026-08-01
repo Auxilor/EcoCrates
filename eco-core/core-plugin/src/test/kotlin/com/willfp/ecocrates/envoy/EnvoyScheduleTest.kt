@@ -2,7 +2,9 @@ package com.willfp.ecocrates.envoy
 
 import java.time.LocalTime
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class EnvoyScheduleTest {
@@ -54,5 +56,32 @@ class EnvoyScheduleTest {
         assertFalse(schedule.isDueAt(LocalTime.of(9, 0), null, 1199))
         assertTrue(schedule.isDueAt(LocalTime.of(9, 0), null, 1200))
         assertTrue(schedule.isDueAt(LocalTime.of(9, 0), null, 5000))
+    }
+
+    @Test
+    fun `no schedule has no next start`() {
+        assertNull(EnvoySchedule(emptyList(), 0).ticksUntilNext(LocalTime.of(9, 0), 0))
+    }
+
+    @Test
+    fun `interval counts down to zero`() {
+        val schedule = EnvoySchedule(emptyList(), 1200)
+        assertEquals(400, schedule.ticksUntilNext(LocalTime.of(9, 0), 800))
+        assertEquals(0, schedule.ticksUntilNext(LocalTime.of(9, 0), 1200))
+        assertEquals(0, schedule.ticksUntilNext(LocalTime.of(9, 0), 9999))
+    }
+
+    @Test
+    fun `time based picks the soonest slot today`() {
+        val schedule = EnvoySchedule(listOf("12:00", "18:30"), 0)
+        // 11:00 -> one hour to 12:00 -> 3600s -> 72000 ticks
+        assertEquals(72000, schedule.ticksUntilNext(LocalTime.of(11, 0), 0))
+    }
+
+    @Test
+    fun `time based wraps to tomorrow after the last slot`() {
+        val schedule = EnvoySchedule(listOf("12:00"), 0)
+        // 13:00 -> 23 hours to tomorrow's 12:00 -> 82800s -> 1656000 ticks
+        assertEquals(1656000, schedule.ticksUntilNext(LocalTime.of(13, 0), 0))
     }
 }

@@ -204,6 +204,22 @@ object EnvoySessions {
 
     fun lastStartTime(categoryId: String): LocalTime? = lastStartTime[categoryId]
 
+    /**
+     * Ticks until this category next auto-starts, or null if it has no
+     * schedule. Returns 0 while a session is already running, since the
+     * schedule is skipped rather than queued.
+     */
+    fun ticksUntilStart(category: EnvoyCategory): Int? {
+        if (!category.schedule.isEnabled) {
+            return null
+        }
+
+        return category.schedule.ticksUntilNext(
+            LocalTime.now(),
+            lastStartTicks(category.id)
+        )
+    }
+
     private fun rollCandidate(category: EnvoyCategory): Location? =
         when (category.locationMode) {
             SpawnLocationMode.POINTS -> EnvoyPoints.randomFor(category.id)
