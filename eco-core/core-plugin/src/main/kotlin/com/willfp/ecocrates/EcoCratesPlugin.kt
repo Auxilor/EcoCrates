@@ -17,6 +17,7 @@ import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.display.KeyDisplay
+import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.libreforge.EffectGiveVirtualKey
 import com.willfp.ecocrates.libreforge.EffectResetRewardWins
 import com.willfp.ecocrates.libreforge.EffectRewardWeightMultiplier
@@ -66,7 +67,8 @@ class EcoCratesPlugin : LibreforgePlugin() {
         return listOf(
             Keys,
             Crates,
-            Rewards
+            Rewards,
+            Envoys
         )
     }
 
@@ -103,6 +105,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
         EcoMetricsChart.SingleLine("total_keys") { Keys.values().size },
         EcoMetricsChart.SingleLine("total_rewards") { Rewards.values().size },
         EcoMetricsChart.SingleLine("total_particle_animations") { ParticleAnimations.values().size },
-        EcoMetricsChart.SingleLine("placed_crates") { PlacedCrates.values().size }
+        EcoMetricsChart.SingleLine("placed_crates") { PlacedCrates.values().size },
+        EcoMetricsChart.SingleLine("total_envoys") { Envoys.values().size }
     )
 }

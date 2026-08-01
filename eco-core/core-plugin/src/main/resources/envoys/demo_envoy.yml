@@ -1,0 +1,58 @@
+name: "Demo Envoy"
+duration: 3600 # 3 minutes
+
+start:
+  time: [ ]
+  interval: 0 # Never auto-starts; use /ecocrates envoy start demo_envoy
+
+location-type: points # Set points with /ecocrates envoy set demo_envoy current
+
+min-spawns: 3
+max-spawns: 6
+
+start-effects: # Session-wide, so use broadcast rather than send_message
+  - id: broadcast
+    args:
+      message: "&6An %envoy_category% &6has landed! &f%envoy_crates% &6crates to find."
+
+end-effects:
+  - id: broadcast
+    args:
+      message: "&6The %envoy_category% &6is over! &f%envoy_top_collector% &6collected the most (&f%envoy_top_collector_amount%&6)."
+
+start-flare:
+  enabled: false
+  item: firework_rocket name:"&6Envoy Flare"
+  lore:
+    - "&fRight click to call in an envoy!"
+  cooldown-ticks: 12000
+  reset-schedule: true
+
+rarities:
+  - id: common
+    display_name: "&aCommon"
+    weight: 100
+    collection_cooldown: 100
+    rewards:
+      - 1000_coins
+      - stack_of_emeralds
+      - diamond_sword
+    block: chest
+    hologram:
+      message: "&a&lENVOY"
+      height: 1.5
+    item-display:
+      enabled: true
+      height: 1.0
+      delay: 30
+      name: "&fYou could win:"
+    fireworks:
+      enabled: true
+      amount: 1
+      type: BALL
+      colors:
+        - lime
+    open-effects:
+      - id: send_message
+        args:
+          message: "&aYou found an envoy and won %reward%&a!"
