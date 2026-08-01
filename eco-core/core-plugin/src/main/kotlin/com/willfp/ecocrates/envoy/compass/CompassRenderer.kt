@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.envoy.compass
 
 import com.willfp.eco.core.waypoint.Waypoints
+import com.willfp.ecocrates.envoy.EnvoyCompass
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.session.SpawnedEnvoy
@@ -8,6 +9,18 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 object CompassRenderer {
+    /**
+     * The single source of truth for whether a spawn should show up on a
+     * player's compass: same rarity flag, same world, and within range.
+     * [CompassListener] uses this to decide whether there is anything to
+     * activate on before consuming the compass, so it can never drift from
+     * what actually gets rendered below.
+     */
+    internal fun isVisibleFor(spawn: SpawnedEnvoy, player: Player, settings: EnvoyCompass): Boolean =
+        spawn.rarity.showOnCompass &&
+            spawn.blockLocation.world == player.world &&
+            (settings.range <= 0 || spawn.centeredLocation.distance(player.location) <= settings.range)
+
     /**
      * Brings every active compass's locator bar in line with what the player
      * should currently see, sending only the differences.
@@ -35,9 +48,7 @@ object CompassRenderer {
         val settings = category.compass ?: return
 
         val target = session.spawns
-            .filter { it.rarity.showOnCompass }
-            .filter { it.blockLocation.world == player.world }
-            .filter { settings.range <= 0 || it.centeredLocation.distance(player.location) <= settings.range }
+            .filter { isVisibleFor(it, player, settings) }
             .sortedBy { it.centeredLocation.distanceSquared(player.location) }
             .take(settings.maxTracked)
 

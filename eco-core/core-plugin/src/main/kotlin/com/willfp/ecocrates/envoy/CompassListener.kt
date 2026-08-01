@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.envoy
 
+import com.willfp.ecocrates.envoy.compass.CompassRenderer
 import com.willfp.ecocrates.envoy.compass.EnvoyCompasses
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.plugin
@@ -64,9 +65,11 @@ object CompassListener : Listener {
             return
         }
 
-        // Refuse rather than burn the item on a blank locator bar.
+        // Refuse rather than burn the item on a blank locator bar. Uses the
+        // exact same predicate as CompassRenderer so this can never approve
+        // activation for a session the renderer would show nothing for.
         val hasAnythingVisible = session.spawns.any {
-            it.rarity.showOnCompass && it.blockLocation.world == player.world
+            CompassRenderer.isVisibleFor(it, player, compass)
         }
 
         if (!hasAnythingVisible) {
