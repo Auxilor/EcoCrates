@@ -45,3 +45,7 @@ messages:
   envoy-ended: "&fEnded the %envoy_category% &fenvoy."
   envoy-on-cooldown: "&cYou must wait %seconds%s before opening another %envoy_rarity% &cenvoy!"
   envoy-no-rewards: "&cThe %envoy_rarity% &cenvoy crate has no rewards configured!"
+  flare-on-cooldown: "&cYou must wait %seconds%s before using another flare!"
+  flare-cannot-afford: "&cYou can't afford to use this flare! Cost: %price%"
+  gave-envoy-item: "Gave %amount%&f %item%&f for the %envoy_category% &fenvoy to %user%&f!"
+  envoy-item-not-enabled: "&cThe %envoy_category% &cenvoy doesn't have that item enabled."

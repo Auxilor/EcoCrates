@@ -40,6 +40,10 @@ class EnvoyCategory(
 
     val rarities = config.getSubsections("rarities").map { EnvoyRarity(id, it) }
 
+    val flare: EnvoyFlare? = config.getSubsectionOrNull("start-flare")
+        ?.let { EnvoyFlare(id, it) }
+        ?.takeIf { it.enabled }
+
     init {
         if (rarities.isEmpty()) {
             plugin.logger.warning("Envoy '$id' has no rarities - it will never spawn anything.")

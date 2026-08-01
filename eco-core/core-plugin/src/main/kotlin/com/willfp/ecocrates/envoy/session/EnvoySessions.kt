@@ -190,6 +190,15 @@ object EnvoySessions {
         lastStartTime[categoryId] = LocalTime.now()
     }
 
+    /**
+     * Undoes the scheduler bookkeeping from a start, so that a flare with
+     * reset-schedule: false leaves the category's own timer running.
+     */
+    fun clearStartMark(categoryId: String) {
+        lastStartTick.remove(categoryId)
+        lastStartTime.remove(categoryId)
+    }
+
     fun lastStartTicks(categoryId: String): Long =
         currentTick - (lastStartTick[categoryId] ?: 0L)
 
