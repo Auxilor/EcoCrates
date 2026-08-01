@@ -118,19 +118,27 @@ object EnvoySessions {
         session.category.triggerEndEffects(topCollector, topAmount, collected, remaining)
     }
 
-    /** Called when a player collects a crate. Ends the session if it was the last one. */
-    fun collect(spawn: SpawnedEnvoy) {
-        val session = active ?: return
+    /**
+     * Called when a player collects a crate. Removes and despawns it, but
+     * does NOT end the session even if that was the last one - the caller
+     * must give the collecting player's own reward and open-effects first,
+     * then call [end] itself, so the session's end-effects broadcast never
+     * beats the collector's own "you won" message on the final crate.
+     *
+     * Returns true if this was the last crate and the session is now empty.
+     */
+    fun collect(spawn: SpawnedEnvoy): Boolean {
+        val session = active ?: return false
 
         session.removeSpawn(spawn)
         spawn.despawn()
 
         if (session.spawns.isEmpty()) {
-            end()
-            return
+            return true
         }
 
         EnvoySessionStore.save(session)
+        return false
     }
 
     fun tick(tick: Int) {
