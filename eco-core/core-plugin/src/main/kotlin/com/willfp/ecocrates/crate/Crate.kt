@@ -16,7 +16,6 @@ import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.registry.KRegistrable
-import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.StringUtils
 import com.willfp.ecocrates.crate.placed.HologramFrame
 import com.willfp.ecocrates.crate.placed.PlacedCrate
@@ -32,6 +31,7 @@ import com.willfp.ecocrates.event.CrateRewardEvent
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.Rewards
+import com.willfp.ecocrates.util.weightedRandom
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.ViolationContext
 import com.willfp.libreforge.effects.Effects
@@ -246,25 +246,9 @@ class Crate(
         return ranOut
     }
 
-    private fun getRandomReward(player: Player): Reward {
-        val weighted = rewards.map { it to it.getEffectiveWeight(player) }
-        val totalWeight = weighted.sumOf { it.second }
-
-        if (totalWeight <= 0.0) {
-            return rewards.random()
-        }
-        val roll = NumberUtils.randFloat(0.0, totalWeight)
-        var cum = 0.0
-
-        for ((reward, weight) in weighted) {
-            cum += weight
-
-            if (roll < cum) {
-                return reward
-            }
-        }
-        return weighted.last().first
-    }
+    private fun getRandomReward(player: Player): Reward =
+        rewards.weightedRandom { it.getEffectiveWeight(player) }
+            ?: throw IllegalStateException("Crate '$id' has no rewards")
 
     private fun canOpenAndNotify(player: Player, method: OpenMethod): Boolean {
         if (!canPayToOpen && method == OpenMethod.MONEY) {

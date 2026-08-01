@@ -146,7 +146,20 @@ class Reward(
         ) { getWins(it).toString() }.register()
     }
 
-    fun giveTo(player: Player, crate: Crate) {
+    /**
+     * Give this reward, attributing it to a source (a crate or an envoy category)
+     * by display name and id, for the win-effect placeholders.
+     *
+     * [extraPlaceholders] lets the caller inject source-specific values - envoys
+     * pass their rarity through here so a reward's own win-effects can use
+     * %envoy_rarity% alongside %reward% and %player%.
+     */
+    fun giveTo(
+        player: Player,
+        sourceName: String,
+        sourceId: String,
+        extraPlaceholders: List<NamedValue> = emptyList()
+    ) {
         winEffects?.trigger(
             TriggerData(player = player)
                 .dispatch(player.toDispatcher())
@@ -155,18 +168,20 @@ class Reward(
                         listOf(
                             NamedValue("reward", name),
                             NamedValue("reward_id", id),
-                            NamedValue("crate", crate.name),
-                            NamedValue("crate_id", crate.id)
-                        )
+                            NamedValue("crate", sourceName),
+                            NamedValue("crate_id", sourceId)
+                        ) + extraPlaceholders
                     )
                 }
         )
-
 
         if (maxWins > 0) {
             player.profile.write(winsKey, player.profile.read(winsKey) + 1)
         }
     }
+
+    fun giveTo(player: Player, crate: Crate) =
+        giveTo(player, crate.name, crate.id)
 
     fun getWins(player: OfflinePlayer): Int {
         return if (maxWins > 0) player.profile.read(winsKey) else 0
