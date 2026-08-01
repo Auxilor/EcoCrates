@@ -18,6 +18,8 @@ import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.display.KeyDisplay
 import com.willfp.ecocrates.envoy.Envoys
+import com.willfp.ecocrates.envoy.session.EnvoySessions
+import com.willfp.ecocrates.envoy.session.EnvoyTicker
 import com.willfp.ecocrates.libreforge.EffectGiveVirtualKey
 import com.willfp.ecocrates.libreforge.EffectResetRewardWins
 import com.willfp.ecocrates.libreforge.EffectRewardWeightMultiplier
@@ -55,12 +57,18 @@ class EcoCratesPlugin : LibreforgePlugin() {
 
     override fun handleDisable() {
         PlacedCrates.removeAll()
+        EnvoySessions.shutdown()
     }
 
     override fun handleReload() {
         KeyGUI.update()
         PlacedCrates.reload()
         CrateDisplay.start()
+
+        // Rebuild the session against the freshly loaded categories.
+        EnvoySessions.shutdown()
+        EnvoySessions.restore()
+        EnvoyTicker.start()
     }
 
     override fun loadConfigCategories(): List<ConfigCategory> {
@@ -106,6 +114,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
         EcoMetricsChart.SingleLine("total_rewards") { Rewards.values().size },
         EcoMetricsChart.SingleLine("total_particle_animations") { ParticleAnimations.values().size },
         EcoMetricsChart.SingleLine("placed_crates") { PlacedCrates.values().size },
-        EcoMetricsChart.SingleLine("total_envoys") { Envoys.values().size }
+        EcoMetricsChart.SingleLine("total_envoys") { Envoys.values().size },
+        EcoMetricsChart.SingleLine("active_envoy_crates") { EnvoySessions.remaining() }
     )
 }

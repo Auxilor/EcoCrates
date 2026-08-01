@@ -33,3 +33,13 @@ messages:
   key-trade-insufficient: "&cYou don't have enough %key% keys!"
   must-specify-key: "&cYou must specify a valid key!"
   invalid-key: "&cUnknown key!"
+  # %envoy_category%, %envoy_rarity% and
+  # %envoy_category% and %envoy_rarity% are available in every envoy message
+  # below that has the relevant context - the same names the effect chains use.
+  # Both carry display names, not IDs.
+  envoy-already-active: "&cAn envoy is already running! Use /ecocrates envoy end first."
+  envoy-not-active: "&cThere is no envoy running right now."
+  envoy-start-failed: "&cCouldn't start that envoy - check the console for details."
+  envoy-no-top-collector: "Nobody"
+  envoy-started: "&fStarted the %envoy_category% &fenvoy with %amount% &fcrates!"
+  envoy-ended: "&fEnded the %envoy_category% &fenvoy."
