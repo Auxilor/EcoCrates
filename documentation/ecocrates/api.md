@@ -28,7 +28,18 @@ The latest version available on the repo can be found [here](https://github.com/
 
 <hr/>
 
+## Envoys
+
+Envoys add a `start_envoy` effect (arg: `category`) and an `end_envoy` effect (no args), an
+`envoy_started` condition (optional arg: `category`), an `open_envoy` trigger (parameters:
+player, event, location, text = the won reward's ID), and an `envoy_type` filter (a list of
+rarity IDs) to libreforge. Collecting an envoy crate fires `EnvoyOpenEvent`, whose `reward`
+field is mutable so listeners can swap it before it's given.
+
+<hr/>
+
 ## Where to go next
 
 - **eco framework:** shared APIs live in the [eco framework](https://github.com/Auxilor/eco).
 - **Configure crates:** the config-side workflow is in [How to Make a Crate](how-to-make-a-crate).
+- **Configure envoys:** the config-side workflow is in [How to Make an Envoy](how-to-make-an-envoy).
