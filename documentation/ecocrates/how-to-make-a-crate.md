@@ -30,7 +30,7 @@ IDs may only contain lowercase letters, numbers, and underscores (a-z, 0-9, _). 
 
 | Part | What it controls |
 | --- | --- |
-| **Basics** | The display name, roll animation, key, and reroll toggle |
+| **Basics** | The display name, roll animation, key, and reroll settings |
 | **Preview** | The GUI players see when previewing the crate |
 | **Pay to open** | Letting players pay currency instead of using a key |
 | **Placed** | Holograms and particles for physically placed crates |
@@ -41,7 +41,13 @@ IDs may only contain lowercase letters, numbers, and underscores (a-z, 0-9, _). 
 # === Basics: identity and behaviour ===
 name: "Demo Crate" # The display name of the crate
 roll: csgo # The opening animation; see the Animations / Rolls page for options
-can-reroll: true # If true, the player can reroll a won reward once
+rerolls: # Reroll settings; see the Animations / Rolls page
+  enabled: true
+  max-rerolls: 3
+  price:
+    type: emerald
+    value: "%reroll%*2" # %reroll% is the reroll number (1-based); scales the cost per reroll
+    display: "&e%value% &7Emeralds"
 key: demo_crate # The key ID this crate uses (configure in /keys/demo_crate.yml); crates can share a key
 
 # === Preview: the GUI players browse before opening ===
@@ -131,12 +137,18 @@ rewards:
 
 ### Basics
 
-The identity of the crate: its name, the roll animation, the key it consumes, and whether rerolls are allowed.
+The identity of the crate: its name, the roll animation, the key it consumes, and its reroll settings.
 
 ```yaml
 name: "Demo Crate" # The display name of the crate
 roll: csgo # The opening animation; see the Animations / Rolls page for options
-can-reroll: true # If true, the player can reroll a won reward once
+rerolls: # Reroll settings; see the Animations / Rolls page
+  enabled: true
+  max-rerolls: 3
+  price:
+    type: emerald
+    value: "%reroll%*2" # %reroll% is the reroll number (1-based); scales the cost per reroll
+    display: "&e%value% &7Emeralds"
 key: demo_crate # The key ID this crate uses (configure in /keys/demo_crate.yml); crates can share a key
 ```
 

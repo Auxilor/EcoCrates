@@ -1,6 +1,12 @@
 name: "Demo Crate"
 roll: csgo
-can-reroll: true
+rerolls:
+  enabled: true
+  max-rerolls: 3
+  price:
+    type: emerald
+    value: "%reroll%*2"
+    display: "&e%value% &7Emeralds"
 
 key: demo_key # The ID of the key for this crate (configured in /keys/demo_key.yml)
 

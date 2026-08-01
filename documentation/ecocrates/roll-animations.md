@@ -75,7 +75,23 @@ The winner is decided before the roll starts, as it is for every roll, so the ca
 
 ## Rerolls
 
-A reroll lets a player swap a won reward for a fresh roll, once. When a crate has `can-reroll: true`, the player is offered a reroll after winning, and can either accept the reward or try again. You can watch a video on rerolls [here](https://youtu.be/giDXQMwRsPU).
+A reroll lets a player swap a won reward for a fresh roll. After winning, the player is offered the choice to accept the reward or reroll. You can watch a video on rerolls [here](https://youtu.be/giDXQMwRsPU).
+
+Rerolls are configured per crate with the `rerolls:` block:
+
+- `enabled` — whether rerolling is offered.
+- `max-rerolls` — how many rerolls in a row before the player is forced to accept. The count resets once a reward is accepted (or forced).
+- `price` — the cost of each reroll, using the standard price system (currencies or items). The `%reroll%` placeholder (1-based) lets the price scale per reroll, e.g. `value: "%reroll%*2"` charges 2, then 4, then 6. If the player can't afford the next reroll, the reward is given automatically.
+
+```yaml
+rerolls:
+  enabled: true
+  max-rerolls: 3
+  price:
+    type: emerald
+    value: "%reroll%*2"
+    display: "&e%value% &7Emeralds"
+```
 
 By default every player can reroll where it's enabled. To stop certain groups or players, negate the `ecocrates.reroll.<crate>` permission. The reroll GUI itself is configured in [Plugin Config](plugin-config).
 

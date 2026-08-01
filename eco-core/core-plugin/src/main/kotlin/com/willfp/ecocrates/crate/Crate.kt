@@ -24,6 +24,7 @@ import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
 import com.willfp.ecocrates.crate.placed.particle.ParticleData
 import com.willfp.ecocrates.crate.reroll.ReRollGUI
+import com.willfp.ecocrates.crate.reroll.RerollProfile
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollOptions
 import com.willfp.ecocrates.crate.roll.Rolls
@@ -108,7 +109,13 @@ class Crate(
             Bukkit.getPluginManager().addPermission(this)
         }
 
-    val canReroll = config.getBool("can-reroll")
+    private val rerollProfile = RerollProfile.fromCrateConfig(config) {
+        plugin.logger.warning(
+            "Crate '$id' uses the deprecated 'can-reroll' option. " +
+                "Migrate to the 'rerolls:' block (see the _example.yml crate). " +
+                "The old option still works for now but will be removed in a future release."
+        )
+    }
 
     val rerollPermission: Permission =
         Bukkit.getPluginManager().getPermission("ecocrates.reroll.$id") ?: Permission(
@@ -427,7 +434,7 @@ class Crate(
         player: Player,
         method: OpenMethod,
         location: Location? = null,
-        isReroll: Boolean = false,
+        rerollNumber: Int = 0,
         placedCrate: PlacedCrate? = null
     ): Boolean {
         /* Prevent server crashes */
@@ -440,6 +447,7 @@ class Crate(
         }
 
         val loc = location ?: player.eyeLocation
+        val isReroll = rerollNumber > 0
 
         val event = CrateOpenEvent(player, this, method, getRandomReward(player), isReroll)
         Bukkit.getPluginManager().callEvent(event)
@@ -479,10 +487,15 @@ class Crate(
                 placedCrate?.showTo(player)
             }
 
-            if (forceFinish || !canReroll(player) || roll.isReroll) {
+            val canRerollNow = rerollProfile.enabled
+                && rerollNumber < rerollProfile.maxRerolls
+                && player.hasPermission(rerollPermission)
+                && rerollProfile.priceFor(rerollNumber + 1).canAfford(player)
+
+            if (forceFinish || !canRerollNow) {
                 handleFinish(roll)
             } else {
-                ReRollGUI.open(roll)
+                ReRollGUI.open(roll, rerollNumber, rerollProfile)
             }
         }
 
@@ -549,14 +562,6 @@ class Crate(
         )
 
         event.reward.giveTo(player, this)
-    }
-
-    fun canReroll(player: Player): Boolean {
-        if (!canReroll) {
-            return false
-        }
-
-        return player.hasPermission(rerollPermission)
     }
 
     fun adjustVirtualKeys(player: OfflinePlayer, amount: Int) {

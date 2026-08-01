@@ -6,7 +6,15 @@
 
 name: "Demo Crate" # The display name of the crate
 roll: csgo # The opening style, check here: https://hub.auxilor.io/ecocrates/ecocrates/animationsandrolls
-can-reroll: true # If once you win a reward, you can choose to reroll
+# DEPRECATED: `can-reroll: true` still works (one free reroll) but is replaced by the `rerolls:` block below.
+# If `rerolls:` is present it takes priority and `can-reroll` is ignored.
+rerolls:
+  enabled: true # Whether players can reroll their reward
+  max-rerolls: 3 # How many rerolls in a row before the player is forced to accept. Resets after accepting/being forced.
+  price: # The cost of each reroll. Uses the standard price system (currencies or items).
+    type: emerald # A currency (e.g. from EcoBits) or an item id
+    value: "%reroll%*2" # Math expression. %reroll% is the reroll number (1-based): 1st reroll = 2, 2nd = 4, 3rd = 6
+    display: "&e%value% &7Emeralds" # How the price is shown; %value% is the computed amount
 
 key: demo_key # The ID of the key for this crate (configure in /keys/demo_key.yml)
                 # Multiple crates can share the same key by using the same key ID here.

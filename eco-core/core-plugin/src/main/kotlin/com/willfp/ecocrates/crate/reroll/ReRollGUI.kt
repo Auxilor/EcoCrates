@@ -12,8 +12,11 @@ import com.willfp.ecocrates.plugin
 object ReRollGUI {
     private const val metaKey = "ecocrates-reroll-fix"
 
-    fun open(roll: Roll) {
+    fun open(roll: Roll, rerollNumber: Int, profile: RerollProfile) {
         val player = roll.player
+
+        val price = profile.priceFor(rerollNumber + 1)
+        val priceDisplay = price.getDisplay(player)
 
         val menu = menu(plugin.configYml.getInt("reroll.rows")) {
             setMask(
@@ -42,17 +45,34 @@ object ReRollGUI {
                 plugin.configYml.getInt("reroll.reroll.column"),
                 slot(
                     ItemStackBuilder(Items.lookup(plugin.configYml.getString("reroll.reroll.item")))
-                        .addLoreLines(plugin.configYml.getStrings("reroll.reroll.lore"))
-                        .setDisplayName(plugin.configYml.getString("reroll.reroll.name"))
+                        .addLoreLines(
+                            plugin.configYml.getStrings("reroll.reroll.lore")
+                                .map { it.replace("%price%", priceDisplay) }
+                        )
+                        .setDisplayName(
+                            plugin.configYml.getString("reroll.reroll.name")
+                                .replace("%price%", priceDisplay)
+                        )
                         .build()
                 ) {
                     onLeftClick { _, _, _ ->
+                        // Re-check affordability: balance may have changed since the GUI opened.
+                        if (!price.canAfford(player)) {
+                            player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
+                            player.closeInventory()
+                            roll.crate.handleFinish(roll)
+                            return@onLeftClick
+                        }
+
+                        price.pay(player)
                         player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
+                        // Close the GUI so the roll animation plays without it.
+                        player.closeInventory()
                         roll.crate.open(
                             player,
                             roll.method,
                             roll.location,
-                            isReroll = true,
+                            rerollNumber = rerollNumber + 1,
                             placedCrate = roll.placedCrate
                         )
                     }
