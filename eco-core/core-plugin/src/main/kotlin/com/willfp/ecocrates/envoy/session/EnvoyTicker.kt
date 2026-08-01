@@ -24,6 +24,7 @@ object EnvoyTicker {
         task = plugin.scheduler.runTimer(1, 1) {
             EnvoySessions.tick(tick)
             EnvoyCompasses.tickCountdown()
+            EnvoyBossBarManager.refresh()
 
             // The nearest-N set only changes as players walk or crates are
             // collected, so twice a second is smooth without spamming packets.

@@ -39,6 +39,12 @@ compass:
   max-tracked: 3
   range: 500
 
+bossbar:
+  enabled: true
+  name: "&6%envoy_category% &7- &f%envoy_remaining_crates%&7/&f%envoy_total_crates% crates left &7- &f%envoy_remaining_time%"
+  color: YELLOW
+  style: SOLID
+
 rarities:
   - id: common
     display_name: "&aCommon"

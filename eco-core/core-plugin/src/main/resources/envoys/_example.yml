@@ -103,6 +103,13 @@ compass: # A consumable item that marks nearby envoy crates on the locator bar.
     value: 1000
     display: "&e%value% coins"
 
+bossbar: # Shown to every online player for the duration of this envoy's session.
+  enabled: true
+  name: "&6%envoy_category% &7- &f%envoy_remaining_crates%&7/&f%envoy_total_crates% crates left &7- &f%envoy_remaining_time%"
+  # Defaults to the envoy's display name if omitted.
+  color: YELLOW # PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
+  style: SOLID # SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+
 # Effects for the session as a whole. These run globally, with no single
 # player attached, so player-scoped effects like send_message can't be used
 # directly here. Two ways round it:

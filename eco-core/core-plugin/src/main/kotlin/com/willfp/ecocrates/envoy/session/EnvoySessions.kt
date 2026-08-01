@@ -102,6 +102,7 @@ object EnvoySessions {
         val session = active ?: return
 
         EnvoyCompasses.deactivateAll()
+        EnvoyBossBarManager.clear()
 
         // Snapshot before despawnAll clears the spawn list.
         val remaining = session.spawns.size
@@ -184,6 +185,7 @@ object EnvoySessions {
         val session = active ?: return
 
         EnvoyCompasses.deactivateAll()
+        EnvoyBossBarManager.clear()
         EnvoySessionStore.save(session)
         session.despawnAll()
         active = null
