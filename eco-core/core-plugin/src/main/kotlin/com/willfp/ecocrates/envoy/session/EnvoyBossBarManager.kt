@@ -2,6 +2,7 @@ package com.willfp.ecocrates.envoy.session
 
 import org.bukkit.Bukkit
 import org.bukkit.boss.BossBar
+import java.util.UUID
 
 /**
  * Renders the single active session's bossbar, if its category has one configured and
@@ -12,6 +13,14 @@ import org.bukkit.boss.BossBar
 object EnvoyBossBarManager {
     private var bar: BossBar? = null
     private var barCategoryId: String? = null
+
+    // BossBar#getPlayers() returns a List, so checking membership against it directly is
+    // O(n) per player and O(n^2) overall for the add/remove pass below. Mirroring
+    // membership in a Set keeps that at O(1) per player instead.
+    private val shownTo = mutableSetOf<UUID>()
+
+    @Volatile
+    private var tick = 0
 
     fun refresh() {
         val session = EnvoySessions.active
@@ -37,21 +46,31 @@ object EnvoyBossBarManager {
             barCategoryId = session.category.id
         }
 
-        activeBar.setTitle(bossbar.getName(session.category, session))
-        activeBar.color = bossbar.color
-        activeBar.style = bossbar.style
-        activeBar.progress = bossbar.getProgress(session.category, session)
+        // The countdown only has second, not tick, resolution, so rebuilding the title
+        // string and re-setting progress every single tick is wasted work - once every
+        // 20 ticks (once a second) is all it can ever visibly change.
+        if (tick % 20 == 0) {
+            activeBar.setTitle(bossbar.getName(session.category, session))
+            activeBar.color = bossbar.color
+            activeBar.style = bossbar.style
+            activeBar.progress = bossbar.getProgress(session.category, session)
+        }
+        tick++
 
         val onlinePlayers = Bukkit.getOnlinePlayers().toSet()
 
         for (player in onlinePlayers) {
-            if (!activeBar.players.contains(player)) {
+            if (shownTo.add(player.uniqueId)) {
                 activeBar.addPlayer(player)
             }
         }
 
-        for (player in activeBar.players.toList()) {
-            if (player !in onlinePlayers) {
+        val onlineIds = onlinePlayers.mapTo(mutableSetOf()) { it.uniqueId }
+
+        for (uuid in shownTo.toList()) {
+            if (uuid !in onlineIds) {
+                shownTo.remove(uuid)
+                val player = Bukkit.getPlayer(uuid) ?: continue
                 activeBar.removePlayer(player)
             }
         }
@@ -64,5 +83,7 @@ object EnvoyBossBarManager {
         bar?.isVisible = false
         bar = null
         barCategoryId = null
+        shownTo.clear()
+        tick = 0
     }
 }
