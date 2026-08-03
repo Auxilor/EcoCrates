@@ -33,6 +33,7 @@ permission-multipliers:
     priority: 2
 
 # The reroll GUI, shown after a win when the crate allows rerolling.
+# Use %price% in the reroll button's name/lore to show the cost of the next reroll (empty for free rerolls).
 reroll:
   rows: 3 # Rows in the reroll GUI
   mask: # Decorative filler items
@@ -57,7 +58,7 @@ reroll:
       - "&fClick to try again for"
       - "&fa chance at something else!"
       - ""
-      - "&cYou can only reroll once!"
+      - "&fCost: &e%price%" # Cost of the next reroll
 
 # The /ecocrates keys GUI that lists a player's keys.
 keygui:

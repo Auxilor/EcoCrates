@@ -47,7 +47,7 @@ reroll:
       - "&fClick to try again for"
       - "&fa chance at something else!"
       - ""
-      - "&cYou can only reroll once!"
+      - "&fCost: &e%price%" # %price% shows the cost of the next reroll
 
 keygui:
   rows: 3
