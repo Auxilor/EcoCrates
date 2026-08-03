@@ -8,12 +8,16 @@ import com.willfp.ecocrates.plugin
 
 object EnvoyPlaceholders {
     /**
-     * Formats ticks as m:ss, so a scoreboard can show a countdown directly.
-     * Companion `_seconds` placeholders expose the raw number for maths.
+     * Formats ticks as hh:mm:ss, so a scoreboard can show a countdown
+     * directly. Companion `_seconds` placeholders expose the raw number
+     * for maths.
      */
     private fun formatTicks(ticks: Int): String {
         val totalSeconds = (ticks / 20).coerceAtLeast(0)
-        return "%d:%02d".format(totalSeconds / 60, totalSeconds % 60)
+        val hours = totalSeconds / 3600
+        val minutes = (totalSeconds % 3600) / 60
+        val seconds = totalSeconds % 60
+        return "%02d:%02d:%02d".format(hours, minutes, seconds)
     }
 
     private fun none() = plugin.langYml.getMessage("envoy-placeholder-none")
