@@ -20,6 +20,8 @@ use-local-storage: false
 no-key-velocity: 1.5 # The speed at which a player should be launched away from a crate if they try to open it without a key. Set to 0 to disable.
 track-player-keys: false # If an NBT tag should be added to keys that links them to a player - will prevent stacking some keys.
 
+chance-decimal-places: 2 # How many decimal places to show in the %chance% placeholder. Increase this to distinguish very rare rewards from each other.
+
 # If a reward allows permission multipliers, the weights
 # will be multiplied by highest-priority multiplier that a player
 # has permission for - i.e. if a player has both vip and mvp permissions,
