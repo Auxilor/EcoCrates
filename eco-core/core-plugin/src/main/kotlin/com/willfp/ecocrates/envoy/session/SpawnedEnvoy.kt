@@ -50,6 +50,7 @@ class SpawnedEnvoy(
 
         if (withFireworks) {
             rarity.fireworks.spawn(centeredLocation)
+            rarity.spawnSound?.playAt(centeredLocation)
         }
     }
 

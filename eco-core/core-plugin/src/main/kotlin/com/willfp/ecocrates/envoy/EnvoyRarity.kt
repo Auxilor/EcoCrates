@@ -3,6 +3,8 @@ package com.willfp.ecocrates.envoy
 import com.willfp.eco.core.blocks.Blocks
 import com.willfp.eco.core.blocks.TestableBlock
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.sound.AbstractPlayableSound
+import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.Rewards
@@ -52,6 +54,10 @@ class EnvoyRarity(
     val itemDisplayName = config.getFormattedString("item-display.name")
 
     val fireworks = EnvoyFireworks.fromConfig(config.getSubsectionOrNull("fireworks"))
+
+    /** Played at the crate's location when it spawns. */
+    val spawnSound: AbstractPlayableSound<*>? = config.getSubsectionOrNull("spawn-sound")
+        ?.let { PlayableSound.create(it) }
 
     /** Whether crates of this rarity appear on envoy compasses. */
     val showOnCompass = if (config.has("show_on_compass")) {

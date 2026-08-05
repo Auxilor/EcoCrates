@@ -119,13 +119,16 @@ rarities:
       height: 1.0
       delay: 30 # Ticks between showing a new item
       name: "&fYou could win:"
-    fireworks: # Fired when a crate of this rarity spawns
+    fireworks: # A single ball firework, fired when a crate of this rarity spawns
       enabled: true
-      amount: 1
-      type: BALL # BALL, BALL_LARGE, STAR, BURST or CREEPER
       colors: # Colour names or hex codes
         - lime
         - "#a8e063"
+    spawn-sound: # Played at the crate's location when it spawns. Remove or set enabled to false to disable.
+      enabled: true
+      sound: entity_experience_orb_pickup
+      pitch: 1.0 # Can also be a range, e.g. "0.8..1.2"
+      volume: 1.0
     open-effects: # libreforge effects run when a player collects this crate.
       - id: send_message
         args:
@@ -484,13 +487,16 @@ rarities: # Add as many as you want.
       height: 1.0
       delay: 30 # Ticks between showing a new item
       name: "&fYou could win:"
-    fireworks: # Fired when a crate of this rarity spawns
+    fireworks: # A single ball firework, fired when a crate of this rarity spawns
       enabled: true
-      amount: 1
-      type: BALL # BALL, BALL_LARGE, STAR, BURST or CREEPER
       colors: # Colour names or hex codes
         - lime
         - "#a8e063"
+    spawn-sound: # Played at the crate's location when it spawns. Remove or set enabled to false to disable.
+      enabled: true
+      sound: entity_experience_orb_pickup
+      pitch: 1.0 # Can also be a range, e.g. "0.8..1.2"
+      volume: 1.0
     open-effects: # libreforge effects run when a player collects this crate.
                   # Placeholders: %envoy_category%, %envoy_rarity%,
                   # %reward%, %reward_id%
@@ -517,11 +523,14 @@ rarities: # Add as many as you want.
       name: "&6You could win:"
     fireworks:
       enabled: true
-      amount: 3
-      type: STAR
       colors:
         - orange
         - yellow
+    spawn-sound:
+      enabled: true
+      sound: entity_ender_dragon_growl
+      pitch: 1.0
+      volume: 1.0
     open-effects:
       - id: send_message
         args:
