@@ -8,25 +8,29 @@ import org.bukkit.entity.Firework
 
 class EnvoyFireworks(
     val enabled: Boolean,
+    val amount: Int,
+    val type: FireworkEffect.Type,
     val colors: List<Color>
 ) {
     fun spawn(location: Location) {
-        if (!enabled) {
+        if (!enabled || amount <= 0) {
             return
         }
 
         val world = location.world ?: return
 
-        val firework = world.spawn(location, Firework::class.java)
+        repeat(amount) {
+            val firework = world.spawn(location, Firework::class.java)
 
-        firework.fireworkMeta = firework.fireworkMeta.apply {
-            addEffect(
-                FireworkEffect.builder()
-                    .with(FireworkEffect.Type.BALL)
-                    .withColor(colors.ifEmpty { listOf(Color.WHITE) })
-                    .build()
-            )
-            power = 1
+            firework.fireworkMeta = firework.fireworkMeta.apply {
+                addEffect(
+                    FireworkEffect.builder()
+                        .with(type)
+                        .withColor(colors.ifEmpty { listOf(Color.WHITE) })
+                        .build()
+                )
+                power = 1
+            }
         }
     }
 
@@ -69,13 +73,32 @@ class EnvoyFireworks(
             return Color.fromRGB(rgb)
         }
 
+        /**
+         * Config uses friendly lowercase names (ball, large_ball, burst, star,
+         * creeper). Bukkit's own enum spells the big one BALL_LARGE, so that
+         * one is aliased rather than made the config's problem.
+         */
+        private fun parseType(raw: String): FireworkEffect.Type {
+            val normalised = when (raw.trim().lowercase()) {
+                "large_ball", "ball_large" -> "BALL_LARGE"
+                else -> raw.trim().uppercase()
+            }
+
+            return runCatching { FireworkEffect.Type.valueOf(normalised) }
+                .getOrDefault(FireworkEffect.Type.BALL)
+        }
+
         fun fromConfig(config: Config?): EnvoyFireworks {
             if (config == null) {
-                return EnvoyFireworks(false, emptyList())
+                return EnvoyFireworks(false, 0, FireworkEffect.Type.BALL, emptyList())
             }
+
+            val type = parseType(config.getString("type"))
 
             return EnvoyFireworks(
                 config.getBool("enabled"),
+                config.getInt("amount"),
+                type,
                 config.getStrings("colors").mapNotNull { parseColorOrNull(it) }
             )
         }

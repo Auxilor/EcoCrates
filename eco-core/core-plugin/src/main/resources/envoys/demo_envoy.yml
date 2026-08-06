@@ -76,6 +76,8 @@ rarities:
       name: "&fYou could win:"
     fireworks:
       enabled: true
+      amount: 1
+      type: ball
       colors:
         - lime
     spawn-sound:
@@ -110,6 +112,8 @@ rarities:
       name: "&9You could win:"
     fireworks:
       enabled: true
+      amount: 1
+      type: large_ball
       colors:
         - blue
         - "#3399ff"
@@ -145,6 +149,8 @@ rarities:
       name: "&5You could win:"
     fireworks:
       enabled: true
+      amount: 2
+      type: star
       colors:
         - purple
         - magenta
@@ -177,6 +183,8 @@ rarities:
       name: "&6You could win:"
     fireworks:
       enabled: true
+      amount: 3
+      type: burst
       colors:
         - orange
         - yellow

@@ -21,30 +21,45 @@ object SpawnLocator {
 
         // Expand outwards a shell at a time so the nearest legal spot wins.
         for (radius in 1..scanRadius) {
-            for (x in -radius..radius) {
-                for (y in -radius..radius) {
-                    for (z in -radius..radius) {
-                        // Only the surface of this shell; inner blocks were checked already.
-                        if (maxOf(kotlin.math.abs(x), kotlin.math.abs(y), kotlin.math.abs(z)) != radius) {
-                            continue
-                        }
+            for ((x, y, z) in shellOffsets(radius)) {
+                val test = Location(
+                    world,
+                    (candidate.blockX + x).toDouble(),
+                    (candidate.blockY + y).toDouble(),
+                    (candidate.blockZ + z).toDouble()
+                )
 
-                        val test = Location(
-                            world,
-                            (candidate.blockX + x).toDouble(),
-                            (candidate.blockY + y).toDouble(),
-                            (candidate.blockZ + z).toDouble()
-                        )
-
-                        if (isLegal(test)) {
-                            return test.block.location
-                        }
-                    }
+                if (isLegal(test)) {
+                    return test.block.location
                 }
             }
         }
 
         return null
+    }
+
+    /**
+     * Offsets on the surface of a cube shell of the given [radius], i.e. every
+     * point where the largest coordinate magnitude equals [radius]. Generated
+     * directly instead of filtered out of the full cube, so cost stays O(radius^2)
+     * per shell instead of O(radius^3).
+     */
+    private fun shellOffsets(radius: Int): Sequence<Triple<Int, Int, Int>> = sequence {
+        for (x in -radius..radius) {
+            for (y in -radius..radius) {
+                val xyMaxed = kotlin.math.abs(x) == radius || kotlin.math.abs(y) == radius
+                if (xyMaxed) {
+                    // Any z is on the shell as long as x or y is already at the radius.
+                    for (z in -radius..radius) {
+                        yield(Triple(x, y, z))
+                    }
+                } else {
+                    // x and y are both inside the shell, so only the two z caps qualify.
+                    yield(Triple(x, y, -radius))
+                    yield(Triple(x, y, radius))
+                }
+            }
+        }
     }
 
     private fun isLegal(location: Location): Boolean {

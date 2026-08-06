@@ -119,8 +119,10 @@ rarities:
       height: 1.0
       delay: 30 # Ticks between showing a new item
       name: "&fYou could win:"
-    fireworks: # A single ball firework, fired when a crate of this rarity spawns
+    fireworks: # Fired when a crate of this rarity spawns
       enabled: true
+      amount: 1
+      type: ball # ball, large_ball, burst, star, creeper
       colors: # Colour names or hex codes
         - lime
         - "#a8e063"
@@ -487,8 +489,10 @@ rarities: # Add as many as you want.
       height: 1.0
       delay: 30 # Ticks between showing a new item
       name: "&fYou could win:"
-    fireworks: # A single ball firework, fired when a crate of this rarity spawns
+    fireworks: # Fired when a crate of this rarity spawns
       enabled: true
+      amount: 1
+      type: ball # ball, large_ball, burst, star, creeper
       colors: # Colour names or hex codes
         - lime
         - "#a8e063"
@@ -523,6 +527,8 @@ rarities: # Add as many as you want.
       name: "&6You could win:"
     fireworks:
       enabled: true
+      amount: 1
+      type: burst
       colors:
         - orange
         - yellow
