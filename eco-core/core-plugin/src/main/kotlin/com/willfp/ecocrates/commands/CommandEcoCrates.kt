@@ -4,6 +4,7 @@ import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.ecocrates.plugin
 import org.bukkit.command.CommandSender
 
+/** Root `/ecocrates` command; dispatches to all crate-related subcommands. */
 object CommandEcoCrates : PluginCommand(
     plugin,
     "ecocrates",

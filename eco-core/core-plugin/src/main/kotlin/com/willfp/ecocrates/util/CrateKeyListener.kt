@@ -13,6 +13,10 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 
+/**
+ * Prevents crate key items from being placed as blocks, and hands out
+ * offline-queued crate keys and envoy items when a player joins.
+ */
 object CrateKeyListener : Listener {
     @EventHandler
     fun handle(event: BlockPlaceEvent) {

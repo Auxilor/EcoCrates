@@ -13,6 +13,7 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
 
+/** Handles right-clicking a spawned envoy crate to collect its reward, and blocks it from being mined. */
 object EnvoyListener : Listener {
     @EventHandler
     fun handleClick(event: PlayerInteractEvent) {

@@ -8,6 +8,7 @@ import com.willfp.ecocrates.envoy.session.SpawnedEnvoy
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
+/** Draws/updates the waypoints an active [ActiveCompass] shows on a player's locator bar. */
 object CompassRenderer {
     /**
      * The single source of truth for whether a spawn should show up on a

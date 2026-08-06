@@ -9,6 +9,7 @@ import com.willfp.ecocrates.commands.envoy.CommandEnvoyUnset
 import com.willfp.ecocrates.plugin
 import org.bukkit.command.CommandSender
 
+/** `/ecocrates envoy` subcommand; groups the set/unset/locate/start/end envoy admin commands. */
 object CommandEnvoy : Subcommand(
     plugin,
     "envoy",

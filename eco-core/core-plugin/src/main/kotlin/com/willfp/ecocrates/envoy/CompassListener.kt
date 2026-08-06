@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.EquipmentSlot
 
+/** Handles right-clicking an envoy compass item to activate its waypoint-tracking effect. */
 object CompassListener : Listener {
     @EventHandler
     fun handleUse(event: PlayerInteractEvent) {

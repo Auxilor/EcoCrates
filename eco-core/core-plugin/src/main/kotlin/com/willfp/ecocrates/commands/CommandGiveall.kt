@@ -14,6 +14,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.StringUtil
 
+/**
+ * `/ecocrates giveall` - gives a crate key (virtual or physical) or an envoy
+ * item (flare/compass) to every currently online player.
+ */
 object CommandGiveall : Subcommand(
     plugin,
     "giveall",

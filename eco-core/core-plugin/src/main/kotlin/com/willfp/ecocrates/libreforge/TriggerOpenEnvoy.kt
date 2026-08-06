@@ -7,6 +7,7 @@ import com.willfp.libreforge.triggers.TriggerData
 import com.willfp.libreforge.triggers.TriggerParameter
 import org.bukkit.event.EventHandler
 
+/** Libreforge trigger `open_envoy`: [description]. */
 object TriggerOpenEnvoy : Trigger("open_envoy") {
     override val description = "Fires when the player collects an envoy crate."
 

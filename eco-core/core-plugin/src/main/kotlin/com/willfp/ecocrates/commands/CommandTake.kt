@@ -14,6 +14,11 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 
+/**
+ * `/ecocrates take` - removes a crate key (virtual or physical) or an envoy
+ * item (flare/compass) from a player. Physical/all-or-nothing: fails without
+ * removing anything if the player doesn't hold enough.
+ */
 object CommandTake : Subcommand(
     plugin,
     "take",

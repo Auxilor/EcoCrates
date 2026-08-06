@@ -6,6 +6,7 @@ import com.willfp.ecocrates.envoy.withEnvoyPlaceholders
 import com.willfp.ecocrates.plugin
 import org.bukkit.command.CommandSender
 
+/** `/ecocrates envoy end` - force-ends the currently active envoy session, if any. */
 object CommandEnvoyEnd : Subcommand(
     plugin,
     "end",

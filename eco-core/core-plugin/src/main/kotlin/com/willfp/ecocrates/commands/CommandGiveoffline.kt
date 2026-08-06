@@ -16,6 +16,11 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.StringUtil
 
+/**
+ * `/ecocrates giveoffline` - gives a crate key (virtual or physical) or an
+ * envoy item (flare/compass) to every known player, online or not. Runs the
+ * player lookup off the main thread since it walks all offline players.
+ */
 object CommandGiveoffline : Subcommand(
     plugin,
     "giveoffline",

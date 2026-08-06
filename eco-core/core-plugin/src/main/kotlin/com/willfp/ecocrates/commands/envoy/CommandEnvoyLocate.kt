@@ -10,6 +10,11 @@ import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
+/**
+ * `/ecocrates envoy locate [number]` - lists the active envoy session's crate
+ * spawns as clickable teleport commands, or teleports the sender directly to
+ * one when given its number.
+ */
 object CommandEnvoyLocate : Subcommand(
     plugin,
     "locate",

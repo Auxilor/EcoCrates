@@ -15,6 +15,14 @@ import com.willfp.libreforge.triggers.TriggerData
 import java.util.Objects
 import kotlin.random.Random
 
+/**
+ * A configured envoy: its schedule, spawn location mode, rarities, and the
+ * optional start-flare/compass/bossbar features. One [EnvoySession] runs
+ * against a category at a time.
+ *
+ * @param id The category's config-file ID.
+ * @param config The category's parsed config section.
+ */
 class EnvoyCategory(
     override val id: String,
     private val config: Config
@@ -111,6 +119,7 @@ class EnvoyCategory(
         )
     }
 
+    /** Runs this category's end-effects with the session's final stats as placeholders. */
     fun triggerEndEffects(
         topCollector: String,
         topCollectorAmount: Int,

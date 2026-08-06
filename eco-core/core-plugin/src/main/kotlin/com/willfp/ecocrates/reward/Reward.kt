@@ -32,6 +32,13 @@ import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
 import java.util.Objects
 
+/**
+ * A configured reward: its display item/lore, weight expression, win cap,
+ * and the win-effects triggered when a player receives it.
+ *
+ * @param id The reward's config-file ID.
+ * @param config The reward's parsed config section.
+ */
 class Reward(
     override val id: String,
     private val config: Config
@@ -180,6 +187,7 @@ class Reward(
         }
     }
 
+    /** [giveTo] attributed to a crate directly. */
     fun giveTo(player: Player, crate: Crate) =
         giveTo(player, crate.name, crate.id)
 

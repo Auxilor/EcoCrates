@@ -7,6 +7,7 @@ import com.willfp.libreforge.NoCompileData
 import com.willfp.libreforge.filters.Filter
 import com.willfp.libreforge.triggers.TriggerData
 
+/** Libreforge filter `envoy_type`: [description]. */
 object FilterEnvoyType : Filter<NoCompileData, Collection<String>>("envoy_type") {
     override val description =
         "Matches when the envoy rarity involved in the triggering event is one of the given rarity IDs."

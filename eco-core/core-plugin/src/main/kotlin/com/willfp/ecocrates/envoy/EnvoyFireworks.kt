@@ -6,12 +6,19 @@ import org.bukkit.FireworkEffect
 import org.bukkit.Location
 import org.bukkit.entity.Firework
 
+/**
+ * A rarity's configured firework burst, fired at a crate's spawn location.
+ *
+ * @param amount How many fireworks to spawn, each with one [type] effect.
+ * @param colors Colours applied to every spawned firework; defaults to white if empty.
+ */
 class EnvoyFireworks(
     val enabled: Boolean,
     val amount: Int,
     val type: FireworkEffect.Type,
     val colors: List<Color>
 ) {
+    /** Spawns [amount] fireworks at [location], each detonating immediately with this config's effect. */
     fun spawn(location: Location) {
         if (!enabled || amount <= 0) {
             return

@@ -10,6 +10,7 @@ import com.willfp.libreforge.effects.Effect
 import com.willfp.libreforge.getFormattedString
 import com.willfp.libreforge.triggers.TriggerData
 
+/** Libreforge effect `start_envoy`: [description]. */
 object EffectStartEnvoy : Effect<NoCompileData>("start_envoy") {
     override val description = "Starts an envoy session for the specified envoy category."
 

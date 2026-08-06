@@ -7,6 +7,7 @@ import com.willfp.libreforge.NoCompileData
 import com.willfp.libreforge.filters.Filter
 import com.willfp.libreforge.triggers.TriggerData
 
+/** Libreforge filter `envoy_reward`: [description]. */
 object FilterEnvoyReward : Filter<NoCompileData, Collection<String>>("envoy_reward") {
     override val description = "Matches when the reward involved in the triggering event is one of the given reward IDs."
 

@@ -9,6 +9,7 @@ import com.willfp.libreforge.ProvidedHolder
 import com.willfp.libreforge.arguments
 import com.willfp.libreforge.conditions.Condition
 
+/** Libreforge condition `envoy_started`: [description]. */
 object ConditionEnvoyStarted : Condition<NoCompileData>("envoy_started") {
     override val description =
         "Passes while an envoy session is running. Specify a category to only match that envoy."

@@ -6,6 +6,7 @@ import com.willfp.libreforge.NoCompileData
 import com.willfp.libreforge.effects.Effect
 import com.willfp.libreforge.triggers.TriggerData
 
+/** Libreforge effect `end_envoy`: [description]. */
 object EffectEndEnvoy : Effect<NoCompileData>("end_envoy") {
     override val description = "Ends the currently active envoy session, if there is one."
 

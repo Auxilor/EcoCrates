@@ -17,6 +17,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.StringUtil
 
+/**
+ * `/ecocrates give` - gives a crate key (virtual or physical) or an envoy item
+ * (flare/compass) to a single online-or-known player.
+ */
 object CommandGive : Subcommand(
     plugin,
     "give",

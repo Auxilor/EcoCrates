@@ -9,6 +9,7 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 
+/** Handles right-clicking an envoy flare item to manually start that flare's envoy category. */
 object FlareListener : Listener {
     @EventHandler
     fun handleUse(event: PlayerInteractEvent) {

@@ -53,6 +53,11 @@ import org.bukkit.event.Listener
 internal lateinit var plugin: EcoCratesPlugin
     private set
 
+/**
+ * Plugin entry point. Registers libreforge effects/conditions/filters/triggers,
+ * config categories, commands, listeners and display modules on enable, and
+ * tears down active envoy state (compasses, sessions) on disable/reload.
+ */
 class EcoCratesPlugin : LibreforgePlugin() {
     init {
         plugin = this

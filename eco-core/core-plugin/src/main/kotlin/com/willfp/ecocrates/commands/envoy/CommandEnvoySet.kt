@@ -11,6 +11,11 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 
+/**
+ * `/ecocrates envoy set <category> [current|x y z]` - adds a spawn point for a
+ * points-mode envoy category, targeting the block the player is looking at by
+ * default.
+ */
 object CommandEnvoySet : Subcommand(
     plugin,
     "set",

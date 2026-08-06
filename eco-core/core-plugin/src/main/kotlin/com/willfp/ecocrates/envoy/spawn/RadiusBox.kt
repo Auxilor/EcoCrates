@@ -3,6 +3,7 @@ package com.willfp.ecocrates.envoy.spawn
 import com.willfp.eco.core.config.interfaces.Config
 import kotlin.random.Random
 
+/** A whole-number block coordinate. */
 data class BlockPos(
     val x: Int,
     val y: Int,
@@ -23,6 +24,7 @@ class RadiusBox(
     val yRadius = yRadius.coerceAtLeast(0)
     val zRadius = zRadius.coerceAtLeast(0)
 
+    /** Picks a uniformly random position within this box. */
     fun roll(random: Random = Random.Default) = BlockPos(
         center.x + random.nextInt(-xRadius, xRadius + 1),
         center.y + random.nextInt(-yRadius, yRadius + 1),
@@ -30,6 +32,7 @@ class RadiusBox(
     )
 
     companion object {
+        /** Reads a `radius:` config section, or null if it has no center world. */
         fun fromConfig(config: Config): RadiusBox? {
             val world = config.getStringOrNull("radius.center.world") ?: return null
 

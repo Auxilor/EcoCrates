@@ -6,6 +6,7 @@ import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.plugin
 
+/** Registers PlaceholderAPI-style placeholders for the active envoy session and per-category schedule info. */
 object EnvoyPlaceholders {
     /**
      * Formats ticks as hh:mm:ss, so a scoreboard can show a countdown
@@ -22,6 +23,7 @@ object EnvoyPlaceholders {
 
     private fun none() = plugin.langYml.getMessage("envoy-placeholder-none")
 
+    /** Registers the global `envoy_active_*` placeholders. Call once, on plugin enable. */
     fun register() {
         // ---- The active session ----
 
