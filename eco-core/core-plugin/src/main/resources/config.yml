@@ -263,3 +263,13 @@ rolls:
     start-pitch: 0.9
     pitch-step: 0.08
     hold-ticks: 30 # How long to show the won reward after the last reel stops
+
+envoy:
+  # How far to search outwards from a rolled spawn point for a legal (air) block
+  # to place an envoy crate in. Larger values are more forgiving on uneven
+  # terrain but cost more time when a session starts.
+  spawn-scan-radius: 6
+  # If a session that was running when the server stopped (or the plugin
+  # reloaded) should be restored, with its crates re-placed and its remaining
+  # duration resumed. If false, an interrupted session is simply discarded.
+  restore-session-on-restart: true

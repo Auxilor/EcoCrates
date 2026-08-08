@@ -16,7 +16,6 @@ import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.registry.KRegistrable
-import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.StringUtils
 import com.willfp.ecocrates.crate.placed.HologramFrame
 import com.willfp.ecocrates.crate.placed.PlacedCrate
@@ -33,6 +32,7 @@ import com.willfp.ecocrates.event.CrateRewardEvent
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.Rewards
+import com.willfp.ecocrates.util.weightedRandom
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.ViolationContext
 import com.willfp.libreforge.effects.Effects
@@ -50,6 +50,14 @@ import org.bukkit.util.Vector
 import java.util.Objects
 import java.util.UUID
 
+/**
+ * A configured crate type: its rewards, roll animation, preview GUI, reroll
+ * settings, placed-crate display (hologram/particles/item), and the
+ * libreforge effects run on open/finish.
+ *
+ * @param id The crate's config-file ID.
+ * @param config The crate's parsed config section.
+ */
 class Crate(
     override val id: String,
     private val config: Config
@@ -225,9 +233,9 @@ class Crate(
     ): Roll {
         val display = mutableListOf<Reward>()
 
-        // Add three to the scroll times so that it lines up
+        // Pad the scroll so it lines up
         repeat(35 + 4) {
-            display.add(getRandomReward(player)) // Fill roll with display weight items
+            display.add(getRandomReward(player))
         }
 
         return rollFactory.create(
@@ -253,25 +261,9 @@ class Crate(
         return ranOut
     }
 
-    private fun getRandomReward(player: Player): Reward {
-        val weighted = rewards.map { it to it.getEffectiveWeight(player) }
-        val totalWeight = weighted.sumOf { it.second }
-
-        if (totalWeight <= 0.0) {
-            return rewards.random()
-        }
-        val roll = NumberUtils.randFloat(0.0, totalWeight)
-        var cum = 0.0
-
-        for ((reward, weight) in weighted) {
-            cum += weight
-
-            if (roll < cum) {
-                return reward
-            }
-        }
-        return weighted.last().first
-    }
+    private fun getRandomReward(player: Player): Reward =
+        rewards.weightedRandom { it.getEffectiveWeight(player) }
+            ?: throw IllegalStateException("Crate '$id' has no rewards")
 
     private fun canOpenAndNotify(player: Player, method: OpenMethod): Boolean {
         if (!canPayToOpen && method == OpenMethod.MONEY) {
@@ -292,10 +284,17 @@ class Crate(
     }
 
 
+    /**
+     * Rolls [amount] independent random rewards for [player] (each drawn using
+     * that player's effective weights), without opening the crate.
+     *
+     * @return The rolled rewards, in no particular order.
+     */
     fun getRandomRewards(player: Player, amount: Int): List<Reward> {
         return List(amount.coerceAtLeast(0)) { getRandomReward(player) }
     }
 
+    /** Opens the placed crate at [location] for [player], pushing them away if they can't pay/afford it. */
     fun openPlaced(player: Player, location: Location, method: OpenMethod) {
         val nicerLocation = location.block.location.add(0.5, 1.5, 0.5)
 
@@ -307,6 +306,7 @@ class Crate(
         openWithMethod(player, method, nicerLocation, PlacedCrates.getPlacedCrateAt(location.block.location))
     }
 
+    /** Like [openPlaced], but opens every key the player has (shift-right-click-open-all). */
     fun openPlacedAll(player: Player, location: Location, method: OpenMethod) {
         val nicerLocation = location.block.location.add(0.5, 1.5, 0.5)
 
@@ -328,6 +328,11 @@ class Crate(
         player.velocity = vector
     }
 
+    /**
+     * Opens this crate for [player] via [method] (money/virtual/physical key),
+     * checking affordability and the `ecocrates.open.<id>` permission first,
+     * then consuming the payment/key on success.
+     */
     fun openWithMethod(
         player: Player,
         method: OpenMethod,
@@ -348,6 +353,11 @@ class Crate(
         }
     }
 
+    /**
+     * Opens every key [player] can pay for via [method] in one go, running
+     * open/finish effects either once for the whole batch or per-key depending
+     * on [isOpenAllEffectsPerKey].
+     */
     fun openAllWithMethod(player: Player, method: OpenMethod, location: Location? = null) {
         if (!canOpenAndNotify(player, method)) {
             return
@@ -430,6 +440,14 @@ class Crate(
         }
     }
 
+    /**
+     * Starts the roll animation for [player] (already assumed to have paid),
+     * ticking it once per tick until it finishes, then offers a reroll or
+     * finalizes via [handleFinish].
+     *
+     * @param rerollNumber How many times this roll has already been rerolled; 0 for a fresh open.
+     * @return `false` if the player has run out of rewards or already has a crate open; `true` once rolling starts.
+     */
     fun open(
         player: Player,
         method: OpenMethod,
@@ -437,7 +455,7 @@ class Crate(
         rerollNumber: Int = 0,
         placedCrate: PlacedCrate? = null
     ): Boolean {
-        /* Prevent server crashes */
+        // getRandomReward throws if every reward is exhausted; bail before it does.
         if (hasRanOutOfRewardsAndNotify(player)) {
             return false
         }
@@ -536,10 +554,12 @@ class Crate(
         return true
     }
 
+    /** Opens this crate's read-only preview GUI (rewards/odds) for [player]. */
     fun previewForPlayer(player: Player) {
         previewGUI.open(player)
     }
 
+    /** Fires [CrateRewardEvent], runs finish effects, and gives [roll]'s reward to its player. */
     fun handleFinish(roll: Roll) {
         val player = roll.player
 

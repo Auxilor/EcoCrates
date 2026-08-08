@@ -1,0 +1,199 @@
+name: "Demo Envoy"
+duration: 3600 # 3 minutes
+
+start:
+  time: [ ]
+  interval: 0 # Never auto-starts; use /ecocrates envoy start demo_envoy
+
+location-type: points # Set points with /ecocrates envoy set demo_envoy current
+
+min-spawns: 6
+max-spawns: 12
+
+start-effects: # Session-wide, so use broadcast rather than send_message
+  - id: broadcast
+    args:
+      message: "&6An %envoy_category% &6has landed! &f%envoy_crates% &6crates to find."
+
+end-effects:
+  - id: broadcast
+    args:
+      message: "&6The %envoy_category% &6is over! &f%envoy_top_collector% &6collected the most (&f%envoy_top_collector_amount%&6)."
+  - id: all_players
+    args:
+      effects:
+        - id: play_sound
+          args:
+            sound: entity_player_levelup
+            pitch: 1.0
+            volume: 1.0
+
+start-flare:
+  enabled: true
+  item: firework_rocket name:"&6Envoy Flare"
+  lore:
+    - "&fRight click to call in an envoy!"
+  cooldown-ticks: 12000
+  reset-schedule: true
+
+compass:
+  enabled: true
+  item: compass name:"&bEnvoy Compass"
+  lore:
+    - "&fRight click during an envoy to"
+    - "&ftrack the nearest crates."
+  duration: 1200
+  cooldown-ticks: 2400
+  max-tracked: 3
+  range: 500
+
+bossbar:
+  enabled: true
+  name: "&6%envoy_category% &7- &f%envoy_remaining_crates%&7/&f%envoy_total_crates% crates left &7- &f%envoy_remaining_time%"
+  color: YELLOW
+  style: SOLID
+
+rarities:
+  - id: common
+    display_name: "&aCommon"
+    weight: 100
+    collection_cooldown: 100
+    show_on_compass: true
+    compass_color: lime
+    rewards:
+      - 100_coins
+      - xp_bottles
+      - rotten_flesh
+      - stack_of_emeralds
+    block: chest
+    hologram:
+      message: "&a&lENVOY"
+      height: 1.5
+    item-display:
+      enabled: true
+      height: 1.0
+      delay: 30
+      name: "&fYou could win:"
+    fireworks:
+      enabled: true
+      amount: 1
+      type: ball
+      colors:
+        - lime
+    spawn-sound:
+      enabled: true
+      sound: entity_experience_orb_pickup
+      pitch: 1.0
+      volume: 1.0
+    open-effects:
+      - id: send_message
+        args:
+          message: "&aYou found an envoy and won %reward%&a!"
+
+  - id: rare
+    display_name: "&9Rare"
+    weight: 50
+    collection_cooldown: 200
+    show_on_compass: true
+    compass_color: "#3399ff"
+    rewards:
+      - 1000_coins
+      - mending_book
+      - shulker_box
+      - demo_crate_key
+    block: trapped_chest
+    hologram:
+      message: "&9&lRARE ENVOY"
+      height: 1.5
+    item-display:
+      enabled: true
+      height: 1.0
+      delay: 25
+      name: "&9You could win:"
+    fireworks:
+      enabled: true
+      amount: 1
+      type: large_ball
+      colors:
+        - blue
+        - "#3399ff"
+    spawn-sound:
+      enabled: true
+      sound: entity_experience_orb_pickup
+      pitch: 1.2
+      volume: 1.0
+    open-effects:
+      - id: send_message
+        args:
+          message: "&9You found a &9%envoy_rarity% &9envoy and won %reward%&9!"
+
+  - id: epic
+    display_name: "&5Epic"
+    weight: 20
+    collection_cooldown: 400
+    show_on_compass: true
+    compass_color: purple
+    rewards:
+      - netherite_ingot
+      - enchanted_golden_apple
+      - 5000_coins
+      - totem
+    block: ender_chest
+    hologram:
+      message: "&5&lEPIC ENVOY"
+      height: 1.5
+    item-display:
+      enabled: true
+      height: 1.0
+      delay: 20
+      name: "&5You could win:"
+    fireworks:
+      enabled: true
+      amount: 2
+      type: star
+      colors:
+        - purple
+        - magenta
+    spawn-sound:
+      enabled: true
+      sound: entity_illusioner_prepare_blindness
+      pitch: 1.0
+      volume: 1.0
+    open-effects:
+      - id: send_message
+        args:
+          message: "&5You found an &5%envoy_rarity% &5envoy and won %reward%&5!"
+
+  - id: legendary
+    display_name: "&6&lLegendary"
+    weight: 5
+    collection_cooldown: 600
+    show_on_compass: false # Legendary crates are hidden from compasses, so finding one is down to luck
+    rewards:
+      - elytra
+      - nether_star
+    block: beacon
+    hologram:
+      message: "&6&lLEGENDARY ENVOY"
+      height: 1.5
+    item-display:
+      enabled: true
+      height: 1.0
+      delay: 15
+      name: "&6You could win:"
+    fireworks:
+      enabled: true
+      amount: 3
+      type: burst
+      colors:
+        - orange
+        - yellow
+    spawn-sound:
+      enabled: true
+      sound: entity_ender_dragon_growl
+      pitch: 1.0
+      volume: 1.0
+    open-effects:
+      - id: broadcast
+        args:
+          message: "&6&l%player%&6 found a LEGENDARY envoy and won %reward%&6!"

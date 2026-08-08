@@ -3,6 +3,10 @@ package com.willfp.ecocrates.commands
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.ecocrates.crate.Crates
+import com.willfp.ecocrates.envoy.EnvoyItemType
+import com.willfp.ecocrates.envoy.EnvoyItems
+import com.willfp.ecocrates.envoy.Envoys
+import com.willfp.ecocrates.envoy.withEnvoyPlaceholders
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -10,6 +14,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.StringUtil
 
+/**
+ * `/ecocrates giveall` - gives a crate key (virtual or physical) or an envoy
+ * item (flare/compass) to every currently online player.
+ */
 object CommandGiveall : Subcommand(
     plugin,
     "giveall",
@@ -19,6 +27,13 @@ object CommandGiveall : Subcommand(
     override fun onExecute(sender: CommandSender, args: List<String>) {
         if (args.isEmpty()) {
             sender.sendMessage(plugin.langYml.getMessage("must-specify-crate"))
+            return
+        }
+
+        val envoyItemType = EnvoyItemType.fromToken(args.getOrNull(1))
+
+        if (envoyItemType != null) {
+            giveEnvoyItemAll(sender, args, envoyItemType)
             return
         }
 
@@ -55,6 +70,37 @@ object CommandGiveall : Subcommand(
         )
     }
 
+    private fun giveEnvoyItemAll(sender: CommandSender, args: List<String>, type: EnvoyItemType) {
+        val category = Envoys[args[0]]
+
+        if (category == null) {
+            sender.sendMessage(plugin.langYml.getMessage("invalid-envoy"))
+            return
+        }
+
+        val item = EnvoyItems.itemFor(category, type)
+
+        if (item == null) {
+            sender.sendMessage(
+                plugin.langYml.getMessage("envoy-item-not-enabled").withEnvoyPlaceholders(category)
+            )
+            return
+        }
+
+        val amount = (args.getOrNull(2)?.toIntOrNull() ?: 1).coerceAtLeast(1)
+
+        for (player in Bukkit.getOnlinePlayers()) {
+            EnvoyItems.give(player, category, type, amount)
+        }
+
+        sender.sendMessage(
+            plugin.langYml.getMessage("gave-envoy-item-all")
+                .replace("%amount%", amount.toString())
+                .replace("%item%", item.itemMeta?.displayName ?: type.token)
+                .withEnvoyPlaceholders(category)
+        )
+    }
+
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
         val completions = mutableListOf<String>()
 
@@ -65,7 +111,7 @@ object CommandGiveall : Subcommand(
         if (args.size == 1) {
             StringUtil.copyPartialMatches(
                 args[0],
-                Crates.values().map { it.id },
+                Crates.values().map { it.id } + Envoys.values().map { it.id },
                 completions
             )
 
@@ -75,7 +121,7 @@ object CommandGiveall : Subcommand(
         if (args.size == 2) {
             StringUtil.copyPartialMatches(
                 args[1],
-                listOf("physical", "virtual"),
+                listOf("physical", "virtual") + EnvoyItemType.tokens,
                 completions
             )
 

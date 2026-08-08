@@ -22,6 +22,12 @@ commands:
       - keys
     description: Base plugin command
     permission: ecocrates.command.ecocrates
+  ecoenvoy:
+    aliases:
+      - envoy
+      - envoys
+    description: Envoy commands
+    permission: ecocrates.command.envoy
 
 permissions:
   ecocrates.*:
@@ -47,6 +53,13 @@ permissions:
       ecocrates.break: true
       ecocrates.open.*: true
       ecocrates.reroll.*: true
+      ecocrates.command.envoy: true
+      ecocrates.command.envoy.set: true
+      ecocrates.command.envoy.locate: true
+      ecocrates.command.envoy.start: true
+      ecocrates.command.envoy.end: true
+      ecocrates.craft.flare: true
+      ecocrates.craft.compass: true
 
   ecocrates.command.ecocrates:
     description: Allows the use of /ecocrates (base command)
@@ -104,4 +117,25 @@ permissions:
     default: true
   ecocrates.rewards.*:
     description: Allows getting all rewards
+    default: true
+  ecocrates.command.envoy:
+    description: Allows the use of /ecocrates envoy (and /ecoenvoy)
+    default: op
+  ecocrates.command.envoy.set:
+    description: Allows setting and removing envoy spawn points
+    default: op
+  ecocrates.command.envoy.locate:
+    description: Allows listing and teleporting to remaining envoy crates
+    default: op
+  ecocrates.command.envoy.start:
+    description: Allows manually starting an envoy
+    default: op
+  ecocrates.command.envoy.end:
+    description: Allows ending the active envoy
+    default: op
+  ecocrates.craft.flare:
+    description: Allows crafting envoy start flares
+    default: true
+  ecocrates.craft.compass:
+    description: Allows crafting envoy compasses
     default: true

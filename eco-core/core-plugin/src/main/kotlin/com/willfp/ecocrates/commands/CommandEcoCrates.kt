@@ -4,6 +4,7 @@ import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.ecocrates.plugin
 import org.bukkit.command.CommandSender
 
+/** Root `/ecocrates` command; dispatches to all crate-related subcommands. */
 object CommandEcoCrates : PluginCommand(
     plugin,
     "ecocrates",
@@ -24,6 +25,7 @@ object CommandEcoCrates : PluginCommand(
             .addSubcommand(CommandTake)
             .addSubcommand(CommandGiveoffline)
             .addSubcommand(CommandSend)
+            .addSubcommand(CommandEnvoy)
     }
 
     override fun onExecute(sender: CommandSender, args: List<String>) {

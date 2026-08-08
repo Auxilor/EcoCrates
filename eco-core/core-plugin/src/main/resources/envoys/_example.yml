@@ -1,0 +1,221 @@
+# The ID of the envoy is the name of the .yml file,
+# for example airdrop.yml has the ID of airdrop.
+# You can place envoys anywhere in this folder, including in subfolders.
+# _example.yml is not loaded.
+#
+# An envoy is an event where crates spawn around the world and players race
+# to find and open them. Envoy crates have no roll animation, no rerolls, and
+# need no keys - right-clicking one instantly gives a reward.
+# Only one envoy session can run at a time across the whole server.
+
+name: "Example Envoy" # The display name of the envoy
+duration: 6000 # How long a session lasts, in ticks (6000 = 5 minutes).
+               # The session also ends early if every crate gets collected.
+
+start: # When this envoy automatically starts.
+  # A list of 24h HH:mm times. If this list is non-empty it takes priority
+  # and 'interval' below is ignored. Leave empty to use 'interval' instead.
+  time:
+    - "12:00"
+    - "18:30"
+  interval: 36000 # Ticks between automatic starts (36000 = 30 minutes).
+                  # Only used when 'time' above is empty. Set to 0 to never
+                  # auto-start (command / flare only).
+
+# 'radius' rolls a random point inside the box below, 'points' picks from the
+# fixed points you set with /ecocrates envoy set. Pick exactly one.
+location-type: radius
+
+radius:
+  # Only used when location-type is 'radius'.
+  # Points-mode spawn points are NOT configured here - set them in game with
+  # /ecocrates envoy set, and they're stored in envoypoints.yml so that
+  # reloading or updating this file can never wipe them.
+  center:
+    world: world
+    x: 0
+    y: 70
+    z: 0
+  x_radius: 200
+  y_radius: 20
+  z_radius: 200
+
+# The total number of crates in one session, rolled once at the start.
+# Which rarity fills each of those slots is decided by the rarity weights below.
+min-spawns: 8
+max-spawns: 15
+
+start-flare: # An item players can use to start this envoy themselves.
+  enabled: true
+  item: firework_rocket name:"&6Envoy Flare" # An eco item lookup string
+  lore:
+    - "&fRight click to call in an envoy!"
+  crafting: # Remove this whole block to make the flare uncraftable.
+    enabled: true
+    permission: ecocrates.craft.flare # Remove to let everyone craft it
+    shapeless: false
+    recipe:
+      - air
+      - gunpowder
+      - air
+      - gunpowder
+      - firework_rocket
+      - gunpowder
+      - air
+      - gunpowder
+      - air
+  cooldown-ticks: 12000 # Per-player cooldown between flare uses (10 minutes)
+  reset-schedule: true # If using a flare should reset this envoy's own
+                       # scheduled timer, so it doesn't fire again immediately.
+  price: # Optional extra cost, on top of consuming the flare item.
+         # Remove this block for the item to be the only cost.
+    type: coins
+    value: 5000
+    display: "&e%value% coins"
+
+compass: # A consumable item that marks nearby envoy crates on the locator bar.
+  enabled: true
+  item: compass name:"&bEnvoy Compass" # An eco item lookup string
+  lore:
+    - "&fRight click during an envoy to"
+    - "&ftrack the nearest crates."
+  crafting: # Remove this whole block to make the compass uncraftable.
+    enabled: true
+    permission: ecocrates.craft.compass # Remove to let everyone craft it
+    shapeless: false
+    recipe:
+      - air
+      - redstone
+      - air
+      - redstone
+      - compass
+      - redstone
+      - air
+      - redstone
+      - air
+  duration: 1200 # How long one compass lasts once used, in ticks (1 minute)
+  cooldown-ticks: 2400 # Per-player cooldown between compass uses
+  max-tracked: 3 # How many crates one compass marks at once (nearest first)
+  range: 500 # Only mark crates within this many blocks. 0 for unlimited.
+  price: # Optional extra cost on top of consuming the compass item.
+         # Remove this block for the item to be the only cost.
+    type: coins
+    value: 1000
+    display: "&e%value% coins"
+
+bossbar: # Shown to every online player for the duration of this envoy's session.
+  enabled: true
+  name: "&6%envoy_category% &7- &f%envoy_remaining_crates%&7/&f%envoy_total_crates% crates left &7- &f%envoy_remaining_time%"
+  # Defaults to the envoy's display name if omitted.
+  color: YELLOW # PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
+  style: SOLID # SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+
+# Effects for the session as a whole. These run globally, with no single
+# player attached, so player-scoped effects like send_message can't be used
+# directly here. Two ways round it:
+#   - `broadcast`, which needs no player at all
+#   - `all_players`, which runs nested effects once per online player. The
+#     envoy placeholders carry through, and %player% resolves per recipient.
+start-effects: # Runs when a session starts.
+               # Placeholders: %envoy_category%, %envoy_crates%
+  - id: broadcast
+    args:
+      message: "&6An %envoy_category% &6envoy has landed! &f%envoy_crates% &6crates are up for grabs."
+
+end-effects: # Runs when a session ends, whether by timeout or by the last crate
+             # being collected.
+             # Placeholders: %envoy_category%, %envoy_top_collector%,
+             # %envoy_top_collector_amount%, %envoy_crates_collected%,
+             # %envoy_crates_remaining%
+  - id: broadcast
+    args:
+      message: "&6The %envoy_category% &6envoy is over! &f%envoy_top_collector% &6collected the most, with &f%envoy_top_collector_amount%&6."
+  # Example of the all_players escape hatch: a personalised message plus a
+  # sound, both of which need a player.
+  - id: all_players
+    args:
+      effects:
+        - id: send_message
+          args:
+            message: "&7%player%&7, the envoy is over. &f%envoy_top_collector% &7won it."
+        - id: play_sound
+          args:
+            sound: entity_player_levelup
+            pitch: 1.0
+            volume: 1.0
+
+rarities: # Add as many as you want.
+  - id: common # Unique within this envoy. Used by the envoy_type filter.
+    display_name: "&aCommon"
+    weight: 80 # Relative chance this rarity fills a given spawn slot
+    # Per-player cooldown, in ticks, between collecting crates of THIS rarity.
+    # Not persisted across restarts.
+    collection_cooldown: 100
+    show_on_compass: true # Whether this rarity shows up on envoy compasses
+    compass_color: "#a8e063" # The locator bar dot colour. Colour name or hex.
+                             # Remove to use the client's default colour.
+    rewards: # Reward IDs from the /rewards folder. One is picked per open,
+             # using each reward's own weight - the same as crates.
+      - 1000_coins
+      - stack_of_emeralds
+    block: chest # An eco block lookup string
+    hologram:
+      message: "&a&lCOMMON ENVOY"
+      height: 1.5
+    item-display: # A floating item above the crate, cycling this rarity's rewards
+      enabled: true
+      height: 1.0
+      delay: 30 # Ticks between showing a new item
+      name: "&fYou could win:"
+    fireworks: # Fired when a crate of this rarity spawns
+      enabled: true
+      amount: 1
+      type: ball # ball, large_ball, burst, star, creeper
+      colors: # Colour names or hex codes
+        - lime
+        - "#a8e063"
+    spawn-sound: # Played at the crate's location when it spawns. Remove or set enabled to false to disable.
+      enabled: true
+      sound: entity_experience_orb_pickup
+      pitch: 1.0 # Can also be a range, e.g. "0.8..1.2"
+      volume: 1.0
+    open-effects: # libreforge effects run when a player collects this crate.
+                  # Placeholders: %envoy_category%, %envoy_rarity%,
+                  # %reward%, %reward_id%
+      - id: send_message
+        args:
+          message: "&aYou found a %envoy_rarity% &aenvoy and won %reward%&a!"
+
+  - id: legendary
+    display_name: "&6&lLegendary"
+    weight: 20
+    collection_cooldown: 600
+    show_on_compass: false # Legendary crates are hidden from envoy compasses,
+                           # so finding one is down to luck, not tracking.
+    rewards:
+      - diamond_sword
+    block: ender_chest
+    hologram:
+      message: "&6&lLEGENDARY ENVOY"
+      height: 1.5
+    item-display:
+      enabled: true
+      height: 1.0
+      delay: 20
+      name: "&6You could win:"
+    fireworks:
+      enabled: true
+      amount: 1
+      type: burst
+      colors:
+        - orange
+        - yellow
+    spawn-sound:
+      enabled: true
+      sound: entity_ender_dragon_growl
+      pitch: 1.0
+      volume: 1.0
+    open-effects:
+      - id: send_message
+        args:
+          message: "&6You found a LEGENDARY envoy and won %reward%&6!"
