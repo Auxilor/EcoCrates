@@ -30,6 +30,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
+import java.util.Locale
 import java.util.Objects
 
 /**
@@ -88,7 +89,7 @@ class Reward(
         val lore = config.getStrings("display.lore").map {
             it.replace(
                 "%chance%",
-                getPercentageChance(player, crate.rewards).toNiceString()
+                formatChance(getPercentageChance(player, crate.rewards))
             ).replace(
                 "%weight%",
                 this.getWeight(player).toNiceString()
@@ -144,6 +145,11 @@ class Reward(
         }
 
         return (weight / totalWeight) * 100
+    }
+
+    private fun formatChance(chance: Double): String {
+        val places = plugin.configYml.getInt("chance-decimal-places").coerceAtLeast(0)
+        return String.format(Locale.ROOT, "%.${places}f", chance)
     }
 
     init {
