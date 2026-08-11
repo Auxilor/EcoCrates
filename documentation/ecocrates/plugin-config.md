@@ -1,6 +1,6 @@
 ---
 title: "Plugin Config"
-sidebar_position: 8
+sidebar_position: 9
 ---
 
 This is the server-wide config for EcoCrates, `config.yml`, found at `/plugins/EcoCrates/config.yml`. It holds storage, permission multipliers, the reroll and keys GUIs, and the shared animation and roll settings. Apply changes with `/ecocrates reload`.
