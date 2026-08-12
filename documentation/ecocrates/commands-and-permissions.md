@@ -1,6 +1,6 @@
 ---
 title: "Commands and Permissions"
-sidebar_position: 6
+sidebar_position: 8
 ---
 
 This page lists every EcoCrates command and permission, so you can hand out keys, place crates, and control who can open what. All commands run under `/ecocrates`, `/crates`, `/crate`, `/key`, or `/keys`.

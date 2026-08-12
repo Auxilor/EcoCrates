@@ -1,6 +1,6 @@
 ---
 title: "Migrating / Converting from Other Crate Plugins"
-sidebar_position: 7
+sidebar_position: 6
 ---
 
 Switching to EcoCrates doesn't mean rebuilding every crate by hand. EcoCrates can convert your existing setup from several other crate plugins with a single command. This page lists the supported plugins and how to run a conversion.

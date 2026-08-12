@@ -1,6 +1,6 @@
 ---
 title: "How to Make an Envoy"
-sidebar_position: 10
+sidebar_position: 5
 ---
 
 An envoy is a timed event: reward crates spawn around the world and players race to find and open them. Envoy crates have no roll animation, no reroll, and need no key, physical or virtual — right-clicking one gives exactly one reward instantly. Only one envoy can run at a time, across the whole server. This page walks you through making one from an empty file to a running event.

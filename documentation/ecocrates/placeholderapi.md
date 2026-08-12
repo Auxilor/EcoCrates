@@ -1,6 +1,6 @@
 ---
 title: "PlaceholderAPI"
-sidebar_position: 5
+sidebar_position: 7
 ---
 
 EcoCrates exposes placeholders you can use anywhere PlaceholderAPI is read, e.g. scoreboards, holograms, and menus. In every placeholder below, `<crate>` is a crate ID (its file name) and `<reward>` is a reward ID.
