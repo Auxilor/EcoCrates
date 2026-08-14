@@ -161,6 +161,35 @@ rolls:
     title: "Pick a box!"
     box: chest name:"&e&lClick to pick!"
     filler: black_stained_glass_pane name:""
+  choose:
+    reveal-time: 40 # How long the GUI stays open after picking before the crate finishes
+    auto-pick: 200 # If the player doesn't pick in time, one is chosen for them
+    title: "Choose your reward! (%page%/%max_page%)"
+    mask:
+      items:
+        - gray_stained_glass_pane
+        - black_stained_glass_pane
+      pattern:
+        - "222222222"
+        - "211111112"
+        - "1iiiiiii1"
+        - "211111112"
+        - "222222222"
+    page-change-sound:
+      enabled: true
+      sound: ui.button.click
+      pitch: 1.0
+      volume: 1.0
+    forwards-arrow:
+      item: arrow name:"&fNext Page"
+      item-inactive: gray_dye name:"&7Next Page"
+      row: 5
+      column: 6
+    backwards-arrow:
+      item: arrow name:"&fPrevious Page"
+      item-inactive: gray_dye name:"&7Previous Page"
+      row: 5
+      column: 4
   match:
     to-match: 2
     min-scratches: 3

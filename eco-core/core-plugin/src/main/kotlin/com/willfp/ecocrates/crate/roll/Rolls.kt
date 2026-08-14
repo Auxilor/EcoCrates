@@ -17,6 +17,7 @@ object Rolls : Registry<RollFactory<*>>() {
     val HOLOGRAM: RollFactory<*> = RollHologram.Factory
     val ELIMINATION: RollFactory<*> = RollElimination.Factory
     val PICK: RollFactory<*> = RollPick.Factory
+    val CHOOSE: RollFactory<*> = RollChoose.Factory
     val MATCH: RollFactory<*> = RollMatch.Factory
     val QUICK: RollFactory<*> = RollQuick.Factory
     val INSTANT: RollFactory<*> = RollInstant.Factory

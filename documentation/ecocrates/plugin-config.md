@@ -174,6 +174,35 @@ rolls:
     title: "Pick a box!" # The GUI title; supports %crate%
     box: chest name:"&e&lClick to pick!" # The face-down box item
     filler: black_stained_glass_pane name:"" # Decorative filler items
+  choose:
+    reveal-time: 40 # Ticks the GUI stays open after picking, before the crate finishes
+    auto-pick: 200 # Ticks before a reward is picked for the player
+    title: "Choose your reward! (%page%/%max_page%)" # The GUI title; supports %crate%, %page%, %max_page%
+    mask:
+      items: # Decorative filler items, indexed by the digits used in pattern
+        - gray_stained_glass_pane
+        - black_stained_glass_pane
+      pattern: # 0/i are open slots, other digits are filler items by index; i marks a reward slot
+        - "222222222"
+        - "211111112"
+        - "1iiiiiii1"
+        - "211111112"
+        - "222222222"
+    page-change-sound: # The sound played when changing pages. Remove or set enabled to false to disable.
+      enabled: true
+      sound: ui.button.click
+      pitch: 1.0
+      volume: 1.0
+    forwards-arrow: # The arrow for switching to the next page
+      item: arrow name:"&fNext Page"
+      item-inactive: gray_dye name:"&7Next Page" # Shown on the last page. Remove to hide the button instead.
+      row: 5
+      column: 6
+    backwards-arrow: # The arrow for switching to the previous page
+      item: arrow name:"&fPrevious Page"
+      item-inactive: gray_dye name:"&7Previous Page" # Shown on the first page. Remove to hide the button instead.
+      row: 5
+      column: 4
   match:
     to-match: 2 # Copies of the same reward needed to win; losers get at most one fewer
     min-scratches: 3 # The winning set can never complete before this many scratches

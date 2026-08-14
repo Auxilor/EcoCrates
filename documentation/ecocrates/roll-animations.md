@@ -15,6 +15,7 @@ A roll is the animation that plays when a crate opens, before the reward is reve
 | `slot_machine` | Spins reels in a GUI, stopping them one at a time | - |
 | `elimination` | Knocks candidates out of a GUI one by one until the winner is the last left | - |
 | `pick` | Face-down boxes in a GUI; the player clicks one to open it | - |
+| `choose` | Every reward the player can win is shown in a GUI; they click the one they want | - |
 | `match` | A scratchcard: the player scratches cards until enough of them match | - |
 | `encircle` | Rings the player with items that spin, then reveal the winner | [Video](https://youtu.be/EhLiTVnQ6zs) |
 | `flash` | Blinds the player while an item flies toward their face | [Video](https://youtu.be/J9S5HKUBFwA) |
@@ -59,7 +60,7 @@ When enabled, the hologram and floating preview item are hidden from the player 
 
 The two that default to `true` are the ones that take over the crate's own space: `cycle` swaps the preview item for a cycling one, and `hologram` replaces the crate's hologram with its own. The rest leave the crate alone unless you turn the option on.
 
-`csgo`, `slot_machine`, `elimination`, `pick`, and `instant` have no `hide-placed-crate` option, because they play out in a GUI or don't animate at all - the crate's hologram never gets in their way. Adding the option to their config section does nothing.
+`csgo`, `slot_machine`, `elimination`, `pick`, `choose`, and `instant` have no `hide-placed-crate` option, because they play out in a GUI or don't animate at all - the crate's hologram never gets in their way. Adding the option to their config section does nothing.
 
 The option is also inert when there's no placed crate to hide, such as opening with `/ecocrates open` or a virtual key.
 
@@ -69,9 +70,15 @@ The option is also inert when there's no placed crate to hide, such as opening w
 
 There's no card size to set. A losing reward is dealt at most `to-match - 1` copies, so it can tease a set the player can't finish but never become a second winner, and the card is then dealt as large as the crate's own rewards can fill, up to 21. With `to-match: 2` every loser is unique, since a repeat would be a winning pair, so the card is as big as the crate has distinct rewards. Raising `to-match` allows duplicates and so deals a bigger card: a crate with six rewards deals seven cards at `to-match: 2`, and thirteen at `to-match: 3`.
 
-The winner is decided before the roll starts, as it is for every roll, so the card is dealt around it. What the player finds is genuinely on the card, though: the reveal at the end flips the rest face-up and those near misses are the cards they didn't scratch, not invented afterwards.
+The winner is decided before the roll starts, as it is for every roll except `choose`, so the card is dealt around it. What the player finds is genuinely on the card, though: the reveal at the end flips the rest face-up and those near misses are the cards they didn't scratch, not invented afterwards.
 
 `min-scratches` stops an anticlimactic instant win. If the set would complete too early, the winner is quietly moved under a card that hasn't been scratched yet - unscratched cards give nothing away, and past the floor the card behaves exactly as dealt. If the player stops scratching, `auto-scratch` scratches for them so the roll always finishes.
+
+## Choosing your own reward
+
+`choose` is the one roll where the winner isn't decided beforehand. It opens a GUI listing every reward the player is currently eligible to win (the same eligibility every other roll's weighted pick respects - permission-gated rewards that a player can't win never appear), paginated if there are more than fit on one page. Whichever one they click is what they win.
+
+If the player doesn't click anything, `auto-pick` ticks pass and a random eligible reward is chosen for them so the roll can't hang open forever. `reveal-time` is how long the GUI stays open showing the pick before the crate finishes.
 
 ## Rerolls
 
