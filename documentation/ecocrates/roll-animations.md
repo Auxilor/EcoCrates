@@ -9,27 +9,27 @@ A roll is the animation a player watches while a crate decides what they win. Ea
 
 A roll is the animation that plays when a crate opens, before the reward is revealed. You choose one per crate with the `roll` option in the crate config, and you tune each roll's behaviour in the `rolls` section of [Plugin Config](plugin-config).
 
-| Roll ID | What it does | Video |
-| --- | --- | --- |
-| `csgo` | Scrolls a row of items in a GUI, easing to a stop on the winner | [Video](https://youtu.be/IGwYEmMBGk8) |
-| `slot_machine` | Spins reels in a GUI, stopping them one at a time | - |
-| `elimination` | Knocks candidates out of a GUI one by one until the winner is the last left | - |
-| `pick` | Face-down boxes in a GUI; the player clicks one to open it | - |
-| `choose` | Every reward the player can win is shown in a GUI; they click the one they want | - |
-| `match` | A scratchcard: the player scratches cards until enough of them match | - |
-| `encircle` | Rings the player with items that spin, then reveal the winner | [Video](https://youtu.be/EhLiTVnQ6zs) |
-| `flash` | Blinds the player while an item flies toward their face | [Video](https://youtu.be/J9S5HKUBFwA) |
-| `orbit_collapse` | Orbits items around the player, then collapses them into the winner | - |
-| `vortex` | Spirals items inwards and upwards, flinging out a loser on every pass | - |
-| `roulette` | A glowing cursor runs a ring of items and slows to a stop on the winner | - |
-| `cycle` | Floats an item at the crate, swapping it every few ticks | - |
-| `hologram` | No items at all: a hologram cycles reward names and locks onto the winner | - |
-| `sky_drop` | Throws items out of the crate and drops the winner from above | - |
-| `strike` | The item rises, hangs, and a lightning strike reveals the winner | - |
-| `delivery` | An entity carries the reward from the crate to the player | - |
-| `quick` | Rises a single item out of the crate | [Video](https://youtu.be/_gaMLZ_QM6E) |
-| `instant` | No animation, the reward is given straight away | [Video](https://youtu.be/U3TNbZMrju4) |
-| `semi_instant` | Throws the item out of the crate for a moment | [Video](https://youtu.be/ecsIdOLwSnU) |
+| Roll ID          | What it does                                                                    | Video                                 |
+|------------------|---------------------------------------------------------------------------------|---------------------------------------|
+| `choose`         | Every reward the player can win is shown in a GUI; they click the one they want | -                                     |
+| `csgo`           | Scrolls a row of items in a GUI, easing to a stop on the winner                 | [Video](https://youtu.be/IGwYEmMBGk8) |
+| `cycle`          | Floats an item at the crate, swapping it every few ticks                        | -                                     |
+| `delivery`       | An entity carries the reward from the crate to the player                       | -                                     |
+| `elimination`    | Knocks candidates out of a GUI one by one until the winner is the last left     | -                                     |
+| `encircle`       | Rings the player with items that spin, then reveal the winner                   | [Video](https://youtu.be/EhLiTVnQ6zs) |
+| `flash`          | Blinds the player while an item flies toward their face                         | [Video](https://youtu.be/J9S5HKUBFwA) |
+| `hologram`       | No items at all: a hologram cycles reward names and locks onto the winner       | -                                     |
+| `instant`        | No animation, the reward is given straight away                                 | [Video](https://youtu.be/U3TNbZMrju4) |
+| `match`          | A scratchcard: the player scratches cards until enough of them match            | -                                     |
+| `orbit_collapse` | Orbits items around the player, then collapses them into the winner             | -                                     |
+| `pick`           | Face-down boxes in a GUI; the player clicks one to open it                      | -                                     |
+| `quick`          | Rises a single item out of the crate                                            | [Video](https://youtu.be/_gaMLZ_QM6E) |
+| `roulette`       | A glowing cursor runs a ring of items and slows to a stop on the winner         | -                                     |
+| `semi_instant`   | Throws the item out of the crate for a moment                                   | [Video](https://youtu.be/ecsIdOLwSnU) |
+| `sky_drop`       | Throws items out of the crate and drops the winner from above                   | -                                     |
+| `slot_machine`   | Spins reels in a GUI, stopping them one at a time                               | -                                     |
+| `strike`         | The item rises, hangs, and a lightning strike reveals the winner                | -                                     |
+| `vortex`         | Spirals items inwards and upwards, flinging out a loser on every pass           | -                                     |
 
 ## Hiding the placed crate
 
@@ -46,17 +46,17 @@ When enabled, the hologram and floating preview item are hidden from the player 
 | Roll | Default |
 | --- | --- |
 | `cycle` | `true` |
-| `hologram` | `true` |
-| `flash` | `false` |
-| `encircle` | `false` |
-| `vortex` | `false` |
-| `roulette` | `false` |
-| `sky_drop` | `false` |
-| `orbit_collapse` | `false` |
-| `strike` | `false` |
 | `delivery` | `false` |
+| `encircle` | `false` |
+| `flash` | `false` |
+| `hologram` | `true` |
+| `orbit_collapse` | `false` |
 | `quick` | `false` |
+| `roulette` | `false` |
 | `semi_instant` | `false` |
+| `sky_drop` | `false` |
+| `strike` | `false` |
+| `vortex` | `false` |
 
 The two that default to `true` are the ones that take over the crate's own space: `cycle` swaps the preview item for a cycling one, and `hologram` replaces the crate's hologram with its own. The rest leave the crate alone unless you turn the option on.
 
