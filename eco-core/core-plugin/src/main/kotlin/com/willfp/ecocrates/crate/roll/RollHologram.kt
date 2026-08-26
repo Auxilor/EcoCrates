@@ -31,8 +31,8 @@ class RollHologram private constructor(
     private val interval = plugin.configYml.getInt("rolls.hologram.interval").coerceAtLeast(1)
     private val height = plugin.configYml.getDouble("rolls.hologram.height")
 
-    private val rollingLines = plugin.configYml.getStrings("rolls.hologram.rolling")
-    private val winnerLines = plugin.configYml.getStrings("rolls.hologram.winner")
+    private val rollingLines = plugin.configYml.getFormattedStrings("rolls.hologram.rolling")
+    private val winnerLines = plugin.configYml.getFormattedStrings("rolls.hologram.winner")
 
     private val display = crate.getRandomRewards(player, (duration / interval) + 1)
 
