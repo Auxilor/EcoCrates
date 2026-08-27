@@ -11,25 +11,25 @@ A roll is the animation that plays when a crate opens, before the reward is reve
 
 | Roll ID | What it does | Video |
 | --- | --- | --- |
-| `csgo` | Scrolls a row of items in a GUI, easing to a stop on the winner | [Video](https://youtu.be/IGwYEmMBGk8) |
-| `slot_machine` | Spins reels in a GUI, stopping them one at a time | - |
-| `elimination` | Knocks candidates out of a GUI one by one until the winner is the last left | - |
-| `pick` | Face-down boxes in a GUI; the player clicks one to open it | - |
-| `choose` | Every reward the player can win is shown in a GUI; they click the one they want | - |
-| `match` | A scratchcard: the player scratches cards until enough of them match | - |
-| `encircle` | Rings the player with items that spin, then reveal the winner | [Video](https://youtu.be/EhLiTVnQ6zs) |
-| `flash` | Blinds the player while an item flies toward their face | [Video](https://youtu.be/J9S5HKUBFwA) |
-| `orbit_collapse` | Orbits items around the player, then collapses them into the winner | - |
-| `vortex` | Spirals items inwards and upwards, flinging out a loser on every pass | - |
-| `roulette` | A glowing cursor runs a ring of items and slows to a stop on the winner | - |
-| `cycle` | Floats an item at the crate, swapping it every few ticks | - |
-| `hologram` | No items at all: a hologram cycles reward names and locks onto the winner | - |
-| `sky_drop` | Throws items out of the crate and drops the winner from above | - |
-| `strike` | The item rises, hangs, and a lightning strike reveals the winner | - |
-| `delivery` | An entity carries the reward from the crate to the player | - |
-| `quick` | Rises a single item out of the crate | [Video](https://youtu.be/_gaMLZ_QM6E) |
-| `instant` | No animation, the reward is given straight away | [Video](https://youtu.be/U3TNbZMrju4) |
-| `semi_instant` | Throws the item out of the crate for a moment | [Video](https://youtu.be/ecsIdOLwSnU) |
+| `csgo` | Scrolls a row of items in a GUI, easing to a stop on the winner | [Video](https://youtu.be/n3QVL3NMbqg) |
+| `slot_machine` | Spins reels in a GUI, stopping them one at a time | [Video](https://youtu.be/kxz0QvmRGyU) |
+| `elimination` | Knocks candidates out of a GUI one by one until the winner is the last left | [Video](https://youtu.be/bL4Bcaul_6E) |
+| `pick` | Face-down boxes in a GUI; the player clicks one to open it | [Video](https://youtu.be/WBqONQGTglE) |
+| `choose` | Every reward the player can win is shown in a GUI; they click the one they want | [Video](https://youtu.be/Ca8OWNfUPLw) |
+| `match` | A scratchcard: the player scratches cards until enough of them match | [Video](https://youtu.be/Vr2qADzqeXw) |
+| `encircle` | Rings the player with items that spin, then reveal the winner | [Video](https://youtu.be/6n2EMUX3wHE) |
+| `flash` | Blinds the player while an item flies toward their face | [Video](https://youtu.be/WYMDjaAHO5s) |
+| `orbit_collapse` | Orbits items around the player, then collapses them into the winner | [Video](https://youtu.be/uJMeESoMiDs) |
+| `vortex` | Spirals items inwards and upwards, flinging out a loser on every pass | [Video](https://youtu.be/WLcddKR-IS4) |
+| `roulette` | A glowing cursor runs a ring of items and slows to a stop on the winner | [Video](https://youtu.be/4ncbKA7ouBw) |
+| `cycle` | Floats an item at the crate, swapping it every few ticks | [Video](https://youtu.be/p8Ggn_xFeVE) |
+| `hologram` | No items at all: a hologram cycles reward names and locks onto the winner | [Video](https://youtu.be/kf7vls6UDzQ) |
+| `sky_drop` | Throws items out of the crate and drops the winner from above | [Video](https://youtu.be/VkAla0JRpL8) |
+| `strike` | The item rises, hangs, and a lightning strike reveals the winner | [Video](https://youtu.be/T9VqkAwvdzg) |
+| `delivery` | An entity carries the reward from the crate to the player | [Video](https://youtu.be/fujbMo2m3DY) |
+| `quick` | Rises a single item out of the crate | [Video](https://youtu.be/_nS1xGlkIak) |
+| `instant` | No animation, the reward is given straight away | [Video](https://youtu.be/uncKTvuhGcQ) |
+| `semi_instant` | Throws the item out of the crate for a moment | [Video](https://youtu.be/Eeo3srv38SM) |
 
 ## Hiding the placed crate
 
