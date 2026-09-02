@@ -1,12 +1,12 @@
 package com.willfp.ecocrates.crate.placed
 
+import com.willfp.eco.core.scheduling.EcoTask
 import com.willfp.ecocrates.plugin
-import org.bukkit.scheduler.BukkitTask
 
 object CrateDisplay {
     @Volatile private var tick = 0
-    private var syncTask: BukkitTask? = null
-    private var asyncTask: BukkitTask? = null
+    private var syncTask: EcoTask? = null
+    private var asyncTask: EcoTask? = null
 
     fun start() {
         syncTask?.cancel()

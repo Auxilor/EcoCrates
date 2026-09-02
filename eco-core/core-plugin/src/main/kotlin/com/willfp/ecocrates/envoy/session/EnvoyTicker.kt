@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.envoy.session
 
+import com.willfp.eco.core.scheduling.EcoTask
 import com.willfp.ecocrates.envoy.EnvoyScheduler
 import com.willfp.ecocrates.envoy.compass.CompassRenderer
 import com.willfp.ecocrates.envoy.compass.EnvoyCompasses
 import com.willfp.ecocrates.plugin
-import org.bukkit.scheduler.BukkitTask
 
 /**
  * The single repeating task behind envoys: it advances the active session
@@ -15,7 +15,7 @@ object EnvoyTicker {
     @Volatile
     private var tick = 0
 
-    private var task: BukkitTask? = null
+    private var task: EcoTask? = null
 
     fun start() {
         task?.cancel()
