@@ -529,7 +529,7 @@ class Crate(
             }
         }
 
-        plugin.runnableFactory.create {
+        plugin.scheduler.on(player).runTimer({ task ->
             try {
                 roll.tick(tick)
             } catch (e: Exception) {
@@ -541,18 +541,18 @@ class Crate(
                 plugin.logger.warning("Error while ticking roll for ${player.name}, cancelling")
                 e.printStackTrace()
 
-                it.cancel()
+                task.cancel()
                 finalizeRoll(true)
-                return@create
+                return@runTimer
             }
 
             tick++
 
             if (!roll.shouldContinueTicking(tick) || !player.isOpeningCrate) {
-                it.cancel()
+                task.cancel()
                 finalizeRoll(false)
             }
-        }.runTaskTimer(1, 1)
+        }, 1, 1)
 
         player.isOpeningCrate = true
         player.profile.write(opensKey, getOpens(player) + 1)
