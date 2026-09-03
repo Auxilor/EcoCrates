@@ -233,6 +233,7 @@ rolls:
     hide-placed-crate: false
   strike:
     height: 2.0
+    flash-color: "#FFFFFF" # Colour of the lightning flash particle; name (e.g. lime) or hex
     rise-time: 30
     hang-time: 15
     reveal-time: 25
