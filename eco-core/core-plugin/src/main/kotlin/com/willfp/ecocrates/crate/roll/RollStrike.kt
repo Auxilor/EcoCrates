@@ -2,9 +2,11 @@ package com.willfp.ecocrates.crate.roll
 
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
+import com.willfp.ecocrates.envoy.EnvoyFireworks
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.util.lerp
+import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -29,6 +31,9 @@ class RollStrike private constructor(
     private val hangTime = plugin.configYml.getInt("rolls.strike.hang-time")
     private val revealTime = plugin.configYml.getInt("rolls.strike.reveal-time")
     private val interval = plugin.configYml.getInt("rolls.strike.interval").coerceAtLeast(1)
+    private val flashColor = EnvoyFireworks.parseColorOrNull(
+        plugin.configYml.getString("rolls.strike.flash-color")
+    ) ?: Color.WHITE
 
     private val display = crate.getRandomRewards(player, (riseTime / interval) + 1)
 
@@ -88,7 +93,7 @@ class RollStrike private constructor(
         val impact = item.location
 
         world.strikeLightningEffect(location)
-        world.spawnParticle(Particle.FLASH, impact, 3)
+        world.spawnParticle(Particle.FLASH, impact, 3, flashColor)
         world.spawnParticle(Particle.ELECTRIC_SPARK, impact, 40, 0.4, 0.4, 0.4, 0.15)
 
         player.playSound(player.location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.7f, 1.2f)
