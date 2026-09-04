@@ -83,7 +83,7 @@ object ReRollGUI {
                 if (player.hasMetadata(metaKey)) {
                     player.removeMetadata(metaKey, plugin)
                 } else {
-                    roll.crate.handleFinish(roll)
+                    plugin.scheduler.runLater(1) { roll.crate.handleFinish(roll) }
                 }
             }
         }

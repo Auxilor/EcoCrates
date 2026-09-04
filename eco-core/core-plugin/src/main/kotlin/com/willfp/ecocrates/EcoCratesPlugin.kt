@@ -39,6 +39,7 @@ import com.willfp.ecocrates.libreforge.FilterEnvoyType
 import com.willfp.ecocrates.libreforge.TriggerCrateOpen
 import com.willfp.ecocrates.libreforge.TriggerCrateWin
 import com.willfp.ecocrates.libreforge.TriggerOpenEnvoy
+import com.willfp.ecocrates.reward.PendingRewards
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.CrateKeyListener
 import com.willfp.ecocrates.util.PlacedCrateListener
@@ -79,6 +80,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
         Triggers.register(TriggerOpenEnvoy)
 
         EnvoyPlaceholders.register()
+        PendingRewards.register()
     }
 
     override fun handleDisable() {
