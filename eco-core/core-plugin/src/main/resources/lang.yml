@@ -27,6 +27,7 @@ messages:
   converted: "&aConverted successfully!"
   converting: "Attempting to convert..."
   offline-keys-received: "You have received %amount%&f %crate%&f key(s) while being offline!"
+  offline-reward-received: "You have received %reward%&f from the %crate%&f crate you opened before leaving!"
   key-trade-sent: "&aGave %amount%x %key% keys to %player%."
   key-trade-received: "&aYou received %amount%x %key% keys from %player%!"
   key-not-tradeable: "&cThis key cannot be traded."

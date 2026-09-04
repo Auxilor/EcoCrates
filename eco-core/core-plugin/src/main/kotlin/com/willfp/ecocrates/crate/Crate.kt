@@ -30,6 +30,7 @@ import com.willfp.ecocrates.crate.roll.Rolls
 import com.willfp.ecocrates.event.CrateOpenEvent
 import com.willfp.ecocrates.event.CrateRewardEvent
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.reward.PendingRewards
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.weightedRandom
@@ -498,11 +499,22 @@ class Crate(
 
             hasFinalized = true
 
-            roll.onFinish()
+            try {
+                roll.onFinish()
+            } catch (e: Exception) {
+                plugin.logger.warning("Error while finishing roll for ${player.name}")
+                e.printStackTrace()
+            }
+
             player.isOpeningCrate = false
 
             if (hidesPlacedCrate) {
                 placedCrate?.showTo(player)
+            }
+
+            if (!player.isOnline) {
+                handleFinish(roll)
+                return
             }
 
             val canRerollNow = rerollProfile.enabled
@@ -561,9 +573,16 @@ class Crate(
 
     /** Fires [CrateRewardEvent], runs finish effects, and gives [roll]'s reward to its player. */
     fun handleFinish(roll: Roll) {
-        val player = roll.player
+        handleFinish(roll.player, roll.reward)
+    }
 
-        val event = CrateRewardEvent(player, this, roll.reward)
+    fun handleFinish(player: Player, reward: Reward) {
+        if (!player.isOnline) {
+            PendingRewards.queue(player, this, reward)
+            return
+        }
+
+        val event = CrateRewardEvent(player, this, reward)
         Bukkit.getPluginManager().callEvent(event)
 
         finishEffects?.trigger(
@@ -574,8 +593,8 @@ class Crate(
                         listOf(
                             NamedValue("crate", name),
                             NamedValue("crate_id", id),
-                            NamedValue("reward", roll.reward.name),
-                            NamedValue("reward_id", roll.reward.id)
+                            NamedValue("reward", reward.name),
+                            NamedValue("reward_id", reward.id)
                         )
                     )
                 }
