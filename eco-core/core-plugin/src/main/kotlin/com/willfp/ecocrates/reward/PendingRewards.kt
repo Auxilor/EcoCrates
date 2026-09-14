@@ -3,8 +3,6 @@ package com.willfp.ecocrates.reward
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
-import com.willfp.ecocrates.crate.Crate
-import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.plugin
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
@@ -18,8 +16,9 @@ object PendingRewards {
 
     fun register(): PersistentDataKey<List<String>> = pendingKey
 
-    fun queue(player: OfflinePlayer, crate: Crate, reward: Reward) {
-        player.profile.write(pendingKey, player.profile.read(pendingKey) + "${crate.id}:${reward.id}")
+    fun queue(player: OfflinePlayer, source: RewardSource, reward: Reward) {
+        val entry = PendingRewardEntry(source.sourceType, source.id, reward.id).serialize()
+        player.profile.write(pendingKey, player.profile.read(pendingKey) + entry)
     }
 
     fun grantPending(player: Player) {
@@ -31,16 +30,17 @@ object PendingRewards {
 
         player.profile.write(pendingKey, emptyList())
 
-        for (entry in pending) {
-            val crate = Crates.getByID(entry.substringBefore(':')) ?: continue
-            val reward = Rewards.getByID(entry.substringAfter(':')) ?: continue
+        for (raw in pending) {
+            val entry = PendingRewardEntry.parse(raw) ?: continue
+            val source = RewardSources.resolve(entry.sourceType, entry.sourceId) ?: continue
+            val reward = Rewards.getByID(entry.rewardId) ?: continue
 
-            crate.handleFinish(player, reward)
+            source.handleFinish(player, reward)
 
             player.sendMessage(
                 plugin.langYml.getMessage("offline-reward-received")
                     .replace("%reward%", reward.name)
-                    .replace("%crate%", crate.name)
+                    .replace("%crate%", source.name)
             )
         }
     }
