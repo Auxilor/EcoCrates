@@ -1,14 +1,14 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
 class RollInstant private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -31,10 +31,12 @@ class RollInstant private constructor(
     }
 
     object Factory : RollFactory<RollInstant>("instant") {
+        override val isGuiRoll = true
+
         override fun create(options: RollOptions): RollInstant =
             RollInstant(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

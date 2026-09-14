@@ -6,11 +6,11 @@ import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.util.NumberUtils
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack
 
 class RollCSGO private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -46,10 +46,10 @@ class RollCSGO private constructor(
         .toList()
 
     // Add three so it lines up
-    private val display = crate.getRandomRewards(player, scrollTimes + 3)
+    private val display = source.getRandomRewards(player, scrollTimes + 3)
         .toMutableList().apply {
             add(reward)
-            addAll(crate.getRandomRewards(player, 5))
+            addAll(source.getRandomRewards(player, 5))
         }
 
     private var scroll = 0
@@ -68,7 +68,7 @@ class RollCSGO private constructor(
             )
         )
 
-        title = crate.name
+        title = source.name
 
         for (i in 1..9) {
             setSlot(
@@ -78,7 +78,7 @@ class RollCSGO private constructor(
                     ItemStack(Material.AIR)
                 ) {
                     setUpdater { _, _, _ ->
-                        display[((9 - i) + scroll).coerceAtMost(display.lastIndex)].getDisplay(player, crate)
+                        display[((9 - i) + scroll).coerceAtMost(display.lastIndex)].getDisplay(player, source)
                     }
                 }
             )
@@ -128,10 +128,12 @@ class RollCSGO private constructor(
     }
 
     object Factory : RollFactory<RollCSGO>("csgo") {
+        override val isGuiRoll = true
+
         override fun create(options: RollOptions): RollCSGO =
             RollCSGO(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

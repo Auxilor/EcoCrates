@@ -1,9 +1,9 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Item
@@ -14,7 +14,7 @@ import org.bukkit.util.Vector
 
 class RollFlash private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -22,14 +22,14 @@ class RollFlash private constructor(
 ) : Roll {
     private val duration = plugin.configYml.getInt("rolls.flash.duration")
     private val wait = plugin.configYml.getInt("rolls.flash.wait")
-    private val display = crate.getRandomRewards(player, 100)
+    private val display = source.getRandomRewards(player, 100)
 
     private lateinit var item: Item
 
     override fun roll() {
         val world = location.world!!
 
-        item = world.dropItem(location, display[0].getDisplay(player, crate))
+        item = world.dropItem(location, display[0].getDisplay(player, source))
         item.pickupDelay = Int.MAX_VALUE
         item.setGravity(false)
         item.isCustomNameVisible = true
@@ -60,10 +60,10 @@ class RollFlash private constructor(
                     .multiply(0.5)
 
                 val index = tick.floorDiv(5).coerceAtMost(display.lastIndex)
-                item.itemStack = display[index].getDisplay(player, crate)
+                item.itemStack = display[index].getDisplay(player, source)
                 item.customName = display[index].displayName
             } else {
-                item.itemStack = reward.getDisplay(player, crate)
+                item.itemStack = reward.getDisplay(player, source)
                 item.customName = reward.displayName
                 item.velocity = Vector(0, 0, 0)
             }
@@ -92,7 +92,7 @@ class RollFlash private constructor(
         override fun create(options: RollOptions): RollFlash =
             RollFlash(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

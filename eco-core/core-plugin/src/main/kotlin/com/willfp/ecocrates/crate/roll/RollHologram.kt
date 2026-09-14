@@ -2,11 +2,11 @@ package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramManager
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Player
@@ -19,7 +19,7 @@ import org.bukkit.util.Vector
  */
 class RollHologram private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -34,7 +34,7 @@ class RollHologram private constructor(
     private val rollingLines = plugin.configYml.getFormattedStrings("rolls.hologram.rolling")
     private val winnerLines = plugin.configYml.getFormattedStrings("rolls.hologram.winner")
 
-    private val display = crate.getRandomRewards(player, (duration / interval) + 1)
+    private val display = source.getRandomRewards(player, (duration / interval) + 1)
 
     // Sit where the crate's own hologram would, so the swap reads as one animation.
     private val base = placedCrate?.location ?: location
@@ -82,7 +82,7 @@ class RollHologram private constructor(
         override fun create(options: RollOptions): RollHologram =
             RollHologram(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

@@ -8,18 +8,18 @@ import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.sound.PlayableSound
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 
 class RollChoose private constructor(
     override var reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -31,7 +31,7 @@ class RollChoose private constructor(
     private val autoPickTime = plugin.configYml.getInt("rolls.choose.auto-pick")
 
     // Every reward the player could actually win, in the same order every time this roll is open.
-    private val eligibleRewards = crate.rewards.filter { it.getEffectiveWeight(player) > 0 }
+    private val eligibleRewards = source.rewards.filter { it.getEffectiveWeight(player) > 0 }
 
     private var picked = false
     private var timeSpentRevealing = 0
@@ -47,7 +47,7 @@ class RollChoose private constructor(
 
         menu(pattern.size) {
             title = plugin.configYml.getFormattedString("rolls.choose.title")
-                .replace("%crate%", crate.name)
+                .replace("%crate%", source.name)
 
             maxPages(maxPages)
 
@@ -72,7 +72,7 @@ class RollChoose private constructor(
                                 setSlot(
                                     rowIndex + 1,
                                     colIndex + 1,
-                                    slot(option.getDisplay(player, crate)) {
+                                    slot(option.getDisplay(player, source)) {
                                         onLeftClick { _, _, _ ->
                                             pick(option)
                                         }
@@ -135,10 +135,12 @@ class RollChoose private constructor(
     }
 
     object Factory : RollFactory<RollChoose>("choose") {
+        override val isGuiRoll = true
+
         override fun create(options: RollOptions): RollChoose =
             RollChoose(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

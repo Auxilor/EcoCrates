@@ -6,6 +6,7 @@ import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
+import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.plugin
 
@@ -14,6 +15,7 @@ object ReRollGUI {
 
     fun open(roll: Roll, rerollNumber: Int, profile: RerollProfile) {
         val player = roll.player
+        val crate = roll.source as Crate
 
         val price = profile.priceFor(rerollNumber + 1)
         val priceDisplay = price.getDisplay(player)
@@ -31,11 +33,11 @@ object ReRollGUI {
             setSlot(
                 plugin.configYml.getInt("reroll.accept.row"),
                 plugin.configYml.getInt("reroll.accept.column"),
-                slot(roll.reward.getDisplay(player, roll.crate)) {
+                slot(roll.reward.getDisplay(player, crate)) {
                     onLeftClick { _, _, _ ->
                         player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
                         player.closeInventory()
-                        roll.crate.handleFinish(roll)
+                        crate.handleFinish(roll)
                     }
                 }
             )
@@ -60,7 +62,7 @@ object ReRollGUI {
                         if (!price.canAfford(player)) {
                             player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
                             player.closeInventory()
-                            roll.crate.handleFinish(roll)
+                            crate.handleFinish(roll)
                             return@onLeftClick
                         }
 
@@ -68,7 +70,7 @@ object ReRollGUI {
                         player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
                         // Close the GUI so the roll animation plays without it.
                         player.closeInventory()
-                        roll.crate.open(
+                        crate.open(
                             player,
                             roll.method,
                             roll.location,
@@ -83,7 +85,7 @@ object ReRollGUI {
                 if (player.hasMetadata(metaKey)) {
                     player.removeMetadata(metaKey, plugin)
                 } else {
-                    plugin.scheduler.runLater(1) { roll.crate.handleFinish(roll) }
+                    plugin.scheduler.runLater(1) { crate.handleFinish(roll) }
                 }
             }
         }
