@@ -28,6 +28,7 @@ import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.session.EnvoyTicker
 import com.willfp.ecocrates.libreforge.ConditionEnvoyStarted
 import com.willfp.ecocrates.libreforge.EffectEndEnvoy
+import com.willfp.ecocrates.libreforge.EffectGivePouch
 import com.willfp.ecocrates.libreforge.EffectGiveVirtualKey
 import com.willfp.ecocrates.libreforge.EffectResetRewardWins
 import com.willfp.ecocrates.libreforge.EffectRewardWeightMultiplier
@@ -36,9 +37,13 @@ import com.willfp.ecocrates.libreforge.FilterCrate
 import com.willfp.ecocrates.libreforge.FilterCrateReward
 import com.willfp.ecocrates.libreforge.FilterEnvoyReward
 import com.willfp.ecocrates.libreforge.FilterEnvoyType
+import com.willfp.ecocrates.libreforge.FilterPouch
+import com.willfp.ecocrates.libreforge.FilterPouchRarity
 import com.willfp.ecocrates.libreforge.TriggerCrateOpen
 import com.willfp.ecocrates.libreforge.TriggerCrateWin
 import com.willfp.ecocrates.libreforge.TriggerOpenEnvoy
+import com.willfp.ecocrates.libreforge.TriggerPouchOpen
+import com.willfp.ecocrates.libreforge.TriggerPouchWin
 import com.willfp.ecocrates.pouch.Pouches
 import com.willfp.ecocrates.pouch.PouchListener
 import com.willfp.ecocrates.reward.PendingRewards
@@ -72,14 +77,19 @@ class EcoCratesPlugin : LibreforgePlugin() {
         Effects.register(EffectResetRewardWins)
         Effects.register(EffectStartEnvoy)
         Effects.register(EffectEndEnvoy)
+        Effects.register(EffectGivePouch)
         Conditions.register(ConditionEnvoyStarted)
         Filters.register(FilterCrate)
         Filters.register(FilterCrateReward)
         Filters.register(FilterEnvoyType)
         Filters.register(FilterEnvoyReward)
+        Filters.register(FilterPouch)
+        Filters.register(FilterPouchRarity)
         Triggers.register(TriggerCrateOpen)
         Triggers.register(TriggerCrateWin)
         Triggers.register(TriggerOpenEnvoy)
+        Triggers.register(TriggerPouchOpen)
+        Triggers.register(TriggerPouchWin)
 
         EnvoyPlaceholders.register()
         PendingRewards.register()
