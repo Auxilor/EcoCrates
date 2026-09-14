@@ -26,6 +26,7 @@ import com.willfp.ecocrates.crate.reroll.ReRollGUI
 import com.willfp.ecocrates.crate.reroll.RerollProfile
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollOptions
+import com.willfp.ecocrates.crate.roll.RollSession
 import com.willfp.ecocrates.crate.roll.Rolls
 import com.willfp.ecocrates.event.CrateOpenEvent
 import com.willfp.ecocrates.event.CrateRewardEvent
@@ -481,32 +482,21 @@ class Crate(
         }
 
         val roll = makeRoll(player, loc, event.reward, method, isReroll = isReroll, placedCrate = placedCrate)
-        var tick = 0
-        var hasFinalized = false
 
-        fun finalizeRoll(forceFinish: Boolean) {
-            if (hasFinalized) {
-                return
-            }
+        player.profile.write(opensKey, getOpens(player) + 1)
 
-            hasFinalized = true
+        if (hidesPlacedCrate) {
+            placedCrate?.hideFrom(player)
+        }
 
-            try {
-                roll.onFinish()
-            } catch (e: Exception) {
-                plugin.logger.warning("Error while finishing roll for ${player.name}")
-                e.printStackTrace()
-            }
-
-            player.isOpeningCrate = false
-
+        RollSession.start(roll) { finishedRoll, forced ->
             if (hidesPlacedCrate) {
                 placedCrate?.showTo(player)
             }
 
             if (!player.isOnline) {
-                handleFinish(roll)
-                return
+                handleFinish(finishedRoll)
+                return@start
             }
 
             val canRerollNow = rerollProfile.enabled
@@ -514,46 +504,12 @@ class Crate(
                 && player.hasPermission(rerollPermission)
                 && rerollProfile.priceFor(rerollNumber + 1).canAfford(player)
 
-            if (forceFinish || !canRerollNow) {
-                handleFinish(roll)
+            if (forced || !canRerollNow) {
+                handleFinish(finishedRoll)
             } else {
-                ReRollGUI.open(roll, rerollNumber, rerollProfile)
+                ReRollGUI.open(finishedRoll, rerollNumber, rerollProfile)
             }
         }
-
-        plugin.scheduler.on(player).runTimer({ task ->
-            try {
-                roll.tick(tick)
-            } catch (e: Exception) {
-                /*
-                Bukkit doesn't cancel repeating tasks that throw, so without this the
-                tick counter would never advance and the roll would repeat the same
-                tick (and its effects) forever.
-                 */
-                plugin.logger.warning("Error while ticking roll for ${player.name}, cancelling")
-                e.printStackTrace()
-
-                task.cancel()
-                finalizeRoll(true)
-                return@runTimer
-            }
-
-            tick++
-
-            if (!roll.shouldContinueTicking(tick) || !player.isOpeningCrate) {
-                task.cancel()
-                finalizeRoll(false)
-            }
-        }, 1, 1)
-
-        player.isOpeningCrate = true
-        player.profile.write(opensKey, getOpens(player) + 1)
-
-        if (hidesPlacedCrate) {
-            placedCrate?.hideFrom(player)
-        }
-
-        roll.roll()
 
         return true
     }
