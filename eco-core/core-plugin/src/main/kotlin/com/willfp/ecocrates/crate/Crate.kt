@@ -32,8 +32,9 @@ import com.willfp.ecocrates.event.CrateRewardEvent
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.PendingRewards
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.reward.Rewards
-import com.willfp.ecocrates.util.weightedRandom
+import com.willfp.ecocrates.reward.SourceTypes
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.ViolationContext
 import com.willfp.libreforge.effects.Effects
@@ -62,7 +63,7 @@ import java.util.UUID
 class Crate(
     override val id: String,
     private val config: Config
-) : KRegistrable {
+) : KRegistrable, RewardSource {
     private val openEffects = Effects.compileChain(
         config.getSubsections("open-effects"),
         NormalExecutorFactory.create(),
@@ -74,7 +75,9 @@ class Crate(
         ViolationContext(plugin, "Crate $id Finish Effects")
     )
 
-    val name = config.getFormattedString("name")
+    override val name: String = config.getFormattedString("name")
+
+    override val sourceType = SourceTypes.CRATE
 
     val hologramFrames = config.getSubsections("placed.hologram.frames")
         .map { HologramFrame(it.getInt("tick"), it.getFormattedStrings("lines")) }
@@ -106,7 +109,10 @@ class Crate(
     val sharedKey: SharedKey = Keys[config.getString("key")]
         ?: throw IllegalStateException("Crate '$id' references unknown key '${config.getString("key")}' - make sure a matching file exists in the keys/ folder")
 
-    val rewards = config.getStrings("rewards").mapNotNull { Rewards.getByID(it) }
+    override val rewards: List<Reward> = config.getStrings("rewards").mapNotNull { Rewards.getByID(it) }
+
+    override val rollHeight: Double
+        get() = randomRewardHeight
 
     val permission: Permission =
         Bukkit.getPluginManager().getPermission("ecocrates.open.$id") ?: Permission(
@@ -253,7 +259,7 @@ class Crate(
     }
 
     private fun hasRanOutOfRewardsAndNotify(player: Player): Boolean {
-        val ranOut = rewards.all { it.getWeight(player) <= 0 }
+        val ranOut = hasRanOutOfRewards(player)
 
         if (ranOut) {
             player.sendMessage(plugin.langYml.getMessage("all-rewards-used"))
@@ -261,10 +267,6 @@ class Crate(
 
         return ranOut
     }
-
-    private fun getRandomReward(player: Player): Reward =
-        rewards.weightedRandom { it.getEffectiveWeight(player) }
-            ?: throw IllegalStateException("Crate '$id' has no rewards")
 
     private fun canOpenAndNotify(player: Player, method: OpenMethod): Boolean {
         if (!canPayToOpen && method == OpenMethod.MONEY) {
@@ -284,16 +286,6 @@ class Crate(
         return hasPermission
     }
 
-
-    /**
-     * Rolls [amount] independent random rewards for [player] (each drawn using
-     * that player's effective weights), without opening the crate.
-     *
-     * @return The rolled rewards, in no particular order.
-     */
-    fun getRandomRewards(player: Player, amount: Int): List<Reward> {
-        return List(amount.coerceAtLeast(0)) { getRandomReward(player) }
-    }
 
     /** Opens the placed crate at [location] for [player], pushing them away if they can't pay/afford it. */
     fun openPlaced(player: Player, location: Location, method: OpenMethod) {
@@ -576,7 +568,7 @@ class Crate(
         handleFinish(roll.player, roll.reward)
     }
 
-    fun handleFinish(player: Player, reward: Reward) {
+    override fun handleFinish(player: Player, reward: Reward) {
         if (!player.isOnline) {
             PendingRewards.queue(player, this, reward)
             return

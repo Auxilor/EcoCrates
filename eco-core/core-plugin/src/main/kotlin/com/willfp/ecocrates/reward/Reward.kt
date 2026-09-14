@@ -83,13 +83,13 @@ class Reward(
     ).setDisplayName(config.getString("display.name"))
         .build()
 
-    fun getDisplay(player: Player, crate: Crate): ItemStack {
+    fun getDisplay(player: Player, source: RewardSource): ItemStack {
         val item = baseDisplay.clone()
         val fis = FastItemStack.wrap(item)
         val lore = config.getStrings("display.lore").map {
             it.replace(
                 "%chance%",
-                formatChance(getPercentageChance(player, crate.rewards))
+                formatChance(getPercentageChance(player, source.rewards))
             ).replace(
                 "%weight%",
                 this.getWeight(player).toNiceString()
@@ -104,6 +104,10 @@ class Reward(
 
         return fis.unwrap()
     }
+
+    /** Kept for binary compatibility with addons compiled against the crate-only signature. */
+    fun getDisplay(player: Player, crate: Crate): ItemStack =
+        getDisplay(player, crate as RewardSource)
 
     fun getDisplay(): ItemStack {
         return baseDisplay.clone()
@@ -193,9 +197,13 @@ class Reward(
         }
     }
 
-    /** [giveTo] attributed to a crate directly. */
+    /** [giveTo] attributed to a reward source directly. */
+    fun giveTo(player: Player, source: RewardSource) =
+        giveTo(player, source.name, source.id)
+
+    /** Kept for binary compatibility with addons compiled against the crate-only signature. */
     fun giveTo(player: Player, crate: Crate) =
-        giveTo(player, crate.name, crate.id)
+        giveTo(player, crate as RewardSource)
 
     fun getWins(player: OfflinePlayer): Int {
         return if (maxWins > 0) player.profile.read(winsKey) else 0
