@@ -1,0 +1,114 @@
+# The ID of the pouch is the name of the .yml file,
+# for example mining.yml has the ID of mining.
+# You can place pouches anywhere in this folder, including in subfolders.
+# _example.yml is not loaded.
+#
+# A pouch is a single-use item. Right-clicking it consumes one and runs a
+# GUI roll that gives exactly one reward. No keys, no rerolls.
+# Give it with /ecocrates give <player> pouch <id> [amount]. Other plugins can
+# use the item as ecocrates:pouch_<id>.
+
+name: "&aMining Pouch" # The display name of the pouch
+rarity: "&aCommon" # Display only. Available in effects and the pouch_rarity filter.
+
+# The opening style. Pouches only support GUI rolls:
+# csgo, slot_machine, elimination, pick, choose, match, instant.
+# Anything else falls back to csgo with a console warning.
+roll: csgo
+
+item:
+  item: bundle name:"&aMining Pouch" # An eco item lookup string
+  lore:
+    - "&fRight click to open"
+    - "&fShift + right click to preview"
+  crafting: # Remove this whole block to make the pouch uncraftable.
+    enabled: false
+    permission: ecocrates.craft.pouch.mining # Remove to let everyone craft it
+    shapeless: false
+    recipe:
+      - air
+      - leather
+      - air
+      - leather
+      - iron_pickaxe
+      - leather
+      - air
+      - leather
+      - air
+
+preview-on-shift: true # Shift + right click opens the preview instead of the pouch
+
+price: # Optional extra cost, on top of consuming the pouch item.
+       # Remove this block for the item to be the only cost.
+  type: coins
+  value: 500
+  display: "&e%value% coins"
+
+# Libreforge conditions that must all be met to open this pouch.
+# Checked before the price is taken or the item consumed.
+open-conditions:
+  - id: in_world
+    args:
+      world: world
+    not-met-effects:
+      - id: send_message
+        args:
+          message: "&cYou can only open this pouch in the overworld!"
+
+preview: # The preview GUI, shown on shift + right click or /ecocrates preview pouch <id>
+  title: "Mining Pouch"
+  rows: 3
+  custom-slots: [ ]
+  page-change-sound:
+    enabled: true
+    sound: ui.button.click
+    pitch: 1.0
+    volume: 1.0
+  forwards-arrow:
+    item: arrow name:"&fNext Page"
+    item-inactive: gray_dye name:"&7Next Page"
+    row: 3
+    column: 6
+  backwards-arrow:
+    item: arrow name:"&fPrevious Page"
+    item-inactive: gray_dye name:"&7Previous Page"
+    row: 3
+    column: 4
+  pages:
+    - page: 1
+      mask:
+        items:
+          - gray_stained_glass_pane
+        pattern:
+          - "111111111"
+          - "110101011"
+          - "111111111"
+      custom-slots: [ ]
+      rewards:
+        - id: diamond_sword
+          row: 2
+          column: 3
+        - id: stack_of_emeralds
+          row: 2
+          column: 5
+        - id: 1000_coins
+          row: 2
+          column: 7
+
+open-effects: # Placeholders: %pouch%, %pouch_id%, %pouch_rarity%
+  - id: play_sound
+    args:
+      sound: item_bundle_drop_contents
+      volume: 1
+      pitch: 1
+
+finish-effects: # Also %reward% and %reward_id%
+  - id: send_message
+    args:
+      message: "You found %reward%&f in your %pouch%&f!"
+
+# The rewards to give, configured in the /rewards/ folder
+rewards:
+  - diamond_sword
+  - stack_of_emeralds
+  - 1000_coins

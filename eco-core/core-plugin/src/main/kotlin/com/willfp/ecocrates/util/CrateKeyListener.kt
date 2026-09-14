@@ -6,6 +6,7 @@ import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.crate.key
 import com.willfp.ecocrates.envoy.EnvoyItems
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.pouch.Pouches
 import com.willfp.ecocrates.reward.PendingRewards
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -48,6 +49,10 @@ object CrateKeyListener : Listener {
                         .replace("%crate%", crate.name)
                 )
             }
+        }
+
+        for (pouch in Pouches.values()) {
+            pouch.item.grantPending(event.player)
         }
 
         EnvoyItems.grantPending(event.player)

@@ -53,6 +53,7 @@ permissions:
       ecocrates.break: true
       ecocrates.open.*: true
       ecocrates.reroll.*: true
+      ecocrates.pouch.*: true
       ecocrates.command.envoy: true
       ecocrates.command.envoy.set: true
       ecocrates.command.envoy.locate: true
@@ -114,6 +115,9 @@ permissions:
     default: true
   ecocrates.reroll.*:
     description: Allows rerolling all crates
+    default: true
+  ecocrates.pouch.*:
+    description: Allows opening all pouches
     default: true
   ecocrates.rewards.*:
     description: Allows getting all rewards

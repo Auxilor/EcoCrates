@@ -39,6 +39,8 @@ import com.willfp.ecocrates.libreforge.FilterEnvoyType
 import com.willfp.ecocrates.libreforge.TriggerCrateOpen
 import com.willfp.ecocrates.libreforge.TriggerCrateWin
 import com.willfp.ecocrates.libreforge.TriggerOpenEnvoy
+import com.willfp.ecocrates.pouch.Pouches
+import com.willfp.ecocrates.pouch.PouchListener
 import com.willfp.ecocrates.reward.PendingRewards
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.CrateKeyListener
@@ -106,6 +108,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
             Keys,
             Crates,
             Rewards,
+            Pouches,
             Envoys
         )
     }
@@ -123,7 +126,8 @@ class EcoCratesPlugin : LibreforgePlugin() {
             CrateKeyListener,
             EnvoyListener,
             FlareListener,
-            CompassListener
+            CompassListener,
+            PouchListener
         )
     }
 
@@ -149,6 +153,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
         EcoMetricsChart.SingleLine("total_particle_animations") { ParticleAnimations.values().size },
         EcoMetricsChart.SingleLine("placed_crates") { PlacedCrates.values().size },
         EcoMetricsChart.SingleLine("total_envoys") { Envoys.values().size },
-        EcoMetricsChart.SingleLine("active_envoy_crates") { EnvoySessions.remaining() }
+        EcoMetricsChart.SingleLine("active_envoy_crates") { EnvoySessions.remaining() },
+        EcoMetricsChart.SingleLine("total_pouches") { Pouches.values().size }
     )
 }

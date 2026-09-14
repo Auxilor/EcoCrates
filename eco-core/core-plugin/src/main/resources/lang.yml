@@ -75,3 +75,7 @@ messages:
   envoy-teleported: "&fTeleported to envoy crate &a#%number%&f."
   invalid-coordinates: "&cThose coordinates aren't valid numbers!"
   envoy-placeholder-none: "None" # Shown by envoy placeholders when no envoy is running
+  invalid-pouch: "&cThat pouch no longer exists!"
+  no-pouch-permission: "&cYou don't have permission to open %name%&c!"
+  pouch-cannot-afford: "&cYou can't afford to open %name%&c! Cost: %price%"
+  offline-items-received: "You have received %amount%&f %item%&f while being offline!"
