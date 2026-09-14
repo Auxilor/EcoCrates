@@ -47,7 +47,8 @@ enum class TargetParseError {
     INVALID_TYPE,
     MISSING_ID,
     MISSING_VARIANT,
-    INVALID_VARIANT
+    INVALID_VARIANT,
+    INVALID_AMOUNT
 }
 
 sealed interface TargetParseResult {
@@ -87,8 +88,10 @@ object TargetParser {
         val id = args.getOrNull(1) ?: return TargetParseResult.Failure(TargetParseError.MISSING_ID, type)
 
         if (type.variants.isEmpty()) {
+            val amount = parseAmount(args.getOrNull(2))
+                ?: return TargetParseResult.Failure(TargetParseError.INVALID_AMOUNT, type)
             return TargetParseResult.Success(
-                ParsedTarget(type, id, null, parseAmount(args.getOrNull(2)), isLegacy = false, keyViaCrate = false)
+                ParsedTarget(type, id, null, amount, isLegacy = false, keyViaCrate = false)
             )
         }
 
@@ -96,8 +99,10 @@ object TargetParser {
         val variant = type.variants.firstOrNull { it.equals(rawVariant, ignoreCase = true) }
 
         if (variant != null) {
+            val amount = parseAmount(args.getOrNull(3))
+                ?: return TargetParseResult.Failure(TargetParseError.INVALID_AMOUNT, type)
             return TargetParseResult.Success(
-                ParsedTarget(type, id, variant, parseAmount(args.getOrNull(3)), isLegacy = false, keyViaCrate = false)
+                ParsedTarget(type, id, variant, amount, isLegacy = false, keyViaCrate = false)
             )
         }
 
@@ -107,33 +112,39 @@ object TargetParser {
         }
 
         // Optional variant omitted: whatever follows the ID is the amount.
+        val amount = parseAmount(rawVariant)
+            ?: return TargetParseResult.Failure(TargetParseError.INVALID_AMOUNT, type)
         return TargetParseResult.Success(
-            ParsedTarget(type, id, type.defaultVariant, parseAmount(rawVariant), isLegacy = false, keyViaCrate = false)
+            ParsedTarget(type, id, type.defaultVariant, amount, isLegacy = false, keyViaCrate = false)
         )
     }
 
     private fun parseLegacyGive(args: List<String>): TargetParseResult {
         val id = args[0]
         val rawVariant = args.getOrNull(1)
-        val amount = parseAmount(args.getOrNull(2))
 
         val envoyVariant = legacyEnvoyVariants.firstOrNull { it.equals(rawVariant, ignoreCase = true) }
 
         if (envoyVariant != null) {
+            val amount = parseAmount(args.getOrNull(2))
+                ?: return TargetParseResult.Failure(TargetParseError.INVALID_AMOUNT, TargetType.ENVOY)
             return TargetParseResult.Success(
                 ParsedTarget(TargetType.ENVOY, id, envoyVariant, amount, isLegacy = true, keyViaCrate = false)
             )
         }
 
         val keyVariant = if (rawVariant.equals("physical", ignoreCase = true)) "physical" else "virtual"
+        val amount = parseAmount(args.getOrNull(2))
+            ?: return TargetParseResult.Failure(TargetParseError.INVALID_AMOUNT, TargetType.KEY)
 
         return TargetParseResult.Success(
             ParsedTarget(TargetType.KEY, id, keyVariant, amount, isLegacy = true, keyViaCrate = true)
         )
     }
 
-    private fun parseAmount(raw: String?): Int =
-        raw?.toIntOrNull()?.takeIf { it > 0 } ?: 1
+    /** @return 1 if [raw] is absent, the parsed value if it's a valid amount (>= 1), or null if it's present but invalid. */
+    private fun parseAmount(raw: String?): Int? =
+        if (raw == null) 1 else raw.toIntOrNull()?.takeIf { it >= 1 }
 
     /** The new-syntax command equivalent to [target], for deprecation messages. */
     fun format(subcommand: String, playerArg: String?, target: ParsedTarget, includeAmount: Boolean): String =

@@ -55,9 +55,26 @@ class TargetParserTest {
     }
 
     @Test
-    fun `bad or missing amount becomes one`() {
-        assertEquals(1, ok(give("pouch", "mining", "lots")).amount)
-        assertEquals(1, ok(give("pouch", "mining", "-3")).amount)
+    fun `missing amount defaults to one`() {
+        assertEquals(1, ok(give("pouch", "mining")).amount)
+    }
+
+    @Test
+    fun `invalid amount is reported`() {
+        assertEquals(TargetParseError.INVALID_AMOUNT, err(give("pouch", "mining", "lots")))
+        assertEquals(TargetParseError.INVALID_AMOUNT, err(give("pouch", "mining", "-3")))
+        assertEquals(TargetParseError.INVALID_AMOUNT, err(give("pouch", "mining", "0")))
+    }
+
+    @Test
+    fun `invalid amount is reported for legacy give`() {
+        assertEquals(TargetParseError.INVALID_AMOUNT, err(give("demo_crate", "virtual", "-1")))
+        assertEquals(TargetParseError.INVALID_AMOUNT, err(give("airdrop", "flare", "0")))
+    }
+
+    @Test
+    fun `invalid amount is reported for optional variant slot`() {
+        assertEquals(TargetParseError.INVALID_AMOUNT, err(give("key", "demo_key", "physcal")))
     }
 
     @Test

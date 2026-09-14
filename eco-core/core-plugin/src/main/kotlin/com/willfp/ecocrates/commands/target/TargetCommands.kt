@@ -40,6 +40,7 @@ object TargetCommands {
             TargetParseError.MISSING_VARIANT, TargetParseError.INVALID_VARIANT ->
                 plugin.langYml.getMessage("invalid-variant")
                     .replace("%variants%", failure.type?.variants?.joinToString(", ") ?: "")
+            TargetParseError.INVALID_AMOUNT -> plugin.langYml.getMessage("invalid-amount")
         }
     }
 

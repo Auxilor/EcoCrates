@@ -83,6 +83,7 @@ messages:
   invalid-type: "&cUnknown type! Use one of: %types%"
   must-specify-id: "&cYou must specify an ID!"
   invalid-variant: "&cInvalid option! Use one of: %variants%"
+  invalid-amount: "&cInvalid amount or option! Amount must be a whole number above 0."
   deprecated-command-syntax: "&eThis command syntax is deprecated and will be removed in a future update. Use: &f%command%"
   gave-item: "Gave %amount%&f %item%&f to %user%&f!"
   gave-item-all: "Gave %amount%&f %item%&f to all online players!"
