@@ -36,7 +36,7 @@ Every `/ecocrates envoy <sub>` command below is also available as `/ecoenvoy <su
 | `/ecocrates envoy start <envoy>` | Manually starts an envoy | `ecocrates.command.envoy.start` |
 | `/ecocrates envoy end` | Ends the active envoy | `ecocrates.command.envoy.end` |
 
-For `give`, `giveall`, `giveoffline` and `take`, the word after the player (or first, for `giveall`/`giveoffline`) is the **type**: `key`, `envoy` or `pouch`. The ID after it is read from that type's folder. Keys use the key ID from `/keys/`, not the crate ID. Physical items given to offline players are handed over the next time they join.
+For `give`, `giveall`, `giveoffline` and `take`, the word after the player (or first, for `giveall`/`giveoffline`) is the **type**: `key`, `envoy` or `pouch`. The ID after it is read from that type's folder. Keys use the key ID from `/keys/`, not the crate ID. With `giveoffline`, physical items for offline players are handed over the next time they join; `give` needs the player online for physical items. Amounts must be whole numbers above 0.
 
 :::warning Old syntax is deprecated
 The old forms still work but print a warning with the new command to use, and will be removed in a future update:
