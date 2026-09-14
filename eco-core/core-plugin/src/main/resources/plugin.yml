@@ -69,16 +69,16 @@ permissions:
     description: Allows reloading the config
     default: op
   ecocrates.command.give:
-    description: Allows giving players keys
+    description: Allows giving players keys, envoy items and pouches
     default: op
   ecocrates.command.giveall:
-    description: Allows giving all online players keys
+    description: Allows giving all online players keys and items
     default: op
   ecocrates.command.giveoffline:
-    description: Allows giving all online and offline players keys
+    description: Allows giving all online and offline players keys and items
     default: op
   ecocrates.command.take:
-    description: Allows taking players keys
+    description: Allows taking keys and items from players
     default: op
   ecocrates.command.open:
     description: Allows opening crates with /ecocrates open
@@ -93,7 +93,7 @@ permissions:
     description: Allows opening crates for other people with /ecocrates forceopen
     default: op
   ecocrates.command.preview:
-    description: Allows previewing crates with /ecocrates preview
+    description: Allows previewing crates and pouches
     default: true
   ecocrates.command.keys:
     description: Allows viewing owned keys with /ecocrates keys

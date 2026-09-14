@@ -1,7 +1,7 @@
 package com.willfp.ecocrates.util
 
 import com.willfp.eco.core.drops.DropQueue
-import com.willfp.ecocrates.crate.Crates
+import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.crate.key
 import com.willfp.ecocrates.envoy.EnvoyItems
@@ -29,14 +29,14 @@ object CrateKeyListener : Listener {
 
     @EventHandler
     fun handleToGet(event: PlayerJoinEvent) {
-        for (crate in Crates.values()) {
-            val toGet = crate.getKeysToGet(event.player)
+        for (key in Keys.values()) {
+            val toGet = key.getKeysToGet(event.player)
             if (toGet > 0) {
                 val items = mutableListOf<ItemStack>().apply {
-                    repeat(toGet) { add(crate.sharedKey.createItem(event.player)) }
+                    repeat(toGet) { add(key.createItem(event.player)) }
                 }
 
-                crate.setKeysToGet(event.player, 0)
+                key.setKeysToGet(event.player, 0)
 
                 DropQueue(event.player)
                     .addItems(items)
@@ -46,7 +46,7 @@ object CrateKeyListener : Listener {
                 event.player.sendMessage(
                     plugin.langYml.getMessage("offline-keys-received")
                         .replace("%amount%", toGet.toString())
-                        .replace("%crate%", crate.name)
+                        .replace("%crate%", key.displayName)
                 )
             }
         }
