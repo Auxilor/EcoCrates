@@ -27,10 +27,9 @@ object EffectGivePouch : Effect<NoCompileData>("give_pouch") {
             description = "The ID of the pouch to give.",
             type = ArgType.STRING
         )
-        require(
+        optional(
             "amount",
-            "You must specify the amount!",
-            description = "The number of pouches to give.",
+            description = "The number of pouches to give. Defaults to 1.",
             type = ArgType.EXPRESSION,
             example = "1"
         )
@@ -41,7 +40,7 @@ object EffectGivePouch : Effect<NoCompileData>("give_pouch") {
 
         val pouch = Pouches[config.getFormattedString("id", data)] ?: return false
 
-        val amount = config.getIntFromExpression("amount", data)
+        val amount = if (config.has("amount")) config.getIntFromExpression("amount", data) else 1
 
         if (amount <= 0) {
             return false
