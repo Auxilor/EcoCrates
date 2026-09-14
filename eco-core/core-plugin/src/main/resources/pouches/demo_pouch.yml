@@ -7,7 +7,7 @@ rarity: "&aCommon" # Display only. Available in effects and the pouch_rarity fil
 roll: csgo
 
 item:
-  item: bundle name:"&aMining Pouch" # An eco item lookup string
+  item: leather name:"&aMining Pouch" # An eco item lookup string
   lore:
     - "&fRight click to open"
     - "&fShift + right click to preview"
