@@ -476,7 +476,7 @@ class Crate(
             if (forced || !canRerollNow) {
                 handleFinish(finishedRoll)
             } else {
-                ReRollGUI.open(finishedRoll, rerollNumber, rerollProfile)
+                ReRollGUI.open(this@Crate, finishedRoll, rerollNumber, rerollProfile)
             }
         }
 

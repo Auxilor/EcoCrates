@@ -13,9 +13,8 @@ import com.willfp.ecocrates.plugin
 object ReRollGUI {
     private const val metaKey = "ecocrates-reroll-fix"
 
-    fun open(roll: Roll, rerollNumber: Int, profile: RerollProfile) {
+    fun open(crate: Crate, roll: Roll, rerollNumber: Int, profile: RerollProfile) {
         val player = roll.player
-        val crate = roll.source as Crate
 
         val price = profile.priceFor(rerollNumber + 1)
         val priceDisplay = price.getDisplay(player)

@@ -21,8 +21,11 @@ interface Roll {
 
     /**
      * The reward source being opened: a crate or a pouch.
+     *
+     * Implementations must override either this or [crate]; the defaults delegate to each other.
      */
     val source: RewardSource
+        get() = @Suppress("DEPRECATION") crate
 
     /**
      * The crate.
