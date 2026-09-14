@@ -118,6 +118,9 @@ placed:
           - "&a&lLeft Click to Preview"
           - "&b&lRight click to Open"
 
+# === Open conditions: requirements checked before a key or money is taken ===
+open-conditions: [ ]
+
 # === Effects: what runs on open and on finish ===
 open-effects:
   - id: broadcast
@@ -227,6 +230,21 @@ placed:
 :::info
 The text hologram only appears if a supported hologram plugin is installed. Particles and the random-reward item work without one.
 :::
+
+### Open conditions
+
+Conditions that must all be met before the crate opens. They're checked before any key or money is taken. On a placed crate, a failed condition pushes the player back the same way a missing key does. `/ecocrates forceopen` and rerolls skip them.
+
+```yaml
+open-conditions:
+  - id: has_permission
+    args:
+      permission: ecocrates.example.vip
+    not-met-effects:
+      - id: send_message
+        args:
+          message: "&cOnly VIPs can open this crate!"
+```
 
 ### Effects
 
