@@ -248,7 +248,7 @@ class Crate(
             return
         }
 
-        if (!meetsOpenConditions(player, nicerLocation)) {
+        if (player.hasPermission(permission) && !meetsOpenConditions(player, nicerLocation)) {
             pushAwayFromCrate(player, nicerLocation)
             return
         }
@@ -265,7 +265,7 @@ class Crate(
             return
         }
 
-        if (!meetsOpenConditions(player, nicerLocation)) {
+        if (player.hasPermission(permission) && !meetsOpenConditions(player, nicerLocation)) {
             pushAwayFromCrate(player, nicerLocation)
             return
         }

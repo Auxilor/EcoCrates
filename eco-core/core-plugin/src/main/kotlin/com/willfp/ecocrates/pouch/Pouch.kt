@@ -181,8 +181,16 @@ class Pouch(
             return
         }
 
+        // The held item may have changed since it was captured (e.g. another
+        // plugin modified the inventory during the event); re-read it so we
+        // don't pay for or consume a pouch the player no longer holds.
+        val current = player.inventory.itemInMainHand
+        if (!item.matches(current)) {
+            return
+        }
+
         price.pay(player)
-        held.amount -= 1
+        current.amount -= 1
         player.profile.write(opensKey, getOpens(player) + 1)
 
         openEffects?.trigger(
