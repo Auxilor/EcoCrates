@@ -28,6 +28,7 @@ import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.reward.SourceTypes
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.ViolationContext
+import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
 import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
 import com.willfp.libreforge.toDispatcher
@@ -64,6 +65,11 @@ class Crate(
         config.getSubsections("finish-effects"),
         NormalExecutorFactory.create(),
         ViolationContext(plugin, "Crate $id Finish Effects")
+    )
+
+    private val openConditions = Conditions.compile(
+        config.getSubsections("open-conditions"),
+        ViolationContext(plugin, "Crate $id Open Conditions")
     )
 
     override val name: String = config.getFormattedString("name")
@@ -224,12 +230,25 @@ class Crate(
         return hasPermission
     }
 
+    /** Evaluates open-conditions; failing conditions run their own not-met-effects. */
+    private fun meetsOpenConditions(player: Player, location: Location?): Boolean =
+        openConditions.areMetAndTrigger(
+            TriggerData(
+                player = player,
+                location = location ?: player.location
+            ).dispatch(player.toDispatcher())
+        )
 
     /** Opens the placed crate at [location] for [player], pushing them away if they can't pay/afford it. */
     fun openPlaced(player: Player, location: Location, method: OpenMethod) {
         val nicerLocation = location.block.location.add(0.5, 1.5, 0.5)
 
         if (!canOpenAndNotify(player, method)) {
+            pushAwayFromCrate(player, nicerLocation)
+            return
+        }
+
+        if (!meetsOpenConditions(player, nicerLocation)) {
             pushAwayFromCrate(player, nicerLocation)
             return
         }
@@ -242,6 +261,11 @@ class Crate(
         val nicerLocation = location.block.location.add(0.5, 1.5, 0.5)
 
         if (!canOpenAndNotify(player, method)) {
+            pushAwayFromCrate(player, nicerLocation)
+            return
+        }
+
+        if (!meetsOpenConditions(player, nicerLocation)) {
             pushAwayFromCrate(player, nicerLocation)
             return
         }
@@ -279,6 +303,10 @@ class Crate(
             return
         }
 
+        if (!meetsOpenConditions(player, location)) {
+            return
+        }
+
         if (open(player, method, location = location, placedCrate = placedCrate)) {
             method.useMethod(this, player)
         }
@@ -295,6 +323,10 @@ class Crate(
         }
 
         if (!hasPermissionAndNotify(player)) {
+            return
+        }
+
+        if (!meetsOpenConditions(player, location)) {
             return
         }
 

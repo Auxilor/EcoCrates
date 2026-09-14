@@ -99,6 +99,8 @@ placed:
           - "&a&lLeft Click to Preview"
           - '&b&lRight click to Open'
 
+open-conditions: [ ]
+
 open-effects:
   - id: send_message
     args:
