@@ -5,11 +5,11 @@ import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack
 
 class RollSlotMachine private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -39,7 +39,7 @@ class RollSlotMachine private constructor(
     private val reelColumns = listOf(3, 4, 5, 6, 7)
 
     private val reelStrips = reelColumns.map {
-        crate.getRandomRewards(player, symbolCount)
+        source.getRandomRewards(player, symbolCount)
     }
 
     private val offsets = IntArray(reelColumns.size)
@@ -63,7 +63,7 @@ class RollSlotMachine private constructor(
             )
         )
 
-        title = crate.name
+        title = source.name
 
         for ((index, column) in reelColumns.withIndex()) {
             for (row in reelRows) {
@@ -73,11 +73,11 @@ class RollSlotMachine private constructor(
                     slot(ItemStack(Material.AIR)) {
                         setUpdater { _, _, _ ->
                             if (reelStopped[index] && row == middleRow) {
-                                reward.getDisplay(player, crate)
+                                reward.getDisplay(player, source)
                             } else {
                                 val strip = reelStrips[index]
                                 val rowOffset = row - middleRow
-                                strip[(offsets[index] + rowOffset).mod(strip.size)].getDisplay(player, crate)
+                                strip[(offsets[index] + rowOffset).mod(strip.size)].getDisplay(player, source)
                             }
                         }
                     }
@@ -145,10 +145,12 @@ class RollSlotMachine private constructor(
     }
 
     object Factory : RollFactory<RollSlotMachine>("slot_machine") {
+        override val isGuiRoll = true
+
         override fun create(options: RollOptions): RollSlotMachine =
             RollSlotMachine(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

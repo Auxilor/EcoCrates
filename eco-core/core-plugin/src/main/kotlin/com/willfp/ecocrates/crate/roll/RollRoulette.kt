@@ -1,17 +1,17 @@
 package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.util.NumberUtils
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
+import kotlin.math.PI
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
-import kotlin.math.PI
 
 /**
  * The inverse of encircle: the items stand still in a ring on the ground and a
@@ -19,7 +19,7 @@ import kotlin.math.PI
  */
 class RollRoulette private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -49,7 +49,7 @@ class RollRoulette private constructor(
     // The ring is laid out so that the final step of the cursor lands on the winner.
     private val winnerIndex = steps.mod(itemCount)
 
-    private val fillerItems = crate.getRandomRewards(player, itemCount - 1)
+    private val fillerItems = source.getRandomRewards(player, itemCount - 1)
 
     private val center = location.toVector().add(Vector(0.0, height, 0.0))
 
@@ -79,7 +79,7 @@ class RollRoulette private constructor(
                 )
             )
 
-            val entity = world.dropItem(position.toLocation(world), displayReward.getDisplay(player, crate))
+            val entity = world.dropItem(position.toLocation(world), displayReward.getDisplay(player, source))
 
             entity.pickupDelay = Int.MAX_VALUE
             entity.setGravity(false)
@@ -153,7 +153,7 @@ class RollRoulette private constructor(
         override fun create(options: RollOptions): RollRoulette =
             RollRoulette(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

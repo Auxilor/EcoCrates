@@ -31,6 +31,10 @@ A roll is the animation that plays when a crate opens, before the reward is reve
 | `instant`        | No animation, the reward is given straight away                                 | [Video](https://youtu.be/uncKTvuhGcQ) |
 | `semi_instant`   | Throws the item out of the crate for a moment                                   | [Video](https://youtu.be/Eeo3srv38SM) |
 
+:::info GUI rolls
+`csgo`, `slot_machine`, `elimination`, `pick`, `choose`, `match` and `instant` play without needing a place in the world. They're the only rolls [pouches](how-to-make-a-pouch) can use.
+:::
+
 ## Hiding the placed crate
 
 Rolls that play out in the world can sit on top of a placed crate's hologram and preview item. Each of those rolls has a `hide-placed-crate` option in `config.yml`:

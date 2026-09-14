@@ -4,19 +4,9 @@ import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.gui.addPage
-import com.willfp.eco.core.gui.addPageChanger
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.page.PageChanger
-import com.willfp.eco.core.gui.slot.ConfigSlot
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.gui.slot.FillerMask
-import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.particle.Particles
-import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.registry.KRegistrable
-import com.willfp.eco.util.StringUtils
 import com.willfp.ecocrates.crate.placed.HologramFrame
 import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.crate.placed.PlacedCrates
@@ -26,16 +16,19 @@ import com.willfp.ecocrates.crate.reroll.ReRollGUI
 import com.willfp.ecocrates.crate.reroll.RerollProfile
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollOptions
+import com.willfp.ecocrates.crate.roll.RollSession
 import com.willfp.ecocrates.crate.roll.Rolls
 import com.willfp.ecocrates.event.CrateOpenEvent
 import com.willfp.ecocrates.event.CrateRewardEvent
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.PendingRewards
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.reward.Rewards
-import com.willfp.ecocrates.util.weightedRandom
+import com.willfp.ecocrates.reward.SourceTypes
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.ViolationContext
+import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
 import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
 import com.willfp.libreforge.toDispatcher
@@ -62,7 +55,7 @@ import java.util.UUID
 class Crate(
     override val id: String,
     private val config: Config
-) : KRegistrable {
+) : KRegistrable, RewardSource {
     private val openEffects = Effects.compileChain(
         config.getSubsections("open-effects"),
         NormalExecutorFactory.create(),
@@ -74,7 +67,14 @@ class Crate(
         ViolationContext(plugin, "Crate $id Finish Effects")
     )
 
-    val name = config.getFormattedString("name")
+    private val openConditions = Conditions.compile(
+        config.getSubsections("open-conditions"),
+        ViolationContext(plugin, "Crate $id Open Conditions")
+    )
+
+    override val name: String = config.getFormattedString("name")
+
+    override val sourceType = SourceTypes.CRATE
 
     val hologramFrames = config.getSubsections("placed.hologram.frames")
         .map { HologramFrame(it.getInt("tick"), it.getFormattedStrings("lines")) }
@@ -106,7 +106,10 @@ class Crate(
     val sharedKey: SharedKey = Keys[config.getString("key")]
         ?: throw IllegalStateException("Crate '$id' references unknown key '${config.getString("key")}' - make sure a matching file exists in the keys/ folder")
 
-    val rewards = config.getStrings("rewards").mapNotNull { Rewards.getByID(it) }
+    override val rewards: List<Reward> = config.getStrings("rewards").mapNotNull { Rewards.getByID(it) }
+
+    override val rollHeight: Double
+        get() = randomRewardHeight
 
     val permission: Permission =
         Bukkit.getPluginManager().getPermission("ecocrates.open.$id") ?: Permission(
@@ -155,60 +158,7 @@ class Crate(
     private val hidesPlacedCrate = plugin.configYml
         .getBool("rolls.${rollFactory.id}.hide-placed-crate")
 
-    private val previewGUI = menu(config.getInt("preview.rows")) {
-        val sharedCustomSlots = config.getSubsections("preview.custom-slots")
-        val pages = config.getSubsections("preview.pages")
-
-        title = StringUtils.format(config.getString("preview.title"))
-
-        maxPages(pages.size)
-
-        val pageChangeSound = PlayableSound.create(config.getSubsection("preview.page-change-sound"))
-
-        addPageChanger(config, "preview.forwards-arrow", PageChanger.Direction.FORWARDS, pageChangeSound)
-        addPageChanger(config, "preview.backwards-arrow", PageChanger.Direction.BACKWARDS, pageChangeSound)
-
-        for (page in pages) {
-            addPage(page.getInt("page")) {
-                setMask(
-                    FillerMask(
-                        MaskItems.fromItemNames(page.getStrings("mask.items")),
-                        *page.getStrings("mask.pattern").toTypedArray()
-                    )
-                )
-
-                for (previewReward in page.getSubsections("rewards")) {
-                    val reward = Rewards[previewReward.getString("id")] ?: continue
-                    val row = previewReward.getInt("row")
-                    val column = previewReward.getInt("column")
-
-                    setSlot(
-                        row,
-                        column,
-                        slot(reward.getDisplay()) {
-                            setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
-                        }
-                    )
-                }
-
-                for (config in sharedCustomSlots) {
-                    setSlot(
-                        config.getInt("row"),
-                        config.getInt("column"),
-                        ConfigSlot(config)
-                    )
-                }
-
-                for (config in page.getSubsections("custom-slots")) {
-                    setSlot(
-                        config.getInt("row"),
-                        config.getInt("column"),
-                        ConfigSlot(config)
-                    )
-                }
-            }
-        }
-    }
+    private val previewGUI = PreviewGUI.build(config, this)
 
 
 
@@ -253,7 +203,7 @@ class Crate(
     }
 
     private fun hasRanOutOfRewardsAndNotify(player: Player): Boolean {
-        val ranOut = rewards.all { it.getWeight(player) <= 0 }
+        val ranOut = hasRanOutOfRewards(player)
 
         if (ranOut) {
             player.sendMessage(plugin.langYml.getMessage("all-rewards-used"))
@@ -261,10 +211,6 @@ class Crate(
 
         return ranOut
     }
-
-    private fun getRandomReward(player: Player): Reward =
-        rewards.weightedRandom { it.getEffectiveWeight(player) }
-            ?: throw IllegalStateException("Crate '$id' has no rewards")
 
     private fun canOpenAndNotify(player: Player, method: OpenMethod): Boolean {
         if (!canPayToOpen && method == OpenMethod.MONEY) {
@@ -284,22 +230,25 @@ class Crate(
         return hasPermission
     }
 
-
-    /**
-     * Rolls [amount] independent random rewards for [player] (each drawn using
-     * that player's effective weights), without opening the crate.
-     *
-     * @return The rolled rewards, in no particular order.
-     */
-    fun getRandomRewards(player: Player, amount: Int): List<Reward> {
-        return List(amount.coerceAtLeast(0)) { getRandomReward(player) }
-    }
+    /** Evaluates open-conditions; failing conditions run their own not-met-effects. */
+    private fun meetsOpenConditions(player: Player, location: Location?): Boolean =
+        openConditions.areMetAndTrigger(
+            TriggerData(
+                player = player,
+                location = location ?: player.location
+            ).dispatch(player.toDispatcher())
+        )
 
     /** Opens the placed crate at [location] for [player], pushing them away if they can't pay/afford it. */
     fun openPlaced(player: Player, location: Location, method: OpenMethod) {
         val nicerLocation = location.block.location.add(0.5, 1.5, 0.5)
 
         if (!canOpenAndNotify(player, method)) {
+            pushAwayFromCrate(player, nicerLocation)
+            return
+        }
+
+        if (player.hasPermission(permission) && !meetsOpenConditions(player, nicerLocation)) {
             pushAwayFromCrate(player, nicerLocation)
             return
         }
@@ -312,6 +261,11 @@ class Crate(
         val nicerLocation = location.block.location.add(0.5, 1.5, 0.5)
 
         if (!canOpenAndNotify(player, method)) {
+            pushAwayFromCrate(player, nicerLocation)
+            return
+        }
+
+        if (player.hasPermission(permission) && !meetsOpenConditions(player, nicerLocation)) {
             pushAwayFromCrate(player, nicerLocation)
             return
         }
@@ -349,6 +303,10 @@ class Crate(
             return
         }
 
+        if (!meetsOpenConditions(player, location)) {
+            return
+        }
+
         if (open(player, method, location = location, placedCrate = placedCrate)) {
             method.useMethod(this, player)
         }
@@ -365,6 +323,10 @@ class Crate(
         }
 
         if (!hasPermissionAndNotify(player)) {
+            return
+        }
+
+        if (!meetsOpenConditions(player, location)) {
             return
         }
 
@@ -489,32 +451,21 @@ class Crate(
         }
 
         val roll = makeRoll(player, loc, event.reward, method, isReroll = isReroll, placedCrate = placedCrate)
-        var tick = 0
-        var hasFinalized = false
 
-        fun finalizeRoll(forceFinish: Boolean) {
-            if (hasFinalized) {
-                return
-            }
+        player.profile.write(opensKey, getOpens(player) + 1)
 
-            hasFinalized = true
+        if (hidesPlacedCrate) {
+            placedCrate?.hideFrom(player)
+        }
 
-            try {
-                roll.onFinish()
-            } catch (e: Exception) {
-                plugin.logger.warning("Error while finishing roll for ${player.name}")
-                e.printStackTrace()
-            }
-
-            player.isOpeningCrate = false
-
+        RollSession.start(roll) { finishedRoll, forced ->
             if (hidesPlacedCrate) {
                 placedCrate?.showTo(player)
             }
 
             if (!player.isOnline) {
-                handleFinish(roll)
-                return
+                handleFinish(finishedRoll)
+                return@start
             }
 
             val canRerollNow = rerollProfile.enabled
@@ -522,46 +473,12 @@ class Crate(
                 && player.hasPermission(rerollPermission)
                 && rerollProfile.priceFor(rerollNumber + 1).canAfford(player)
 
-            if (forceFinish || !canRerollNow) {
-                handleFinish(roll)
+            if (forced || !canRerollNow) {
+                handleFinish(finishedRoll)
             } else {
-                ReRollGUI.open(roll, rerollNumber, rerollProfile)
+                ReRollGUI.open(this@Crate, finishedRoll, rerollNumber, rerollProfile)
             }
         }
-
-        plugin.scheduler.on(player).runTimer({ task ->
-            try {
-                roll.tick(tick)
-            } catch (e: Exception) {
-                /*
-                Bukkit doesn't cancel repeating tasks that throw, so without this the
-                tick counter would never advance and the roll would repeat the same
-                tick (and its effects) forever.
-                 */
-                plugin.logger.warning("Error while ticking roll for ${player.name}, cancelling")
-                e.printStackTrace()
-
-                task.cancel()
-                finalizeRoll(true)
-                return@runTimer
-            }
-
-            tick++
-
-            if (!roll.shouldContinueTicking(tick) || !player.isOpeningCrate) {
-                task.cancel()
-                finalizeRoll(false)
-            }
-        }, 1, 1)
-
-        player.isOpeningCrate = true
-        player.profile.write(opensKey, getOpens(player) + 1)
-
-        if (hidesPlacedCrate) {
-            placedCrate?.hideFrom(player)
-        }
-
-        roll.roll()
 
         return true
     }
@@ -576,7 +493,7 @@ class Crate(
         handleFinish(roll.player, roll.reward)
     }
 
-    fun handleFinish(player: Player, reward: Reward) {
+    override fun handleFinish(player: Player, reward: Reward) {
         if (!player.isOnline) {
             PendingRewards.queue(player, this, reward)
             return

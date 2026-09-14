@@ -14,6 +14,7 @@ Crates are configured entirely in files, so there's no in-game editor to fight w
 - **Opening animations:** several built-in rolls (CS:GO style, encircle, flash, and more), plus rerolls so players don't feel cheated by a bad pull.
 - **Flexible access:** open with physical keys, virtual keys, or by paying a currency, and make vote or milestone crates.
 - **Shared keys:** multiple crates can share one key when configured to, so a single key type can open several crates.
+- **Pouches:** single-use reward items that open straight from the player's hand, with their own rolls, prices, and conditions.
 - **eco integration:** uses the shared effects, conditions, and item systems, so crates work with custom items and enchants out of the box.
 
 <hr/>
@@ -23,5 +24,6 @@ Crates are configured entirely in files, so there's no in-game editor to fight w
 - **Make a crate:** start with [How to Make a Crate](how-to-make-a-crate).
 - **Make a key:** define crate access in [How to Make a Key](how-to-make-a-key).
 - **Make a reward:** define what players win in [How to Make a Reward](how-to-make-a-reward).
+- **Make a pouch:** create single-use reward items in [How to Make a Pouch](how-to-make-a-pouch).
 - **Pick an animation:** browse the [Animations / Rolls](roll-animations).
 - **Server config:** tune global settings in [Plugin Config](plugin-config).

@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.util.NumberUtils
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Item
@@ -13,7 +13,7 @@ import org.bukkit.util.Vector
 
 class RollSkyDrop private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -46,7 +46,7 @@ class RollSkyDrop private constructor(
     override fun roll() {
         val world = location.world!!
 
-        rewardItem = world.dropItem(location, reward.getDisplay(player, crate))
+        rewardItem = world.dropItem(location, reward.getDisplay(player, source))
         rewardItem.pickupDelay = Int.MAX_VALUE
         rewardItem.setGravity(false)
         rewardItem.isCustomNameVisible = true
@@ -54,8 +54,8 @@ class RollSkyDrop private constructor(
         rewardItem.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
 
         // Decoys keep their gravity: they burst out of the crate and fall back down.
-        for (filler in crate.getRandomRewards(player, decoyCount)) {
-            val decoy = world.dropItem(location, filler.getDisplay(player, crate))
+        for (filler in source.getRandomRewards(player, decoyCount)) {
+            val decoy = world.dropItem(location, filler.getDisplay(player, source))
 
             decoy.pickupDelay = Int.MAX_VALUE
             decoy.velocity = Vector(
@@ -155,7 +155,7 @@ class RollSkyDrop private constructor(
         override fun create(options: RollOptions): RollSkyDrop =
             RollSkyDrop(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

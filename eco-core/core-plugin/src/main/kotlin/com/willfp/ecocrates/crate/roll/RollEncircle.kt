@@ -1,21 +1,21 @@
 package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.util.NumberUtils
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.util.lerp
+import kotlin.math.PI
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
-import kotlin.math.PI
 
 class RollEncircle private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -28,7 +28,7 @@ class RollEncircle private constructor(
     private val revealTime = plugin.configYml.getInt("rolls.encircle.reveal-time")
     private val spinsPerSecond = plugin.configYml.getDouble("rolls.encircle.spins-per-second")
     private val itemCount = plugin.configYml.getInt("rolls.encircle.items").coerceAtLeast(1)
-    private val fillerItems = crate.getRandomRewards(
+    private val fillerItems = source.getRandomRewards(
         player,
         itemCount - 1 // One slot is reserved for the winning reward.
     )
@@ -57,7 +57,7 @@ class RollEncircle private constructor(
         player.closeInventory()
 
         for (item in itemsToDisplay) {
-            val entity = world.dropItem(location, item.getDisplay(player, crate))
+            val entity = world.dropItem(location, item.getDisplay(player, source))
 
             entity.pickupDelay = Int.MAX_VALUE
             entity.setGravity(false)
@@ -192,7 +192,7 @@ class RollEncircle private constructor(
         override fun create(options: RollOptions): RollEncircle =
             RollEncircle(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,
