@@ -4,19 +4,9 @@ import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.gui.addPage
-import com.willfp.eco.core.gui.addPageChanger
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.page.PageChanger
-import com.willfp.eco.core.gui.slot.ConfigSlot
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.gui.slot.FillerMask
-import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.particle.Particles
-import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.registry.KRegistrable
-import com.willfp.eco.util.StringUtils
 import com.willfp.ecocrates.crate.placed.HologramFrame
 import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.crate.placed.PlacedCrates
@@ -162,60 +152,7 @@ class Crate(
     private val hidesPlacedCrate = plugin.configYml
         .getBool("rolls.${rollFactory.id}.hide-placed-crate")
 
-    private val previewGUI = menu(config.getInt("preview.rows")) {
-        val sharedCustomSlots = config.getSubsections("preview.custom-slots")
-        val pages = config.getSubsections("preview.pages")
-
-        title = StringUtils.format(config.getString("preview.title"))
-
-        maxPages(pages.size)
-
-        val pageChangeSound = PlayableSound.create(config.getSubsection("preview.page-change-sound"))
-
-        addPageChanger(config, "preview.forwards-arrow", PageChanger.Direction.FORWARDS, pageChangeSound)
-        addPageChanger(config, "preview.backwards-arrow", PageChanger.Direction.BACKWARDS, pageChangeSound)
-
-        for (page in pages) {
-            addPage(page.getInt("page")) {
-                setMask(
-                    FillerMask(
-                        MaskItems.fromItemNames(page.getStrings("mask.items")),
-                        *page.getStrings("mask.pattern").toTypedArray()
-                    )
-                )
-
-                for (previewReward in page.getSubsections("rewards")) {
-                    val reward = Rewards[previewReward.getString("id")] ?: continue
-                    val row = previewReward.getInt("row")
-                    val column = previewReward.getInt("column")
-
-                    setSlot(
-                        row,
-                        column,
-                        slot(reward.getDisplay()) {
-                            setUpdater { player, _, _ -> reward.getDisplay(player, this@Crate) }
-                        }
-                    )
-                }
-
-                for (config in sharedCustomSlots) {
-                    setSlot(
-                        config.getInt("row"),
-                        config.getInt("column"),
-                        ConfigSlot(config)
-                    )
-                }
-
-                for (config in page.getSubsections("custom-slots")) {
-                    setSlot(
-                        config.getInt("row"),
-                        config.getInt("column"),
-                        ConfigSlot(config)
-                    )
-                }
-            }
-        }
-    }
+    private val previewGUI = PreviewGUI.build(config, this)
 
 
 
