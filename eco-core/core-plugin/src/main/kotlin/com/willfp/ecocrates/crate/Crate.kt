@@ -492,12 +492,13 @@ class Crate(
         var tick = 0
         var hasFinalized = false
 
-        fun finalizeRoll(forceFinish: Boolean) {
+        fun finalizeRoll(forceFinish: Boolean, queueForLater: Boolean = false) {
             if (hasFinalized) {
                 return
             }
 
             hasFinalized = true
+            ActiveRolls.unregister(player)
 
             try {
                 roll.onFinish()
@@ -510,6 +511,11 @@ class Crate(
 
             if (hidesPlacedCrate) {
                 placedCrate?.showTo(player)
+            }
+
+            if (queueForLater) {
+                PendingRewards.queue(player, this, roll.reward)
+                return
             }
 
             if (!player.isOnline) {
@@ -529,7 +535,7 @@ class Crate(
             }
         }
 
-        plugin.scheduler.on(player).runTimer({ task ->
+        val rollTask = plugin.scheduler.on(player).runTimer({ task ->
             try {
                 roll.tick(tick)
             } catch (e: Exception) {
@@ -553,6 +559,11 @@ class Crate(
                 finalizeRoll(false)
             }
         }, 1, 1)
+
+        ActiveRolls.register(player) { queueForLater ->
+            rollTask.cancel()
+            finalizeRoll(true, queueForLater)
+        }
 
         player.isOpeningCrate = true
         player.profile.write(opensKey, getOpens(player) + 1)

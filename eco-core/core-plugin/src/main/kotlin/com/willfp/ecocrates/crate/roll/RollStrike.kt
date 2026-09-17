@@ -5,6 +5,7 @@ import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.envoy.EnvoyFireworks
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.util.RollItems
 import com.willfp.ecocrates.util.lerp
 import org.bukkit.Color
 import org.bukkit.Location
@@ -52,7 +53,7 @@ class RollStrike private constructor(
         item.setGravity(false)
         item.isCustomNameVisible = true
         item.customName = display.first().displayName
-        item.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
+        RollItems.mark(item)
 
         player.closeInventory()
     }

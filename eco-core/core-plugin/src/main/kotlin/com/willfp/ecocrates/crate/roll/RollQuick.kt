@@ -4,6 +4,7 @@ import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Location
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
@@ -36,12 +37,17 @@ class RollQuick private constructor(
         item.setGravity(false)
         item.isCustomNameVisible = true
         item.customName = reward.displayName
-        item.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
+        RollItems.mark(item)
 
         player.closeInventory()
     }
 
     override fun tick(tick: Int) {
+        if (!item.isValid) {
+            done = true
+            return
+        }
+
         if (item.location.toVector().distance(end) < 0.1) {
             item.teleport(end.toLocation(item.world))
             item.velocity = Vector(0, 0, 0)

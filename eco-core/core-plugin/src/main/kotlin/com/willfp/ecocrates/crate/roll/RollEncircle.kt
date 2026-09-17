@@ -5,6 +5,7 @@ import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.util.RollItems
 import com.willfp.ecocrates.util.lerp
 import org.bukkit.Location
 import org.bukkit.Sound
@@ -63,7 +64,7 @@ class RollEncircle private constructor(
             entity.setGravity(false)
             entity.isCustomNameVisible = true
             entity.customName = item.displayName
-            entity.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
+            RollItems.mark(entity)
             display.add(entity)
 
             if (item === reward) {

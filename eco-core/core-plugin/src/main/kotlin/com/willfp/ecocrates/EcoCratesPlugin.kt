@@ -11,6 +11,7 @@ import com.willfp.ecocrates.converters.impl.CrateReloadedConverter
 import com.willfp.ecocrates.converters.impl.CrazyCratesConverter
 import com.willfp.ecocrates.converters.impl.ExcellentCratesConverter
 import com.willfp.ecocrates.converters.impl.SpecializedCratesConverter
+import com.willfp.ecocrates.crate.ActiveRolls
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.KeyGUI
@@ -43,6 +44,8 @@ import com.willfp.ecocrates.reward.PendingRewards
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.CrateKeyListener
 import com.willfp.ecocrates.util.PlacedCrateListener
+import com.willfp.ecocrates.util.RollItemListener
+import com.willfp.ecocrates.util.RollItems
 import com.willfp.libreforge.conditions.Conditions
 import com.willfp.libreforge.effects.Effects
 import com.willfp.libreforge.filters.Filters
@@ -80,16 +83,23 @@ class EcoCratesPlugin : LibreforgePlugin() {
         Triggers.register(TriggerOpenEnvoy)
 
         EnvoyPlaceholders.register()
+
+        RollItems.sweepLoadedChunks()
+
         PendingRewards.register()
     }
 
     override fun handleDisable() {
+        ActiveRolls.finalizeAll(queueForLater = true)
+
         PlacedCrates.removeAll()
         EnvoyCompasses.deactivateAll()
         EnvoySessions.shutdown()
     }
 
     override fun handleReload() {
+        ActiveRolls.finalizeAll(queueForLater = false)
+
         KeyGUI.update()
         PlacedCrates.reload()
         CrateDisplay.start()
@@ -123,7 +133,8 @@ class EcoCratesPlugin : LibreforgePlugin() {
             CrateKeyListener,
             EnvoyListener,
             FlareListener,
-            CompassListener
+            CompassListener,
+            RollItemListener
         )
     }
 
