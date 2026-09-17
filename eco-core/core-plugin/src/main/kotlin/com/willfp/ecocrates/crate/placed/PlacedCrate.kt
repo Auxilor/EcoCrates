@@ -4,6 +4,7 @@ import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.util.CrateDisplayItems
 import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -127,6 +128,7 @@ class PlacedCrate(
                     .firstOrNull { !it.hasGravity() && !RollItems.isRollItem(it) }
 
                 if (scan != null) {
+                    CrateDisplayItems.mark(scan)
                     item = scan
                 }
             }
@@ -141,6 +143,7 @@ class PlacedCrate(
                 entity.setGravity(false)
                 entity.isCustomNameVisible = true
                 entity.customName = crate.randomRewardName.replace("%reward%", reward.displayName)
+                CrateDisplayItems.mark(entity)
                 item = entity
             }
 
