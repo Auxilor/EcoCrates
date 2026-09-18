@@ -5,11 +5,11 @@ import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -32,7 +32,7 @@ import org.bukkit.inventory.ItemStack
  */
 class RollMatch private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -46,7 +46,7 @@ class RollMatch private constructor(
 
     private val maxCards = maxCardRows * maxCardsPerRow
 
-    private val fillerRewards = crate.rewards
+    private val fillerRewards = source.rewards
         .filter { it !== reward }
         .distinct()
         .shuffled()
@@ -133,7 +133,7 @@ class RollMatch private constructor(
         )
 
         title = plugin.configYml.getFormattedString("rolls.match.title")
-            .replace("%crate%", crate.name)
+            .replace("%crate%", source.name)
 
         for ((index, position) in slotsInUse.withIndex()) {
             val (row, column) = position
@@ -144,7 +144,7 @@ class RollMatch private constructor(
                 slot(ItemStack(Material.AIR)) {
                     setUpdater { _, _, _ ->
                         if (isScratched[index]) {
-                            card[index].getDisplay(player, crate)
+                            card[index].getDisplay(player, source)
                         } else {
                             cardItem.item
                         }
@@ -259,10 +259,12 @@ class RollMatch private constructor(
     }
 
     object Factory : RollFactory<RollMatch>("match") {
+        override val isGuiRoll = true
+
         override fun create(options: RollOptions): RollMatch =
             RollMatch(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

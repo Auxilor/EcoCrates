@@ -4,6 +4,7 @@ import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -19,9 +20,20 @@ interface Roll {
     val player: Player
 
     /**
+     * The reward source being opened: a crate or a pouch.
+     *
+     * Implementations must override either this or [crate]; the defaults delegate to each other.
+     */
+    val source: RewardSource
+        get() = @Suppress("DEPRECATION") crate
+
+    /**
      * The crate.
      */
+    @Deprecated("Rolls can come from pouches too", ReplaceWith("source"))
     val crate: Crate
+        get() = source as? Crate
+            ?: throw IllegalStateException("Roll source '${source.id}' is not a crate")
 
     /**
      * The location.

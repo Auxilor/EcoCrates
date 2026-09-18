@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.envoy.EnvoyFireworks
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.util.lerp
 import org.bukkit.Color
 import org.bukkit.Location
@@ -20,7 +20,7 @@ import org.bukkit.util.Vector
  */
 class RollStrike private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -35,7 +35,7 @@ class RollStrike private constructor(
         plugin.configYml.getString("rolls.strike.flash-color")
     ) ?: Color.WHITE
 
-    private val display = crate.getRandomRewards(player, (riseTime / interval) + 1)
+    private val display = source.getRandomRewards(player, (riseTime / interval) + 1)
 
     private val strikeTick = riseTime + hangTime
 
@@ -47,7 +47,7 @@ class RollStrike private constructor(
     override fun roll() {
         val world = location.world!!
 
-        item = world.dropItem(location, display.first().getDisplay(player, crate))
+        item = world.dropItem(location, display.first().getDisplay(player, source))
         item.pickupDelay = Int.MAX_VALUE
         item.setGravity(false)
         item.isCustomNameVisible = true
@@ -73,7 +73,7 @@ class RollStrike private constructor(
 
             if (tick % interval == 0) {
                 val next = display[tick.floorDiv(interval).coerceAtMost(display.lastIndex)]
-                item.itemStack = next.getDisplay(player, crate)
+                item.itemStack = next.getDisplay(player, source)
                 item.customName = next.displayName
 
                 player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 0.8f)
@@ -98,7 +98,7 @@ class RollStrike private constructor(
 
         player.playSound(player.location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.7f, 1.2f)
 
-        item.itemStack = reward.getDisplay(player, crate)
+        item.itemStack = reward.getDisplay(player, source)
         item.customName = reward.displayName
     }
 
@@ -114,7 +114,7 @@ class RollStrike private constructor(
         override fun create(options: RollOptions): RollStrike =
             RollStrike(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

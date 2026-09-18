@@ -5,11 +5,11 @@ import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack
 
 class RollElimination private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -34,7 +34,7 @@ class RollElimination private constructor(
     private val eliminatedItem = Items.lookup(plugin.configYml.getString("rolls.elimination.eliminated"))
 
     // The winner is hidden among fillers, and everything except it is knocked out one by one.
-    private val candidates = crate.getRandomRewards(player, candidateCount - 1)
+    private val candidates = source.getRandomRewards(player, candidateCount - 1)
         .toMutableList().apply {
             add(reward)
             shuffle()
@@ -61,7 +61,7 @@ class RollElimination private constructor(
             )
         )
 
-        title = crate.name
+        title = source.name
 
         for ((index, column) in slotColumns.withIndex()) {
             setSlot(
@@ -72,7 +72,7 @@ class RollElimination private constructor(
                         if (isEliminated[index]) {
                             eliminatedItem.item
                         } else {
-                            candidates[index].getDisplay(player, crate)
+                            candidates[index].getDisplay(player, source)
                         }
                     }
                 }
@@ -129,10 +129,12 @@ class RollElimination private constructor(
     }
 
     object Factory : RollFactory<RollElimination>("elimination") {
+        override val isGuiRoll = true
+
         override fun create(options: RollOptions): RollElimination =
             RollElimination(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,
