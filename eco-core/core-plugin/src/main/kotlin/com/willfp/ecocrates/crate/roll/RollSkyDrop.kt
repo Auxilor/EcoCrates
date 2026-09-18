@@ -5,6 +5,7 @@ import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.RewardSource
+import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Item
@@ -51,7 +52,7 @@ class RollSkyDrop private constructor(
         rewardItem.setGravity(false)
         rewardItem.isCustomNameVisible = true
         rewardItem.customName = reward.displayName
-        rewardItem.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
+        RollItems.mark(rewardItem)
 
         // Decoys keep their gravity: they burst out of the crate and fall back down.
         for (filler in source.getRandomRewards(player, decoyCount)) {
@@ -63,7 +64,7 @@ class RollSkyDrop private constructor(
                 NumberUtils.randFloat(0.25, 0.45),
                 NumberUtils.randFloat(-decoySpread, decoySpread)
             )
-            decoy.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
+            RollItems.mark(decoy)
             decoys.add(decoy)
         }
 

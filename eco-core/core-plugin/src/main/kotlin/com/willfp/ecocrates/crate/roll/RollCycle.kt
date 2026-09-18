@@ -5,6 +5,7 @@ import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.RewardSource
+import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Item
@@ -42,7 +43,7 @@ class RollCycle private constructor(
         item.pickupDelay = Int.MAX_VALUE
         item.setGravity(false)
         item.isCustomNameVisible = true
-        item.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
+        RollItems.mark(item)
     }
 
     @Suppress("DEPRECATION")

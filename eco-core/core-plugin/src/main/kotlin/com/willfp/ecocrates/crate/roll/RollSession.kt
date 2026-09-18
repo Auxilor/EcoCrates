@@ -1,7 +1,9 @@
 package com.willfp.ecocrates.crate.roll
 
+import com.willfp.ecocrates.crate.ActiveRolls
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.reward.PendingRewards
 
 /**
  * Drives a roll from start to finish: marks the player as opening, ticks the
@@ -19,12 +21,13 @@ object RollSession {
         var tick = 0
         var hasFinalized = false
 
-        fun finalizeRoll(forced: Boolean) {
+        fun finalizeRoll(forced: Boolean, queueForLater: Boolean = false) {
             if (hasFinalized) {
                 return
             }
 
             hasFinalized = true
+            ActiveRolls.unregister(player)
 
             try {
                 roll.onFinish()
@@ -35,10 +38,15 @@ object RollSession {
 
             player.isOpeningCrate = false
 
+            if (queueForLater) {
+                PendingRewards.queue(player, roll.source, roll.reward)
+                return
+            }
+
             onFinalize(roll, forced)
         }
 
-        plugin.scheduler.on(player).runTimer({ task ->
+        val rollTask = plugin.scheduler.on(player).runTimer({ task ->
             try {
                 roll.tick(tick)
             } catch (e: Exception) {
@@ -62,6 +70,11 @@ object RollSession {
                 finalizeRoll(false)
             }
         }, 1, 1)
+
+        ActiveRolls.register(player) { queueForLater ->
+            rollTask.cancel()
+            finalizeRoll(true, queueForLater)
+        }
 
         player.isOpeningCrate = true
 

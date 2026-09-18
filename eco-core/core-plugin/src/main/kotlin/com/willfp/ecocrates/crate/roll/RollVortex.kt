@@ -5,6 +5,7 @@ import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.RewardSource
+import com.willfp.ecocrates.util.RollItems
 import com.willfp.ecocrates.util.lerp
 import kotlin.math.PI
 import org.bukkit.Location
@@ -69,7 +70,7 @@ class RollVortex private constructor(
             entity.setGravity(false)
             entity.isCustomNameVisible = true
             entity.customName = item.displayName
-            entity.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
+            RollItems.mark(entity)
             orbiting.add(entity)
 
             if (item === reward) {

@@ -4,6 +4,7 @@ import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.RewardSource
+import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Item
@@ -33,7 +34,7 @@ class RollFlash private constructor(
         item.pickupDelay = Int.MAX_VALUE
         item.setGravity(false)
         item.isCustomNameVisible = true
-        item.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
+        RollItems.mark(item)
 
         player.closeInventory()
 
@@ -51,7 +52,7 @@ class RollFlash private constructor(
 
     @Suppress("DEPRECATION")
     override fun tick(tick: Int) {
-        if (tick % 5 == 0) {
+        if (tick % 5 == 0 && item.isValid) {
             if (tick < duration) {
                 item.velocity = player.eyeLocation.toVector()
                     .add(player.eyeLocation.direction.normalize().multiply(1.5)) // Make it stop in front of the player

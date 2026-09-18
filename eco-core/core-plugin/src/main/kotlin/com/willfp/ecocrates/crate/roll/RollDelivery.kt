@@ -5,6 +5,7 @@ import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.RewardSource
+import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Entity
@@ -68,7 +69,7 @@ class RollDelivery private constructor(
         spawned.isInvulnerable = true
         spawned.isPersistent = false
         spawned.setGravity(false)
-        spawned.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
+        RollItems.mark(spawned)
 
         if (spawned is LivingEntity) {
             spawned.setAI(false)
@@ -86,7 +87,7 @@ class RollDelivery private constructor(
             item.setGravity(false)
             item.isCustomNameVisible = true
             item.customName = reward.displayName
-            item.setMetadata("ecocrates-roll-item", plugin.metadataValueFactory.create(true))
+            RollItems.mark(item)
 
             spawned.addPassenger(item)
             carriedItem = item
