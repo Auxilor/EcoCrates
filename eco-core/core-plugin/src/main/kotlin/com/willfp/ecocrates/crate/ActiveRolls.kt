@@ -33,8 +33,7 @@ object ActiveRolls {
             try {
                 finalize(queueForLater)
             } catch (e: Exception) {
-                plugin.logger.warning("Error while force-finishing a crate roll")
-                e.printStackTrace()
+                plugin.logger.warning("Error while force-finishing a crate roll: ${e.javaClass.simpleName}: ${e.message}")
             }
         }
     }
