@@ -1,11 +1,12 @@
 package com.willfp.ecocrates.util
 
 import com.willfp.eco.core.drops.DropQueue
-import com.willfp.ecocrates.crate.Crates
+import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.crate.key
 import com.willfp.ecocrates.envoy.EnvoyItems
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.pouch.Pouches
 import com.willfp.ecocrates.reward.PendingRewards
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -28,14 +29,14 @@ object CrateKeyListener : Listener {
 
     @EventHandler
     fun handleToGet(event: PlayerJoinEvent) {
-        for (crate in Crates.values()) {
-            val toGet = crate.getKeysToGet(event.player)
+        for (key in Keys.values()) {
+            val toGet = key.getKeysToGet(event.player)
             if (toGet > 0) {
                 val items = mutableListOf<ItemStack>().apply {
-                    repeat(toGet) { add(crate.sharedKey.createItem(event.player)) }
+                    repeat(toGet) { add(key.createItem(event.player)) }
                 }
 
-                crate.setKeysToGet(event.player, 0)
+                key.setKeysToGet(event.player, 0)
 
                 DropQueue(event.player)
                     .addItems(items)
@@ -45,9 +46,13 @@ object CrateKeyListener : Listener {
                 event.player.sendMessage(
                     plugin.langYml.getMessage("offline-keys-received")
                         .replace("%amount%", toGet.toString())
-                        .replace("%crate%", crate.name)
+                        .replace("%crate%", key.displayName)
                 )
             }
+        }
+
+        for (pouch in Pouches.values()) {
+            pouch.item.grantPending(event.player)
         }
 
         EnvoyItems.grantPending(event.player)

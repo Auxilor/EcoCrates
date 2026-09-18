@@ -5,11 +5,11 @@ import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack
 
 class RollPick private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -36,7 +36,7 @@ class RollPick private constructor(
     private val boxItem = Items.lookup(plugin.configYml.getString("rolls.pick.box"))
 
     // What the boxes the player didn't choose turn out to have been holding.
-    private val nearMisses = crate.getRandomRewards(player, boxCount)
+    private val nearMisses = source.getRandomRewards(player, boxCount)
 
     private val slotColumns = List(boxCount) { ((9 - boxCount) / 2) + 1 + it }
 
@@ -57,7 +57,7 @@ class RollPick private constructor(
         )
 
         title = plugin.configYml.getFormattedString("rolls.pick.title")
-            .replace("%crate%", crate.name)
+            .replace("%crate%", source.name)
 
         for ((index, column) in slotColumns.withIndex()) {
             setSlot(
@@ -67,9 +67,9 @@ class RollPick private constructor(
                     setUpdater { _, _, _ ->
                         when {
                             pickedIndex == null -> boxItem.item
-                            pickedIndex == index -> reward.getDisplay(player, crate)
+                            pickedIndex == index -> reward.getDisplay(player, source)
                             !hasOpenedOthers -> boxItem.item
-                            else -> nearMisses[index].getDisplay(player, crate)
+                            else -> nearMisses[index].getDisplay(player, source)
                         }
                     }
 
@@ -134,10 +134,12 @@ class RollPick private constructor(
     }
 
     object Factory : RollFactory<RollPick>("pick") {
+        override val isGuiRoll = true
+
         override fun create(options: RollOptions): RollPick =
             RollPick(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

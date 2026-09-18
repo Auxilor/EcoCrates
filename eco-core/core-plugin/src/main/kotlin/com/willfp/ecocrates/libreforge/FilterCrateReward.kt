@@ -2,6 +2,7 @@ package com.willfp.ecocrates.libreforge
 
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.ecocrates.event.CrateRewardEvent
+import com.willfp.ecocrates.event.PouchRewardEvent
 import com.willfp.libreforge.ArgType
 import com.willfp.libreforge.NoCompileData
 import com.willfp.libreforge.filters.Filter
@@ -23,10 +24,12 @@ object FilterCrateReward : Filter<NoCompileData, Collection<String>>("crate_rewa
     }
 
     override fun isMet(data: TriggerData, value: Collection<String>, compileData: NoCompileData): Boolean {
-        val event = data.event as? CrateRewardEvent ?: return true
+        val reward = (data.event as? CrateRewardEvent)?.reward
+            ?: (data.event as? PouchRewardEvent)?.reward
+            ?: return true
 
         return value.any { id ->
-            id.equals(event.reward.id, ignoreCase = true)
+            id.equals(reward.id, ignoreCase = true)
         }
     }
 }

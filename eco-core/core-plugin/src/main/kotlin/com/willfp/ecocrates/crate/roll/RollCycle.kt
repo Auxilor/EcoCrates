@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Location
 import org.bukkit.Sound
@@ -14,7 +14,7 @@ import org.bukkit.util.Vector
 
 class RollCycle private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -25,12 +25,12 @@ class RollCycle private constructor(
     private val wait = plugin.configYml.getInt("rolls.cycle.wait")
     private val interval = plugin.configYml.getInt("rolls.cycle.interval")
     private val heightOffset = plugin.configYml.getDouble("rolls.cycle.height-offset")
-    private val display = crate.getRandomRewards(player, 100)
+    private val display = source.getRandomRewards(player, 100)
 
     // Line up with wherever the crate's preview item/hologram normally floats,
     // adjustable via rolls.cycle.height-offset.
     private val base = placedCrate?.location ?: location
-    private val height = crate.randomRewardHeight + heightOffset
+    private val height = source.rollHeight + heightOffset
 
     private lateinit var item: Item
 
@@ -38,7 +38,7 @@ class RollCycle private constructor(
         val world = location.world!!
         val hoverLocation = base.clone().add(Vector(0.0, height, 0.0))
 
-        item = world.dropItem(hoverLocation, display[0].getDisplay(player, crate))
+        item = world.dropItem(hoverLocation, display[0].getDisplay(player, source))
         item.velocity = Vector(0.0, 0.0, 0.0)
         item.pickupDelay = Int.MAX_VALUE
         item.setGravity(false)
@@ -55,10 +55,10 @@ class RollCycle private constructor(
         if (tick % interval == 0) {
             if (tick < duration) {
                 val index = tick.floorDiv(interval).coerceAtMost(display.lastIndex)
-                item.itemStack = display[index].getDisplay(player, crate)
+                item.itemStack = display[index].getDisplay(player, source)
                 item.customName = display[index].displayName
             } else {
-                item.itemStack = reward.getDisplay(player, crate)
+                item.itemStack = reward.getDisplay(player, source)
                 item.customName = reward.displayName
             }
 
@@ -83,7 +83,7 @@ class RollCycle private constructor(
         override fun create(options: RollOptions): RollCycle =
             RollCycle(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

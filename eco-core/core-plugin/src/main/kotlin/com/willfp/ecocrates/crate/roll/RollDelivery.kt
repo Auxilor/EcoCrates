@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.core.entities.Entities
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
+import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Location
 import org.bukkit.Sound
@@ -21,7 +21,7 @@ import org.bukkit.util.Vector
  */
 class RollDelivery private constructor(
     override val reward: Reward,
-    override val crate: Crate,
+    override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
@@ -76,12 +76,12 @@ class RollDelivery private constructor(
             spawned.isCollidable = false
             spawned.canPickupItems = false
             spawned.removeWhenFarAway = true
-            spawned.equipment?.setItemInMainHand(reward.getDisplay(player, crate))
+            spawned.equipment?.setItemInMainHand(reward.getDisplay(player, source))
         }
 
         // Entities without equipment carry the reward as a passenger instead.
         if (spawned !is LivingEntity || spawned.equipment == null) {
-            val item = world.dropItem(spawnLocation, reward.getDisplay(player, crate))
+            val item = world.dropItem(spawnLocation, reward.getDisplay(player, source))
 
             item.pickupDelay = Int.MAX_VALUE
             item.setGravity(false)
@@ -148,7 +148,7 @@ class RollDelivery private constructor(
         override fun create(options: RollOptions): RollDelivery =
             RollDelivery(
                 options.reward,
-                options.crate,
+                options.source,
                 options.player,
                 options.location,
                 options.isReroll,

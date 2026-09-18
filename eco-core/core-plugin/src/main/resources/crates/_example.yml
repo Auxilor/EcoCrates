@@ -114,6 +114,18 @@ placed: # Options for physically placed crates
           - "&a&lLeft Click to Preview"
           - '&b&lRight click to Open'
 
+# Libreforge conditions that must all be met to open this crate.
+# Checked before any key or money is taken. Use not-met-effects to tell the
+# player why. Not checked by /ecocrates forceopen or when rerolling.
+open-conditions:
+  - id: has_permission
+    args:
+      permission: ecocrates.example.vip
+    not-met-effects:
+      - id: send_message
+        args:
+          message: "&cOnly VIPs can open this crate!"
+
 open-effects:
   - id: send_message
     args:

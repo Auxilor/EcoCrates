@@ -1,23 +1,14 @@
 package com.willfp.ecocrates.commands
 
 import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.core.drops.DropQueue
-import com.willfp.ecocrates.crate.Crates
-import com.willfp.ecocrates.envoy.EnvoyItemType
-import com.willfp.ecocrates.envoy.EnvoyItems
-import com.willfp.ecocrates.envoy.Envoys
-import com.willfp.ecocrates.envoy.withEnvoyPlaceholders
+import com.willfp.ecocrates.commands.target.GiveTargets
+import com.willfp.ecocrates.commands.target.LegacySyntax
+import com.willfp.ecocrates.commands.target.TargetCommands
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
-import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataType
-import org.bukkit.util.StringUtil
 
-/**
- * `/ecocrates giveall` - gives a crate key (virtual or physical) or an envoy
- * item (flare/compass) to every currently online player.
- */
+/** `/ecocrates giveall <type> <id> [variant] [amount]` - gives to every online player. */
 object CommandGiveall : Subcommand(
     plugin,
     "giveall",
@@ -25,119 +16,22 @@ object CommandGiveall : Subcommand(
     false
 ) {
     override fun onExecute(sender: CommandSender, args: List<String>) {
-        if (args.isEmpty()) {
-            sender.sendMessage(plugin.langYml.getMessage("must-specify-crate"))
-            return
-        }
-
-        val envoyItemType = EnvoyItemType.fromToken(args.getOrNull(1))
-
-        if (envoyItemType != null) {
-            giveEnvoyItemAll(sender, args, envoyItemType)
-            return
-        }
-
-        val crate = Crates.getByID(args[0])
-
-        if (crate == null) {
-            sender.sendMessage(plugin.langYml.getMessage("invalid-crate"))
-            return
-        }
-
-        val physical = args.getOrNull(1)?.equals("physical", ignoreCase = true) == true
-
-        val amount = args.getOrNull(2)?.toIntOrNull() ?: 1
+        val parsed = TargetCommands.parse(sender, args, GiveTargets.giveTypes, LegacySyntax.GIVE) ?: return
+        val (target, resolved) = TargetCommands.resolveGive(sender, parsed) ?: return
 
         for (player in Bukkit.getOnlinePlayers()) {
-            if (physical) {
-                val items = mutableListOf<ItemStack>().apply {
-                    repeat(amount) { add(crate.sharedKey.createItem(player)) }
-                }
-
-                DropQueue(player)
-                    .addItems(items)
-                    .forceTelekinesis()
-                    .push()
-            } else {
-                crate.adjustVirtualKeys(player, amount)
-            }
+            target.give(player, resolved.id, resolved.variant, resolved.amount)
         }
 
         sender.sendMessage(
-            plugin.langYml.getMessage("gave-keys-all")
-                .replace("%amount%", amount.toString())
-                .replace("%crate%", crate.name)
+            plugin.langYml.getMessage("gave-item-all")
+                .replace("%amount%", resolved.amount.toString())
+                .replace("%item%", target.displayName(resolved.id, resolved.variant))
         )
+
+        TargetCommands.warnIfLegacy(sender, "giveall", null, resolved, includeAmount = true)
     }
 
-    private fun giveEnvoyItemAll(sender: CommandSender, args: List<String>, type: EnvoyItemType) {
-        val category = Envoys[args[0]]
-
-        if (category == null) {
-            sender.sendMessage(plugin.langYml.getMessage("invalid-envoy"))
-            return
-        }
-
-        val item = EnvoyItems.itemFor(category, type)
-
-        if (item == null) {
-            sender.sendMessage(
-                plugin.langYml.getMessage("envoy-item-not-enabled").withEnvoyPlaceholders(category)
-            )
-            return
-        }
-
-        val amount = (args.getOrNull(2)?.toIntOrNull() ?: 1).coerceAtLeast(1)
-
-        for (player in Bukkit.getOnlinePlayers()) {
-            EnvoyItems.give(player, category, type, amount)
-        }
-
-        sender.sendMessage(
-            plugin.langYml.getMessage("gave-envoy-item-all")
-                .replace("%amount%", amount.toString())
-                .replace("%item%", item.itemMeta?.displayName ?: type.token)
-                .withEnvoyPlaceholders(category)
-        )
-    }
-
-    override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
-        val completions = mutableListOf<String>()
-
-        if (args.isEmpty()) {
-            return Crates.values().map { it.id }
-        }
-
-        if (args.size == 1) {
-            StringUtil.copyPartialMatches(
-                args[0],
-                Crates.values().map { it.id } + Envoys.values().map { it.id },
-                completions
-            )
-
-            return completions
-        }
-
-        if (args.size == 2) {
-            StringUtil.copyPartialMatches(
-                args[1],
-                listOf("physical", "virtual") + EnvoyItemType.tokens,
-                completions
-            )
-
-            return completions
-        }
-
-        if (args.size == 3) {
-            StringUtil.copyPartialMatches(
-                args[2],
-                listOf("1", "2", "3", "4", "5", "10"),
-                completions
-            )
-
-            return completions
-        }
-
-        return emptyList()
-    }
+    override fun tabComplete(sender: CommandSender, args: List<String>): List<String> =
+        TargetCommands.tabComplete(args, GiveTargets.giveTypes, includeAmounts = true)
 }

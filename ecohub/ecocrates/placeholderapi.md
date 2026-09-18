@@ -1,9 +1,9 @@
 ---
 title: "PlaceholderAPI"
-sidebar_position: 7
+sidebar_position: 8
 ---
 
-EcoCrates exposes placeholders you can use anywhere PlaceholderAPI is read, e.g. scoreboards, holograms, and menus. In every placeholder below, `<crate>` is a crate ID (its file name) and `<reward>` is a reward ID.
+EcoCrates exposes placeholders you can use anywhere PlaceholderAPI is read, e.g. scoreboards, holograms, and menus. In every placeholder below, `<crate>` is a crate ID (its file name), `<pouch>` is a pouch ID, and `<reward>` is a reward ID.
 
 ## Placeholders
 
@@ -11,6 +11,7 @@ EcoCrates exposes placeholders you can use anywhere PlaceholderAPI is read, e.g.
 | --- | --- |
 | `%ecocrates_<crate>_keys%` | The amount of virtual keys a player has for a given crate |
 | `%ecocrates_<crate>_opens%` | The amount of times a player has opened a crate |
+| `%ecocrates_pouch_<pouch>_opens%` | The amount of times a player has opened a pouch |
 | `%ecocrates_<reward>_wins%` | The amount of times a player has won a given reward |
 | `%ecocrates_envoy_active%` | `true` while an envoy is running, otherwise `false` |
 | `%ecocrates_envoy_active_name%` | Display name of the running envoy |
@@ -40,3 +41,4 @@ The bossbar's own placeholders (`%envoy_remaining_crates%` etc, inside `bossbar.
 - **Crate IDs:** crate IDs are file names, see [How to Make a Crate](how-to-make-a-crate).
 - **Reward IDs:** reward IDs are file names, see [How to Make a Reward](how-to-make-a-reward).
 - **Envoy IDs:** envoy IDs are file names, see [How to Make an Envoy](how-to-make-an-envoy).
+- **Pouch IDs:** pouch IDs are file names, see [How to Make a Pouch](how-to-make-a-pouch).
