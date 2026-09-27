@@ -93,6 +93,10 @@ use-custom-item: false # If true, use an existing custom item as the key; lore i
 Set `use-custom-item: true` to use an item from another eco plugin (e.g. an EcoItems item) as the key. When enabled, the `lore` above is not applied, since the custom item carries its own.
 :::
 
+:::tip
+Lore supports MiniMessage, including sprites such as `<sprite:items:item/diamond>` on 1.21.9 and newer. See [Text Formatting](https://hub.auxilor.io/wiki/eco/text-formatting).
+:::
+
 ### Crafting
 
 Optionally lets players craft the key with a recipe. Ingredients use the same item format as the rest of the plugin.
