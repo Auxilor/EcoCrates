@@ -43,6 +43,7 @@ import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.Vector
 import java.util.Objects
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * A configured crate type: its rewards, roll animation, preview GUI, reroll
@@ -584,7 +585,7 @@ class Crate(
     }
 }
 
-private val openingCrates = mutableSetOf<UUID>()
+private val openingCrates: MutableSet<UUID> = ConcurrentHashMap.newKeySet()
 
 var Player.isOpeningCrate: Boolean
     get() = openingCrates.contains(this.uniqueId)

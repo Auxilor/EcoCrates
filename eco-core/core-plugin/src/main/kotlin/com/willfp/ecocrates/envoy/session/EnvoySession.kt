@@ -15,8 +15,11 @@ import java.util.concurrent.CopyOnWriteArrayList
  */
 class EnvoySession(
     val category: EnvoyCategory,
-    var ticksRemaining: Int
+    ticksRemaining: Int
 ) {
+    @Volatile
+    var ticksRemaining: Int = ticksRemaining
+
     private val spawnList = CopyOnWriteArrayList<SpawnedEnvoy>()
 
     /** How many crates each player has collected this session. */
@@ -26,6 +29,7 @@ class EnvoySession(
         get() = spawnList.toList()
 
     /** How many crates this session started with, for the collected count. */
+    @Volatile
     var totalSpawned: Int = 0
         internal set
 

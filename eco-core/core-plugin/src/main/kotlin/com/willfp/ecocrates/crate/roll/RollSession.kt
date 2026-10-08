@@ -4,6 +4,7 @@ import com.willfp.ecocrates.crate.ActiveRolls
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.PendingRewards
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Drives a roll from start to finish: marks the player as opening, ticks the
@@ -19,14 +20,13 @@ object RollSession {
     fun start(roll: Roll, onFinalize: (roll: Roll, forced: Boolean) -> Unit) {
         val player = roll.player
         var tick = 0
-        var hasFinalized = false
+        val hasFinalized = AtomicBoolean(false)
 
         fun finalizeRoll(forced: Boolean, queueForLater: Boolean = false) {
-            if (hasFinalized) {
+            if (!hasFinalized.compareAndSet(false, true)) {
                 return
             }
 
-            hasFinalized = true
             ActiveRolls.unregister(player)
 
             try {
@@ -46,30 +46,36 @@ object RollSession {
             onFinalize(roll, forced)
         }
 
-        val rollTask = plugin.scheduler.on(player).runTimer({ task ->
-            try {
-                roll.tick(tick)
-            } catch (e: Exception) {
-                /*
-                Bukkit doesn't cancel repeating tasks that throw, so without this the
-                tick counter would never advance and the roll would repeat the same
-                tick (and its effects) forever.
-                 */
-                plugin.logger.warning("Error while ticking roll for ${player.name}, cancelling")
-                e.printStackTrace()
+        val rollTask = plugin.scheduler.on(player)
+            .onRetired { finalizeRoll(false) }
+            .runTimer({ task ->
+                try {
+                    roll.tick(tick)
+                } catch (e: Exception) {
+                    /*
+                    Bukkit doesn't cancel repeating tasks that throw, so without this the
+                    tick counter would never advance and the roll would repeat the same
+                    tick (and its effects) forever.
+                     */
+                    plugin.logger.warning("Error while ticking roll for ${player.name}, cancelling")
+                    e.printStackTrace()
 
-                task.cancel()
-                finalizeRoll(true)
-                return@runTimer
-            }
+                    task.cancel()
+                    finalizeRoll(true)
+                    return@runTimer
+                }
 
-            tick++
+                tick++
 
-            if (!roll.shouldContinueTicking(tick) || !player.isOpeningCrate) {
-                task.cancel()
-                finalizeRoll(false)
-            }
-        }, 1, 1)
+                if (!roll.shouldContinueTicking(tick) || !player.isOpeningCrate) {
+                    task.cancel()
+                    finalizeRoll(false)
+                }
+            }, 1, 1)
+
+        if (hasFinalized.get()) {
+            return
+        }
 
         ActiveRolls.register(player) { queueForLater ->
             rollTask.cancel()

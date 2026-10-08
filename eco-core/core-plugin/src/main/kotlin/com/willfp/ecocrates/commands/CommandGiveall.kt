@@ -5,6 +5,7 @@ import com.willfp.ecocrates.commands.target.GiveTargets
 import com.willfp.ecocrates.commands.target.LegacySyntax
 import com.willfp.ecocrates.commands.target.TargetCommands
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.runOwned
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 
@@ -20,7 +21,7 @@ object CommandGiveall : Subcommand(
         val (target, resolved) = TargetCommands.resolveGive(sender, parsed) ?: return
 
         for (player in Bukkit.getOnlinePlayers()) {
-            target.give(player, resolved.id, resolved.variant, resolved.amount)
+            player.runOwned { target.give(player, resolved.id, resolved.variant, resolved.amount) }
         }
 
         sender.sendMessage(

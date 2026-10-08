@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.crate.roll
 
+import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.envoy.EnvoyFireworks
 import com.willfp.ecocrates.plugin
@@ -70,7 +71,7 @@ class RollStrike private constructor(
             )
 
             item.velocity = Vector(0, 0, 0)
-            item.teleport(target)
+            item.teleportCompat(target)
 
             if (tick % interval == 0) {
                 val next = display[tick.floorDiv(interval).coerceAtMost(display.lastIndex)]

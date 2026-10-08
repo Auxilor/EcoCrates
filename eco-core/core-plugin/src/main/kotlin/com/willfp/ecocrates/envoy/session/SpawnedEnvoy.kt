@@ -4,6 +4,8 @@ import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.ecocrates.envoy.EnvoyCategory
 import com.willfp.ecocrates.envoy.EnvoyRarity
+import com.willfp.ecocrates.runOwned
+import com.willfp.ecocrates.teleportCompat
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Item
@@ -34,10 +36,13 @@ class SpawnedEnvoy(
      */
     val waypointId: UUID = UUID.randomUUID()
 
+    @Volatile
     private var hologram: Hologram? = null
 
+    @Volatile
     private var item: Item? = null
 
+    @Volatile
     private var despawned = false
 
     /**
@@ -63,21 +68,26 @@ class SpawnedEnvoy(
         tickItemDisplay(tick)
     }
 
+    /**
+     * Runs on the region owning the block, which also serialises it with [tick].
+     */
     fun despawn() {
-        if (despawned) {
-            return
+        blockLocation.runOwned {
+            if (despawned) {
+                return@runOwned
+            }
+
+            despawned = true
+
+            hologram?.remove()
+            hologram = null
+            item?.remove()
+            item = null
+
+            // The spawn locator guarantees the block was air before we placed it,
+            // so clearing it back to air always restores the world.
+            blockLocation.block.type = Material.AIR
         }
-
-        despawned = true
-
-        hologram?.remove()
-        hologram = null
-        item?.remove()
-        item = null
-
-        // The spawn locator guarantees the block was air before we placed it,
-        // so clearing it back to air always restores the world.
-        blockLocation.block.type = Material.AIR
     }
 
     private fun tickHologram() {
@@ -119,7 +129,7 @@ class SpawnedEnvoy(
             itemStack = reward.getDisplay()
             customName = rarity.itemDisplayName.replace("%reward%", reward.displayName)
             isCustomNameVisible = true
-            teleport(displayLocation)
+            teleportCompat(displayLocation)
         }
     }
 

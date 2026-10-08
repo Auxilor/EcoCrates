@@ -4,6 +4,7 @@ import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.runOwned
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -41,7 +42,8 @@ object CommandForceOpen : Subcommand(
             player = specificPlayer
         }
         if (player is Player) {
-            crate.open(player, OpenMethod.OTHER)
+            val target = player
+            target.runOwned { crate.open(target, OpenMethod.OTHER) }
         } else {
             sender.sendMessage(plugin.langYml.getMessage("must-specify-player"))
         }

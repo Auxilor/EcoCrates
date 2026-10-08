@@ -1,16 +1,22 @@
 package com.willfp.ecocrates.envoy.session
 
+import com.willfp.eco.core.Prerequisite
 import com.willfp.ecocrates.envoy.EnvoyCategory
+import com.willfp.ecocrates.envoy.EnvoyRarity
 import com.willfp.ecocrates.envoy.compass.EnvoyCompasses
 import com.willfp.ecocrates.envoy.spawn.EnvoyPoints
 import com.willfp.ecocrates.envoy.spawn.SpawnLocationMode
 import com.willfp.ecocrates.envoy.spawn.SpawnLocator
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.runGlobal
+import com.willfp.ecocrates.runOwned
 import com.willfp.eco.util.savedDisplayName
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import java.time.LocalTime
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * The one place that knows whether an envoy is running.
@@ -31,6 +37,8 @@ object EnvoySessions {
     @Volatile
     private var currentTick = 0L
 
+    private val starting = AtomicBoolean(false)
+
     fun isActive(categoryId: String? = null): Boolean {
         val session = active ?: return false
 
@@ -43,8 +51,23 @@ object EnvoySessions {
     /**
      * Starts a session. Returns false if one is already active, or if the
      * category could not place a single crate.
+     *
+     * On Folia each crate is placed on the region that owns it, so the session
+     * starts later: the return value only says whether the start was accepted,
+     * and [onResult] receives the outcome on the global region. Elsewhere both
+     * are the outcome, and [onResult] runs before this returns.
      */
-    fun start(category: EnvoyCategory): Boolean {
+    fun start(category: EnvoyCategory, onResult: (Boolean) -> Unit = {}): Boolean {
+        if (Prerequisite.HAS_FOLIA.isMet) {
+            return startRegionized(category, onResult)
+        }
+
+        val started = startNow(category)
+        onResult(started)
+        return started
+    }
+
+    private fun startNow(category: EnvoyCategory): Boolean {
         if (active != null) {
             return false
         }
@@ -54,31 +77,85 @@ object EnvoySessions {
 
         repeat(count) {
             val rarity = category.randomRarity() ?: return@repeat
-            val candidate = rollCandidate(category)
+            val candidate = rollCandidate(category, rarity) ?: return@repeat
 
-            if (candidate == null) {
-                plugin.logger.warning(
-                    "Envoy '${category.id}' could not roll a candidate location for " +
-                        "rarity '${rarity.id}' - check its location-type configuration."
-                )
-                return@repeat
-            }
-
-            val resolved = SpawnLocator.resolve(candidate)
-
-            if (resolved == null) {
-                plugin.logger.warning(
-                    "Envoy '${category.id}' rarity '${rarity.id}': no air block found near " +
-                        "${candidate.world?.name}@${candidate.blockX},${candidate.blockY}," +
-                        "${candidate.blockZ} - skipping this crate."
-                )
-                return@repeat
-            }
-
-            val spawn = SpawnedEnvoy(category, rarity, resolved)
-            spawn.place(withFireworks = true)
-            session.addSpawn(spawn)
+            placeSpawn(session, rarity, candidate)
         }
+
+        return activate(session)
+    }
+
+    private fun startRegionized(category: EnvoyCategory, onResult: (Boolean) -> Unit): Boolean {
+        if (active != null || !starting.compareAndSet(false, true)) {
+            onResult(false)
+            return false
+        }
+
+        runGlobal {
+            val session = EnvoySession(category, category.duration)
+            val planned = mutableListOf<Pair<EnvoyRarity, Location>>()
+
+            repeat(category.rollSpawnCount()) {
+                val rarity = category.randomRarity() ?: return@repeat
+                val candidate = rollCandidate(category, rarity) ?: return@repeat
+
+                planned.add(rarity to candidate)
+            }
+
+            val complete = {
+                val started = active == null && activate(session)
+
+                if (!started) {
+                    session.despawnAll()
+                }
+
+                starting.set(false)
+                onResult(started)
+            }
+
+            if (planned.isEmpty()) {
+                complete()
+                return@runGlobal
+            }
+
+            val pending = AtomicInteger(planned.size)
+
+            for ((rarity, candidate) in planned) {
+                plugin.scheduler.at(candidate).run {
+                    try {
+                        placeSpawn(session, rarity, candidate)
+                    } finally {
+                        if (pending.decrementAndGet() == 0) {
+                            plugin.scheduler.global().run { complete() }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true
+    }
+
+    private fun placeSpawn(session: EnvoySession, rarity: EnvoyRarity, candidate: Location) {
+        val category = session.category
+        val resolved = SpawnLocator.resolve(candidate)
+
+        if (resolved == null) {
+            plugin.logger.warning(
+                "Envoy '${category.id}' rarity '${rarity.id}': no air block found near " +
+                    "${candidate.world?.name}@${candidate.blockX},${candidate.blockY}," +
+                    "${candidate.blockZ} - skipping this crate."
+            )
+            return
+        }
+
+        val spawn = SpawnedEnvoy(category, rarity, resolved)
+        spawn.place(withFireworks = true)
+        session.addSpawn(spawn)
+    }
+
+    private fun activate(session: EnvoySession): Boolean {
+        val category = session.category
 
         if (session.spawns.isEmpty()) {
             plugin.logger.warning(
@@ -98,7 +175,14 @@ object EnvoySessions {
         return true
     }
 
+    /**
+     * Runs on the global region, as it tears down state across every region.
+     */
     fun end() {
+        runGlobal { endNow() }
+    }
+
+    private fun endNow() {
         val session = active ?: return
 
         EnvoyCompasses.deactivateAll()
@@ -151,7 +235,7 @@ object EnvoySessions {
                 continue
             }
 
-            spawn.tick(tick)
+            spawn.blockLocation.runOwned { spawn.tick(tick) }
         }
 
         session.ticksRemaining--
@@ -177,7 +261,7 @@ object EnvoySessions {
         }
 
         for (spawn in session.spawns) {
-            spawn.place(withFireworks = false)
+            spawn.blockLocation.runOwned { spawn.place(withFireworks = false) }
         }
 
         active = session
@@ -190,6 +274,8 @@ object EnvoySessions {
      * intact so [restore] can bring the session back.
      */
     fun shutdown() {
+        starting.set(false)
+
         val session = active ?: return
 
         EnvoyCompasses.deactivateAll()
@@ -232,6 +318,19 @@ object EnvoySessions {
             LocalTime.now(),
             lastStartTicks(category.id)
         )
+    }
+
+    private fun rollCandidate(category: EnvoyCategory, rarity: EnvoyRarity): Location? {
+        val candidate = rollCandidate(category)
+
+        if (candidate == null) {
+            plugin.logger.warning(
+                "Envoy '${category.id}' could not roll a candidate location for " +
+                    "rarity '${rarity.id}' - check its location-type configuration."
+            )
+        }
+
+        return candidate
     }
 
     private fun rollCandidate(category: EnvoyCategory): Location? =

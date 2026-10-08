@@ -5,6 +5,7 @@ import com.willfp.ecocrates.envoy.EnvoyCompass
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.session.SpawnedEnvoy
+import com.willfp.ecocrates.runOwned
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
@@ -39,11 +40,15 @@ object CompassRenderer {
                 continue
             }
 
-            refreshFor(player, compass)
+            player.runOwned { refreshFor(player, compass) }
         }
     }
 
     private fun refreshFor(player: Player, compass: ActiveCompass) {
+        if (EnvoyCompasses.get(player) !== compass) {
+            return
+        }
+
         val session = EnvoySessions.active ?: return
         val category = Envoys[compass.categoryId] ?: return
         val settings = category.compass ?: return

@@ -1,17 +1,22 @@
 package com.willfp.ecocrates.crate.placed
 
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.runOwned
 import com.willfp.ecocrates.util.CrateDisplayItems
+import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Bukkit
+import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 class PlacedCrate(
     val crate: Crate,
@@ -24,18 +29,32 @@ class PlacedCrate(
         z += 0.5
     }
 
-    val chunkKey = location.chunk.key
+    val chunkKey = if (Prerequisite.HAS_FOLIA.isMet) {
+        Chunk.getChunkKey(location.blockX shr 4, location.blockZ shr 4)
+    } else {
+        location.chunk.key
+    }
 
+    @Volatile
     private var hologram: Hologram? = null
 
+    @Volatile
     private var currentFrame: HologramFrame? = null
 
+    @Volatile
     private var item: Item? = null
 
     // Players who should not see the preview hologram/item, e.g. while they're rolling.
-    private val hiddenFrom = mutableSetOf<UUID>()
+    private val hiddenFrom: MutableSet<UUID> = ConcurrentHashMap.newKeySet()
+
+    @Volatile
+    private var removed = false
 
     internal fun tick(tick: Int) {
+        if (removed) {
+            return
+        }
+
         tickRandomReward(tick)
         tickHolograms(tick)
     }
@@ -45,9 +64,10 @@ class PlacedCrate(
     }
 
     internal fun onRemove() {
+        removed = true
         hologram?.remove()
         hologram = null
-        item?.remove()
+        item?.let { it.runOwned { it.remove() } }
         item = null
         hiddenFrom.clear()
     }
@@ -82,7 +102,7 @@ class PlacedCrate(
 
         for (uuid in hiddenFrom) {
             val player = Bukkit.getPlayer(uuid) ?: continue
-            player.hideEntity(plugin, item)
+            player.runOwned { player.hideEntity(plugin, item) }
         }
     }
 
@@ -161,7 +181,7 @@ class PlacedCrate(
             item?.itemStack = reward.getDisplay()
             item?.customName = crate.randomRewardName.replace("%reward%", reward.displayName)
             item?.isCustomNameVisible = true
-            item?.teleport(location.clone().add(0.0, crate.randomRewardHeight, 0.0))
+            item?.teleportCompat(location.clone().add(0.0, crate.randomRewardHeight, 0.0))
 
             if (isNewItem) {
                 hideNewItemFromHiddenPlayers()

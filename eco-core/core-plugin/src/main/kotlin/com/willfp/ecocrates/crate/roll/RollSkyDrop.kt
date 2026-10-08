@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.util.NumberUtils
+import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
@@ -80,7 +81,7 @@ class RollSkyDrop private constructor(
         when (state) {
             SkyDropState.RISE -> {
                 if (rewardItem.location.toVector().distance(apex) <= 0.2) {
-                    rewardItem.teleport(apex.toLocation(rewardItem.world))
+                    rewardItem.teleportCompat(apex.toLocation(rewardItem.world))
                     rewardItem.velocity = Vector(0, 0, 0)
                     state = SkyDropState.PAUSE
                 } else {
@@ -101,7 +102,7 @@ class RollSkyDrop private constructor(
 
             SkyDropState.DROP -> {
                 if (rewardItem.location.toVector().distance(landingPoint) <= 0.15) {
-                    rewardItem.teleport(landingPoint.toLocation(rewardItem.world))
+                    rewardItem.teleportCompat(landingPoint.toLocation(rewardItem.world))
                     rewardItem.velocity = Vector(0, 0, 0)
                     timeSpentSettling++
 

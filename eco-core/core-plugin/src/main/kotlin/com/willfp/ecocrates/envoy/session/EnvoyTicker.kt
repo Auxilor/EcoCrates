@@ -15,13 +15,14 @@ object EnvoyTicker {
     @Volatile
     private var tick = 0
 
+    @Volatile
     private var task: EcoTask? = null
 
     fun start() {
         task?.cancel()
 
         tick = 0
-        task = plugin.scheduler.runTimer(1, 1) {
+        task = plugin.scheduler.global().runTimer(1, 1) {
             EnvoySessions.tick(tick)
             EnvoyCompasses.tickCountdown()
             EnvoyBossBarManager.refresh()

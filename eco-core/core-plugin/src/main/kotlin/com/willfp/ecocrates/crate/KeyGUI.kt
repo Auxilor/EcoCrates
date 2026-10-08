@@ -13,6 +13,7 @@ import com.willfp.ecocrates.plugin
 import org.bukkit.entity.Player
 
 object KeyGUI {
+    @Volatile
     private lateinit var menu: Menu
 
     @JvmStatic

@@ -3,6 +3,7 @@ package com.willfp.ecocrates.envoy.compass
 import com.willfp.eco.core.waypoint.Waypoints
 import com.willfp.ecocrates.envoy.EnvoyCategory
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.runOwned
 import org.bukkit.Bukkit
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
@@ -49,10 +50,14 @@ object EnvoyCompasses {
         return true
     }
 
-    /** Clears a player's waypoints and restores their receive range. */
+    /** Clears a player's waypoints and restores their receive range, on the player's region. */
     fun deactivate(player: Player) {
         val compass = active.remove(player.uniqueId) ?: return
 
+        player.runOwned { restore(player, compass) }
+    }
+
+    private fun restore(player: Player, compass: ActiveCompass) {
         for (waypointId in compass.shownWaypoints) {
             Waypoints.hide(player, waypointId)
         }

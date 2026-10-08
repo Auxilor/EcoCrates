@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.envoy.spawn
 
+import com.willfp.eco.core.Eco
 import com.willfp.ecocrates.plugin
 import org.bukkit.Location
 
@@ -10,6 +11,9 @@ object SpawnLocator {
      * A legal spot is an air block with a solid, non-liquid block directly
      * beneath it, so crates land on the ground instead of floating or sinking.
      * Returns null if nothing legal is found within the configured scan radius.
+     *
+     * Must run on the region owning [candidate]. Blocks owned by another region
+     * are skipped, so on Folia the scan stops at region borders.
      */
     fun resolve(candidate: Location): Location? {
         val world = candidate.world ?: return null
@@ -28,6 +32,10 @@ object SpawnLocator {
                     (candidate.blockY + y).toDouble(),
                     (candidate.blockZ + z).toDouble()
                 )
+
+                if (!Eco.get().isOwnedByCurrentRegion(test)) {
+                    continue
+                }
 
                 if (isLegal(test)) {
                     return test.block.location

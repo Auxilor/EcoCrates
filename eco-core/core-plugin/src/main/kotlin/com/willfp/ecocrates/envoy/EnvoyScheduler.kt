@@ -34,8 +34,10 @@ object EnvoyScheduler {
                 continue
             }
 
-            if (EnvoySessions.start(category)) {
-                plugin.logger.info("Started scheduled envoy '${category.id}'.")
+            EnvoySessions.start(category) { started ->
+                if (started) {
+                    plugin.logger.info("Started scheduled envoy '${category.id}'.")
+                }
             }
 
             // One start per check, at most.

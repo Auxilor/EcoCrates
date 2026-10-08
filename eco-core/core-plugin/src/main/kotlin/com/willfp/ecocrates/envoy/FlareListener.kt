@@ -2,6 +2,7 @@ package com.willfp.ecocrates.envoy
 
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.runOwned
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -58,7 +59,15 @@ object FlareListener : Listener {
             return
         }
 
-        if (!EnvoySessions.start(category)) {
+        EnvoySessions.start(category) { started ->
+            player.runOwned { onStarted(player, category, flare, started) }
+        }
+    }
+
+    private fun onStarted(player: Player, category: EnvoyCategory, flare: EnvoyFlare, started: Boolean) {
+        val categoryId = category.id
+
+        if (!started) {
             player.sendMessage(plugin.langYml.getMessage("envoy-start-failed"))
             return
         }

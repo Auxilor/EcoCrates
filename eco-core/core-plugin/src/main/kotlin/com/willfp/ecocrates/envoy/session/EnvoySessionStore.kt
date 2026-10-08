@@ -27,6 +27,7 @@ private object EnvoySessionYml : StaticBaseConfig(
  *         rarity: common
  */
 object EnvoySessionStore {
+    @Synchronized
     fun save(session: EnvoySession?) {
         if (session == null) {
             clear()
@@ -55,6 +56,7 @@ object EnvoySessionStore {
         EnvoySessionYml.save()
     }
 
+    @Synchronized
     fun clear() {
         EnvoySessionYml.set("session", null)
         EnvoySessionYml.save()
@@ -67,6 +69,7 @@ object EnvoySessionStore {
      * Spawns whose category or rarity no longer exists are dropped with a
      * warning, since there's nothing sensible left to give for them.
      */
+    @Synchronized
     fun load(): EnvoySession? {
         val categoryId = EnvoySessionYml.getStringOrNull("session.category") ?: return null
         val category = Envoys[categoryId]

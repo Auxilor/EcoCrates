@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.commands.envoy
 
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.StringUtils
 import com.willfp.ecocrates.envoy.session.EnvoySessions
@@ -48,11 +49,15 @@ object CommandEnvoyLocate : Subcommand(
                 return
             }
 
-            sender.teleport(spawn.centeredLocation)
-            sender.sendMessage(
-                plugin.langYml.getMessage("envoy-teleported")
-                    .replace("%number%", index.toString())
-            )
+            val message = plugin.langYml.getMessage("envoy-teleported")
+                .replace("%number%", index.toString())
+
+            if (Prerequisite.HAS_FOLIA.isMet) {
+                sender.teleportAsync(spawn.centeredLocation).thenAccept { sender.sendMessage(message) }
+            } else {
+                sender.teleport(spawn.centeredLocation)
+                sender.sendMessage(message)
+            }
             return
         }
 
