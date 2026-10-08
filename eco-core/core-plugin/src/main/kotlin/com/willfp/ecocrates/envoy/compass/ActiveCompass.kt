@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.envoy.compass
 
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * One player's running compass effect.
@@ -11,8 +12,11 @@ import java.util.UUID
  */
 class ActiveCompass(
     val categoryId: String,
-    var ticksRemaining: Int,
+    ticksRemaining: Int,
     val previousReceiveRange: Double?
 ) {
-    val shownWaypoints = mutableSetOf<UUID>()
+    @Volatile
+    var ticksRemaining: Int = ticksRemaining
+
+    val shownWaypoints: MutableSet<UUID> = ConcurrentHashMap.newKeySet()
 }

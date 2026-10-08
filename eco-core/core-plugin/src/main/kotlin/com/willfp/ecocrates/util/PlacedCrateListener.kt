@@ -11,10 +11,11 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 object PlacedCrateListener : Listener {
     // Janky fix to interact events firing twice
-    private val preventDoubles = mutableSetOf<UUID>()
+    private val preventDoubles: MutableSet<UUID> = ConcurrentHashMap.newKeySet()
 
     @EventHandler
     fun handleClick(event: PlayerInteractEvent) {
@@ -26,7 +27,9 @@ object PlacedCrateListener : Listener {
         }
 
         fun removeFromPreventDoubles(player: Player): Unit = run {
-            plugin.scheduler.run { preventDoubles.remove(player.uniqueId) }
+            plugin.scheduler.on(player)
+                .onRetired { preventDoubles.remove(player.uniqueId) }
+                .run { preventDoubles.remove(player.uniqueId) }
         }
 
         val crate = PlacedCrates.getCrateAt(block.location) ?: return removeFromPreventDoubles(player)

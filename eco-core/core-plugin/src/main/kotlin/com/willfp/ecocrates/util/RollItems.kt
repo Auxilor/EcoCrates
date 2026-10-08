@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.util
 
+import com.willfp.eco.core.FoliaSupport
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.entity.Entity
@@ -34,7 +35,15 @@ object RollItems {
         return session != sessionId
     }
 
+    /**
+     * Skipped on Folia, where no one thread may read every world's entities. The
+     * chunk load sweep in [RollItemListener] still catches orphans there.
+     */
     fun sweepLoadedChunks() {
+        if (FoliaSupport.isUnsupported("Sweeping orphaned roll items on enable")) {
+            return
+        }
+
         for (world in Bukkit.getWorlds()) {
             world.entities
                 .filter { isOrphaned(it) }

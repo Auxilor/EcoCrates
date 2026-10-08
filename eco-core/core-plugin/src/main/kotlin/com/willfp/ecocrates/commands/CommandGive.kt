@@ -2,11 +2,15 @@ package com.willfp.ecocrates.commands
 
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.savedDisplayName
+import com.willfp.ecocrates.commands.target.GiveTarget
 import com.willfp.ecocrates.commands.target.GiveTargets
 import com.willfp.ecocrates.commands.target.LegacySyntax
+import com.willfp.ecocrates.commands.target.ParsedTarget
 import com.willfp.ecocrates.commands.target.TargetCommands
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.runOwned
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
 
@@ -38,6 +42,26 @@ object CommandGive : Subcommand(
         val parsed = TargetCommands.parse(sender, args.drop(1), GiveTargets.giveTypes, LegacySyntax.GIVE) ?: return
         val (target, resolved) = TargetCommands.resolveGive(sender, parsed) ?: return
 
+        val online = player.player
+
+        if (online != null) {
+            online.runOwned { give(sender, args, player, target, resolved) }
+        } else {
+            give(sender, args, player, target, resolved)
+        }
+    }
+
+    /**
+     * Gives on the recipient's region when they're online: the console runs off the
+     * player's region on Folia, and physical items go into their inventory.
+     */
+    private fun give(
+        sender: CommandSender,
+        args: List<String>,
+        player: OfflinePlayer,
+        target: GiveTarget,
+        resolved: ParsedTarget
+    ) {
         if (!target.give(player, resolved.id, resolved.variant, resolved.amount)) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return

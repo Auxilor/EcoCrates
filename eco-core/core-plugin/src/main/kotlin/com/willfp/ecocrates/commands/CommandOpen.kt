@@ -4,6 +4,7 @@ import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.runOwned
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -41,7 +42,8 @@ object CommandOpen : Subcommand(
             player = specificPlayer
         }
 
-        crate.openWithMethod(player, OpenMethod.VIRTUAL_KEY)
+        val target = player
+        target.runOwned { crate.openWithMethod(target, OpenMethod.VIRTUAL_KEY) }
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {

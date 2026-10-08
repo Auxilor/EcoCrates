@@ -33,16 +33,18 @@ object CommandEnvoyStart : Subcommand(
             return
         }
 
-        if (!EnvoySessions.start(category)) {
-            sender.sendMessage(plugin.langYml.getMessage("envoy-start-failed"))
-            return
-        }
+        EnvoySessions.start(category) { started ->
+            if (!started) {
+                sender.sendMessage(plugin.langYml.getMessage("envoy-start-failed"))
+                return@start
+            }
 
-        sender.sendMessage(
-            plugin.langYml.getMessage("envoy-started")
-                .withEnvoyPlaceholders(category)
-                .replace("%amount%", EnvoySessions.remaining().toString())
-        )
+            sender.sendMessage(
+                plugin.langYml.getMessage("envoy-started")
+                    .withEnvoyPlaceholders(category)
+                    .replace("%amount%", EnvoySessions.remaining().toString())
+            )
+        }
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {

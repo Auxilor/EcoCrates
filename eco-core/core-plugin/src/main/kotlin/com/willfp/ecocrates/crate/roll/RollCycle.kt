@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.crate.roll
 
+import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.plugin
@@ -50,7 +51,7 @@ class RollCycle private constructor(
     override fun tick(tick: Int) {
         val hoverLocation = base.clone().add(Vector(0.0, height, 0.0))
         item.velocity = Vector(0.0, 0.0, 0.0)
-        item.teleport(hoverLocation)
+        item.teleportCompat(hoverLocation)
 
         if (tick % interval == 0) {
             if (tick < duration) {

@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.util.NumberUtils
+import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
@@ -166,7 +167,7 @@ class RollOrbitCollapse private constructor(
         }
 
         if (winner.location.toVector().distance(circleCenter) <= 0.3) {
-            winner.teleport(circleCenter.toLocation(winner.world))
+            winner.teleportCompat(circleCenter.toLocation(winner.world))
             winner.velocity = Vector(0, 0, 0)
             timeSpentHolding++
         } else {

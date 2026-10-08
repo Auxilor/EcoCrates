@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.util.NumberUtils
+import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
@@ -106,7 +107,7 @@ class RollVortex private constructor(
             )
 
             item.velocity = Vector(0, 0, 0)
-            item.teleport(target.toLocation(item.world))
+            item.teleportCompat(target.toLocation(item.world))
         }
 
         // Throw out one loser per pass, keeping the winner until the funnel closes.

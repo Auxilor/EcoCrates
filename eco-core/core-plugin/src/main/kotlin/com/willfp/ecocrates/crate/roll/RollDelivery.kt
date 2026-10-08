@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.core.entities.Entities
+import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
@@ -125,7 +126,7 @@ class RollDelivery private constructor(
         val next = courier.location.clone().add(delta.clone().normalize().multiply(speed))
         next.direction = delta
 
-        courier.teleport(next)
+        courier.teleportCompat(next)
 
         if (tick % 8 == 0) {
             player.playSound(player.location, Sound.ENTITY_ALLAY_AMBIENT_WITH_ITEM, 0.6f, 1.0f)

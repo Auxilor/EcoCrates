@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.crate.roll
 
+import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
@@ -49,7 +50,7 @@ class RollQuick private constructor(
         }
 
         if (item.location.toVector().distance(end) < 0.1) {
-            item.teleport(end.toLocation(item.world))
+            item.teleportCompat(end.toLocation(item.world))
             item.velocity = Vector(0, 0, 0)
             suspendTicks++
 

@@ -6,6 +6,7 @@ import com.willfp.ecocrates.commands.target.GiveTargets
 import com.willfp.ecocrates.commands.target.LegacySyntax
 import com.willfp.ecocrates.commands.target.TargetCommands
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.runOwned
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
@@ -36,16 +37,18 @@ object CommandTake : Subcommand(
         val parsed = TargetCommands.parse(sender, args.drop(1), GiveTargets.giveTypes, LegacySyntax.GIVE) ?: return
         val (target, resolved) = TargetCommands.resolveGive(sender, parsed) ?: return
 
-        val taken = target.take(player, resolved.id, resolved.variant, resolved.amount)
+        player.runOwned {
+            val taken = target.take(player, resolved.id, resolved.variant, resolved.amount)
 
-        sender.sendMessage(
-            plugin.langYml.getMessage(if (taken) "took-item" else "not-enough-took-item")
-                .replace("%amount%", resolved.amount.toString())
-                .replace("%item%", target.displayName(resolved.id, resolved.variant))
-                .replace("%user%", player.savedDisplayName)
-        )
+            sender.sendMessage(
+                plugin.langYml.getMessage(if (taken) "took-item" else "not-enough-took-item")
+                    .replace("%amount%", resolved.amount.toString())
+                    .replace("%item%", target.displayName(resolved.id, resolved.variant))
+                    .replace("%user%", player.savedDisplayName)
+            )
 
-        TargetCommands.warnIfLegacy(sender, "take", args[0], resolved, includeAmount = true)
+            TargetCommands.warnIfLegacy(sender, "take", args[0], resolved, includeAmount = true)
+        }
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {

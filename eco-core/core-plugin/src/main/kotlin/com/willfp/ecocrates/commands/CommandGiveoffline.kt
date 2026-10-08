@@ -23,13 +23,13 @@ object CommandGiveoffline : Subcommand(
         val parsed = TargetCommands.parse(sender, args, GiveTargets.giveTypes, LegacySyntax.GIVE) ?: return
         val (target, resolved) = TargetCommands.resolveGive(sender, parsed) ?: return
 
-        plugin.scheduler.runAsync {
+        plugin.scheduler.async().run {
             for (offline in Bukkit.getOfflinePlayers()) {
                 val online = offline.player
 
                 if (online != null) {
-                    // Inventory work has to happen on the main thread.
-                    plugin.scheduler.run { target.give(online, resolved.id, resolved.variant, resolved.amount) }
+                    // Inventory work has to happen on the player's region.
+                    plugin.scheduler.on(online).run { target.give(online, resolved.id, resolved.variant, resolved.amount) }
                 } else {
                     target.queue(offline, resolved.id, resolved.variant, resolved.amount)
                 }

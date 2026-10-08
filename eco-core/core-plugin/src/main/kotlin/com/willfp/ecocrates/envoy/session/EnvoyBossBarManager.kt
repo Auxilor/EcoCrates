@@ -3,6 +3,7 @@ package com.willfp.ecocrates.envoy.session
 import org.bukkit.Bukkit
 import org.bukkit.boss.BossBar
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Renders the single active session's bossbar, if its category has one configured and
@@ -11,13 +12,15 @@ import java.util.UUID
  * booster.
  */
 object EnvoyBossBarManager {
+    @Volatile
     private var bar: BossBar? = null
+    @Volatile
     private var barCategoryId: String? = null
 
     // BossBar#getPlayers() returns a List, so checking membership against it directly is
     // O(n) per player and O(n^2) overall for the add/remove pass below. Mirroring
     // membership in a Set keeps that at O(1) per player instead.
-    private val shownTo = mutableSetOf<UUID>()
+    private val shownTo: MutableSet<UUID> = ConcurrentHashMap.newKeySet()
 
     @Volatile
     private var tick = 0

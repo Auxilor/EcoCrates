@@ -91,7 +91,9 @@ object ReRollGUI {
                 if (player.hasMetadata(metaKey)) {
                     player.removeMetadata(metaKey, plugin)
                 } else {
-                    plugin.scheduler.runLater(1) { crate.handleFinish(roll) }
+                    plugin.scheduler.on(player)
+                        .onRetired { crate.handleFinish(roll) }
+                        .runLater(1) { crate.handleFinish(roll) }
                 }
             }
         }
