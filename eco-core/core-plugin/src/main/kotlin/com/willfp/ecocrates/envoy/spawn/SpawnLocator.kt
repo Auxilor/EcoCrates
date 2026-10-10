@@ -23,6 +23,12 @@ object SpawnLocator {
             return candidate.block.location
         }
 
+        val above = candidate.block.getRelative(0, 1, 0).location
+
+        if (isLegal(above)) {
+            return above
+        }
+
         // Expand outwards a shell at a time so the nearest legal spot wins.
         for (radius in 1..scanRadius) {
             for ((x, y, z) in shellOffsets(radius)) {
@@ -48,11 +54,11 @@ object SpawnLocator {
 
     /**
      * Offsets on the surface of a cube shell of the given [radius], i.e. every
-     * point where the largest coordinate magnitude equals [radius]. Generated
-     * directly instead of filtered out of the full cube, so cost stays O(radius^2)
-     * per shell instead of O(radius^3).
+     * point where the largest coordinate magnitude equals [radius], nearest
+     * first. Generated directly instead of filtered out of the full cube, so
+     * cost stays O(radius^2) per shell instead of O(radius^3).
      */
-    private fun shellOffsets(radius: Int): Sequence<Triple<Int, Int, Int>> = sequence {
+    internal fun shellOffsets(radius: Int): List<Triple<Int, Int, Int>> = sequence {
         for (x in -radius..radius) {
             for (y in -radius..radius) {
                 val xyMaxed = kotlin.math.abs(x) == radius || kotlin.math.abs(y) == radius
@@ -68,7 +74,7 @@ object SpawnLocator {
                 }
             }
         }
-    }
+    }.sortedBy { (x, y, z) -> x * x + y * y + z * z }.toList()
 
     private fun isLegal(location: Location): Boolean {
         val world = location.world ?: return false
