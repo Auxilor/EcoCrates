@@ -73,11 +73,9 @@ object EnvoySessions {
         }
 
         val session = EnvoySession(category, category.duration)
-        val count = category.rollSpawnCount()
 
-        repeat(count) {
-            val rarity = category.randomRarity() ?: return@repeat
-            val candidate = rollCandidate(category, rarity) ?: return@repeat
+        for (candidate in rollCandidates(category)) {
+            val rarity = category.randomRarity() ?: continue
 
             placeSpawn(session, rarity, candidate)
         }
@@ -95,9 +93,8 @@ object EnvoySessions {
             val session = EnvoySession(category, category.duration)
             val planned = mutableListOf<Pair<EnvoyRarity, Location>>()
 
-            repeat(category.rollSpawnCount()) {
-                val rarity = category.randomRarity() ?: return@repeat
-                val candidate = rollCandidate(category, rarity) ?: return@repeat
+            for (candidate in rollCandidates(category)) {
+                val rarity = category.randomRarity() ?: continue
 
                 planned.add(rarity to candidate)
             }
@@ -320,30 +317,35 @@ object EnvoySessions {
         )
     }
 
-    private fun rollCandidate(category: EnvoyCategory, rarity: EnvoyRarity): Location? {
-        val candidate = rollCandidate(category)
+    /**
+     * Candidate locations for one session. Points mode uses each point at most
+     * once, so a session spawns no more crates than the category has points.
+     */
+    private fun rollCandidates(category: EnvoyCategory): List<Location> {
+        val count = category.rollSpawnCount()
 
-        if (candidate == null) {
+        val candidates = when (category.locationMode) {
+            SpawnLocationMode.POINTS -> EnvoyPoints.get(category.id).values.shuffled().take(count)
+            SpawnLocationMode.RADIUS -> rollRadiusCandidates(category, count)
+        }
+
+        if (count > 0 && candidates.isEmpty()) {
             plugin.logger.warning(
-                "Envoy '${category.id}' could not roll a candidate location for " +
-                    "rarity '${rarity.id}' - check its location-type configuration."
+                "Envoy '${category.id}' could not roll a candidate location - " +
+                    "check its location-type configuration."
             )
         }
 
-        return candidate
+        return candidates
     }
 
-    private fun rollCandidate(category: EnvoyCategory): Location? =
-        when (category.locationMode) {
-            SpawnLocationMode.POINTS -> EnvoyPoints.randomFor(category.id)
+    private fun rollRadiusCandidates(category: EnvoyCategory, count: Int): List<Location> {
+        val box = category.radiusBox ?: return emptyList()
+        val world = Bukkit.getWorlds()
+            .firstOrNull { it.name.equals(box.worldName, true) } ?: return emptyList()
 
-            SpawnLocationMode.RADIUS -> {
-                val box = category.radiusBox ?: return null
-                val world = Bukkit.getWorlds()
-                    .firstOrNull { it.name.equals(box.worldName, true) } ?: return null
-                val pos = box.roll()
-
-                Location(world, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
-            }
+        return List(count) {
+            box.roll().let { Location(world, it.x.toDouble(), it.y.toDouble(), it.z.toDouble()) }
         }
+    }
 }
