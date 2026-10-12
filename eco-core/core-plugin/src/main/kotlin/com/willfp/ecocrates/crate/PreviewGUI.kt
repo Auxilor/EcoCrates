@@ -12,6 +12,7 @@ import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.util.StringUtils
+import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.reward.Rewards
 
@@ -43,7 +44,14 @@ object PreviewGUI {
                 )
 
                 for (previewReward in page.getSubsections("rewards")) {
-                    val reward = Rewards[previewReward.getString("id")] ?: continue
+                    val rewardId = previewReward.getString("id")
+                    val reward = Rewards[rewardId]
+
+                    if (reward == null) {
+                        plugin.logger.warning("${source.sourceType.replaceFirstChar { it.uppercase() }} '${source.id}' preview references unknown reward '$rewardId'")
+                        continue
+                    }
+
                     val row = previewReward.getInt("row")
                     val column = previewReward.getInt("column")
 
