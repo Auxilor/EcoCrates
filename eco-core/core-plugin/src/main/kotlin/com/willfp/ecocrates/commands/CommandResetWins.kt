@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.commands
 
 import com.willfp.eco.core.command.impl.Subcommand
+import com.willfp.eco.core.data.forEachSavedProfile
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.plugin
@@ -22,12 +23,22 @@ object CommandResetWins : Subcommand(
         }
 
         if (args[0] == "all") {
-            for (player in Bukkit.getOfflinePlayers()) {
-                resetWinsFor(sender, player)
-            }
+            resetWinsForAll(sender)
         } else {
             @Suppress("DEPRECATION")
             resetWinsFor(sender, Bukkit.getOfflinePlayer(args[0]))
+        }
+    }
+
+    private fun resetWinsForAll(sender: CommandSender) {
+        sender.sendMessage(plugin.langYml.getMessage("resetting-wins").replace("%user%", "all"))
+
+        forEachSavedProfile(plugin) { uuid ->
+            resetWins(Bukkit.getOfflinePlayer(uuid))
+        }.thenRun {
+            plugin.scheduler.global().run {
+                sender.sendMessage(plugin.langYml.getMessage("reset-wins").replace("%user%", "all"))
+            }
         }
     }
 
@@ -39,11 +50,15 @@ object CommandResetWins : Subcommand(
 
         sender.sendMessage(plugin.langYml.getMessage("resetting-wins").replace("%user%", player.savedDisplayName))
 
+        resetWins(player)
+
+        sender.sendMessage(plugin.langYml.getMessage("reset-wins").replace("%user%", player.savedDisplayName))
+    }
+
+    private fun resetWins(player: OfflinePlayer) {
         for (crate in Crates.values()) {
             crate.rewards.forEach { it.resetWins(player) }
         }
-
-        sender.sendMessage(plugin.langYml.getMessage("reset-wins").replace("%user%", player.savedDisplayName))
     }
 
     override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
