@@ -126,8 +126,8 @@ class EcoCratesPlugin : LibreforgePlugin() {
     override fun loadConfigCategories(): List<ConfigCategory> {
         return listOf(
             Keys,
-            Crates,
             Rewards,
+            Crates,
             Pouches,
             Envoys
         )

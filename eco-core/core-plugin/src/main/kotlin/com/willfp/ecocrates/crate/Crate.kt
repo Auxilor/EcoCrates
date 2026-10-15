@@ -107,7 +107,13 @@ class Crate(
     val sharedKey: SharedKey = Keys[config.getString("key")]
         ?: throw IllegalStateException("Crate '$id' references unknown key '${config.getString("key")}' - make sure a matching file exists in the keys/ folder")
 
-    override val rewards: List<Reward> = config.getStrings("rewards").mapNotNull { Rewards.getByID(it) }
+    override val rewards: List<Reward> = config.getStrings("rewards").mapNotNull { rewardId ->
+        Rewards.getByID(rewardId).also {
+            if (it == null) {
+                plugin.logger.warning("Crate '$id' references unknown reward '$rewardId'")
+            }
+        }
+    }
 
     override val rollHeight: Double
         get() = randomRewardHeight
@@ -164,6 +170,10 @@ class Crate(
 
 
     init {
+        if (rewards.isEmpty()) {
+            plugin.logger.warning("Crate '$id' has no rewards - it can't be opened.")
+        }
+
         PlayerPlaceholder(
             plugin,
             "${id}_keys",
