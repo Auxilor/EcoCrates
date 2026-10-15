@@ -116,9 +116,6 @@ object EnvoyPoints {
         return result
     }
 
-    fun randomFor(categoryId: String): Location? =
-        get(categoryId).values.randomOrNull()
-
     /**
      * Point numbers already in use for a category, scanned directly from the
      * raw config across every world subsection - including worlds that are
