@@ -6,9 +6,8 @@ import com.willfp.eco.core.gui.getSlotLocations
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.page.PageChanger
+import com.willfp.eco.core.gui.setMask
 import com.willfp.eco.core.gui.slot.ConfigSlot
-import com.willfp.eco.core.gui.slot.FillerMask
-import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.ecocrates.plugin
 import org.bukkit.entity.Player
@@ -19,9 +18,6 @@ object KeyGUI {
 
     @JvmStatic
     fun update() {
-        val maskItems = MaskItems.fromItemNames(plugin.configYml.getStrings("keygui.mask.items"))
-        val maskPattern = plugin.configYml.getStrings("keygui.mask.pattern").toTypedArray()
-
         val customSlots = plugin.configYml.getSubsections("keygui.custom-slots")
 
         val keysByPage = Keys.values()
@@ -42,7 +38,7 @@ object KeyGUI {
 
             for (page in 1..maxPage) {
                 addPage(page) {
-                    setMask(FillerMask(maskItems, *maskPattern))
+                    setMask(plugin.configYml, "keygui")
 
                     for (config in customSlots) {
                         for (location in config.getSlotLocations()) {

@@ -4,9 +4,8 @@ import com.willfp.eco.core.gui.addPage
 import com.willfp.eco.core.gui.addPageChanger
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.page.PageChanger
+import com.willfp.eco.core.gui.setMask
 import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.gui.slot.FillerMask
-import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
@@ -56,12 +55,7 @@ class RollChoose private constructor(
 
             for (pageNum in 1..maxPages) {
                 addPage(pageNum) {
-                    setMask(
-                        FillerMask(
-                            MaskItems.fromItemNames(plugin.configYml.getStrings("rolls.choose.mask.items")),
-                            *pattern.toTypedArray()
-                        )
-                    )
+                    setMask(plugin.configYml, "rolls.choose")
 
                     var rewardIndex = (pageNum - 1) * perPage
                     pattern.forEachIndexed { rowIndex, line ->

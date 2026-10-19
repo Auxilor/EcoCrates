@@ -7,10 +7,9 @@ import com.willfp.eco.core.gui.getSlotLocations
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.page.PageChanger
+import com.willfp.eco.core.gui.setMask
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.ConfigSlot
-import com.willfp.eco.core.gui.slot.FillerMask
-import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.util.StringUtils
 import com.willfp.ecocrates.plugin
@@ -37,12 +36,7 @@ object PreviewGUI {
 
         for (page in pages) {
             addPage(page.getInt("page")) {
-                setMask(
-                    FillerMask(
-                        MaskItems.fromItemNames(page.getStrings("mask.items")),
-                        *page.getStrings("mask.pattern").toTypedArray()
-                    )
-                )
+                setMask(page)
 
                 for (previewReward in page.getSubsections("rewards")) {
                     val rewardId = previewReward.getString("id")

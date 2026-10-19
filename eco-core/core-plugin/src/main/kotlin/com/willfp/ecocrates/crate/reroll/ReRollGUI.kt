@@ -2,9 +2,8 @@ package com.willfp.ecocrates.crate.reroll
 
 import com.willfp.eco.core.gui.getSlotLocations
 import com.willfp.eco.core.gui.menu
+import com.willfp.eco.core.gui.setMask
 import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.gui.slot.FillerMask
-import com.willfp.eco.core.gui.slot.MaskItems
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.ecocrates.crate.Crate
@@ -21,12 +20,7 @@ object ReRollGUI {
         val priceDisplay = price.getDisplay(player)
 
         val menu = menu(plugin.configYml.getInt("reroll.rows")) {
-            setMask(
-                FillerMask(
-                    MaskItems.fromItemNames(plugin.configYml.getStrings("reroll.mask.items")),
-                    *plugin.configYml.getStrings("reroll.mask.pattern").toTypedArray()
-                )
-            )
+            setMask(plugin.configYml, "reroll")
 
             title = plugin.configYml.getFormattedString("reroll.title")
 
