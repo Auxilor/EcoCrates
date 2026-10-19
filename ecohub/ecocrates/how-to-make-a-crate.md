@@ -204,6 +204,10 @@ pay-to-open:
 
 Holograms and particles shown on a crate that has been physically placed in the world with `/ecocrates set`.
 
+:::info Removing a placed crate
+A placed crate is protected: normal breaking, explosions, pistons and fire leave it in place. To remove it, sneak and break it with the `ecocrates.break` permission. The block stays and stops being a crate.
+:::
+
 ```yaml
 placed:
   shift-right-click-open-all: true # Shift right-click instantly opens the whole stack of physical keys held, skipping the roll animation
