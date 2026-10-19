@@ -40,6 +40,12 @@ radius:
   y_radius: 20
   z_radius: 200
 
+fall: # Optional. Crates float down from the sky instead of appearing in place.
+  enabled: false
+  height: 30 # How many blocks above its spawn point a crate starts falling from.
+  speed: 0.25 # How many blocks a crate falls each tick. Lower is slower.
+                # A falling crate can't be claimed until it lands.
+
 # The total number of crates in one session, rolled once at the start.
 # Which rarity fills each of those slots is decided by the rarity weights below.
 min-spawns: 8

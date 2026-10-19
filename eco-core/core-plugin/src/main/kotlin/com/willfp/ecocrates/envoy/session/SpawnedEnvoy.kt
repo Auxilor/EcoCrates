@@ -8,6 +8,7 @@ import com.willfp.ecocrates.runOwned
 import com.willfp.ecocrates.teleportCompat
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.entity.BlockDisplay
 import org.bukkit.entity.Item
 import org.bukkit.util.Vector
 import java.util.UUID
@@ -45,12 +46,39 @@ class SpawnedEnvoy(
     @Volatile
     private var despawned = false
 
+    @Volatile
+    private var fallingDisplay: BlockDisplay? = null
+
+    private var fallOffset = 0.0
+
     /**
      * Places the block and starts the visuals. [withFireworks] is false when
      * restoring a session after a restart, so a reload doesn't re-fire every
-     * firework in the session at once.
+     * firework in the session at once, and the crate is placed without falling.
      */
     fun place(withFireworks: Boolean) {
+        val fall = category.fall
+
+        if (!withFireworks || fall == null) {
+            land(withFireworks)
+            return
+        }
+
+        val world = blockLocation.world ?: return land(true)
+
+        rarity.block.place(blockLocation)
+        val blockData = blockLocation.block.blockData
+        blockLocation.block.type = Material.AIR
+
+        fallOffset = fall.height
+        fallingDisplay = world.spawn(blockLocation.clone().add(0.0, fallOffset, 0.0), BlockDisplay::class.java) {
+            it.block = blockData
+            it.isPersistent = false
+            it.teleportDuration = 1
+        }
+    }
+
+    private fun land(withFireworks: Boolean) {
         rarity.block.place(blockLocation)
 
         if (withFireworks) {
@@ -64,8 +92,32 @@ class SpawnedEnvoy(
             return
         }
 
+        if (tickFall()) {
+            return
+        }
+
         tickHologram()
         tickItemDisplay(tick)
+    }
+
+    /**
+     * Moves a falling crate down one step. Returns true while it is still in the air.
+     */
+    private fun tickFall(): Boolean {
+        val display = fallingDisplay ?: return false
+        val fall = category.fall ?: return false
+
+        fallOffset -= fall.speed
+
+        if (fallOffset > 0) {
+            display.teleportCompat(blockLocation.clone().add(0.0, fallOffset, 0.0))
+            return true
+        }
+
+        display.remove()
+        fallingDisplay = null
+        land(true)
+        return false
     }
 
     /**
@@ -83,6 +135,8 @@ class SpawnedEnvoy(
             hologram = null
             item?.remove()
             item = null
+            fallingDisplay?.remove()
+            fallingDisplay = null
 
             // The spawn locator guarantees the block was air before we placed it,
             // so clearing it back to air always restores the world.
