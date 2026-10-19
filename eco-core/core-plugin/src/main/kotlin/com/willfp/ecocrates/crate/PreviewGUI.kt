@@ -1,15 +1,14 @@
 package com.willfp.ecocrates.crate
 
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.gui.addCustomSlots
 import com.willfp.eco.core.gui.addPage
 import com.willfp.eco.core.gui.addPageChanger
-import com.willfp.eco.core.gui.getSlotLocations
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.page.PageChanger
 import com.willfp.eco.core.gui.setMask
 import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.gui.slot.ConfigSlot
 import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.eco.util.StringUtils
 import com.willfp.ecocrates.plugin
@@ -22,7 +21,6 @@ import com.willfp.ecocrates.reward.Rewards
  */
 object PreviewGUI {
     fun build(config: Config, source: RewardSource): Menu = menu(config.getInt("preview.rows")) {
-        val sharedCustomSlots = config.getSubsections("preview.custom-slots")
         val pages = config.getSubsections("preview.pages")
 
         title = StringUtils.format(config.getString("preview.title"))
@@ -59,17 +57,8 @@ object PreviewGUI {
                     )
                 }
 
-                for (slotConfig in sharedCustomSlots) {
-                    for (location in slotConfig.getSlotLocations()) {
-                        setSlot(location.row, location.column, ConfigSlot(slotConfig))
-                    }
-                }
-
-                for (slotConfig in page.getSubsections("custom-slots")) {
-                    for (location in slotConfig.getSlotLocations()) {
-                        setSlot(location.row, location.column, ConfigSlot(slotConfig))
-                    }
-                }
+                addCustomSlots(config, "preview")
+                addCustomSlots(page, "")
             }
         }
     }
