@@ -3,6 +3,7 @@ package com.willfp.ecocrates.crate
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.gui.addPage
 import com.willfp.eco.core.gui.addPageChanger
+import com.willfp.eco.core.gui.getSlotLocations
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.page.PageChanger
@@ -65,19 +66,15 @@ object PreviewGUI {
                 }
 
                 for (slotConfig in sharedCustomSlots) {
-                    setSlot(
-                        slotConfig.getInt("row"),
-                        slotConfig.getInt("column"),
-                        ConfigSlot(slotConfig)
-                    )
+                    for (location in slotConfig.getSlotLocations()) {
+                        setSlot(location.row, location.column, ConfigSlot(slotConfig))
+                    }
                 }
 
                 for (slotConfig in page.getSubsections("custom-slots")) {
-                    setSlot(
-                        slotConfig.getInt("row"),
-                        slotConfig.getInt("column"),
-                        ConfigSlot(slotConfig)
-                    )
+                    for (location in slotConfig.getSlotLocations()) {
+                        setSlot(location.row, location.column, ConfigSlot(slotConfig))
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.willfp.ecocrates.crate
 
 import com.willfp.eco.core.gui.addPage
 import com.willfp.eco.core.gui.addPageChanger
+import com.willfp.eco.core.gui.getSlotLocations
 import com.willfp.eco.core.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.page.PageChanger
@@ -44,11 +45,9 @@ object KeyGUI {
                     setMask(FillerMask(maskItems, *maskPattern))
 
                     for (config in customSlots) {
-                        setSlot(
-                            config.getInt("row"),
-                            config.getInt("column"),
-                            ConfigSlot(config)
-                        )
+                        for (location in config.getSlotLocations()) {
+                            setSlot(location.row, location.column, ConfigSlot(config))
+                        }
                     }
 
                     for (key in keysByPage[page].orEmpty()) {
