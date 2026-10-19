@@ -56,6 +56,10 @@ class EnvoyCategory(
         ?.let { EnvoyCompass(id, it) }
         ?.takeIf { it.enabled }
 
+    val fall: EnvoyFall? = config.getSubsectionOrNull("fall")
+        ?.takeIf { it.getBool("enabled") }
+        ?.let { EnvoyFall(it) }
+
     val bossbar: EnvoyBossBar? = config.getSubsectionOrNull("bossbar")
         ?.let { EnvoyBossBar(it) }
         ?.takeIf { it.enabled }
