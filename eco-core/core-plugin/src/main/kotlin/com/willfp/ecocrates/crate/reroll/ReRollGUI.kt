@@ -68,12 +68,12 @@ object ReRollGUI {
                                 crate.handleFinish(roll)
                                 return@onLeftClick
                             }
-                    
+
                             // onClose runs inside closeInventory, so the flag has to be set first.
                             player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
                             // Close the GUI so the roll animation plays without it.
                             player.closeInventory()
-                    
+
                             val started = crate.open(
                                 player,
                                 roll.method,
@@ -81,7 +81,7 @@ object ReRollGUI {
                                 rerollNumber = rerollNumber + 1,
                                 placedCrate = roll.placedCrate
                             )
-                    
+
                             if (started) {
                                 price.pay(player)
                             } else {
