@@ -50,9 +50,11 @@ reroll:
   accept: # The button to keep the current reward
     row: 2
     column: 3
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
   reroll: # The button to reroll for a new reward
     row: 2
     column: 7
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
     item: orange_stained_glass_pane
     name: "&6Reroll"
     lore:
@@ -85,12 +87,14 @@ keygui:
     item-inactive: gray_dye name:"&7Next Page" # Shown on the last page. Remove to hide the button instead.
     row: 2
     column: 9
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
 
   backwards-arrow: # The arrow for switching to the previous page.
     item: arrow name:"&fPrevious Page" # Shown when there is a previous page
     item-inactive: gray_dye name:"&7Previous Page" # Shown on the first page. Remove to hide the button instead.
     row: 2
     column: 1
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
 
   custom-slots: [] # Custom GUI slots; see https://hub.auxilor.io/wiki/eco/pages
 
@@ -198,11 +202,13 @@ rolls:
       item-inactive: gray_dye name:"&7Next Page" # Shown on the last page. Remove to hide the button instead.
       row: 5
       column: 6
+      locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
     backwards-arrow: # The arrow for switching to the previous page
       item: arrow name:"&fPrevious Page"
       item-inactive: gray_dye name:"&7Previous Page" # Shown on the first page. Remove to hide the button instead.
       row: 5
       column: 4
+      locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
   match:
     to-match: 2 # Copies of the same reward needed to win; losers get at most one fewer
     min-scratches: 3 # The winning set can never complete before this many scratches

@@ -59,10 +59,12 @@ preview:
     item: arrow name:"&fNext Page"
     row: 6
     column: 6
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
   backwards-arrow: # Shown on every page except the first
     item: arrow name:"&fPrevious Page"
     row: 6
     column: 4
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
   pages:
     - page: 1
       mask: # Decorative filler items
@@ -168,10 +170,12 @@ preview:
     item: arrow name:"&fNext Page"
     row: 6
     column: 6
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
   backwards-arrow: # Shown on every page except the first
     item: arrow name:"&fPrevious Page"
     row: 6
     column: 4
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
   pages:
     - page: 1
       mask: # Decorative filler items
