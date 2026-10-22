@@ -18,6 +18,7 @@ messages:
   must-target-block: "&cYou must be looking at a block!"
   set-block-as-crate: "Set block to be a crate!"
   removed-crate: "Removed crate!"
+  cannot-break-crate: "&cThis block is a crate! Sneak and break it with permission to remove it."
   all-rewards-used: "&cYou have already won all things in this crate!"
   resetting-wins: "&fResetting wins for %user%&f..."
   reset-wins: "&fReset wins for %user%&f!"

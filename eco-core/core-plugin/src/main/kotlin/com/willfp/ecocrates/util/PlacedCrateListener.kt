@@ -4,11 +4,17 @@ import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.plugin
 import org.bukkit.GameMode
+import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockBurnEvent
+import org.bukkit.event.block.BlockExplodeEvent
+import org.bukkit.event.block.BlockPistonExtendEvent
+import org.bukkit.event.block.BlockPistonRetractEvent
+import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -78,21 +84,52 @@ object PlacedCrateListener : Listener {
     @EventHandler
     fun handleBreak(event: BlockBreakEvent) {
         val player = event.player
-
-        if (!player.hasPermission("ecocrates.break")) {
-            return
-        }
-
         val block = event.block
-
-        if (!player.isSneaking) {
-            return
-        }
 
         PlacedCrates.getCrateAt(block.location) ?: return
 
+        event.isCancelled = true
+
+        if (!player.hasPermission("ecocrates.break") || !player.isSneaking) {
+            player.sendMessage(plugin.langYml.getMessage("cannot-break-crate"))
+            return
+        }
+
         PlacedCrates.removeCrate(block.location)
         player.sendMessage(plugin.langYml.getMessage("removed-crate"))
-        event.isCancelled = true
     }
+
+    @EventHandler(ignoreCancelled = true)
+    fun handlePistonExtend(event: BlockPistonExtendEvent) {
+        if (event.blocks.any { it.isPlacedCrate() }) {
+            event.isCancelled = true
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun handlePistonRetract(event: BlockPistonRetractEvent) {
+        if (event.blocks.any { it.isPlacedCrate() }) {
+            event.isCancelled = true
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun handleEntityExplode(event: EntityExplodeEvent) {
+        event.blockList().removeIf { it.isPlacedCrate() }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun handleBlockExplode(event: BlockExplodeEvent) {
+        event.blockList().removeIf { it.isPlacedCrate() }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun handleBurn(event: BlockBurnEvent) {
+        if (event.block.isPlacedCrate()) {
+            event.isCancelled = true
+        }
+    }
+
+    private fun Block.isPlacedCrate(): Boolean =
+        PlacedCrates.getCrateAt(this.location) != null
 }

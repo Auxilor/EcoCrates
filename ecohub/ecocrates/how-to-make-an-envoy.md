@@ -92,6 +92,17 @@ max-spawns: 15
 
 `min-spawns`/`max-spawns` are for the **whole session**, rolled once when it starts — not per rarity. Once the total is rolled, each individual slot is filled by whichever rarity wins the weighted roll below.
 
+## Falling crates
+
+```yaml
+fall:
+  enabled: true
+  height: 30
+  speed: 0.25
+```
+
+With `fall` enabled, each crate starts `height` blocks above its spawn point and floats down `speed` blocks per tick, then lands with its fireworks and spawn sound. A crate can't be claimed until it lands. Leave the section out, or set `enabled: false`, for crates to appear in place. Crates restored after a restart are placed straight away.
+
 ## Rarities
 
 Each envoy needs at least one rarity. Every field below comes straight from `_example.yml`.
