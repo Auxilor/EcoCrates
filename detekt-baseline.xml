@@ -1,0 +1,732 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>BracesOnIfStatements:TwirlParticleAnimation.kt:TwirlParticleAnimation$else</ID>
+    <ID>BracesOnWhenStatements:RollSkyDrop.kt:RollSkyDrop$when</ID>
+    <ID>BracesOnWhenStatements:TargetCommands.kt:TargetCommands$when</ID>
+    <ID>C002:CommandEnvoyLocate.kt:CommandEnvoyLocate$sender.teleportAsync(spawn.centeredLocation).thenAccept { sender.sendMessage(message) }</ID>
+    <ID>C002:CommandResetWins.kt:CommandResetWins$forEachSavedProfile(plugin) { uuid -&gt; resetWins(Bukkit.getOfflinePlayer(uuid)) }.thenRun { plugin.scheduler.global().run { sender.sendMessage(plugin.langYml.getMessage("reset-wins").replace("%user%", "all")) } }</ID>
+    <ID>C002:Scheduling.kt:teleportAsync(location)</ID>
+    <ID>CX016:Crate.kt:com.willfp.ecocrates.crate.Crate.kt</ID>
+    <ID>CascadingCallWrapping:EnvoySessions.kt:EnvoySessions$Bukkit.getWorlds() .firstOrNull { it.name.equals(box.worldName, true) } ?: return emptyList()</ID>
+    <ID>CascadingCallWrapping:RollCSGO.kt:RollCSGO$apply { add(reward) addAll(source.getRandomRewards(player, 5)) }</ID>
+    <ID>CascadingCallWrapping:RollElimination.kt:RollElimination$apply { add(reward) shuffle() }</ID>
+    <ID>CascadingCallWrapping:RollElimination.kt:RollElimination$candidates.indices .filter { it != winnerIndex &amp;&amp; !isEliminated[it] } .randomOrNull() ?: return</ID>
+    <ID>CascadingCallWrapping:RollMatch.kt:RollMatch$isScratched.indices .filter { it != index &amp;&amp; !isScratched[it] &amp;&amp; it !in winningSlots } .randomOrNull() ?: return</ID>
+    <ID>CognitiveComplexMethod:EnvoySessions.kt:EnvoySessions$private fun startRegionized: Boolean</ID>
+    <ID>CognitiveComplexMethod:PreviewGUI.kt:PreviewGUI$fun build: Menu</ID>
+    <ID>CognitiveComplexMethod:RollEncircle.kt:RollEncircle$override fun tick</ID>
+    <ID>CognitiveComplexMethod:RollSkyDrop.kt:RollSkyDrop$override fun tick</ID>
+    <ID>CognitiveComplexMethod:SpawnLocator.kt:SpawnLocator$internal fun shellOffsets: List&lt;Triple&lt;Int, Int, Int&gt;&gt;</ID>
+    <ID>CollapsibleIfStatements:Reward.kt:Reward$if (maxWins &gt; 0) { if (player.profile.read(winsKey) &gt;= maxWins) { return 0.0 } }</ID>
+    <ID>ComplexInterface:Roll.kt:Roll</ID>
+    <ID>CouldBeSequence:CompassRenderer.kt:CompassRenderer$filter { isVisibleFor(it, player, settings) }</ID>
+    <ID>CouldBeSequence:RollMatch.kt:RollMatch$filter { it !== reward }</ID>
+    <ID>CyclomaticComplexMethod:CompassListener.kt:CompassListener$@EventHandler fun handleUse</ID>
+    <ID>CyclomaticComplexMethod:Crate.kt:Crate$fun openAllWithMethod</ID>
+    <ID>CyclomaticComplexMethod:PlacedCrate.kt:PlacedCrate$@Suppress("DEPRECATION") private fun tickRandomReward</ID>
+    <ID>CyclomaticComplexMethod:PlacedCrateListener.kt:PlacedCrateListener$@EventHandler fun handleClick</ID>
+    <ID>CyclomaticComplexMethod:RollEncircle.kt:RollEncircle$override fun tick</ID>
+    <ID>CyclomaticComplexMethod:RollSkyDrop.kt:RollSkyDrop$override fun tick</ID>
+    <ID>CyclomaticComplexMethod:TargetCommands.kt:TargetCommands$fun tabComplete: List&lt;String&gt;</ID>
+    <ID>CyclomaticComplexMethod:TargetParser.kt:TargetParser$fun parse: TargetParseResult</ID>
+    <ID>DocumentationOverPrivateFunction:CommandEnvoySet.kt:CommandEnvoySet$private fun resolveLocation: Location?</ID>
+    <ID>DocumentationOverPrivateFunction:CommandGive.kt:CommandGive$private fun give</ID>
+    <ID>DocumentationOverPrivateFunction:Crate.kt:Crate$private fun meetsOpenConditions: Boolean</ID>
+    <ID>DocumentationOverPrivateFunction:EnvoyFireworks.kt:EnvoyFireworks.Companion$private fun parseType: FireworkEffect.Type</ID>
+    <ID>DocumentationOverPrivateFunction:EnvoyPlaceholders.kt:EnvoyPlaceholders$private fun formatTicks: String</ID>
+    <ID>DocumentationOverPrivateFunction:EnvoyPoints.kt:EnvoyPoints$private fun usedNumbers: Set&lt;Int&gt;</ID>
+    <ID>DocumentationOverPrivateFunction:EnvoySessions.kt:EnvoySessions$private fun rollCandidates: List&lt;Location&gt;</ID>
+    <ID>DocumentationOverPrivateFunction:RollMatch.kt:RollMatch$private fun isTooEarlyToWin: Boolean</ID>
+    <ID>DocumentationOverPrivateFunction:RollMatch.kt:RollMatch$private fun moveWinnerElsewhere</ID>
+    <ID>DocumentationOverPrivateFunction:SpawnedEnvoy.kt:SpawnedEnvoy$private fun tickFall: Boolean</ID>
+    <ID>DocumentationOverPrivateFunction:TargetParser.kt:TargetParser$private fun parseAmount: Int?</ID>
+    <ID>DocumentationOverPrivateProperty:EnvoySession.kt:EnvoySession$/** How many crates each player has collected this session. */ private val collections = ConcurrentHashMap&lt;UUID, Int&gt;()</ID>
+    <ID>ElseCaseInsteadOfExhaustiveWhen:CommandPreview.kt:CommandPreview$when (target.type) { TargetType.CRATE -&gt; Crates.getByID(target.id)?.previewForPlayer(player) ?: return player.sendMessage(plugin.langYml.getMessage("invalid-crate")) TargetType.POUCH -&gt; Pouches[target.id]?.previewForPlayer(player) ?: return player.sendMessage(plugin.langYml.getMessage("invalid-pouch")) else -&gt; return }</ID>
+    <ID>ElseCaseInsteadOfExhaustiveWhen:PlacedCrateListener.kt:PlacedCrateListener$when (event.action) { Action.LEFT_CLICK_BLOCK -&gt; crate.previewForPlayer(player) Action.RIGHT_CLICK_BLOCK -&gt; crate.openPlaced( player, block.location, openMethod ) else -&gt; return removeFromPreventDoubles(player) }</ID>
+    <ID>ElseCaseInsteadOfExhaustiveWhen:RollEncircle.kt:RollEncircle$when (state) { EncircleState.RISE -&gt; { for ((index, item) in display.withIndex()) { val endPosition = circleCenter.clone().add( Vector( NumberUtils.fastSin(angle * index) * radius, 0.0, NumberUtils.fastCos(angle * index) * radius ) ) val velocity = endPosition.clone() .subtract(item.location.toVector()) .normalize() .multiply(riseVelocity) item.velocity = velocity if (item.location.toVector().distance(endPosition) &lt; 0.25) { state = EncircleState.SPIN } } } EncircleState.SPIN -&gt; { for ((index, item) in display.withIndex()) { val endPosition = circleCenter.clone().add( Vector( NumberUtils.fastSin((angle * index) + (spinsPerSecond * 2 * PI * timeSpentSpinning / 20)) * radius, 0.0, NumberUtils.fastCos((angle * index) + (spinsPerSecond * 2 * PI * timeSpentSpinning / 20)) * radius ) ) if (endPosition.distance(item.location.toVector()) &gt; 0.2) { val velocity = endPosition.clone() .subtract(item.location.toVector()) .normalize() .multiply(spinVelocity) item.velocity = velocity } } timeSpentSpinning++ if (timeSpentSpinning &gt; spinTime) { state = EncircleState.REVEAL } } EncircleState.REVEAL -&gt; { val winner = rewardItem if (winner == null || !winner.isValid) { state = EncircleState.DONE return } for (item in display.toSet()) { if (item != winner) { item.remove() display.remove(item) } } if (circleCenter.distance(winner.location.toVector()) &gt; 0.2) { winner.velocity = circleCenter.clone() .subtract(winner.location.toVector()) .normalize() .multiply(revealVelocity) } timeSpentRevealing++ if (timeSpentRevealing &gt; revealTime) { state = EncircleState.DONE } } else -&gt; { // Do nothing } }</ID>
+    <ID>EmptyFunctionBlock:OpenMethod.kt:OpenMethod.Companion.&lt;no name provided&gt;${}</ID>
+    <ID>EmptyKotlinFile:Keys.kt:.Keys.kt</ID>
+    <ID>ExplicitCollectionElementAccessMethod:CommandConvert.kt:CommandConvert$Converters.get(args[0])</ID>
+    <ID>ExplicitCollectionElementAccessMethod:Crate.kt:Crate$ParticleAnimations.get(it.getString("animation"))</ID>
+    <ID>ExplicitCollectionElementAccessMethod:Crate.kt:Crate$Rolls.get(config.getString("roll"))</ID>
+    <ID>ExplicitCollectionElementAccessMethod:CrateReloadedConverter.kt:CrateReloadedConverter$Rolls.get(buildingCrate.config.getString("animation").lowercase())</ID>
+    <ID>ExplicitCollectionElementAccessMethod:EnvoyPoints.kt:EnvoyPoints$EnvoyPointsYml.set("$path.x", location.blockX)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:EnvoyPoints.kt:EnvoyPoints$EnvoyPointsYml.set("$path.y", location.blockY)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:EnvoyPoints.kt:EnvoyPoints$EnvoyPointsYml.set("$path.z", location.blockZ)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:EnvoyPoints.kt:EnvoyPoints$EnvoyPointsYml.set("points.$categoryId.$world.$number", null)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:EnvoySessionStore.kt:EnvoySessionStore$EnvoySessionYml.set( "session.spawns", session.spawns.map { mapOf( "location" to it.blockLocation.toEnvoyString(), "rarity" to it.rarity.id ) } )</ID>
+    <ID>ExplicitCollectionElementAccessMethod:EnvoySessionStore.kt:EnvoySessionStore$EnvoySessionYml.set("session", null)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:EnvoySessionStore.kt:EnvoySessionStore$EnvoySessionYml.set("session.category", session.category.id)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:EnvoySessionStore.kt:EnvoySessionStore$EnvoySessionYml.set("session.collections.$uuid", amount)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:EnvoySessionStore.kt:EnvoySessionStore$EnvoySessionYml.set("session.ticks-remaining", session.ticksRemaining)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:EnvoySessionStore.kt:EnvoySessionStore$EnvoySessionYml.set("session.total-spawned", session.totalSpawned)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:PlacedCrates.kt:PlacedCrates$PlacedCratesYml.set("crates.${location.toShortString()}", crate.id)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:PlacedCrates.kt:PlacedCrates$PlacedCratesYml.set("crates.${location.toShortString()}", null)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:Pouch.kt:Pouch$Rolls.get(it)</ID>
+    <ID>ExplicitCollectionElementAccessMethod:Pouch.kt:Pouch$Rolls.get(resolution.id)</ID>
+    <ID>ExpressionBodySyntax:Converter.kt:Converter$return id</ID>
+    <ID>ExpressionBodySyntax:Crate.kt:Crate$return "Crate{id=$id}"</ID>
+    <ID>ExpressionBodySyntax:Crate.kt:Crate$return Objects.hash(this.id)</ID>
+    <ID>ExpressionBodySyntax:Crate.kt:Crate$return id</ID>
+    <ID>ExpressionBodySyntax:Crate.kt:Crate$return player.profile.read(opensKey)</ID>
+    <ID>ExpressionBodySyntax:Crate.kt:Crate$return sharedKey.getKeysToGet(player)</ID>
+    <ID>ExpressionBodySyntax:Crate.kt:Crate$return sharedKey.getVirtualKeys(player)</ID>
+    <ID>ExpressionBodySyntax:Crate.kt:Crate$return sharedKey.getVirtualKeys(player) &gt; 0</ID>
+    <ID>ExpressionBodySyntax:Crate.kt:Crate$return sharedKey.matches(player.inventory.itemInMainHand)</ID>
+    <ID>ExpressionBodySyntax:CrateOpenEvent.kt:CrateOpenEvent$return Companion.handlers</ID>
+    <ID>ExpressionBodySyntax:CrateRewardEvent.kt:CrateRewardEvent$return Companion.handlers</ID>
+    <ID>ExpressionBodySyntax:EffectRewardWeightMultiplier.kt:EffectRewardWeightMultiplier$return Rewards.getByID(key)</ID>
+    <ID>ExpressionBodySyntax:EffectRewardWeightMultiplier.kt:EffectRewardWeightMultiplier$return Rewards.values()</ID>
+    <ID>ExpressionBodySyntax:ExactTestableItem.kt:ExactTestableItem$return itemStack == this.itemStack</ID>
+    <ID>ExpressionBodySyntax:FilterCrate.kt:FilterCrate$return config.getFormattedStrings(key)</ID>
+    <ID>ExpressionBodySyntax:FilterCrateReward.kt:FilterCrateReward$return config.getFormattedStrings(key)</ID>
+    <ID>ExpressionBodySyntax:FilterEnvoyReward.kt:FilterEnvoyReward$return config.getFormattedStrings(key)</ID>
+    <ID>ExpressionBodySyntax:FilterEnvoyType.kt:FilterEnvoyType$return config.getFormattedStrings(key)</ID>
+    <ID>ExpressionBodySyntax:FilterPouch.kt:FilterPouch$return config.getFormattedStrings(key)</ID>
+    <ID>ExpressionBodySyntax:FilterPouch.kt:FilterPouchRarity$return config.getFormattedStrings(key)</ID>
+    <ID>ExpressionBodySyntax:OpenMethod.kt:OpenMethod$return Objects.hashCode(this.id)</ID>
+    <ID>ExpressionBodySyntax:OpenMethod.kt:OpenMethod.Companion.&lt;no name provided&gt;$return crate.getVirtualKeys(player)</ID>
+    <ID>ExpressionBodySyntax:ParticleAnimation.kt:ParticleAnimation$return id</ID>
+    <ID>ExpressionBodySyntax:PermissionMultipliers.kt:PermissionMultipliers$return REGISTRY.toList()</ID>
+    <ID>ExpressionBodySyntax:PlacedCrate.kt:PlacedCrate$return "PlacedCrate{crate=$crate,location=$location}"</ID>
+    <ID>ExpressionBodySyntax:PlacedCrates.kt:PlacedCrates$return loaded.values.toList()</ID>
+    <ID>ExpressionBodySyntax:PlacedCrates.kt:PlacedCrates$return loaded[location]</ID>
+    <ID>ExpressionBodySyntax:PlacedCrates.kt:PlacedCrates$return loaded[location]?.crate</ID>
+    <ID>ExpressionBodySyntax:PlacedCrates.kt:return "${world!!.name.lowercase()}@$blockX,$blockY,$blockZ"</ID>
+    <ID>ExpressionBodySyntax:Pouch.kt:Pouch$return "Pouch{id=$id}"</ID>
+    <ID>ExpressionBodySyntax:Pouch.kt:Pouch$return Objects.hash(this.id)</ID>
+    <ID>ExpressionBodySyntax:Pouch.kt:Pouch$return id</ID>
+    <ID>ExpressionBodySyntax:PouchOpenEvent.kt:PouchOpenEvent$return Companion.handlers</ID>
+    <ID>ExpressionBodySyntax:PouchRewardEvent.kt:PouchRewardEvent$return Companion.handlers</ID>
+    <ID>ExpressionBodySyntax:Reward.kt:Reward$return Objects.hash(id)</ID>
+    <ID>ExpressionBodySyntax:Reward.kt:Reward$return baseDisplay.clone()</ID>
+    <ID>ExpressionBodySyntax:Reward.kt:Reward$return id</ID>
+    <ID>ExpressionBodySyntax:Reward.kt:Reward$return if (maxWins &gt; 0) player.profile.read(winsKey) else 0</ID>
+    <ID>ExpressionBodySyntax:RewardWeightEvent.kt:RewardWeightEvent$return Companion.handlers</ID>
+    <ID>ExpressionBodySyntax:RollCSGO.kt:RollCSGO$return scroll &lt; scrollTimes</ID>
+    <ID>ExpressionBodySyntax:RollChoose.kt:RollChoose$return !picked || timeSpentRevealing &lt;= revealTime</ID>
+    <ID>ExpressionBodySyntax:RollCycle.kt:RollCycle$return tick &lt; wait + duration</ID>
+    <ID>ExpressionBodySyntax:RollDelivery.kt:RollDelivery$return timeSpentHandingOver &lt;= handOverTime &amp;&amp; tick &lt; timeout</ID>
+    <ID>ExpressionBodySyntax:RollElimination.kt:RollElimination$return !isOnlyWinnerLeft() || timeSpentRevealing &lt;= revealTime</ID>
+    <ID>ExpressionBodySyntax:RollElimination.kt:RollElimination$return isEliminated.count { !it } &lt;= 1</ID>
+    <ID>ExpressionBodySyntax:RollEncircle.kt:RollEncircle$return state != EncircleState.DONE</ID>
+    <ID>ExpressionBodySyntax:RollFactory.kt:RollFactory$return id</ID>
+    <ID>ExpressionBodySyntax:RollFlash.kt:RollFlash$return tick &lt; wait + duration</ID>
+    <ID>ExpressionBodySyntax:RollHologram.kt:RollHologram$return lines.map { it.replace("%reward%", reward.displayName) }</ID>
+    <ID>ExpressionBodySyntax:RollHologram.kt:RollHologram$return tick &lt; wait + duration</ID>
+    <ID>ExpressionBodySyntax:RollInstant.kt:RollInstant$return false</ID>
+    <ID>ExpressionBodySyntax:RollMatch.kt:RollMatch$return !hasMatched() || timeSpentRevealing &lt;= revealTime</ID>
+    <ID>ExpressionBodySyntax:RollMatch.kt:RollMatch$return winningSlots.all { isScratched[it] }</ID>
+    <ID>ExpressionBodySyntax:RollOrbitCollapse.kt:RollOrbitCollapse$return state != OrbitCollapseState.DONE &amp;&amp; tick &lt; timeout</ID>
+    <ID>ExpressionBodySyntax:RollPick.kt:RollPick$return pickedIndex == null || timeSpentRevealing &lt;= soloRevealTime + revealTime</ID>
+    <ID>ExpressionBodySyntax:RollQuick.kt:RollQuick$return !done</ID>
+    <ID>ExpressionBodySyntax:RollRoulette.kt:RollRoulette$return (step &lt; steps || timeSpentRevealing &lt;= revealTime) &amp;&amp; tick &lt; timeout</ID>
+    <ID>ExpressionBodySyntax:RollSemiInstant.kt:RollSemiInstant$return false</ID>
+    <ID>ExpressionBodySyntax:RollSkyDrop.kt:RollSkyDrop$return state != SkyDropState.DONE &amp;&amp; tick &lt; timeout</ID>
+    <ID>ExpressionBodySyntax:RollStrike.kt:RollStrike$return tick &lt; strikeTick + revealTime</ID>
+    <ID>ExpressionBodySyntax:RollVortex.kt:RollVortex$return timeSpentHolding &lt;= rewardHoldTime &amp;&amp; tick &lt; timeout</ID>
+    <ID>ExpressionBodySyntax:SharedKey.kt:SharedKey$return "SharedKey{id=$id}"</ID>
+    <ID>ExpressionBodySyntax:SharedKey.kt:SharedKey$return Objects.hash(this.id)</ID>
+    <ID>ExpressionBodySyntax:SharedKey.kt:SharedKey$return id</ID>
+    <ID>ExpressionBodySyntax:SharedKey.kt:SharedKey$return itemStack != null &amp;&amp; testableItem.matches(itemStack)</ID>
+    <ID>ExpressionBodySyntax:SharedKey.kt:SharedKey$return player.profile.read(keysKey)</ID>
+    <ID>ExpressionBodySyntax:SharedKey.kt:SharedKey$return player.profile.read(toGetKey)</ID>
+    <ID>F001:PermissionMultipliers.kt:PermissionMultipliers$mutableListOf&lt;PermissionMultiplier&gt;()</ID>
+    <ID>F001:RollEncircle.kt:RollEncircle$mutableListOf&lt;Item&gt;()</ID>
+    <ID>F001:RollMatch.kt:RollMatch$mutableListOf&lt;Reward&gt;()</ID>
+    <ID>F001:RollOrbitCollapse.kt:RollOrbitCollapse$mutableListOf&lt;Item&gt;()</ID>
+    <ID>F001:RollRoulette.kt:RollRoulette$mutableListOf&lt;Item&gt;()</ID>
+    <ID>F001:RollSkyDrop.kt:RollSkyDrop$mutableListOf&lt;Item&gt;()</ID>
+    <ID>F001:RollVortex.kt:RollVortex$mutableListOf&lt;Item&gt;()</ID>
+    <ID>F004:CommandEnvoyLocate.kt:CommandEnvoyLocate$teleport(spawn.centeredLocation)</ID>
+    <ID>F004:Scheduling.kt:teleport(location)</ID>
+    <ID>F008:CircleParticleAnimation.kt:CircleParticleAnimation$height</ID>
+    <ID>F008:CircleParticleAnimation.kt:CircleParticleAnimation$radius</ID>
+    <ID>F008:CircleParticleAnimation.kt:CircleParticleAnimation$spiralsPerSecond</ID>
+    <ID>F008:DoubleSpiralParticleAnimation.kt:DoubleSpiralParticleAnimation$height</ID>
+    <ID>F008:DoubleSpiralParticleAnimation.kt:DoubleSpiralParticleAnimation$radius</ID>
+    <ID>F008:DoubleSpiralParticleAnimation.kt:DoubleSpiralParticleAnimation$risesPerSecond</ID>
+    <ID>F008:DoubleSpiralParticleAnimation.kt:DoubleSpiralParticleAnimation$spiralsPerSecond</ID>
+    <ID>F008:SpiralParticleAnimation.kt:SpiralParticleAnimation$height</ID>
+    <ID>F008:SpiralParticleAnimation.kt:SpiralParticleAnimation$radius</ID>
+    <ID>F008:SpiralParticleAnimation.kt:SpiralParticleAnimation$risesPerSecond</ID>
+    <ID>F008:SpiralParticleAnimation.kt:SpiralParticleAnimation$spiralsPerSecond</ID>
+    <ID>F008:TiltedRingsParticleAnimation.kt:TiltedRingsParticleAnimation$radius</ID>
+    <ID>F008:TiltedRingsParticleAnimation.kt:TiltedRingsParticleAnimation$spiralsPerSecond</ID>
+    <ID>F008:TiltedRingsParticleAnimation.kt:TiltedRingsParticleAnimation$xOffset</ID>
+    <ID>F008:TiltedRingsParticleAnimation.kt:TiltedRingsParticleAnimation$yOffset</ID>
+    <ID>F008:TwirlParticleAnimation.kt:TwirlParticleAnimation$endHeight</ID>
+    <ID>F008:TwirlParticleAnimation.kt:TwirlParticleAnimation$largeRadius</ID>
+    <ID>F008:TwirlParticleAnimation.kt:TwirlParticleAnimation$smallRadius</ID>
+    <ID>F008:TwirlParticleAnimation.kt:TwirlParticleAnimation$spiralsPerSecond</ID>
+    <ID>F008:TwirlParticleAnimation.kt:TwirlParticleAnimation$startHeight</ID>
+    <ID>F008:TwirlParticleAnimation.kt:TwirlParticleAnimation$ticks</ID>
+    <ID>F009:EnvoySessionStore.kt:EnvoySessionStore$@Synchronized</ID>
+    <ID>FunctionNameMaxLength:EnvoyScheduleTest.kt:EnvoyScheduleTest$@Test fun `interval fires once the tick count is reached`</ID>
+    <ID>FunctionNameMaxLength:EnvoyScheduleTest.kt:EnvoyScheduleTest$@Test fun `malformed times are ignored, not crashed on`</ID>
+    <ID>FunctionNameMaxLength:EnvoyScheduleTest.kt:EnvoyScheduleTest$@Test fun `no times and no interval is disabled`</ID>
+    <ID>FunctionNameMaxLength:EnvoyScheduleTest.kt:EnvoyScheduleTest$@Test fun `time based picks the soonest slot today`</ID>
+    <ID>FunctionNameMaxLength:EnvoyScheduleTest.kt:EnvoyScheduleTest$@Test fun `time based start does not fire on other minutes`</ID>
+    <ID>FunctionNameMaxLength:EnvoyScheduleTest.kt:EnvoyScheduleTest$@Test fun `time based start does not fire twice in the same minute`</ID>
+    <ID>FunctionNameMaxLength:EnvoyScheduleTest.kt:EnvoyScheduleTest$@Test fun `time based start fires on the matching minute`</ID>
+    <ID>FunctionNameMaxLength:EnvoyScheduleTest.kt:EnvoyScheduleTest$@Test fun `time based wraps to tomorrow after the last slot`</ID>
+    <ID>FunctionNameMaxLength:EnvoyScheduleTest.kt:EnvoyScheduleTest$@Test fun `times take priority over interval`</ID>
+    <ID>FunctionNameMaxLength:PendingRewardEntryTest.kt:PendingRewardEntryTest$@Test fun `legacy two-part entry is a crate`</ID>
+    <ID>FunctionNameMaxLength:PendingRewardEntryTest.kt:PendingRewardEntryTest$@Test fun `typed three-part entry keeps its type`</ID>
+    <ID>FunctionNameMaxLength:RadiusBoxTest.kt:RadiusBoxTest$@Test fun `negative radii are treated as zero`</ID>
+    <ID>FunctionNameMaxLength:RadiusBoxTest.kt:RadiusBoxTest$@Test fun `rolls cover the full range given enough samples`</ID>
+    <ID>FunctionNameMaxLength:RadiusBoxTest.kt:RadiusBoxTest$@Test fun `rolls stay inside the box on every axis`</ID>
+    <ID>FunctionNameMaxLength:RadiusBoxTest.kt:RadiusBoxTest$@Test fun `zero radius always rolls the centre`</ID>
+    <ID>FunctionNameMaxLength:RollValidationTest.kt:RollValidationTest$@Test fun `non-gui roll falls back to csgo with warning`</ID>
+    <ID>FunctionNameMaxLength:RollValidationTest.kt:RollValidationTest$@Test fun `unknown roll falls back to csgo for gui-only sources`</ID>
+    <ID>FunctionNameMaxLength:SpawnLocatorTest.kt:SpawnLocatorTest$@Test fun `shell offsets cover exactly the shell surface`</ID>
+    <ID>FunctionNameMaxLength:SpawnLocatorTest.kt:SpawnLocatorTest$@Test fun `shell offsets run nearest first`</ID>
+    <ID>FunctionNameMaxLength:TargetParserTest.kt:TargetParserTest$@Test fun `format builds the equivalent new command`</ID>
+    <ID>FunctionNameMaxLength:TargetParserTest.kt:TargetParserTest$@Test fun `id equal to a type token parses as new syntax`</ID>
+    <ID>FunctionNameMaxLength:TargetParserTest.kt:TargetParserTest$@Test fun `invalid amount is reported for legacy give`</ID>
+    <ID>FunctionNameMaxLength:TargetParserTest.kt:TargetParserTest$@Test fun `invalid amount is reported for optional variant slot`</ID>
+    <ID>FunctionNameMaxLength:TargetParserTest.kt:TargetParserTest$@Test fun `key defaults to virtual and amount can follow the id directly`</ID>
+    <ID>FunctionNameMaxLength:TargetParserTest.kt:TargetParserTest$@Test fun `legacy give defaults to a virtual key via the crate`</ID>
+    <ID>FunctionNameMaxLength:TargetParserTest.kt:TargetParserTest$@Test fun `legacy give physical with amount`</ID>
+    <ID>FunctionNameMaxLength:TargetParserTest.kt:TargetParserTest$@Test fun `no legacy support means unknown token is invalid type`</ID>
+    <ID>FunctionNameMaxLength:TargetParserTest.kt:TargetParserTest$@Test fun `type not allowed for this command`</ID>
+    <ID>FunctionNameMaxLength:TargetParserTest.kt:TargetParserTest$@Test fun `type token is case insensitive and variant is normalised`</ID>
+    <ID>FunctionNameMaxLength:WeightedTest.kt:WeightedTest$@Test fun `distribution roughly tracks weights`</ID>
+    <ID>FunctionNameMaxLength:WeightedTest.kt:WeightedTest$@Test fun `negative weights are treated as zero`</ID>
+    <ID>FunctionNameMaxLength:WeightedTest.kt:WeightedTest$@Test fun `single positive weight always wins`</ID>
+    <ID>FunctionNameMaxLength:WeightedTest.kt:WeightedTest$@Test fun `zero total weight still returns an element`</ID>
+    <ID>FunctionNameMinLength:TargetParserTest.kt:TargetParserTest$private fun ok</ID>
+    <ID>IC001:PlacedCrate.kt:PlacedCrate$// Anti ConcurrentModification</ID>
+    <ID>IC001:RollCSGO.kt:RollCSGO$// Make it 1!</ID>
+    <ID>IC001:RollEncircle.kt:RollEncircle$// One slot is reserved for the winning reward.</ID>
+    <ID>IC001:RollFlash.kt:RollFlash$// Make it stop in front of the player</ID>
+    <ID>IC001:RollOrbitCollapse.kt:RollOrbitCollapse$// One slot is reserved for the winning reward.</ID>
+    <ID>IC001:RollVortex.kt:RollVortex$// One slot is reserved for the winning reward.</ID>
+    <ID>IC002:CommandEnvoyEnd.kt:CommandEnvoyEnd$// Captured before end(), which clears the active session.</ID>
+    <ID>IC002:CommandGiveoffline.kt:CommandGiveoffline$// Inventory work has to happen on the player's region.</ID>
+    <ID>IC002:CommandSend.kt:CommandSend$// If args so far (excluding last) form a complete key name, suggest amounts</ID>
+    <ID>IC002:CompassListener.kt:CompassListener$// Refuse rather than burn the item on a blank locator bar. Uses the</ID>
+    <ID>IC002:CompassRenderer.kt:CompassRenderer$// Remove markers for crates that were collected, went out of range,</ID>
+    <ID>IC002:CompassRenderer.kt:CompassRenderer$// The session changed under them; stop tracking rather than</ID>
+    <ID>IC002:Crate.kt:Crate$// Goes here rather than open() to keep force opening working</ID>
+    <ID>IC002:Crate.kt:Crate$// Pad the scroll so it lines up</ID>
+    <ID>IC002:Crate.kt:Crate$// getRandomReward throws if every reward is exhausted; bail before it does.</ID>
+    <ID>IC002:EcoCratesPlugin.kt:EcoCratesPlugin$// Rebuild the session against the freshly loaded categories.</ID>
+    <ID>IC002:EnvoyBossBarManager.kt:EnvoyBossBarManager$// The countdown only has second, not tick, resolution, so rebuilding the title</ID>
+    <ID>IC002:EnvoyBossBarManager.kt:EnvoyBossBarManager$// The session changed under us (a new one started before the old bar was cleared,</ID>
+    <ID>IC002:EnvoyCompasses.kt:EnvoyCompasses$// Restore whatever the player had before, so the compass never</ID>
+    <ID>IC002:EnvoyCompasses.kt:EnvoyCompasses$// The client only renders waypoints within its receive range, so a</ID>
+    <ID>IC002:EnvoyLang.kt:// A rarity always knows its category, so this fills in even when the</ID>
+    <ID>IC002:EnvoyListener.kt:EnvoyListener$// Only now, after the collecting player's own effects and reward have</ID>
+    <ID>IC002:EnvoyListener.kt:EnvoyListener$// Pass the envoy placeholders down so the reward's OWN win-effects can</ID>
+    <ID>IC002:EnvoyListener.kt:EnvoyListener$// Remove the crate before giving the reward so effects that teleport</ID>
+    <ID>IC002:EnvoyPlaceholders.kt:EnvoyPlaceholders$// ---- Per-session leaderboard ----</ID>
+    <ID>IC002:EnvoyPlaceholders.kt:EnvoyPlaceholders$// ---- The active session ----</ID>
+    <ID>IC002:EnvoySchedule.kt:EnvoySchedule$// Guard against firing repeatedly for every check inside the same minute.</ID>
+    <ID>IC002:EnvoySchedule.kt:EnvoySchedule$// Wrap to tomorrow if today's slot has already passed.</ID>
+    <ID>IC002:EnvoyScheduleTest.kt:EnvoyScheduleTest$// 11:00 -&gt; one hour to 12:00 -&gt; 3600s -&gt; 72000 ticks</ID>
+    <ID>IC002:EnvoyScheduleTest.kt:EnvoyScheduleTest$// 13:00 -&gt; 23 hours to tomorrow's 12:00 -&gt; 82800s -&gt; 1656000 ticks</ID>
+    <ID>IC002:EnvoyScheduleTest.kt:EnvoyScheduleTest$// Interval would be long overdue, but times win, so nothing fires at 13:00.</ID>
+    <ID>IC002:EnvoyScheduler.kt:EnvoyScheduler$// One start per check, at most.</ID>
+    <ID>IC002:EnvoySessionStore.kt:EnvoySessionStore$// Collection counts drive the top-collector placeholder and the</ID>
+    <ID>IC002:EnvoySessions.kt:EnvoySessions$// Snapshot before despawnAll clears the spawn list.</ID>
+    <ID>IC002:EnvoyTicker.kt:EnvoyTicker$// Schedules only have minute resolution, so checking once a</ID>
+    <ID>IC002:EnvoyTicker.kt:EnvoyTicker$// The nearest-N set only changes as players walk or crates are</ID>
+    <ID>IC002:FlareListener.kt:FlareListener$// Check the price before consuming anything, so a player who can't</ID>
+    <ID>IC002:FlareListener.kt:FlareListener$// The category's own timer should keep running independently, so</ID>
+    <ID>IC002:PlacedCrate.kt:PlacedCrate$/* Spawn item if item is gone */</ID>
+    <ID>IC002:PlacedCrate.kt:PlacedCrate$// Roll animation items float here too, and adopting one would</ID>
+    <ID>IC002:PlacedCrate.kt:PlacedCrate$// clear the other items, but not roll animation items</ID>
+    <ID>IC002:PlacedCrateListener.kt:PlacedCrateListener$// Fix breaking</ID>
+    <ID>IC002:Pouch.kt:Pouch$// Failing conditions report through their own not-met-effects.</ID>
+    <ID>IC002:Pouch.kt:Pouch$// The held item may have changed since it was captured (e.g. another</ID>
+    <ID>IC002:ReRollGUI.kt:ReRollGUI$// Close the GUI so the roll animation plays without it.</ID>
+    <ID>IC002:ReRollGUI.kt:ReRollGUI$// Re-check affordability: balance may have changed since the GUI opened.</ID>
+    <ID>IC002:ReRollGUI.kt:ReRollGUI$// onClose runs inside closeInventory, so the flag has to be set first.</ID>
+    <ID>IC002:RerollProfile.kt:RerollProfile$// Clone so simultaneous rerolls by different players don't clobber</ID>
+    <ID>IC002:RerollProfile.kt:RerollProfile.Companion$// Legacy path: one free reroll, deprecated.</ID>
+    <ID>IC002:RollDelivery.kt:RollDelivery$// Entities without equipment carry the reward as a passenger instead.</ID>
+    <ID>IC002:RollDelivery.kt:RollDelivery$// Start behind the crate, relative to the player, so the courier flies towards them.</ID>
+    <ID>IC002:RollDelivery.kt:RollDelivery$// Step towards the player and turn to face them as it goes.</ID>
+    <ID>IC002:RollEncircle.kt:RollEncircle$// Do nothing</ID>
+    <ID>IC002:RollInstant.kt:RollInstant$// No finish.</ID>
+    <ID>IC002:RollInstant.kt:RollInstant$// No roll.</ID>
+    <ID>IC002:RollInstant.kt:RollInstant$// No tick.</ID>
+    <ID>IC002:RollMatch.kt:RollMatch$// Part of the set: the pitch climbs with every one found.</ID>
+    <ID>IC002:RollMatch.kt:RollMatch$// Show what was under the rest, so the near misses are visible.</ID>
+    <ID>IC002:RollMatch.kt:RollMatch$// Straight swap, so the cards are only ever rearranged - every reward keeps</ID>
+    <ID>IC002:RollOrbitCollapse.kt:RollOrbitCollapse$// Everything that isn't the winner falls inwards and is swallowed at the centre.</ID>
+    <ID>IC002:RollRoulette.kt:RollRoulette$// Landed: clear everything but the winner and let it sit there.</ID>
+    <ID>IC002:RollRoulette.kt:RollRoulette$// The ring keeps its original size even if an item is lost, otherwise the</ID>
+    <ID>IC002:RollSemiInstant.kt:RollSemiInstant$// No tick.</ID>
+    <ID>IC002:RollSession.kt:RollSession$/* Bukkit doesn't cancel repeating tasks that throw, so without this the tick counter would never advance and the roll would repeat the same tick (and its effects) forever. */</ID>
+    <ID>IC002:RollSkyDrop.kt:RollSkyDrop$// Decoys keep their gravity: they burst out of the crate and fall back down.</ID>
+    <ID>IC002:RollVortex.kt:RollVortex$// Throw out one loser per pass, keeping the winner until the funnel closes.</ID>
+    <ID>IC002:SharedKey.kt:SharedKey$// Resolve the crate to open (defaults to the crate with the same ID as the key)</ID>
+    <ID>IC002:SpawnLocator.kt:SpawnLocator$// Any z is on the shell as long as x or y is already at the radius.</ID>
+    <ID>IC002:SpawnLocator.kt:SpawnLocator$// Expand outwards a shell at a time so the nearest legal spot wins.</ID>
+    <ID>IC002:SpawnLocator.kt:SpawnLocator$// x and y are both inside the shell, so only the two z caps qualify.</ID>
+    <ID>IC002:SpawnedEnvoy.kt:SpawnedEnvoy$// The spawn locator guarantees the block was air before we placed it,</ID>
+    <ID>IC002:TargetParser.kt:TargetParser$// Optional variant omitted: whatever follows the ID is the amount.</ID>
+    <ID>IC002:WeightedTest.kt:WeightedTest$// "b" is the only element with positive weight, so it must always win.</ID>
+    <ID>IC002:WeightedTest.kt:WeightedTest$// 90/10 split; allow generous slack so the test is not flaky.</ID>
+    <ID>IM001:PlacedCrate.kt:PlacedCrate$com.willfp.ecocrates.reward.Reward</ID>
+    <ID>IM002:EnvoyFlare.kt:org.bukkit.persistence.PersistentDataType.STRING</ID>
+    <ID>IM002:SpecializedCratesConverter.kt:SpecializedCratesConverter$com.willfp.ecocrates.crate.placed.PlacedCrates.setAsCrate(it.location, it.crate)</ID>
+    <ID>ImplicitDefaultLocale:EnvoyBossBar.kt:EnvoyBossBar$"%d:%02d".format(totalSeconds / 60, totalSeconds % 60)</ID>
+    <ID>ImplicitDefaultLocale:EnvoyPlaceholders.kt:EnvoyPlaceholders$"%02d:%02d:%02d".format(hours, minutes, seconds)</ID>
+    <ID>ImplicitUnitReturnType:EnvoyCooldowns.kt:EnvoyCooldowns$fun applyCollection</ID>
+    <ID>ImplicitUnitReturnType:EnvoyCooldowns.kt:EnvoyCooldowns$fun applyFlare</ID>
+    <ID>ImplicitUnitReturnType:Reward.kt:Reward$fun giveTo</ID>
+    <ID>LabeledExpression:CommandEnvoyStart.kt:CommandEnvoyStart$@start</ID>
+    <ID>LabeledExpression:Crate.kt:Crate$@start</ID>
+    <ID>LabeledExpression:EnvoyCompass.kt:EnvoyCompass$@run</ID>
+    <ID>LabeledExpression:EnvoyFlare.kt:EnvoyFlare$@run</ID>
+    <ID>LabeledExpression:EnvoySessions.kt:EnvoySessions$@runGlobal</ID>
+    <ID>LabeledExpression:PouchItem.kt:PouchItem$@run</ID>
+    <ID>LabeledExpression:ReRollGUI.kt:ReRollGUI$@onLeftClick</ID>
+    <ID>LabeledExpression:RollSession.kt:RollSession$@runTimer</ID>
+    <ID>LabeledExpression:SharedKey.kt:SharedKey$@onLeftClick</ID>
+    <ID>LabeledExpression:SharedKey.kt:SharedKey$@onRightClick</ID>
+    <ID>LabeledExpression:SharedKey.kt:SharedKey$@onShiftRightClick</ID>
+    <ID>LabeledExpression:SharedKey.kt:SharedKey$@run</ID>
+    <ID>LabeledExpression:SpawnedEnvoy.kt:SpawnedEnvoy$@runOwned</ID>
+    <ID>LabeledExpression:SpecializedCratesConverter.kt:SpecializedCratesConverter$@mapNotNull</ID>
+    <ID>LongMethod:CompassListener.kt:CompassListener$@EventHandler fun handleUse</ID>
+    <ID>LongMethod:ConversionHelpers.kt:ConversionHelpers$fun createEmptyCrate: Config</ID>
+    <ID>LongMethod:CrateReloadedConverter.kt:CrateReloadedConverter$private fun convertCrate: ConvertedCrateConfig</ID>
+    <ID>LongMethod:Pouch.kt:Pouch$fun open</ID>
+    <ID>LongMethod:ReRollGUI.kt:ReRollGUI$fun open</ID>
+    <ID>LongMethod:RollEncircle.kt:RollEncircle$override fun tick</ID>
+    <ID>LongParameterList:Crate.kt:Crate$private fun makeRoll: Roll</ID>
+    <ID>LongParameterList:RollCycle.kt:RollCycle</ID>
+    <ID>LongParameterList:RollHologram.kt:RollHologram</ID>
+    <ID>LoopWithTooManyJumpStatements:CompassRenderer.kt:CompassRenderer$for</ID>
+    <ID>LoopWithTooManyJumpStatements:EnvoyCompasses.kt:EnvoyCompasses$for</ID>
+    <ID>LoopWithTooManyJumpStatements:EnvoyItems.kt:EnvoyItems$for</ID>
+    <ID>LoopWithTooManyJumpStatements:EnvoyPoints.kt:EnvoyPoints$for</ID>
+    <ID>LoopWithTooManyJumpStatements:EnvoyScheduler.kt:EnvoyScheduler$for</ID>
+    <ID>LoopWithTooManyJumpStatements:EnvoySessionStore.kt:EnvoySessionStore$for</ID>
+    <ID>LoopWithTooManyJumpStatements:InventoryTake.kt:InventoryTake$for</ID>
+    <ID>LoopWithTooManyJumpStatements:PendingRewards.kt:PendingRewards$for</ID>
+    <ID>LoopWithTooManyJumpStatements:PermissionMultipliers.kt:PermissionMultipliers$for</ID>
+    <ID>LoopWithTooManyJumpStatements:PlacedCrates.kt:PlacedCrates$for</ID>
+    <ID>MagicNumber:CircleParticleAnimation.kt:CircleParticleAnimation$20</ID>
+    <ID>MagicNumber:CommandEnvoySet.kt:CommandEnvoySet$4</ID>
+    <ID>MagicNumber:CompassListener.kt:CompassListener$20</ID>
+    <ID>MagicNumber:CompassListener.kt:CompassListener$20.0</ID>
+    <ID>MagicNumber:ConversionHelpers.kt:ConversionHelpers$25</ID>
+    <ID>MagicNumber:Crate.kt:Crate$35</ID>
+    <ID>MagicNumber:Crate.kt:Crate$4</ID>
+    <ID>MagicNumber:CrateReloadedConverter.kt:CrateReloadedConverter$10</ID>
+    <ID>MagicNumber:CrateReloadedConverter.kt:CrateReloadedConverter$3</ID>
+    <ID>MagicNumber:CrateReloadedConverter.kt:CrateReloadedConverter$8</ID>
+    <ID>MagicNumber:CrazyCratesConverter.kt:CrazyCratesConverter$5</ID>
+    <ID>MagicNumber:CrazyCratesConverter.kt:CrazyCratesConverter$8</ID>
+    <ID>MagicNumber:DoubleSpiralParticleAnimation.kt:DoubleSpiralParticleAnimation$20</ID>
+    <ID>MagicNumber:EnvoyBossBar.kt:EnvoyBossBar$20</ID>
+    <ID>MagicNumber:EnvoyBossBar.kt:EnvoyBossBar$60</ID>
+    <ID>MagicNumber:EnvoyBossBarManager.kt:EnvoyBossBarManager$20</ID>
+    <ID>MagicNumber:EnvoyCooldowns.kt:EnvoyCooldowns$50.0</ID>
+    <ID>MagicNumber:EnvoyCooldowns.kt:EnvoyCooldowns$50L</ID>
+    <ID>MagicNumber:EnvoyFireworks.kt:EnvoyFireworks.Companion$6</ID>
+    <ID>MagicNumber:EnvoyListener.kt:EnvoyListener$20.0</ID>
+    <ID>MagicNumber:EnvoyPlaceholders.kt:EnvoyPlaceholders$20</ID>
+    <ID>MagicNumber:EnvoyPoints.kt:3</ID>
+    <ID>MagicNumber:EnvoySchedule.kt:EnvoySchedule$20</ID>
+    <ID>MagicNumber:EnvoySchedule.kt:EnvoySchedule.Companion$23</ID>
+    <ID>MagicNumber:EnvoySchedule.kt:EnvoySchedule.Companion$59</ID>
+    <ID>MagicNumber:EnvoyTicker.kt:EnvoyTicker$10</ID>
+    <ID>MagicNumber:EnvoyTicker.kt:EnvoyTicker$20</ID>
+    <ID>MagicNumber:ExcellentCratesConverter.kt:ExcellentCratesConverter$8</ID>
+    <ID>MagicNumber:FlareListener.kt:FlareListener$20.0</ID>
+    <ID>MagicNumber:PendingRewardEntry.kt:PendingRewardEntry.Companion$3</ID>
+    <ID>MagicNumber:PlacedCrate.kt:PlacedCrate$0.5</ID>
+    <ID>MagicNumber:PlacedCrates.kt:3</ID>
+    <ID>MagicNumber:Reward.kt:Reward$100</ID>
+    <ID>MagicNumber:RollChoose.kt:RollChoose$0.7f</ID>
+    <ID>MagicNumber:RollChoose.kt:RollChoose$1.4f</ID>
+    <ID>MagicNumber:RollChoose.kt:RollChoose$10</ID>
+    <ID>MagicNumber:RollCycle.kt:RollCycle$0.5f</ID>
+    <ID>MagicNumber:RollDelivery.kt:RollDelivery$0.5</ID>
+    <ID>MagicNumber:RollDelivery.kt:RollDelivery$0.6f</ID>
+    <ID>MagicNumber:RollDelivery.kt:RollDelivery$1.2f</ID>
+    <ID>MagicNumber:RollDelivery.kt:RollDelivery$8</ID>
+    <ID>MagicNumber:RollElimination.kt:RollElimination$1.4f</ID>
+    <ID>MagicNumber:RollEncircle.kt:RollEncircle$0.2</ID>
+    <ID>MagicNumber:RollEncircle.kt:RollEncircle$0.25</ID>
+    <ID>MagicNumber:RollEncircle.kt:RollEncircle$0.5</ID>
+    <ID>MagicNumber:RollEncircle.kt:RollEncircle$4</ID>
+    <ID>MagicNumber:RollFlash.kt:RollFlash$0.5</ID>
+    <ID>MagicNumber:RollFlash.kt:RollFlash$0.5f</ID>
+    <ID>MagicNumber:RollFlash.kt:RollFlash$1.5</ID>
+    <ID>MagicNumber:RollFlash.kt:RollFlash$4</ID>
+    <ID>MagicNumber:RollFlash.kt:RollFlash$5</ID>
+    <ID>MagicNumber:RollHologram.kt:RollHologram$0.5f</ID>
+    <ID>MagicNumber:RollHologram.kt:RollHologram$1.2f</ID>
+    <ID>MagicNumber:RollMatch.kt:RollMatch$0.6</ID>
+    <ID>MagicNumber:RollMatch.kt:RollMatch$0.8</ID>
+    <ID>MagicNumber:RollMatch.kt:RollMatch$1.4f</ID>
+    <ID>MagicNumber:RollOrbitCollapse.kt:RollOrbitCollapse$0.25</ID>
+    <ID>MagicNumber:RollOrbitCollapse.kt:RollOrbitCollapse$0.3</ID>
+    <ID>MagicNumber:RollOrbitCollapse.kt:RollOrbitCollapse$0.6</ID>
+    <ID>MagicNumber:RollOrbitCollapse.kt:RollOrbitCollapse$0.8f</ID>
+    <ID>MagicNumber:RollOrbitCollapse.kt:RollOrbitCollapse$4</ID>
+    <ID>MagicNumber:RollPick.kt:RollPick$0.7f</ID>
+    <ID>MagicNumber:RollPick.kt:RollPick$0.8f</ID>
+    <ID>MagicNumber:RollPick.kt:RollPick$1.4f</ID>
+    <ID>MagicNumber:RollPick.kt:RollPick$10</ID>
+    <ID>MagicNumber:RollQuick.kt:RollQuick$0.1</ID>
+    <ID>MagicNumber:RollRoulette.kt:RollRoulette$0.01</ID>
+    <ID>MagicNumber:RollRoulette.kt:RollRoulette$0.1</ID>
+    <ID>MagicNumber:RollRoulette.kt:RollRoulette$1.4f</ID>
+    <ID>MagicNumber:RollRoulette.kt:RollRoulette$6</ID>
+    <ID>MagicNumber:RollSkyDrop.kt:RollSkyDrop$0.15</ID>
+    <ID>MagicNumber:RollSkyDrop.kt:RollSkyDrop$0.2</ID>
+    <ID>MagicNumber:RollSkyDrop.kt:RollSkyDrop$0.25</ID>
+    <ID>MagicNumber:RollSkyDrop.kt:RollSkyDrop$0.45</ID>
+    <ID>MagicNumber:RollSkyDrop.kt:RollSkyDrop$0.7</ID>
+    <ID>MagicNumber:RollSkyDrop.kt:RollSkyDrop$0.8f</ID>
+    <ID>MagicNumber:RollSkyDrop.kt:RollSkyDrop$0.9f</ID>
+    <ID>MagicNumber:RollSkyDrop.kt:RollSkyDrop$1.1f</ID>
+    <ID>MagicNumber:RollSkyDrop.kt:RollSkyDrop$5</ID>
+    <ID>MagicNumber:RollSlotMachine.kt:RollSlotMachine$0.8f</ID>
+    <ID>MagicNumber:RollSlotMachine.kt:RollSlotMachine$0.9f</ID>
+    <ID>MagicNumber:RollSlotMachine.kt:RollSlotMachine$1.4f</ID>
+    <ID>MagicNumber:RollStrike.kt:RollStrike$0.15</ID>
+    <ID>MagicNumber:RollStrike.kt:RollStrike$0.4</ID>
+    <ID>MagicNumber:RollStrike.kt:RollStrike$0.7f</ID>
+    <ID>MagicNumber:RollStrike.kt:RollStrike$0.8f</ID>
+    <ID>MagicNumber:RollStrike.kt:RollStrike$1.2f</ID>
+    <ID>MagicNumber:RollStrike.kt:RollStrike$3</ID>
+    <ID>MagicNumber:RollStrike.kt:RollStrike$40</ID>
+    <ID>MagicNumber:RollVortex.kt:RollVortex$0.3</ID>
+    <ID>MagicNumber:RollVortex.kt:RollVortex$0.6</ID>
+    <ID>MagicNumber:RollVortex.kt:RollVortex$0.6f</ID>
+    <ID>MagicNumber:RollVortex.kt:RollVortex$0.7f</ID>
+    <ID>MagicNumber:RollVortex.kt:RollVortex$0.8f</ID>
+    <ID>MagicNumber:RollVortex.kt:RollVortex$4</ID>
+    <ID>MagicNumber:SpecializedCratesConverter.kt:SpecializedCratesConverter$5</ID>
+    <ID>MagicNumber:SpecializedCratesConverter.kt:SpecializedCratesConverter$8</ID>
+    <ID>MagicNumber:SpiralParticleAnimation.kt:SpiralParticleAnimation$20</ID>
+    <ID>MagicNumber:TwirlParticleAnimation.kt:TwirlParticleAnimation$20</ID>
+    <ID>MaxChainedCallsOnSameLine:SpecializedCratesConverter.kt:SpecializedCratesConverter$crate.settings.keyItemHandler.item.stack.toLookupString()</ID>
+    <ID>MaxLineLength:ActiveRolls.kt:ActiveRolls$plugin.logger.warning("Error while force-finishing a crate roll: ${e.javaClass.simpleName}: ${e.message}")</ID>
+    <ID>MaxLineLength:CommandGiveoffline.kt:CommandGiveoffline$plugin.scheduler.on(online).run { target.give(online, resolved.id, resolved.variant, resolved.amount) }</ID>
+    <ID>MaxLineLength:Crate.kt:Crate$?:</ID>
+    <ID>MaxLineLength:EffectResetRewardWins.kt:EffectResetRewardWins$override val description = "Resets the player's win count for the specified reward, allowing it to be won again if it has a win limit."</ID>
+    <ID>MaxLineLength:FilterCrateReward.kt:FilterCrateReward$override val description = "Matches when the reward involved in the triggering event is one of the given reward IDs."</ID>
+    <ID>MaxLineLength:FilterEnvoyReward.kt:FilterEnvoyReward$override val description = "Matches when the reward involved in the triggering event is one of the given reward IDs."</ID>
+    <ID>MaxLineLength:PreviewGUI.kt:PreviewGUI$plugin.logger.warning("${source.sourceType.replaceFirstChar { it.uppercase() }} '${source.id}' preview references unknown reward '$rewardId'")</ID>
+    <ID>MaxLineLength:RollChoose.kt:RollChoose$addPageChanger(plugin.configYml, "rolls.choose.backwards-arrow", PageChanger.Direction.BACKWARDS, pageChangeSound)</ID>
+    <ID>MaxLineLength:RollChoose.kt:RollChoose$addPageChanger(plugin.configYml, "rolls.choose.forwards-arrow", PageChanger.Direction.FORWARDS, pageChangeSound)</ID>
+    <ID>MaxLineLength:RollEncircle.kt:RollEncircle$NumberUtils.fastCos((angle * index) + (spinsPerSecond * 2 * PI * timeSpentSpinning / 20)) * radius</ID>
+    <ID>MaxLineLength:RollEncircle.kt:RollEncircle$NumberUtils.fastSin((angle * index) + (spinsPerSecond * 2 * PI * timeSpentSpinning / 20)) * radius</ID>
+    <ID>MaxLineLength:TargetParser.kt:TargetParser$/** @return 1 if [raw] is absent, the parsed value if it's a valid amount (&gt;= 1), or null if it's present but invalid. */</ID>
+    <ID>MaxLineLength:TargetParserTest.kt:TargetParserTest$assertEquals("/ecocrates give Steve key demo_key physical 5", TargetParser.format("give", "Steve", target, true))</ID>
+    <ID>MissingPackageDeclaration:Keys.kt:.Keys.kt</ID>
+    <ID>MultilineLambdaItParameter:Crate.kt:Crate${ ParticleData( Particles.lookup(it.getString("particle")), ParticleAnimations.get(it.getString("animation")) ?: ParticleAnimations.SPIRAL ) }</ID>
+    <ID>MultilineLambdaItParameter:Crate.kt:Crate${ if (it == null) { plugin.logger.warning("Crate '$id' references unknown reward '$rewardId'") } }</ID>
+    <ID>MultilineLambdaItParameter:CrateReloadedConverter.kt:CrateReloadedConverter${ it.replace("/", "") .replace("{player}", "%player%") }</ID>
+    <ID>MultilineLambdaItParameter:CrateReloadedConverter.kt:CrateReloadedConverter${ val id = CrateAPI.getBlockCrateRegistrar().getFirstCrate(it).uuid.split(":")[0] val crate = Crates.getByID(id) if (crate != null) { CrateAPI.getBlockCrateRegistrar().getCrates(it).toList() .forEach { i1 -&gt; CrateAPI.getBlockCrateRegistrar().removeCrate(it, i1) } PlacedCrates.setAsCrate(it, crate) } }</ID>
+    <ID>MultilineLambdaItParameter:CrateReloadedConverter.kt:CrateReloadedConverter${ val salt = id + "_" + counter newRewards.add(convertReward(it, salt, row, col, crateConfig)) col++ if (col &gt;= 8) { col = 2 row++ } counter++ }</ID>
+    <ID>MultilineLambdaItParameter:CrazyCratesConverter.kt:CrazyCratesConverter${ val crate = Crates.getByID(it.crate.name.lowercase())!! PlacedCrates.setAsCrate(it.location, crate) }</ID>
+    <ID>MultilineLambdaItParameter:CrazyCratesConverter.kt:CrazyCratesConverter${ val salt = id + "_" + counter newRewards.add(convertReward(it, salt, row, col, result)) col++ if (col &gt;= 8) { col = 2 row++ } if (row &gt;= 5) { row = 2 } counter++ }</ID>
+    <ID>MultilineLambdaItParameter:EnvoyBossBarManager.kt:EnvoyBossBarManager${ bar = it barCategoryId = session.category.id }</ID>
+    <ID>MultilineLambdaItParameter:EnvoySession.kt:EnvoySession${ it.blockLocation.world == location.world &amp;&amp; it.blockLocation.blockX == location.blockX &amp;&amp; it.blockLocation.blockY == location.blockY &amp;&amp; it.blockLocation.blockZ == location.blockZ }</ID>
+    <ID>MultilineLambdaItParameter:EnvoySessionStore.kt:EnvoySessionStore${ mapOf( "location" to it.blockLocation.toEnvoyString(), "rarity" to it.rarity.id ) }</ID>
+    <ID>MultilineLambdaItParameter:ExcellentCratesConverter.kt:ExcellentCratesConverter${ it.replace("[CONSOLE]", "") .replace("[CONSOLE] ", "") .replace("[PLAYER]", "") .replace("[PLAYER] ", "") }</ID>
+    <ID>MultilineLambdaItParameter:ExcellentCratesConverter.kt:ExcellentCratesConverter${ val jank = mutableListOf&lt;Location&gt;() jank.addAll(it.blockLocations) jank.forEach { it1 -&gt; it.removeBlockLocation(it1) } jank.forEach { it1 -&gt; PlacedCrates.setAsCrate(it1, Crates.getByID(it.id)!!) } }</ID>
+    <ID>MultilineLambdaItParameter:ExcellentCratesConverter.kt:ExcellentCratesConverter${ val salt = id + "_" + counter newRewards.add(convertReward(it, salt, row, col, result)) col++ if (col &gt;= 8) { col = 2 row++ } counter++ }</ID>
+    <ID>MultilineLambdaItParameter:Reward.kt:Reward${ it.replace( "%chance%", formatChance(getPercentageChance(player, source.rewards)) ).replace( "%weight%", this.getWeight(player).toNiceString() ).formatEco(player) }</ID>
+    <ID>MultilineLambdaItParameter:SpawnedEnvoy.kt:SpawnedEnvoy${ it.block = blockData it.isPersistent = false it.teleportDuration = 1 }</ID>
+    <ID>MultilineLambdaItParameter:SpecializedCratesConverter.kt:SpecializedCratesConverter${ it.replace( "{name}", "%player%" ) }</ID>
+    <ID>MultilineLambdaItParameter:SpecializedCratesConverter.kt:SpecializedCratesConverter${ val salt = id + "_" + counter newRewards.add(convertReward(it, salt, row, col, result)) col++ if (col &gt;= 8) { col = 2 row++ } if (row &gt;= 5) { row = 2 } counter++ }</ID>
+    <ID>MultilineLambdaItParameter:TwirlParticleAnimation.kt:TwirlParticleAnimation${ if (tick % 2 == 0) { it.setX(-it.x) .setZ(-it.z) } else it }</ID>
+    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this.set("enabled", true) this.set("height", 1.5) this.set("delay", 30) this.set("name", "") }</ID>
+    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this.set("height", 1.5) this.set("ticks", 100) this.set("frames", emptyList&lt;Config&gt;()) }</ID>
+    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this.set("items", emptyList&lt;String&gt;()) this.set( "pattern", mutableListOf( "000000000", "000000000", "000000000", "000000000", "000000000", "000000000" ) ) }</ID>
+    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this.set("particle", "flame") this.set("animation", "spiral") }</ID>
+    <ID>NestedScopeFunctions:SharedKey.kt:SharedKey$apply { lore = config.getStrings("keygui.lore") .map { it.replace("%keys%", getVirtualKeys(player).toString()) } .map { it.formatEco(player) } }</ID>
+    <ID>NewLineAtEndOfFile:CommandConvert.kt:com.willfp.ecocrates.commands.CommandConvert.kt</ID>
+    <ID>NewLineAtEndOfFile:CommandSend.kt:com.willfp.ecocrates.commands.CommandSend.kt</ID>
+    <ID>NewLineAtEndOfFile:CrateEvent.kt:com.willfp.ecocrates.event.CrateEvent.kt</ID>
+    <ID>NewLineAtEndOfFile:CrateKeyListener.kt:com.willfp.ecocrates.util.CrateKeyListener.kt</ID>
+    <ID>NewLineAtEndOfFile:CrazyCratesConverter.kt:com.willfp.ecocrates.converters.impl.CrazyCratesConverter.kt</ID>
+    <ID>NewLineAtEndOfFile:EffectGiveVirtualKey.kt:com.willfp.ecocrates.libreforge.EffectGiveVirtualKey.kt</ID>
+    <ID>NewLineAtEndOfFile:EffectRewardWeightMultiplier.kt:com.willfp.ecocrates.libreforge.EffectRewardWeightMultiplier.kt</ID>
+    <ID>NewLineAtEndOfFile:ExcellentCratesConverter.kt:com.willfp.ecocrates.converters.impl.ExcellentCratesConverter.kt</ID>
+    <ID>NewLineAtEndOfFile:OpenMethod.kt:com.willfp.ecocrates.crate.OpenMethod.kt</ID>
+    <ID>NoNameShadowing:EnvoySessions.kt:EnvoySessions${ Location(world, it.x.toDouble(), it.y.toDouble(), it.z.toDouble()) }</ID>
+    <ID>NoNameShadowing:WeightedTest.kt:WeightedTest${ if (it == "a") -5.0 else 1.0 }</ID>
+    <ID>NoNameShadowing:WeightedTest.kt:WeightedTest${ if (it == "common") 9.0 else 1.0 }</ID>
+    <ID>NoNameShadowing:WeightedTest.kt:WeightedTest${ if (it == "heavy") 10.0 else 0.0 }</ID>
+    <ID>NonBooleanPropertyPrefixedWithIs:RollElimination.kt:RollElimination$private val isEliminated = BooleanArray(candidateCount)</ID>
+    <ID>NonBooleanPropertyPrefixedWithIs:RollMatch.kt:RollMatch$private val isScratched = BooleanArray(cardCount)</ID>
+    <ID>NullableBooleanCheck:GiveTarget.kt:PouchTarget$Pouches[id]?.item?.take(player, amount) ?: false</ID>
+    <ID>NullableToStringCall:ActiveRolls.kt:ActiveRolls$${e.message}</ID>
+    <ID>NullableToStringCall:EnvoySessions.kt:EnvoySessions$${candidate.world?.name}</ID>
+    <ID>OutdatedDocumentation:Crate.kt:Crate : KRegistrableRewardSource</ID>
+    <ID>OutdatedDocumentation:Crate.kt:Crate$fun open: Boolean</ID>
+    <ID>OutdatedDocumentation:EnvoyCategory.kt:EnvoyCategory : KRegistrable</ID>
+    <ID>OutdatedDocumentation:EnvoyFireworks.kt:EnvoyFireworks</ID>
+    <ID>OutdatedDocumentation:Pouch.kt:Pouch : RewardSourceKRegistrable</ID>
+    <ID>OutdatedDocumentation:Reward.kt:Reward : KRegistrable</ID>
+    <ID>OutdatedDocumentation:RollSession.kt:RollSession$fun start</ID>
+    <ID>OutdatedDocumentation:RollValidation.kt:RollValidation$fun resolveGuiRoll: RollResolution</ID>
+    <ID>OutdatedDocumentation:TargetParser.kt:ParsedTarget</ID>
+    <ID>PF012:CommandResetWins.kt:CommandResetWins$values()</ID>
+    <ID>PF012:CrateDisplay.kt:CrateDisplay$values()</ID>
+    <ID>PF012:CrateKeyListener.kt:CrateKeyListener$values()</ID>
+    <ID>PF012:EnvoyItems.kt:EnvoyItems$values()</ID>
+    <ID>PF012:EnvoyScheduler.kt:EnvoyScheduler$values()</ID>
+    <ID>PrintStackTrace:RollSession.kt:RollSession$e</ID>
+    <ID>PropertyUsedBeforeDeclaration:EnvoyCompasses.kt:EnvoyCompasses$MAX_RECEIVE_RANGE</ID>
+    <ID>PropertyUsedBeforeDeclaration:Roll.kt:Roll$crate</ID>
+    <ID>PropertyUsedBeforeDeclaration:RollMatch.kt:RollMatch$gui</ID>
+    <ID>PropertyUsedBeforeDeclaration:RollPick.kt:RollPick$gui</ID>
+    <ID>ReplaceSafeCallChainWithRun:EnvoyBossBarManager.kt:EnvoyBossBarManager$session?.category?.bossbar</ID>
+    <ID>ReplaceSafeCallChainWithRun:EnvoyCategory.kt:EnvoyCategory$config.getSubsectionOrNull("bossbar") ?.let { EnvoyBossBar(it) } ?.takeIf { it.enabled }</ID>
+    <ID>ReplaceSafeCallChainWithRun:EnvoyCategory.kt:EnvoyCategory$config.getSubsectionOrNull("compass") ?.let { EnvoyCompass(id, it) } ?.takeIf { it.enabled }</ID>
+    <ID>ReplaceSafeCallChainWithRun:EnvoyCategory.kt:EnvoyCategory$config.getSubsectionOrNull("start-flare") ?.let { EnvoyFlare(id, it) } ?.takeIf { it.enabled }</ID>
+    <ID>ReplaceSafeCallChainWithRun:EnvoyCompass.kt:this.itemMeta?.persistentDataContainer ?.get(compassKey, PersistentDataType.STRING)</ID>
+    <ID>ReplaceSafeCallChainWithRun:EnvoyFlare.kt:this.itemMeta?.persistentDataContainer ?.get(flareKey, org.bukkit.persistence.PersistentDataType.STRING)</ID>
+    <ID>ReplaceSafeCallChainWithRun:EnvoyPlaceholders.kt:EnvoyPlaceholders$EnvoySessions.active?.category?.id</ID>
+    <ID>ReplaceSafeCallChainWithRun:EnvoyPlaceholders.kt:EnvoyPlaceholders$EnvoySessions.active?.category?.name</ID>
+    <ID>ReplaceSafeCallChainWithRun:EnvoyPoints.kt:EnvoyPoints$location.world?.name?.lowercase()</ID>
+    <ID>ReplaceSafeCallChainWithRun:EnvoySessions.kt:EnvoySessions$active?.spawns?.size</ID>
+    <ID>ReplaceSafeCallChainWithRun:GiveTarget.kt:PouchTarget$Pouches[id]?.item?.adjustToGet(player, amount)</ID>
+    <ID>ReplaceSafeCallChainWithRun:GiveTarget.kt:PouchTarget$Pouches[id]?.item?.displayName</ID>
+    <ID>ReplaceSafeCallChainWithRun:GiveTarget.kt:PouchTarget$Pouches[id]?.item?.take(player, amount)</ID>
+    <ID>ReplaceSafeCallChainWithRun:PouchItem.kt:PouchItem.Companion$itemStack?.itemMeta?.persistentDataContainer ?.get(pouchIdKey, PersistentDataType.STRING)</ID>
+    <ID>ReplaceSafeCallChainWithRun:TargetCommands.kt:TargetCommands$failure.type?.variants?.joinToString(", ")</ID>
+    <ID>ReturnCount:CommandEnvoyLocate.kt:CommandEnvoyLocate$override fun onExecute</ID>
+    <ID>ReturnCount:CommandEnvoySet.kt:CommandEnvoySet$override fun onExecute</ID>
+    <ID>ReturnCount:CommandEnvoySet.kt:CommandEnvoySet$override fun tabComplete: List&lt;String&gt;</ID>
+    <ID>ReturnCount:CommandEnvoySet.kt:CommandEnvoySet$private fun resolveLocation: Location?</ID>
+    <ID>ReturnCount:CommandEnvoyStart.kt:CommandEnvoyStart$override fun onExecute</ID>
+    <ID>ReturnCount:CommandEnvoyUnset.kt:CommandEnvoyUnset$override fun onExecute</ID>
+    <ID>ReturnCount:CommandEnvoyUnset.kt:CommandEnvoyUnset$override fun tabComplete: List&lt;String&gt;</ID>
+    <ID>ReturnCount:CommandForceOpen.kt:CommandForceOpen$override fun onExecute</ID>
+    <ID>ReturnCount:CommandForceOpen.kt:CommandForceOpen$override fun tabComplete: List&lt;String&gt;</ID>
+    <ID>ReturnCount:CommandGive.kt:CommandGive$override fun onExecute</ID>
+    <ID>ReturnCount:CommandOpen.kt:CommandOpen$override fun onExecute</ID>
+    <ID>ReturnCount:CommandOpen.kt:CommandOpen$override fun tabComplete: List&lt;String&gt;</ID>
+    <ID>ReturnCount:CommandPreview.kt:CommandPreview$override fun onExecute</ID>
+    <ID>ReturnCount:CommandResetWins.kt:CommandResetWins$override fun tabComplete: List&lt;String&gt;</ID>
+    <ID>ReturnCount:CommandSend.kt:CommandSend$override fun onExecute</ID>
+    <ID>ReturnCount:CommandSend.kt:CommandSend$override fun tabComplete: List&lt;String&gt;</ID>
+    <ID>ReturnCount:CommandSet.kt:CommandSet$override fun onExecute</ID>
+    <ID>ReturnCount:CommandSet.kt:CommandSet$override fun tabComplete: List&lt;String&gt;</ID>
+    <ID>ReturnCount:CommandTake.kt:CommandTake$override fun onExecute</ID>
+    <ID>ReturnCount:CompassListener.kt:CompassListener$@EventHandler fun handleUse</ID>
+    <ID>ReturnCount:CompassRenderer.kt:CompassRenderer$private fun refreshFor</ID>
+    <ID>ReturnCount:Crate.kt:Crate$fun open: Boolean</ID>
+    <ID>ReturnCount:Crate.kt:Crate$fun openAllWithMethod</ID>
+    <ID>ReturnCount:Crate.kt:Crate$fun openWithMethod</ID>
+    <ID>ReturnCount:EffectGivePouch.kt:EffectGivePouch$override fun onTrigger: Boolean</ID>
+    <ID>ReturnCount:EffectGiveVirtualKey.kt:EffectGiveVirtualKey$override fun onTrigger: Boolean</ID>
+    <ID>ReturnCount:EffectResetRewardWins.kt:EffectResetRewardWins$override fun onTrigger: Boolean</ID>
+    <ID>ReturnCount:EnvoyCompasses.kt:EnvoyCompasses$fun activate: Boolean</ID>
+    <ID>ReturnCount:EnvoyCooldowns.kt:EnvoyCooldowns$private fun remaining: Int</ID>
+    <ID>ReturnCount:EnvoyFireworks.kt:EnvoyFireworks.Companion$internal fun parseColorOrNull: Color?</ID>
+    <ID>ReturnCount:EnvoyListener.kt:EnvoyListener$@EventHandler fun handleClick</ID>
+    <ID>ReturnCount:EnvoyPoints.kt:EnvoyPoints$fun remove: Boolean</ID>
+    <ID>ReturnCount:EnvoyPoints.kt:internal fun envoyLocationFromString: Location?</ID>
+    <ID>ReturnCount:EnvoySchedule.kt:EnvoySchedule$fun isDueAt: Boolean</ID>
+    <ID>ReturnCount:EnvoySchedule.kt:EnvoySchedule$fun ticksUntilNext: Int?</ID>
+    <ID>ReturnCount:EnvoySchedule.kt:EnvoySchedule.Companion$private fun parseTime: LocalTime?</ID>
+    <ID>ReturnCount:EnvoySessionStore.kt:EnvoySessionStore$@Synchronized fun load: EnvoySession?</ID>
+    <ID>ReturnCount:EnvoySessions.kt:EnvoySessions$fun collect: Boolean</ID>
+    <ID>ReturnCount:EnvoySessions.kt:EnvoySessions$fun restore</ID>
+    <ID>ReturnCount:EnvoySessions.kt:EnvoySessions$private fun rollRadiusCandidates: List&lt;Location&gt;</ID>
+    <ID>ReturnCount:FlareListener.kt:FlareListener$@EventHandler fun handleUse</ID>
+    <ID>ReturnCount:GiveTarget.kt:EnvoyTarget$override fun displayName: String</ID>
+    <ID>ReturnCount:GiveTarget.kt:EnvoyTarget$override fun give: Boolean</ID>
+    <ID>ReturnCount:GiveTarget.kt:EnvoyTarget$override fun take: Boolean</ID>
+    <ID>ReturnCount:GiveTarget.kt:EnvoyTarget$override fun validationError: String?</ID>
+    <ID>ReturnCount:GiveTarget.kt:KeyTarget$override fun give: Boolean</ID>
+    <ID>ReturnCount:GiveTarget.kt:KeyTarget$override fun take: Boolean</ID>
+    <ID>ReturnCount:GiveTarget.kt:PouchTarget$override fun give: Boolean</ID>
+    <ID>ReturnCount:PlacedCrateListener.kt:PlacedCrateListener$@EventHandler fun handleClick</ID>
+    <ID>ReturnCount:PlacedCrates.kt:private fun locationFromShortString: Location?</ID>
+    <ID>ReturnCount:Pouch.kt:Pouch$fun open</ID>
+    <ID>ReturnCount:PouchListener.kt:PouchListener$@EventHandler fun handleUse</ID>
+    <ID>ReturnCount:RerollProfile.kt:RerollProfile.Companion$fun fromCrateConfig: RerollProfile</ID>
+    <ID>ReturnCount:Reward.kt:Reward$fun getWeight: Double</ID>
+    <ID>ReturnCount:RollElimination.kt:RollElimination$override fun tick</ID>
+    <ID>ReturnCount:RollRoulette.kt:RollRoulette$override fun tick</ID>
+    <ID>ReturnCount:SpawnLocator.kt:SpawnLocator$fun resolve: Location?</ID>
+    <ID>ReturnCount:SpawnLocator.kt:SpawnLocator$private fun isLegal: Boolean</ID>
+    <ID>ReturnCount:SpawnedEnvoy.kt:SpawnedEnvoy$private fun tickFall: Boolean</ID>
+    <ID>ReturnCount:SpawnedEnvoy.kt:SpawnedEnvoy$private fun tickItemDisplay</ID>
+    <ID>ReturnCount:TargetCommands.kt:TargetCommands$fun resolveGive: ResolvedTarget?</ID>
+    <ID>ReturnCount:TargetParser.kt:TargetParser$fun parse: TargetParseResult</ID>
+    <ID>ReturnCount:TargetParser.kt:TargetParser$private fun parseLegacyGive: TargetParseResult</ID>
+    <ID>ReturnCount:Weighted.kt:fun &lt;T&gt; Collection&lt;T&gt;.weightedRandom: T?</ID>
+    <ID>SpreadOperator:CommandEnvoyLocate.kt:CommandEnvoyLocate$(*TextComponent.fromLegacyText(StringUtils.format(line)))</ID>
+    <ID>SpreadOperator:KeyGUI.kt:KeyGUI$(maskItems, *maskPattern)</ID>
+    <ID>SpreadOperator:PreviewGUI.kt:PreviewGUI$( MaskItems.fromItemNames(page.getStrings("mask.items")), *page.getStrings("mask.pattern").toTypedArray() )</ID>
+    <ID>SpreadOperator:ReRollGUI.kt:ReRollGUI$( MaskItems.fromItemNames(plugin.configYml.getStrings("reroll.mask.items")), *plugin.configYml.getStrings("reroll.mask.pattern").toTypedArray() )</ID>
+    <ID>SpreadOperator:RollChoose.kt:RollChoose$( MaskItems.fromItemNames(plugin.configYml.getStrings("rolls.choose.mask.items")), *pattern.toTypedArray() )</ID>
+    <ID>TooGenericExceptionCaught:ActiveRolls.kt:ActiveRolls$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:RollSession.kt:RollSession$e: Exception</ID>
+    <ID>TooManyFunctions:Crate.kt:Crate : KRegistrableRewardSource</ID>
+    <ID>TooManyFunctions:EnvoySessions.kt:EnvoySessions</ID>
+    <ID>TooManyFunctions:Reward.kt:Reward : KRegistrable</ID>
+    <ID>UnderscoresInNumericLiterals:EnvoyCompasses.kt:EnvoyCompasses$60000000.0</ID>
+    <ID>UnderscoresInNumericLiterals:EnvoySchedule.kt:EnvoySchedule$86400</ID>
+    <ID>UnderscoresInNumericLiterals:EnvoyScheduleTest.kt:EnvoyScheduleTest$1656000</ID>
+    <ID>UnderscoresInNumericLiterals:EnvoyScheduleTest.kt:EnvoyScheduleTest$72000</ID>
+    <ID>UnnamedParameterUse:ChunkKey.kt:ChunkKey</ID>
+    <ID>UnnamedParameterUse:CommandEnvoyLocate.kt:CommandEnvoyLocate$replace</ID>
+    <ID>UnnamedParameterUse:CommandEnvoySet.kt:CommandEnvoySet$replace</ID>
+    <ID>UnnamedParameterUse:CommandEnvoyStart.kt:CommandEnvoyStart$replace</ID>
+    <ID>UnnamedParameterUse:CommandEnvoyUnset.kt:CommandEnvoyUnset$replace</ID>
+    <ID>UnnamedParameterUse:CommandGive.kt:CommandGive$displayName</ID>
+    <ID>UnnamedParameterUse:CommandGive.kt:CommandGive$give</ID>
+    <ID>UnnamedParameterUse:CommandGive.kt:CommandGive$replace</ID>
+    <ID>UnnamedParameterUse:CommandGive.kt:CommandGive$warnIfLegacy</ID>
+    <ID>UnnamedParameterUse:CommandGiveall.kt:CommandGiveall$displayName</ID>
+    <ID>UnnamedParameterUse:CommandGiveall.kt:CommandGiveall$give</ID>
+    <ID>UnnamedParameterUse:CommandGiveall.kt:CommandGiveall$replace</ID>
+    <ID>UnnamedParameterUse:CommandGiveoffline.kt:CommandGiveoffline$displayName</ID>
+    <ID>UnnamedParameterUse:CommandGiveoffline.kt:CommandGiveoffline$give</ID>
+    <ID>UnnamedParameterUse:CommandGiveoffline.kt:CommandGiveoffline$queue</ID>
+    <ID>UnnamedParameterUse:CommandGiveoffline.kt:CommandGiveoffline$replace</ID>
+    <ID>UnnamedParameterUse:CommandReload.kt:CommandReload$replace</ID>
+    <ID>UnnamedParameterUse:CommandResetWins.kt:CommandResetWins$replace</ID>
+    <ID>UnnamedParameterUse:CommandSend.kt:CommandSend$replace</ID>
+    <ID>UnnamedParameterUse:CommandTake.kt:CommandTake$displayName</ID>
+    <ID>UnnamedParameterUse:CommandTake.kt:CommandTake$replace</ID>
+    <ID>UnnamedParameterUse:CommandTake.kt:CommandTake$take</ID>
+    <ID>UnnamedParameterUse:CommandTake.kt:CommandTake$warnIfLegacy</ID>
+    <ID>UnnamedParameterUse:CompassListener.kt:CompassListener$replace</ID>
+    <ID>UnnamedParameterUse:Crate.kt:Crate$NamedValue</ID>
+    <ID>UnnamedParameterUse:Crate.kt:Crate$replace</ID>
+    <ID>UnnamedParameterUse:CrateKeyListener.kt:CrateKeyListener$replace</ID>
+    <ID>UnnamedParameterUse:CrateReloadedConverter.kt:CrateReloadedConverter$replace</ID>
+    <ID>UnnamedParameterUse:EffectGivePouch.kt:EffectGivePouch$require</ID>
+    <ID>UnnamedParameterUse:EffectGiveVirtualKey.kt:EffectGiveVirtualKey$require</ID>
+    <ID>UnnamedParameterUse:EffectResetRewardWins.kt:EffectResetRewardWins$require</ID>
+    <ID>UnnamedParameterUse:EffectRewardWeightMultiplier.kt:EffectRewardWeightMultiplier$require</ID>
+    <ID>UnnamedParameterUse:EffectStartEnvoy.kt:EffectStartEnvoy$require</ID>
+    <ID>UnnamedParameterUse:EnvoyBossBar.kt:EnvoyBossBar$coerceIn</ID>
+    <ID>UnnamedParameterUse:EnvoyBossBar.kt:EnvoyBossBar$replace</ID>
+    <ID>UnnamedParameterUse:EnvoyCategory.kt:EnvoyCategory$NamedValue</ID>
+    <ID>UnnamedParameterUse:EnvoyCategory.kt:EnvoyCategory$nextInt</ID>
+    <ID>UnnamedParameterUse:EnvoyItems.kt:EnvoyItems$minOf</ID>
+    <ID>UnnamedParameterUse:EnvoyItems.kt:EnvoyItems$replace</ID>
+    <ID>UnnamedParameterUse:EnvoyLang.kt:replace</ID>
+    <ID>UnnamedParameterUse:EnvoyListener.kt:EnvoyListener$NamedValue</ID>
+    <ID>UnnamedParameterUse:EnvoyListener.kt:EnvoyListener$giveTo</ID>
+    <ID>UnnamedParameterUse:EnvoyListener.kt:EnvoyListener$replace</ID>
+    <ID>UnnamedParameterUse:EnvoyRarity.kt:EnvoyRarity$NamedValue</ID>
+    <ID>UnnamedParameterUse:EnvoyScheduleTest.kt:EnvoyScheduleTest$assertEquals</ID>
+    <ID>UnnamedParameterUse:EnvoyScheduleTest.kt:EnvoyScheduleTest$isDueAt</ID>
+    <ID>UnnamedParameterUse:ExcellentCratesConverter.kt:ExcellentCratesConverter$replace</ID>
+    <ID>UnnamedParameterUse:FlareListener.kt:FlareListener$replace</ID>
+    <ID>UnnamedParameterUse:GiveTarget.kt:EnvoyTarget$replace</ID>
+    <ID>UnnamedParameterUse:InventoryTake.kt:InventoryTake$minOf</ID>
+    <ID>UnnamedParameterUse:OpenMethod.kt:OpenMethod.Companion.&lt;no name provided&gt;$replace</ID>
+    <ID>UnnamedParameterUse:PendingRewardEntry.kt:PendingRewardEntry.Companion$PendingRewardEntry</ID>
+    <ID>UnnamedParameterUse:PendingRewardEntryTest.kt:PendingRewardEntryTest$PendingRewardEntry</ID>
+    <ID>UnnamedParameterUse:PendingRewardEntryTest.kt:PendingRewardEntryTest$assertEquals</ID>
+    <ID>UnnamedParameterUse:PendingRewards.kt:PendingRewards$PendingRewardEntry</ID>
+    <ID>UnnamedParameterUse:PendingRewards.kt:PendingRewards$replace</ID>
+    <ID>UnnamedParameterUse:PendingRewards.kt:PendingRewards$resolve</ID>
+    <ID>UnnamedParameterUse:PlacedCrate.kt:PlacedCrate$replace</ID>
+    <ID>UnnamedParameterUse:Pouch.kt:Pouch$NamedValue</ID>
+    <ID>UnnamedParameterUse:Pouch.kt:Pouch$replace</ID>
+    <ID>UnnamedParameterUse:PouchItem.kt:PouchItem$replace</ID>
+    <ID>UnnamedParameterUse:RadiusBox.kt:RadiusBox$BlockPos</ID>
+    <ID>UnnamedParameterUse:RadiusBox.kt:RadiusBox$nextInt</ID>
+    <ID>UnnamedParameterUse:RadiusBox.kt:RadiusBox.Companion$BlockPos</ID>
+    <ID>UnnamedParameterUse:RadiusBox.kt:RadiusBox.Companion$RadiusBox</ID>
+    <ID>UnnamedParameterUse:RadiusBoxTest.kt:RadiusBoxTest$BlockPos</ID>
+    <ID>UnnamedParameterUse:RadiusBoxTest.kt:RadiusBoxTest$RadiusBox</ID>
+    <ID>UnnamedParameterUse:RadiusBoxTest.kt:RadiusBoxTest$assertEquals</ID>
+    <ID>UnnamedParameterUse:ReRollGUI.kt:ReRollGUI$replace</ID>
+    <ID>UnnamedParameterUse:Reward.kt:Reward$NamedValue</ID>
+    <ID>UnnamedParameterUse:Reward.kt:Reward$giveTo</ID>
+    <ID>UnnamedParameterUse:Reward.kt:Reward$replace</ID>
+    <ID>UnnamedParameterUse:RollChoose.kt:RollChoose$replace</ID>
+    <ID>UnnamedParameterUse:RollElimination.kt:RollElimination$coerceIn</ID>
+    <ID>UnnamedParameterUse:RollEncircle.kt:RollEncircle$lerp</ID>
+    <ID>UnnamedParameterUse:RollHologram.kt:RollHologram$replace</ID>
+    <ID>UnnamedParameterUse:RollMatch.kt:RollMatch$coerceIn</ID>
+    <ID>UnnamedParameterUse:RollMatch.kt:RollMatch$replace</ID>
+    <ID>UnnamedParameterUse:RollOrbitCollapse.kt:RollOrbitCollapse$lerp</ID>
+    <ID>UnnamedParameterUse:RollPick.kt:RollPick$coerceIn</ID>
+    <ID>UnnamedParameterUse:RollPick.kt:RollPick$replace</ID>
+    <ID>UnnamedParameterUse:RollStrike.kt:RollStrike$lerp</ID>
+    <ID>UnnamedParameterUse:RollValidation.kt:RollValidation$RollResolution</ID>
+    <ID>UnnamedParameterUse:RollValidationTest.kt:RollValidationTest$assertEquals</ID>
+    <ID>UnnamedParameterUse:RollVortex.kt:RollVortex$lerp</ID>
+    <ID>UnnamedParameterUse:SharedKey.kt:SharedKey$replace</ID>
+    <ID>UnnamedParameterUse:SpawnLocator.kt:SpawnLocator$Triple</ID>
+    <ID>UnnamedParameterUse:SpawnLocatorTest.kt:SpawnLocatorTest$assertEquals</ID>
+    <ID>UnnamedParameterUse:SpawnLocatorTest.kt:SpawnLocatorTest$maxOf</ID>
+    <ID>UnnamedParameterUse:SpawnedEnvoy.kt:SpawnedEnvoy$replace</ID>
+    <ID>UnnamedParameterUse:SpecializedCratesConverter.kt:SpecializedCratesConverter$replace</ID>
+    <ID>UnnamedParameterUse:TargetCommands.kt:TargetCommands$replace</ID>
+    <ID>UnnamedParameterUse:TargetCommands.kt:TargetCommands$validationError</ID>
+    <ID>UnnamedParameterUse:TargetParserTest.kt:TargetParserTest$ParsedTarget</ID>
+    <ID>UnnamedParameterUse:TargetParserTest.kt:TargetParserTest$assertEquals</ID>
+    <ID>UnnamedParameterUse:TargetParserTest.kt:TargetParserTest$format</ID>
+    <ID>UnnamedParameterUse:TwirlParticleAnimation.kt:TwirlParticleAnimation$lerp</ID>
+    <ID>UnnamedParameterUse:WeightedTest.kt:WeightedTest$assertEquals</ID>
+    <ID>UnnecessaryApply:SharedKey.kt:SharedKey$apply { itemMeta = itemMeta?.apply { lore = config.getStrings("keygui.lore") .map { it.replace("%keys%", getVirtualKeys(player).toString()) } .map { it.formatEco(player) } } }</ID>
+    <ID>UnnecessaryLet:PlacedCrate.kt:PlacedCrate$let { item -&gt; item.getNearbyEntities(0.5, 0.5, 0.5).filterIsInstance&lt;Item&gt;() .filter { !it.hasGravity() &amp;&amp; !RollItems.isRollItem(it) } .forEach { it.remove() } }</ID>
+    <ID>UnnecessaryParentheses:CommandSend.kt:CommandSend$(!recipient.hasPlayedBefore() &amp;&amp; !recipient.isOnline)</ID>
+    <ID>UnnecessaryParentheses:CrateDisplay.kt:CrateDisplay$(crate.location.isChunkLoaded)</ID>
+    <ID>UnnecessaryParentheses:EnvoyCooldowns.kt:EnvoyCooldowns$(ticks * 50L)</ID>
+    <ID>UnnecessaryParentheses:EnvoyPlaceholders.kt:EnvoyPlaceholders$(totalSeconds % 3600)</ID>
+    <ID>UnnecessaryParentheses:ExtraMath.kt:(end * fraction)</ID>
+    <ID>UnnecessaryParentheses:ExtraMath.kt:(start * (1 - fraction))</ID>
+    <ID>UnnecessaryParentheses:PlacedCrate.kt:PlacedCrate$(tick % crate.hologramTicks)</ID>
+    <ID>UnnecessaryParentheses:Reward.kt:Reward$(weight / totalWeight)</ID>
+    <ID>UnnecessaryParentheses:RollCSGO.kt:RollCSGO$(9 - i)</ID>
+    <ID>UnnecessaryParentheses:RollElimination.kt:RollElimination$((9 - candidateCount) / 2)</ID>
+    <ID>UnnecessaryParentheses:RollEncircle.kt:RollEncircle$(angle * index)</ID>
+    <ID>UnnecessaryParentheses:RollEncircle.kt:RollEncircle$(spinsPerSecond * 2 * PI * timeSpentSpinning / 20)</ID>
+    <ID>UnnecessaryParentheses:RollHologram.kt:RollHologram$(duration / interval)</ID>
+    <ID>UnnecessaryParentheses:RollMatch.kt:RollMatch$(((9 - count) / 2) + 1 + position)</ID>
+    <ID>UnnecessaryParentheses:RollMatch.kt:RollMatch$((9 - count) / 2)</ID>
+    <ID>UnnecessaryParentheses:RollMatch.kt:RollMatch$(0.6 * found / toMatch)</ID>
+    <ID>UnnecessaryParentheses:RollMatch.kt:RollMatch$(row + 2)</ID>
+    <ID>UnnecessaryParentheses:RollOrbitCollapse.kt:RollOrbitCollapse$(angle * index)</ID>
+    <ID>UnnecessaryParentheses:RollOrbitCollapse.kt:RollOrbitCollapse$(spinsPerSecond * 2 * PI * ticksElapsed / 20)</ID>
+    <ID>UnnecessaryParentheses:RollPick.kt:RollPick$((9 - boxCount) / 2)</ID>
+    <ID>UnnecessaryParentheses:RollSlotMachine.kt:RollSlotMachine$(index * reelStopDelay)</ID>
+    <ID>UnnecessaryParentheses:RollSlotMachine.kt:RollSlotMachine$(pitchStep * stoppedCount)</ID>
+    <ID>UnnecessaryParentheses:RollStrike.kt:RollStrike$(riseTime / interval)</ID>
+    <ID>UnnecessaryParentheses:RollVortex.kt:RollVortex$(angle * index)</ID>
+    <ID>UnnecessaryParentheses:RollVortex.kt:RollVortex$(spinsPerSecond * 2 * PI * tick / 20)</ID>
+    <ID>UnnecessaryParentheses:TwirlParticleAnimation.kt:TwirlParticleAnimation$(tick % ticks)</ID>
+    <ID>UnsafeCallOnNullableType:Crate.kt:Crate$Rolls.get(config.getString("roll"))!!</ID>
+    <ID>UnsafeCallOnNullableType:CrazyCratesConverter.kt:CrazyCratesConverter$Crates.getByID(it.crate.name.lowercase())!!</ID>
+    <ID>UnsafeCallOnNullableType:ExcellentCratesConverter.kt:ExcellentCratesConverter$Crates.getByID(it.id)!!</ID>
+    <ID>UnsafeCallOnNullableType:ExcellentCratesConverter.kt:ExcellentCratesConverter$ExcellentCratesAPI.getKeyManager().getKeyById(crate.keyIds.first())!!</ID>
+    <ID>UnsafeCallOnNullableType:Pouch.kt:Pouch$Rolls.get(resolution.id)!!</ID>
+    <ID>UnusedImport:CommandReload.kt:import com.willfp.ecocrates.crate.Crate</ID>
+    <ID>UnusedPrivateProperty:EnvoyBossBar.kt:EnvoyBossBar$private val config: Config</ID>
+    <ID>UnusedPrivateProperty:EnvoyCompass.kt:EnvoyCompass$private val config: Config</ID>
+    <ID>UnusedPrivateProperty:EnvoyFlare.kt:EnvoyFlare$private val config: Config</ID>
+    <ID>UnusedPrivateProperty:EnvoyRarity.kt:EnvoyRarity$private val config: Config</ID>
+    <ID>UseCheckOrError:Crate.kt:Crate$throw IllegalStateException("Crate '$id' references unknown key '${config.getString("key")}' - make sure a matching file exists in the keys/ folder")</ID>
+    <ID>UseCheckOrError:RewardSource.kt:RewardSource$throw IllegalStateException("$sourceType '$id' has no rewards")</ID>
+    <ID>UseCheckOrError:Roll.kt:Roll$throw IllegalStateException("Roll source '${source.id}' is not a crate")</ID>
+    <ID>UseCheckOrError:RollOptions.kt:RollOptions$throw IllegalStateException("Roll source '${source.id}' is not a crate")</ID>
+    <ID>UseEmptyCounterpart:CrateReloadedConverter.kt:CrateReloadedConverter$listOf&lt;String&gt;()</ID>
+    <ID>UseOrEmpty:CommandGive.kt:CommandGive$args.firstOrNull() ?: ""</ID>
+    <ID>UseOrEmpty:CommandTake.kt:CommandTake$args.firstOrNull() ?: ""</ID>
+    <ID>UseOrEmpty:EnvoyPlaceholders.kt:EnvoyPlaceholders$EnvoySessions.active?.category?.id ?: ""</ID>
+    <ID>UseOrEmpty:PlacedCrate.kt:PlacedCrate$crate.hologramFrames.firstOrNull()?.lines ?: emptyList()</ID>
+    <ID>UseOrEmpty:TargetCommands.kt:TargetCommands$failure.type?.variants?.joinToString(", ") ?: ""</ID>
+    <ID>UseOrEmpty:TargetCommands.kt:TargetCommands$type?.let { idsFor(it) } ?: emptyList()</ID>
+    <ID>WildcardImport:PlacedCrateListener.kt:import java.util.*</ID>
+  </CurrentIssues>
+</SmellBaseline>
