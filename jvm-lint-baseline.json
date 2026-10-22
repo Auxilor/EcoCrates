@@ -1,0 +1,250 @@
+{
+  "version": 1,
+  "findings": [
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/Crate.kt",
+      "message": "Unused function `adjustKeysToGet`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/placed/PlacedCrate.kt",
+      "message": "Unused property `chunkKey`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/placed/particle/ParticleAnimations.kt",
+      "message": "Unused property `CIRCLE`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/placed/particle/ParticleAnimations.kt",
+      "message": "Unused property `DOUBLE_SPIRAL`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/placed/particle/ParticleAnimations.kt",
+      "message": "Unused property `TILTED_RINGS`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/placed/particle/ParticleAnimations.kt",
+      "message": "Unused property `TWIRL`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Roll.kt",
+      "message": "Unused property `isReroll`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollCSGO.kt",
+      "message": "Unused class `RollCSGO`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollChoose.kt",
+      "message": "Unused class `RollChoose`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollCycle.kt",
+      "message": "Unused class `RollCycle`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollDelivery.kt",
+      "message": "Unused class `RollDelivery`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollElimination.kt",
+      "message": "Unused class `RollElimination`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollEncircle.kt",
+      "message": "Unused class `RollEncircle`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollFlash.kt",
+      "message": "Unused class `RollFlash`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollHologram.kt",
+      "message": "Unused class `RollHologram`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollInstant.kt",
+      "message": "Unused class `RollInstant`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollMatch.kt",
+      "message": "Unused class `RollMatch`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollOrbitCollapse.kt",
+      "message": "Unused class `RollOrbitCollapse`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollPick.kt",
+      "message": "Unused class `RollPick`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollQuick.kt",
+      "message": "Unused class `RollQuick`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollRoulette.kt",
+      "message": "Unused class `RollRoulette`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollSemiInstant.kt",
+      "message": "Unused class `RollSemiInstant`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollSkyDrop.kt",
+      "message": "Unused class `RollSkyDrop`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollSlotMachine.kt",
+      "message": "Unused class `RollSlotMachine`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollStrike.kt",
+      "message": "Unused class `RollStrike`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/RollVortex.kt",
+      "message": "Unused class `RollVortex`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `CHOOSE`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `CYCLE`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `DELIVERY`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `ELIMINATION`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `ENCIRCLE`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `FLASH`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `HOLOGRAM`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `INSTANT`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `MATCH`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `ORBIT_COLLAPSE`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `PICK`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `QUICK`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `ROULETTE`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `SEMI_INSTANT`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `SKY_DROP`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `SLOT_MACHINE`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `STRIKE`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/crate/roll/Rolls.kt",
+      "message": "Unused property `VORTEX`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/envoy/EnvoyItems.kt",
+      "message": "Unused property `tokens`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/envoy/session/EnvoyTicker.kt",
+      "message": "Unused function `stop`"
+    },
+    {
+      "code": "U003",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/event/CrateOpenEvent.kt",
+      "message": "Unused property `isReroll`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/reward/RewardSource.kt",
+      "message": "Unused object `SourceTypes`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/ecocrates/util/ExactTestableItem.kt",
+      "message": "Unused class `ExactTestableItem`"
+    }
+  ]
+}
