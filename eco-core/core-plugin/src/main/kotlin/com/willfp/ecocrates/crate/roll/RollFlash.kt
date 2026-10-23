@@ -94,11 +94,11 @@ class RollFlash private constructor(
     override fun onFinish() {
         player.removePotionEffect(PotionEffectType.BLINDNESS)
 
-        previousBlindness?.let {
-            val remaining = it.duration - (player.world.gameTime - startTime).toInt()
+        previousBlindness?.let { effect ->
+            val remaining = effect.duration - (player.world.gameTime - startTime).toInt()
             when {
-                it.isInfinite -> player.addPotionEffect(it)
-                remaining > 0 -> player.addPotionEffect(it.withDuration(remaining))
+                effect.isInfinite -> player.addPotionEffect(effect)
+                remaining > 0 -> player.addPotionEffect(effect.withDuration(remaining))
             }
         }
 
