@@ -83,7 +83,7 @@ class PlacedCrate(
         var frameToShow: HologramFrame? = null
 
         for (hologramFrame in crate.hologramFrames) {
-            if (hologramFrame.tick < (tick % crate.hologramTicks)) {
+            if (hologramFrame.tick <= (tick % crate.hologramTicks)) {
                 frameToShow = hologramFrame
             }
         }
