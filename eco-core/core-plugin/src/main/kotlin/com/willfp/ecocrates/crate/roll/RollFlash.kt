@@ -27,6 +27,10 @@ class RollFlash private constructor(
 
     private lateinit var item: Item
 
+    private var previousBlindness: PotionEffect? = null
+
+    private var startTime = 0L
+
     override fun roll() {
         val world = location.world!!
 
@@ -37,6 +41,9 @@ class RollFlash private constructor(
         RollItems.mark(item)
 
         player.closeInventory()
+
+        previousBlindness = player.getPotionEffect(PotionEffectType.BLINDNESS)
+        startTime = world.gameTime
 
         player.addPotionEffect(
             PotionEffect(
@@ -86,6 +93,15 @@ class RollFlash private constructor(
 
     override fun onFinish() {
         player.removePotionEffect(PotionEffectType.BLINDNESS)
+
+        previousBlindness?.let { effect ->
+            val remaining = effect.duration - (player.world.gameTime - startTime).toInt()
+            when {
+                effect.isInfinite -> player.addPotionEffect(effect)
+                remaining > 0 -> player.addPotionEffect(effect.withDuration(remaining))
+            }
+        }
+
         item.remove()
     }
 
