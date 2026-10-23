@@ -43,6 +43,15 @@ object CommandOpen : Subcommand(
         }
 
         val target = player
+
+        if (target != sender && !crate.hasVirtualKey(target)) {
+            sender.sendMessage(
+                plugin.langYml.getMessage("player-not-enough-keys")
+                    .replace("%player%", target.name)
+                    .replace("%crate%", crate.name)
+            )
+        }
+
         target.runOwned { crate.openWithMethod(target, OpenMethod.VIRTUAL_KEY) }
     }
 
