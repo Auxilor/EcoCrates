@@ -63,8 +63,12 @@ object CommandGive : Subcommand(
         resolved: ParsedTarget
     ) {
         if (!target.give(player, resolved.id, resolved.variant, resolved.amount)) {
-            sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
-            return
+            if (player.isOnline) {
+                sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
+                return
+            }
+
+            target.queue(player = player, id = resolved.id, variant = resolved.variant, amount = resolved.amount)
         }
 
         sender.sendMessage(
