@@ -68,7 +68,7 @@ object CommandGive : Subcommand(
                 return
             }
 
-            target.queue(player, resolved.id, resolved.variant, resolved.amount)
+            target.queue(player = player, id = resolved.id, variant = resolved.variant, amount = resolved.amount)
         }
 
         sender.sendMessage(

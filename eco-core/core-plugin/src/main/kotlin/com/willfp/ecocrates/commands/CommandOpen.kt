@@ -47,8 +47,8 @@ object CommandOpen : Subcommand(
         if (target != sender && !crate.hasVirtualKey(target)) {
             sender.sendMessage(
                 plugin.langYml.getMessage("player-not-enough-keys")
-                    .replace("%player%", target.name)
-                    .replace("%crate%", crate.name)
+                    .replace(oldValue = "%player%", newValue = target.name)
+                    .replace(oldValue = "%crate%", newValue = crate.name)
             )
         }
 
