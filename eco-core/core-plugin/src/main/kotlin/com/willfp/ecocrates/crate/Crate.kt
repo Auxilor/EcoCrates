@@ -521,8 +521,8 @@ class Crate(
                         listOf(
                             NamedValue("crate", name),
                             NamedValue("crate_id", id),
-                            NamedValue("reward", reward.name),
-                            NamedValue("reward_id", reward.id)
+                            NamedValue("reward", event.reward.name),
+                            NamedValue("reward_id", event.reward.id)
                         )
                     )
                 }

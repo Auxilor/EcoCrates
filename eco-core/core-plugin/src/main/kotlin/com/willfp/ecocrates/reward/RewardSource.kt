@@ -31,7 +31,9 @@ interface RewardSource {
     fun handleFinish(player: Player, reward: Reward)
 
     fun getRandomReward(player: Player): Reward =
-        rewards.weightedRandom { it.getEffectiveWeight(player) }
+        rewards.filter { it.getWeight(player) > 0 }
+            .ifEmpty { rewards }
+            .weightedRandom { it.getEffectiveWeight(player) }
             ?: throw IllegalStateException("$sourceType '$id' has no rewards")
 
     fun getRandomRewards(player: Player, amount: Int): List<Reward> =
