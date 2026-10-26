@@ -30,14 +30,23 @@ interface RewardSource {
     /** Gives [reward] to [player] (or queues it if they're offline), firing events and finish-effects. */
     fun handleFinish(player: Player, reward: Reward)
 
-    fun getRandomReward(player: Player): Reward =
-        rewards.filter { it.getWeight(player) > 0 }
-            .ifEmpty { rewards }
-            .weightedRandom { it.getEffectiveWeight(player) }
-            ?: throw IllegalStateException("$sourceType '$id' has no rewards")
+    fun getRewardWeights(player: Player): List<RewardWeight> =
+        rewards.map { it.getRewardWeight(player) }
 
-    fun getRandomRewards(player: Player, amount: Int): List<Reward> =
-        List(amount.coerceAtLeast(0)) { getRandomReward(player) }
+    fun getRandomReward(player: Player): Reward =
+        pickRandomReward(getRewardWeights(player))
+
+    fun getRandomRewards(player: Player, amount: Int): List<Reward> {
+        val weights = getRewardWeights(player)
+        return List(amount.coerceAtLeast(0)) { pickRandomReward(weights) }
+    }
+
+    private fun pickRandomReward(weights: List<RewardWeight>): Reward =
+        weights.filter { it.weight > 0 }
+            .ifEmpty { weights }
+            .weightedRandom { it.effectiveWeight }
+            ?.reward
+            ?: throw IllegalStateException("$sourceType '$id' has no rewards")
 
     fun hasRanOutOfRewards(player: Player): Boolean =
         rewards.all { it.getWeight(player) <= 0 }
