@@ -12,6 +12,7 @@ object CrateDisplay {
     @Volatile private var tick = 0
     @Volatile private var syncTask: EcoTask? = null
     @Volatile private var asyncTask: EcoTask? = null
+    @Volatile private var loadedCrates: List<PlacedCrate> = emptyList()
 
     fun start() {
         syncTask?.cancel()
@@ -24,8 +25,9 @@ object CrateDisplay {
     private fun tick() {
         val tick = tick
 
-        for (crate in PlacedCrates.values()) {
-            if (!(crate.location.isChunkLoaded)) continue
+        loadedCrates = PlacedCrates.values().filter { it.location.isChunkLoaded }
+
+        for (crate in loadedCrates) {
             crate.location.runOwned {
                 if (crate.location.isChunkLoaded) {
                     crate.tick(tick)
@@ -39,8 +41,7 @@ object CrateDisplay {
     private fun tickAsync() {
         val tick = tick
 
-        for (crate in PlacedCrates.values()) {
-            if (!(crate.location.isChunkLoaded)) continue
+        for (crate in loadedCrates) {
             crate.location.runOwned { crate.tickAsync(tick) }
         }
     }
