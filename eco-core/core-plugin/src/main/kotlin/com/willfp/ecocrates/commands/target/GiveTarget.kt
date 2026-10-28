@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.commands.target
 
+import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.envoy.EnvoyItemType
@@ -9,6 +10,7 @@ import com.willfp.ecocrates.envoy.withEnvoyPlaceholders
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.pouch.Pouches
 import com.willfp.ecocrates.util.InventoryTake
+import com.willfp.ecocrates.util.addPending
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
@@ -66,7 +68,7 @@ object KeyTarget : GiveTarget {
         val key = Keys[id] ?: return
 
         if (variant == "physical") {
-            key.setKeysToGet(player, key.getKeysToGet(player) + amount)
+            player.profile.addPending(key.toGetKey, amount)
         } else {
             key.adjustVirtualKeys(player, amount)
         }

@@ -4,6 +4,8 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.util.addPending
+import com.willfp.ecocrates.util.takePending
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
@@ -106,7 +108,7 @@ object EnvoyItems {
         amount: Int
     ) {
         val key = toGetKey(category, type) ?: return
-        player.profile.write(key, player.profile.read(key) + amount)
+        player.profile.addPending(key, amount)
     }
 
     /** Hands over everything queued for a player, and clears the queue. */
@@ -114,13 +116,12 @@ object EnvoyItems {
         for (category in Envoys.values()) {
             for (type in EnvoyItemType.entries) {
                 val key = toGetKey(category, type) ?: continue
-                val pending = player.profile.read(key)
+                val pending = player.profile.takePending(key)
 
                 if (pending <= 0) {
                     continue
                 }
 
-                player.profile.write(key, 0)
                 give(player, category, type, pending)
 
                 player.sendMessage(
