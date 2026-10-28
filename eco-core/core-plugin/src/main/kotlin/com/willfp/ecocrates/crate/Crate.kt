@@ -381,10 +381,6 @@ class Crate(
             )
         }
 
-        if (!isOpenAllEffectsPerKey) {
-            triggerOpenEffects()
-        }
-
         var lastRewardEvent: CrateRewardEvent? = null
 
         repeat(amount) {
@@ -394,7 +390,7 @@ class Crate(
                 method.useMethod(this, player)
                 player.profile.write(opensKey, getOpens(player) + 1)
 
-                if (isOpenAllEffectsPerKey) {
+                if (isOpenAllEffectsPerKey || lastRewardEvent == null) {
                     triggerOpenEffects()
                 }
 
