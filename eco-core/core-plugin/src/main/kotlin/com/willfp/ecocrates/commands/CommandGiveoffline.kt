@@ -53,7 +53,11 @@ object CommandGiveoffline : Subcommand(
         target.queue(offline, resolved.id, resolved.variant, resolved.amount)
 
         Bukkit.getPlayer(offline.uniqueId)?.let { joined ->
-            plugin.scheduler.on(joined).run { CrateKeyListener.grantPending(joined) }
+            plugin.scheduler.on(joined).run {
+                if (joined.isOnline) {
+                    CrateKeyListener.grantPending(joined)
+                }
+            }
         }
     }
 
