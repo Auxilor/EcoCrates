@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.util
 
+import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.isOpeningCrate
@@ -8,6 +9,7 @@ import com.willfp.ecocrates.envoy.EnvoyItems
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.pouch.Pouches
 import com.willfp.ecocrates.reward.PendingRewards
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
@@ -29,21 +31,24 @@ object CrateKeyListener : Listener {
 
     @EventHandler
     fun handleToGet(event: PlayerJoinEvent) {
+        grantPending(event.player)
+    }
+
+    /** Hands [player] everything queued for them while they were offline. */
+    fun grantPending(player: Player) {
         for (key in Keys.values()) {
-            val toGet = key.getKeysToGet(event.player)
+            val toGet = player.profile.takePending(key.toGetKey)
             if (toGet > 0) {
                 val items = mutableListOf<ItemStack>().apply {
-                    repeat(toGet) { add(key.createItem(event.player)) }
+                    repeat(toGet) { add(key.createItem(player)) }
                 }
 
-                key.setKeysToGet(event.player, 0)
-
-                DropQueue(event.player)
+                DropQueue(player)
                     .addItems(items)
                     .forceTelekinesis()
                     .push()
 
-                event.player.sendMessage(
+                player.sendMessage(
                     plugin.langYml.getMessage("offline-keys-received")
                         .replace("%amount%", toGet.toString())
                         .replace("%crate%", key.displayName)
@@ -52,11 +57,11 @@ object CrateKeyListener : Listener {
         }
 
         for (pouch in Pouches.values()) {
-            pouch.item.grantPending(event.player)
+            pouch.item.grantPending(player)
         }
 
-        EnvoyItems.grantPending(event.player)
-        PendingRewards.grantPending(event.player)
+        EnvoyItems.grantPending(player)
+        PendingRewards.grantPending(player)
     }
 
     @EventHandler

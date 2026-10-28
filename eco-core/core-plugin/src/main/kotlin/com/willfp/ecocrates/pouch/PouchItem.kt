@@ -13,6 +13,8 @@ import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.util.InventoryTake
+import com.willfp.ecocrates.util.addPending
+import com.willfp.ecocrates.util.takePending
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -88,17 +90,16 @@ class PouchItem(
 
     /** Queues pouches for an offline player, handed over by [grantPending] on join. */
     fun adjustToGet(player: OfflinePlayer, amount: Int) {
-        player.profile.write(toGetKey, player.profile.read(toGetKey) + amount)
+        player.profile.addPending(toGetKey, amount)
     }
 
     fun grantPending(player: Player) {
-        val pending = player.profile.read(toGetKey)
+        val pending = player.profile.takePending(toGetKey)
 
         if (pending <= 0) {
             return
         }
 
-        player.profile.write(toGetKey, 0)
         give(player, pending)
 
         player.sendMessage(

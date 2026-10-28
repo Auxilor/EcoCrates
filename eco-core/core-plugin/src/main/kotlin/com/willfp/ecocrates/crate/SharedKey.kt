@@ -48,7 +48,7 @@ class SharedKey(
     val name: String = ChatColor.stripColor(displayName) ?: id
 
     private val keysKey = makeIntKey("${id}_keys")
-    private val toGetKey = makeIntKey("${id}_to_get")
+    internal val toGetKey = makeIntKey("${id}_to_get")
 
     val item: ItemStack
         get() = testableItem.item.clone()
