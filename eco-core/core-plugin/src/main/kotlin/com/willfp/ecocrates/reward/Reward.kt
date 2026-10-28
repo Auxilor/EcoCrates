@@ -53,19 +53,15 @@ class Reward(
     val name = config.getFormattedString("name")
     val displayName = config.getFormattedString("display.name")
 
-    private val permission = Permission(
-        "ecocrates.rewards.$id",
-        "Allows getting $id as a reward",
-        PermissionDefault.TRUE
-    ).apply {
-        val wildcard = Bukkit.getPluginManager().getPermission("ecocrates.rewards.*")
-        if (wildcard != null) {
-            addParent(wildcard, true)
-        }
-        if (Bukkit.getPluginManager().getPermission("ecocrates.rewards.$id") == null) {
+    private val permission: Permission =
+        Bukkit.getPluginManager().getPermission("ecocrates.rewards.$id") ?: Permission(
+            "ecocrates.rewards.$id",
+            "Allows getting $id as a reward",
+            PermissionDefault.TRUE
+        ).apply {
+            Bukkit.getPluginManager().getPermission("ecocrates.rewards.*")?.let { addParent(it, true) }
             Bukkit.getPluginManager().addPermission(this)
         }
-    }
 
     val maxWins = config.getInt("max-wins")
 
