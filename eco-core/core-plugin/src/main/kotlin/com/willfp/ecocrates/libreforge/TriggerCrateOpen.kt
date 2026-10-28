@@ -6,6 +6,7 @@ import com.willfp.libreforge.triggers.Trigger
 import com.willfp.libreforge.triggers.TriggerData
 import com.willfp.libreforge.triggers.TriggerParameter
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 
 object TriggerCrateOpen : Trigger("crate_open") {
     override val description = "Fires when the player opens a crate."
@@ -17,7 +18,7 @@ object TriggerCrateOpen : Trigger("crate_open") {
         TriggerParameter.EVENT
     )
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun CrateOpenEvent.handle() {
         dispatch(
             player.toDispatcher(),
