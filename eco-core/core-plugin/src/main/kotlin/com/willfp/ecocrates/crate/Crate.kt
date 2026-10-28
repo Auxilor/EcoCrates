@@ -80,7 +80,7 @@ class Crate(
     val hologramFrames = config.getSubsections("placed.hologram.frames")
         .map { HologramFrame(it.getInt("tick"), it.getFormattedStrings("lines")) }
 
-    val hologramTicks = config.getInt("placed.hologram.ticks")
+    val hologramTicks = positiveTicks("placed.hologram.ticks", hologramFrames.isNotEmpty())
 
     val hologramHeight = config.getDouble("placed.hologram.height")
 
@@ -88,7 +88,7 @@ class Crate(
 
     val randomRewardHeight = config.getDouble("placed.random-reward.height")
 
-    val randomRewardDelay = config.getInt("placed.random-reward.delay")
+    val randomRewardDelay = positiveTicks("placed.random-reward.delay", isShowingRandomReward)
 
     val randomRewardName = config.getFormattedString("placed.random-reward.name")
 
@@ -183,6 +183,14 @@ class Crate(
             plugin,
             "${id}_opens",
         ) { getOpens(it).toString() }.register()
+    }
+
+    private fun positiveTicks(path: String, isUsed: Boolean): Int {
+        val ticks = config.getInt(path)
+        if (ticks <= 0 && isUsed) {
+            plugin.logger.warning("Crate '$id' has $path set to $ticks, defaulting to 1.")
+        }
+        return ticks.coerceAtLeast(1)
     }
 
     private fun makeRoll(
