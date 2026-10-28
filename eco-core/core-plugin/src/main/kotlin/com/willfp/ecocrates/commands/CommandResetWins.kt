@@ -25,8 +25,7 @@ object CommandResetWins : Subcommand(
         if (args[0] == "all") {
             resetWinsForAll(sender)
         } else {
-            @Suppress("DEPRECATION")
-            resetWinsFor(sender, Bukkit.getOfflinePlayer(args[0]))
+            lookupOfflinePlayer(sender, args[0]) { resetWinsFor(sender, it) }
         }
     }
 

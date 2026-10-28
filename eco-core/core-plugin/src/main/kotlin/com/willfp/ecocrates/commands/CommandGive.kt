@@ -31,16 +31,23 @@ object CommandGive : Subcommand(
             return
         }
 
-        @Suppress("DEPRECATION")
-        val player = Bukkit.getOfflinePlayer(args[0])
+        val parsed = TargetCommands.parse(sender, args.drop(1), GiveTargets.giveTypes, LegacySyntax.GIVE) ?: return
+        val (target, resolved) = TargetCommands.resolveGive(sender, parsed) ?: return
 
+        lookupOfflinePlayer(sender, args[0]) { giveTo(sender, args, it, target, resolved) }
+    }
+
+    private fun giveTo(
+        sender: CommandSender,
+        args: List<String>,
+        player: OfflinePlayer,
+        target: GiveTarget,
+        resolved: ParsedTarget
+    ) {
         if (!player.hasPlayedBefore() && !player.isOnline) {
             sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return
         }
-
-        val parsed = TargetCommands.parse(sender, args.drop(1), GiveTargets.giveTypes, LegacySyntax.GIVE) ?: return
-        val (target, resolved) = TargetCommands.resolveGive(sender, parsed) ?: return
 
         val online = player.player
 

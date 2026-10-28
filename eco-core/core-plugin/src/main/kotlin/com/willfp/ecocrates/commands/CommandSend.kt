@@ -3,9 +3,11 @@ package com.willfp.ecocrates.commands
 import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Keys
+import com.willfp.ecocrates.crate.SharedKey
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
@@ -21,14 +23,6 @@ object CommandSend : Subcommand(
 
         if (args.isEmpty()) {
             sender.sendMessage(plugin.langYml.getMessage("must-specify-player"))
-            return
-        }
-
-        @Suppress("DEPRECATION")
-        val recipient = Bukkit.getOfflinePlayer(args[0])
-
-        if ((!recipient.hasPlayedBefore() && !recipient.isOnline) || recipient.uniqueId == sender.uniqueId) {
-            sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return
         }
 
@@ -51,6 +45,15 @@ object CommandSend : Subcommand(
 
         if (!key.isTradeable) {
             sender.sendMessage(plugin.langYml.getMessage("key-not-tradeable"))
+            return
+        }
+
+        lookupOfflinePlayer(sender, args[0]) { sendTo(sender, it, key, amount) }
+    }
+
+    private fun sendTo(sender: Player, recipient: OfflinePlayer, key: SharedKey, amount: Int) {
+        if ((!recipient.hasPlayedBefore() && !recipient.isOnline) || recipient.uniqueId == sender.uniqueId) {
+            sender.sendMessage(plugin.langYml.getMessage("invalid-player"))
             return
         }
 
