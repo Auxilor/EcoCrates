@@ -34,7 +34,7 @@ object CommandGive : Subcommand(
         val parsed = TargetCommands.parse(sender, args.drop(1), GiveTargets.giveTypes, LegacySyntax.GIVE) ?: return
         val (target, resolved) = TargetCommands.resolveGive(sender, parsed) ?: return
 
-        lookupOfflinePlayer(args[0]) { giveTo(sender, args, it, target, resolved) }
+        lookupOfflinePlayer(sender, args[0]) { giveTo(sender, args, it, target, resolved) }
     }
 
     private fun giveTo(

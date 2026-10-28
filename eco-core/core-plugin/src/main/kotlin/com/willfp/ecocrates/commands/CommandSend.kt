@@ -48,7 +48,7 @@ object CommandSend : Subcommand(
             return
         }
 
-        lookupOfflinePlayer(args[0]) { sendTo(sender, it, key, amount) }
+        lookupOfflinePlayer(sender, args[0]) { sendTo(sender, it, key, amount) }
     }
 
     private fun sendTo(sender: Player, recipient: OfflinePlayer, key: SharedKey, amount: Int) {

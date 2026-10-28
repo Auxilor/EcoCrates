@@ -25,7 +25,7 @@ object CommandResetWins : Subcommand(
         if (args[0] == "all") {
             resetWinsForAll(sender)
         } else {
-            lookupOfflinePlayer(args[0]) { resetWinsFor(sender, it) }
+            lookupOfflinePlayer(sender, args[0]) { resetWinsFor(sender, it) }
         }
     }
 
