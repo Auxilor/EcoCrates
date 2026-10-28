@@ -193,13 +193,6 @@ class Crate(
         isReroll: Boolean = false,
         placedCrate: PlacedCrate? = null
     ): Roll {
-        val display = mutableListOf<Reward>()
-
-        // Pad the scroll so it lines up
-        repeat(35 + 4) {
-            display.add(getRandomReward(player))
-        }
-
         return rollFactory.create(
             RollOptions(
                 reward,
