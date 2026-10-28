@@ -48,6 +48,10 @@ object KeyGUI {
     }
 
     fun open(player: Player) {
+        if (!::menu.isInitialized) {
+            update()
+        }
+
         menu.open(player)
     }
 }

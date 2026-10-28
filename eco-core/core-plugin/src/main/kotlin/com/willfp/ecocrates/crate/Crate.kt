@@ -381,33 +381,30 @@ class Crate(
             )
         }
 
-        if (!isOpenAllEffectsPerKey) {
-            triggerOpenEffects()
-        }
-
         var lastRewardEvent: CrateRewardEvent? = null
 
         repeat(amount) {
-            val openEvent = CrateOpenEvent(player, this, method, getRandomReward(player), false)
-            Bukkit.getPluginManager().callEvent(openEvent)
+            val openEvent = openEventUnlessCancelled(player, method, false)
 
-            method.useMethod(this, player)
-            player.profile.write(opensKey, getOpens(player) + 1)
+            if (openEvent != null) {
+                method.useMethod(this, player)
+                player.profile.write(opensKey, getOpens(player) + 1)
 
-            if (isOpenAllEffectsPerKey) {
-                triggerOpenEffects()
+                if (isOpenAllEffectsPerKey || lastRewardEvent == null) {
+                    triggerOpenEffects()
+                }
+
+                val rewardEvent = CrateRewardEvent(player, this, openEvent.reward)
+                Bukkit.getPluginManager().callEvent(rewardEvent)
+
+                if (isOpenAllEffectsPerKey) {
+                    triggerFinishEffects(rewardEvent)
+                } else {
+                    lastRewardEvent = rewardEvent
+                }
+
+                rewardEvent.reward.giveTo(player, this)
             }
-
-            val rewardEvent = CrateRewardEvent(player, this, openEvent.reward)
-            Bukkit.getPluginManager().callEvent(rewardEvent)
-
-            if (isOpenAllEffectsPerKey) {
-                triggerFinishEffects(rewardEvent)
-            } else {
-                lastRewardEvent = rewardEvent
-            }
-
-            rewardEvent.reward.giveTo(player, this)
         }
 
         if (!isOpenAllEffectsPerKey) {
@@ -442,8 +439,7 @@ class Crate(
         val loc = location ?: player.eyeLocation
         val isReroll = rerollNumber > 0
 
-        val event = CrateOpenEvent(player, this, method, getRandomReward(player), isReroll)
-        Bukkit.getPluginManager().callEvent(event)
+        val event = openEventUnlessCancelled(player, method, isReroll) ?: return false
 
         if (!isReroll) {
             openEffects?.trigger(
@@ -480,12 +476,7 @@ class Crate(
                 return@start
             }
 
-            val canRerollNow = rerollProfile.enabled
-                && rerollNumber < rerollProfile.maxRerolls
-                && player.hasPermission(rerollPermission)
-                && rerollProfile.priceFor(rerollNumber + 1).canAfford(player)
-
-            if (forced || !canRerollNow) {
+            if (forced || !canRerollNow(player, rerollNumber)) {
                 handleFinish(finishedRoll)
             } else {
                 ReRollGUI.open(this@Crate, finishedRoll, rerollNumber, rerollProfile)
@@ -493,6 +484,17 @@ class Crate(
         }
 
         return true
+    }
+
+    private fun canRerollNow(player: Player, rerollNumber: Int) = rerollProfile.enabled
+        && rerollNumber < rerollProfile.maxRerolls
+        && player.hasPermission(rerollPermission)
+        && rerollProfile.priceFor(rerollNumber + 1).canAfford(player)
+
+    private fun openEventUnlessCancelled(player: Player, method: OpenMethod, isReroll: Boolean): CrateOpenEvent? {
+        val event = CrateOpenEvent(player, this, method, getRandomReward(player), isReroll)
+        Bukkit.getPluginManager().callEvent(event)
+        return event.takeUnless { it.isCancelled }
     }
 
     /** Opens this crate's read-only preview GUI (rewards/odds) for [player]. */

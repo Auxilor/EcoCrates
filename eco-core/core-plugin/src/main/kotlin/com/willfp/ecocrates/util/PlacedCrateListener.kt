@@ -32,13 +32,17 @@ object PlacedCrateListener : Listener {
             return
         }
 
-        fun removeFromPreventDoubles(player: Player): Unit = run {
+        try {
+            clickPlacedCrate(event, player, block)
+        } finally {
             plugin.scheduler.on(player)
                 .onRetired { preventDoubles.remove(player.uniqueId) }
                 .run { preventDoubles.remove(player.uniqueId) }
         }
+    }
 
-        val crate = PlacedCrates.getCrateAt(block.location) ?: return removeFromPreventDoubles(player)
+    private fun clickPlacedCrate(event: PlayerInteractEvent, player: Player, block: Block) {
+        val crate = PlacedCrates.getCrateAt(block.location) ?: return
 
         val hasPhysicalKey = crate.hasPhysicalKey(player)
         val hasVirtualKey = crate.getVirtualKeys(player) > 0
@@ -50,35 +54,26 @@ object PlacedCrateListener : Listener {
             OpenMethod.MONEY
         }
 
+        // Fix breaking
+        val isCreativeBreak = player.gameMode == GameMode.CREATIVE
+            && player.isSneaking
+            && event.action == Action.LEFT_CLICK_BLOCK
+
         if (player.isSneaking && event.action == Action.RIGHT_CLICK_BLOCK) {
             event.isCancelled = true
 
             if (hasPhysicalKey && crate.isShiftRightClickOpenAllEnabled) {
                 crate.openPlacedAll(player, block.location, OpenMethod.PHYSICAL_KEY)
             }
+        } else if (!isCreativeBreak) {
+            when (event.action) {
+                Action.LEFT_CLICK_BLOCK -> crate.previewForPlayer(player)
+                Action.RIGHT_CLICK_BLOCK -> crate.openPlaced(player, block.location, openMethod)
+                Action.LEFT_CLICK_AIR, Action.RIGHT_CLICK_AIR, Action.PHYSICAL -> return
+            }
 
-            return removeFromPreventDoubles(player)
+            event.isCancelled = true
         }
-
-        // Fix breaking
-        if (player.gameMode == GameMode.CREATIVE && player.isSneaking && event.action == Action.LEFT_CLICK_BLOCK) {
-            return removeFromPreventDoubles(player)
-        }
-
-        when (event.action) {
-            Action.LEFT_CLICK_BLOCK -> crate.previewForPlayer(player)
-            Action.RIGHT_CLICK_BLOCK -> crate.openPlaced(
-                player,
-                block.location,
-                openMethod
-            )
-
-            else -> return removeFromPreventDoubles(player)
-        }
-
-        removeFromPreventDoubles(player)
-
-        event.isCancelled = true
     }
 
     @EventHandler
