@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.commands
 
 import com.willfp.eco.core.command.impl.Subcommand
+import com.willfp.eco.core.data.forEachSavedPlayer
 import com.willfp.ecocrates.commands.target.GiveTarget
 import com.willfp.ecocrates.commands.target.GiveTargets
 import com.willfp.ecocrates.commands.target.LegacySyntax
@@ -11,11 +12,12 @@ import com.willfp.ecocrates.util.CrateKeyListener
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
+import java.util.logging.Level
 
 /**
  * `/ecocrates giveoffline <type> <id> [variant] [amount]` - gives to every
  * known player. Offline players get physical items queued for when they join.
- * Walks all offline players off the main thread.
+ * Walks every player with saved data off the main thread, without keeping their profiles loaded.
  */
 object CommandGiveoffline : Subcommand(
     plugin,
@@ -27,17 +29,19 @@ object CommandGiveoffline : Subcommand(
         val parsed = TargetCommands.parse(sender, args, GiveTargets.giveTypes, LegacySyntax.GIVE) ?: return
         val (target, resolved) = TargetCommands.resolveGive(sender, parsed) ?: return
 
-        plugin.scheduler.async().run {
-            for (offline in Bukkit.getOfflinePlayers()) {
-                val online = offline.player
+        val givenOnline = Bukkit.getOnlinePlayers().map { online ->
+            // Inventory work has to happen on the player's region.
+            plugin.scheduler.on(online).run { target.give(online, resolved.id, resolved.variant, resolved.amount) }
+            online.uniqueId
+        }.toSet()
 
-                if (online != null) {
-                    // Inventory work has to happen on the player's region.
-                    plugin.scheduler.on(online).run { target.give(online, resolved.id, resolved.variant, resolved.amount) }
-                } else {
-                    queueAndHandToLateJoiner(offline, target, resolved)
-                }
+        forEachSavedPlayer(plugin) { offline ->
+            if (offline.uniqueId !in givenOnline) {
+                queueAndHandToLateJoiner(offline, target, resolved)
             }
+        }.exceptionally { error ->
+            plugin.logger.log(Level.WARNING, "Failed giving to offline players", error)
+            null
         }
 
         sender.sendMessage(
