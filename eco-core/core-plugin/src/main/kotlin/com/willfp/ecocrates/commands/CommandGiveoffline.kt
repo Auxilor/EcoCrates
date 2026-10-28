@@ -31,7 +31,13 @@ object CommandGiveoffline : Subcommand(
 
         val givenOnline = Bukkit.getOnlinePlayers().map { online ->
             // Inventory work has to happen on the player's region.
-            plugin.scheduler.on(online).run { target.give(online, resolved.id, resolved.variant, resolved.amount) }
+            plugin.scheduler.on(online)
+                .onRetired { target.queue(online, resolved.id, resolved.variant, resolved.amount) }
+                .run {
+                    if (!target.give(online, resolved.id, resolved.variant, resolved.amount)) {
+                        target.queue(online, resolved.id, resolved.variant, resolved.amount)
+                    }
+                }
             online.uniqueId
         }.toSet()
 
