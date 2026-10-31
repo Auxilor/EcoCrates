@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.envoy
 
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.recipe.Recipes
 import com.willfp.libreforge.loader.LibreforgePlugin
 import com.willfp.libreforge.loader.configs.RegistrableCategory
 
@@ -8,6 +9,10 @@ import com.willfp.libreforge.loader.configs.RegistrableCategory
 object Envoys : RegistrableCategory<EnvoyCategory>("envoy", "envoys") {
 
     override fun clear(plugin: LibreforgePlugin) {
+        for (category in registry.values()) {
+            category.flare?.recipe?.let { Recipes.unregister(it) }
+            category.compass?.recipe?.let { Recipes.unregister(it) }
+        }
         registry.clear()
     }
 

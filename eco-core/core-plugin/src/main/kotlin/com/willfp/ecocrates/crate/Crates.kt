@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.crate
 
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.recipe.Recipes
 import com.willfp.libreforge.loader.LibreforgePlugin
 import com.willfp.libreforge.loader.configs.RegistrableCategory
 
@@ -18,6 +19,9 @@ object Crates : RegistrableCategory<Crate>("crate", "crates") {
 object Keys : RegistrableCategory<SharedKey>("key", "keys") {
 
     override fun clear(plugin: LibreforgePlugin) {
+        for (key in registry.values()) {
+            key.recipe?.let { Recipes.unregister(it) }
+        }
         registry.clear()
     }
 
