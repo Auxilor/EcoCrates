@@ -13,6 +13,7 @@ EcoCrates exposes placeholders you can use anywhere PlaceholderAPI is read, e.g.
 | `%ecocrates_<crate>_opens%` | The amount of times a player has opened a crate |
 | `%ecocrates_pouch_<pouch>_opens%` | The amount of times a player has opened a pouch |
 | `%ecocrates_<reward>_wins%` | The amount of times a player has won a given reward |
+| `%ecocrates_<reward>_total%` | The amount of times a reward has been won by all players, counted from when this placeholder was added |
 | `%ecocrates_envoy_active%` | `true` while an envoy is running, otherwise `false` |
 | `%ecocrates_envoy_active_name%` | Display name of the running envoy |
 | `%ecocrates_envoy_active_id%` | ID of the running envoy |
@@ -29,6 +30,10 @@ EcoCrates exposes placeholders you can use anywhere PlaceholderAPI is read, e.g.
 | `%ecocrates_envoy_<envoy>_name%` | That envoy's display name |
 
 Anything with no running envoy falls back to `None`/`0`/`false` as appropriate.
+
+:::info
+Servers that share a database also share `%ecocrates_<reward>_total%`. Without Redis, each server can overwrite the others' wins, so the total can undercount. With Redis, the total can only miss wins that happen at the same moment.
+:::
 
 :::info
 The bossbar's own placeholders (`%envoy_remaining_crates%` etc, inside `bossbar.name`) are a separate, non-PlaceholderAPI mechanism that works even without PAPI installed. See [How to Make an Envoy](how-to-make-an-envoy) for those.

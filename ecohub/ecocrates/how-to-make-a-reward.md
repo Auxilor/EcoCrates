@@ -121,6 +121,8 @@ display:
 | `%reward%` | The reward display name. |
 | `%crate%` | The crate display name. |
 
+Reward lore also reads other plugin placeholders, for example `In existence: %ecocrates_<reward>_total%` to show how many times a reward has been won. See [PlaceholderAPI](placeholderapi).
+
 :::tip Troubleshooting
 - **Reward not loading?** Check the file name is lowercase letters, numbers, and underscores only, and that it isn't prefixed with `_`.
 - **Reward never won?** Confirm its ID is in the crate's `rewards` list and its `weight.value` is above 0.

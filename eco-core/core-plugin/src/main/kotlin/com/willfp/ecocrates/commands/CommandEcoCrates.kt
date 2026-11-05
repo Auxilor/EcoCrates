@@ -20,6 +20,7 @@ object CommandEcoCrates : PluginCommand(
             .addSubcommand(CommandSet)
             .addSubcommand(CommandForceOpen)
             .addSubcommand(CommandResetWins)
+            .addSubcommand(CommandResetTotalWins)
             .addSubcommand(CommandConvert)
             .addSubcommand(CommandGiveall)
             .addSubcommand(CommandTake)
