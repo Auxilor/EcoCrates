@@ -32,6 +32,10 @@ EcoCrates exposes placeholders you can use anywhere PlaceholderAPI is read, e.g.
 Anything with no running envoy falls back to `None`/`0`/`false` as appropriate.
 
 :::info
+Servers that share a database also share `%ecocrates_<reward>_total%`. Without Redis, each server can overwrite the others' wins, so the total can undercount. With Redis, the total can only miss wins that happen at the same moment.
+:::
+
+:::info
 The bossbar's own placeholders (`%envoy_remaining_crates%` etc, inside `bossbar.name`) are a separate, non-PlaceholderAPI mechanism that works even without PAPI installed. See [How to Make an Envoy](how-to-make-an-envoy) for those.
 :::
 
