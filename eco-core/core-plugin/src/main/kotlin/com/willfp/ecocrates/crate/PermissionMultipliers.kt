@@ -40,7 +40,7 @@ object PermissionMultipliers {
      * @return The crates.
      */
     @JvmStatic
-    fun values(): List<PermissionMultiplier> = registry
+    fun values(): List<PermissionMultiplier> = registry.toList()
 
     @JvmStatic
     fun update() {
