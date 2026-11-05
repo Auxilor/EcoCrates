@@ -1,6 +1,7 @@
 package com.willfp.ecocrates.reward
 
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
@@ -8,6 +9,7 @@ import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
+import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem
 import com.willfp.eco.core.registry.KRegistrable
@@ -71,6 +73,12 @@ class Reward(
         0
     )
 
+    private val totalWinsKey: PersistentDataKey<Int> = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("${id}_total"),
+        PersistentDataKeyType.INT,
+        0
+    )
+
     private val canPermissionMultiply = config.getBool("weight.permission-multipliers")
 
     private val baseDisplay = ItemStackBuilder(
@@ -94,7 +102,7 @@ class Reward(
             ).replace(
                 "%weight%",
                 rewardWeight.weight.toNiceString()
-            ).formatEco(player)
+            ).formatEco(player, formatPlaceholders = true)
         }
 
         if (config.getBool("display.dont-keep-lore")) {
@@ -170,6 +178,11 @@ class Reward(
             plugin,
             "${id}_wins",
         ) { getWins(it).toString() }.register()
+
+        PlayerlessPlaceholder(
+            plugin,
+            "${id}_total",
+        ) { getTotalWins().toString() }.register()
     }
 
     /**
@@ -204,6 +217,8 @@ class Reward(
         if (maxWins > 0) {
             player.profile.write(winsKey, player.profile.read(winsKey) + 1)
         }
+
+        ServerProfile.load().compute(totalWinsKey) { it + 1 }
     }
 
     /** [giveTo] attributed to a reward source directly. */
@@ -223,6 +238,8 @@ class Reward(
             player.profile.write(winsKey, 0)
         }
     }
+
+    fun getTotalWins(): Int = ServerProfile.load().read(totalWinsKey)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
