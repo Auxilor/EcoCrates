@@ -82,8 +82,11 @@ class Reward(
     fun getDisplay(player: Player, source: RewardSource): ItemStack {
         val item = baseDisplay.clone()
         val fis = FastItemStack.wrap(item)
-        val rewardWeight = getDisplayWeight(player, source)
-        val chance = getDisplayChance(player, source, rewardWeight)
+        val weights = DisplayRewardWeights.get(player, source)
+        val rewardWeight = weights.find { it.reward == this } ?: getRewardWeight(player)
+        val chance = weights.sumOf { it.effectiveWeight }.let { totalWeight ->
+            if (totalWeight <= 0.0) 0.0 else rewardWeight.effectiveWeight / totalWeight * 100
+        }
         val lore = config.getStrings("display.lore").map { line ->
             line.replace(
                 "%chance%",
@@ -103,17 +106,13 @@ class Reward(
         return fis.unwrap()
     }
 
-    /** If the [source] preview shows [player] a chance above zero for this reward. */
-    fun isObtainable(player: Player, source: RewardSource): Boolean =
-        getDisplayChance(player, source, getDisplayWeight(player, source)) > 0.0
+    /** If a roll from [source] can give [player] this reward, following the [RewardSource] draw. */
+    fun isObtainable(player: Player, source: RewardSource): Boolean {
+        val drawableWeights = DisplayRewardWeights.get(player, source).filter { it.weight > 0 }
+        val rewardWeight = drawableWeights.find { it.reward == this } ?: return false
 
-    private fun getDisplayWeight(player: Player, source: RewardSource): RewardWeight =
-        DisplayRewardWeights.get(player, source).find { it.reward == this } ?: getRewardWeight(player)
-
-    private fun getDisplayChance(player: Player, source: RewardSource, rewardWeight: RewardWeight): Double =
-        DisplayRewardWeights.get(player, source).sumOf { it.effectiveWeight }.let { totalWeight ->
-            if (totalWeight <= 0.0) 0.0 else rewardWeight.effectiveWeight / totalWeight * 100
-        }
+        return rewardWeight.effectiveWeight > 0 || drawableWeights.none { it.effectiveWeight > 0 }
+    }
 
     /** Kept for binary compatibility with addons compiled against the crate-only signature. */
     fun getDisplay(player: Player, crate: Crate): ItemStack =
