@@ -1,11 +1,12 @@
 package com.willfp.ecocrates.crate
 
-import com.willfp.eco.core.config.updating.ConfigUpdater
 import com.willfp.ecocrates.plugin
 import org.bukkit.entity.Player
 
 object PermissionMultipliers {
-    private val REGISTRY = mutableListOf<PermissionMultiplier>()
+    @Volatile
+    private var registry = emptyList<PermissionMultiplier>()
+
     private val NO_MULTIPLIER = PermissionMultiplier("none", 1.0, 0)
 
     /**
@@ -18,7 +19,7 @@ object PermissionMultipliers {
     fun getForPlayer(player: Player): PermissionMultiplier {
         var current = NO_MULTIPLIER
 
-        for (multiplier in REGISTRY) {
+        for (multiplier in registry) {
             if (multiplier.priority < current.priority) {
                 continue
             }
@@ -39,23 +40,16 @@ object PermissionMultipliers {
      * @return The crates.
      */
     @JvmStatic
-    fun values(): List<PermissionMultiplier> {
-        return REGISTRY.toList()
-    }
+    fun values(): List<PermissionMultiplier> = registry.toList()
 
-    @Suppress("DEPRECATION")
-    @ConfigUpdater
     @JvmStatic
     fun update() {
-        REGISTRY.clear()
-
-        for (config in plugin.configYml.getSubsections("permission-multipliers")) {
-            val multiplier = PermissionMultiplier(
+        registry = plugin.configYml.getSubsections("permission-multipliers").map { config ->
+            PermissionMultiplier(
                 config.getString("permission"),
                 config.getDouble("multiplier"),
                 config.getInt("priority")
             )
-            REGISTRY.add(multiplier)
         }
     }
 }

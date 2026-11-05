@@ -31,6 +31,7 @@ class RollChoose private constructor(
 
     // Every reward the player could actually win, in the same order every time this roll is open.
     private val eligibleRewards = source.rewards.filter { it.getEffectiveWeight(player) > 0 }
+        .ifEmpty { listOf(reward) }
 
     private var picked = false
     private var timeSpentRevealing = 0
