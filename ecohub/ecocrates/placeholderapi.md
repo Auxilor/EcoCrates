@@ -13,6 +13,7 @@ EcoCrates exposes placeholders you can use anywhere PlaceholderAPI is read, e.g.
 | `%ecocrates_<crate>_opens%` | The amount of times a player has opened a crate |
 | `%ecocrates_pouch_<pouch>_opens%` | The amount of times a player has opened a pouch |
 | `%ecocrates_<reward>_wins%` | The amount of times a player has won a given reward |
+| `%ecocrates_<reward>_total%` | The amount of times a reward has been won by all players, counted from when this placeholder was added |
 | `%ecocrates_envoy_active%` | `true` while an envoy is running, otherwise `false` |
 | `%ecocrates_envoy_active_name%` | Display name of the running envoy |
 | `%ecocrates_envoy_active_id%` | ID of the running envoy |

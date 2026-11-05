@@ -29,6 +29,7 @@ Every `/ecocrates envoy <sub>` command below is also available as `/ecoenvoy <su
 | `/ecocrates forceopen <crate>` | Force-opens a crate without a key | `ecocrates.command.forceopen` |
 | `/ecocrates forceopen <crate> <player>` | Force-opens a crate for another player | `ecocrates.command.forceopen.others` |
 | `/ecocrates resetwins <player/all>` | Resets tracked reward wins | `ecocrates.command.resetwins` |
+| `/ecocrates resettotalwins <reward/all>` | Resets the server-wide total wins of a reward | `ecocrates.command.resettotalwins` |
 | `/ecocrates convert <converter>` | Converts data from a supported crate plugin | `ecocrates.command.convert` |
 | `/ecocrates envoy set <envoy> <current\|x> [y] [z]` | Marks a spawn point for a points-mode envoy | `ecocrates.command.envoy.set` |
 | `/ecocrates envoy unset <envoy> <point#>` | Removes a spawn point | `ecocrates.command.envoy.set` |
