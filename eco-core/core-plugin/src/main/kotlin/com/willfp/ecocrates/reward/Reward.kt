@@ -106,7 +106,7 @@ class Reward(
         return fis.unwrap()
     }
 
-    /** If a roll from [source] can give [player] this reward, following the [RewardSource] draw. */
+    /** If opening [source] can give [player] this reward. Nothing is obtainable from a source that refuses to open. */
     fun isObtainable(player: Player, source: RewardSource): Boolean {
         val drawableWeights = DisplayRewardWeights.get(player, source).filter { it.weight > 0 }
         val rewardWeight = drawableWeights.find { it.reward == this } ?: return false
