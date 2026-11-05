@@ -82,11 +82,8 @@ class Reward(
     fun getDisplay(player: Player, source: RewardSource): ItemStack {
         val item = baseDisplay.clone()
         val fis = FastItemStack.wrap(item)
-        val weights = DisplayRewardWeights.get(player, source)
-        val rewardWeight = weights.find { it.reward == this } ?: getRewardWeight(player)
-        val chance = weights.sumOf { it.effectiveWeight }.let { totalWeight ->
-            if (totalWeight <= 0.0) 0.0 else rewardWeight.effectiveWeight / totalWeight * 100
-        }
+        val rewardWeight = getDisplayWeight(player, source)
+        val chance = getDisplayChance(player, source, rewardWeight)
         val lore = config.getStrings("display.lore").map { line ->
             line.replace(
                 "%chance%",
@@ -105,6 +102,18 @@ class Reward(
 
         return fis.unwrap()
     }
+
+    /** If the [source] preview shows [player] a chance above zero for this reward. */
+    fun isObtainable(player: Player, source: RewardSource): Boolean =
+        getDisplayChance(player, source, getDisplayWeight(player, source)) > 0.0
+
+    private fun getDisplayWeight(player: Player, source: RewardSource): RewardWeight =
+        DisplayRewardWeights.get(player, source).find { it.reward == this } ?: getRewardWeight(player)
+
+    private fun getDisplayChance(player: Player, source: RewardSource, rewardWeight: RewardWeight): Double =
+        DisplayRewardWeights.get(player, source).sumOf { it.effectiveWeight }.let { totalWeight ->
+            if (totalWeight <= 0.0) 0.0 else rewardWeight.effectiveWeight / totalWeight * 100
+        }
 
     /** Kept for binary compatibility with addons compiled against the crate-only signature. */
     fun getDisplay(player: Player, crate: Crate): ItemStack =
