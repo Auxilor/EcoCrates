@@ -327,27 +327,20 @@ class Crate(
     /**
      * Opens every key [player] can pay for via [method] in one go, running
      * open/finish effects either once for the whole batch or per-key depending
-     * on [isOpenAllEffectsPerKey].
+     * on [isOpenAllEffectsPerKey]. Stops once [player] has run out of rewards,
+     * leaving the remaining keys unspent.
      */
     fun openAllWithMethod(player: Player, method: OpenMethod, location: Location? = null) {
-        if (!canOpenAndNotify(player, method)) {
-            return
-        }
-
-        if (!hasPermissionAndNotify(player)) {
-            return
-        }
-
-        if (!meetsOpenConditions(player, location)) {
-            return
-        }
-
-        if (hasRanOutOfRewardsAndNotify(player)) {
+        if (
+            !canOpenAndNotify(player, method)
+            || !hasPermissionAndNotify(player)
+            || !meetsOpenConditions(player, location)
+        ) {
             return
         }
 
         val loc = location ?: player.eyeLocation
-        val amount = method.getBulkAmount(this, player)
+        var remainingOpens = method.getBulkAmount(this, player)
 
         fun triggerOpenEffects() {
             openEffects?.trigger(
@@ -383,7 +376,7 @@ class Crate(
 
         var lastRewardEvent: CrateRewardEvent? = null
 
-        repeat(amount) {
+        while (remainingOpens-- > 0 && !hasRanOutOfRewardsAndNotify(player)) {
             val openEvent = openEventUnlessCancelled(player, method, false)
 
             if (openEvent != null) {
