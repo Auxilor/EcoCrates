@@ -15,6 +15,7 @@ import com.willfp.ecocrates.crate.ActiveRolls
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.KeyGUI
+import com.willfp.ecocrates.crate.PermissionMultipliers
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.placed.particle.ParticleAnimations
@@ -112,6 +113,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
     override fun handleReload() {
         ActiveRolls.finalizeAll(queueForLater = false)
 
+        PermissionMultipliers.update()
         KeyGUI.update()
         PlacedCrates.reload()
         CrateDisplay.start()
