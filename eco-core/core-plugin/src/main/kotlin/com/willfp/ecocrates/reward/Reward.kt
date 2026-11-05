@@ -241,6 +241,10 @@ class Reward(
 
     fun getTotalWins(): Int = ServerProfile.load().read(totalWinsKey)
 
+    fun resetTotalWins() {
+        ServerProfile.load().write(totalWinsKey, 0)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true

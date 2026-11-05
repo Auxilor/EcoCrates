@@ -47,6 +47,7 @@ permissions:
       ecocrates.command.forceopen: true
       ecocrates.command.forceopen.others: true
       ecocrates.command.resetwins: true
+      ecocrates.command.resettotalwins: true
       ecocrates.command.convert: true
       ecocrates.command.giveall: true
       ecocrates.command.giveoffline: true
@@ -104,6 +105,9 @@ permissions:
     default: op
   ecocrates.command.resetwins:
     description: Allows resetting a players tracked reward wins
+    default: op
+  ecocrates.command.resettotalwins:
+    description: Allows resetting the server-wide total wins of rewards
     default: op
   ecocrates.command.convert:
     description: Allows converting crates over from other plugins
