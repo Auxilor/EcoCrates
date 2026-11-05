@@ -21,6 +21,7 @@ key: demo_key # The ID of the key for this crate (configure in /keys/demo_key.ym
 preview: # The preview GUI, when left-clicking a crate or using /crates preview
   title: "Demo Crate (%page%/%max_page%)" # The title of the preview GUI. Supports %page% and %max_page% placeholders.
   rows: 6 # The amount of rows for the gui, between 1 and 6
+  hide-unobtainable: false # If rewards should be hidden for players who cannot win them, such as after reaching max-wins
   # Custom GUI slots shared across all preview pages; see here for a how-to: https://hub.auxilor.io/wiki/eco/pages#custom-gui-slots
   custom-slots: [ ]
   page-change-sound: # The sound played when changing pages. Remove or set enabled to false to disable.

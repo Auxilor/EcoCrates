@@ -54,6 +54,7 @@ key: demo_crate # The key ID this crate uses (configure in /keys/demo_crate.yml)
 preview:
   title: "Demo Crate (%page%/%max_page%)" # The title of the preview GUI. Supports %page% and %max_page% placeholders.
   rows: 6 # Number of rows, between 1 and 6
+  hide-unobtainable: false # Hides rewards from players who cannot win them. Off by default.
   custom-slots: [] # GUI slots shared across all preview pages
   forwards-arrow: # Shown on every page except the last
     item: arrow name:"&fNext Page"
@@ -165,6 +166,7 @@ The GUI players see when they preview the crate, laid out as one or more pages w
 preview:
   title: "Demo Crate (%page%/%max_page%)" # The title of the preview GUI. Supports %page% and %max_page% placeholders.
   rows: 6 # Number of rows, between 1 and 6
+  hide-unobtainable: false # Hides rewards from players who cannot win them. Off by default.
   custom-slots: [] # GUI slots shared across all preview pages
   forwards-arrow: # Shown on every page except the last
     item: arrow name:"&fNext Page"
@@ -188,6 +190,10 @@ preview:
           row: 3
           column: 4
 ```
+
+:::info
+With `hide-unobtainable: true`, a reward is hidden for each player who cannot win it, for example after reaching its `max-wins`, or when it is not in this `rewards` list. The page mask shows in its place. A very rare reward whose chance only rounds to 0.00% stays visible.
+:::
 
 :::tip
 Add custom buttons to the preview with custom GUI slots; see [Custom GUI Slots](https://hub.auxilor.io/wiki/eco/pages).

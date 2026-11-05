@@ -114,6 +114,14 @@ class Reward(
         return fis.unwrap()
     }
 
+    /** If opening [source] can give [player] this reward. Nothing is obtainable from a source that refuses to open. */
+    fun isObtainable(player: Player, source: RewardSource): Boolean {
+        val drawableWeights = DisplayRewardWeights.get(player, source).filter { it.weight > 0 }
+        val rewardWeight = drawableWeights.find { it.reward == this } ?: return false
+
+        return rewardWeight.effectiveWeight > 0 || drawableWeights.none { it.effectiveWeight > 0 }
+    }
+
     /** Kept for binary compatibility with addons compiled against the crate-only signature. */
     fun getDisplay(player: Player, crate: Crate): ItemStack =
         getDisplay(player, crate as RewardSource)

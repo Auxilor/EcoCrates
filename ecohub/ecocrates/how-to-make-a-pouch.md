@@ -79,6 +79,7 @@ open-conditions: [ ]
 preview:
   title: "Mining Pouch" # The title of the preview GUI. Supports %page% and %max_page% placeholders.
   rows: 3 # Number of rows, between 1 and 6
+  hide-unobtainable: false # Hides rewards from players who cannot win them. Off by default.
   custom-slots: [] # GUI slots shared across all preview pages
   forwards-arrow: # Shown on every page except the last
     item: arrow name:"&fNext Page"
@@ -207,6 +208,7 @@ The GUI players see when they preview the pouch, opened with shift right-click o
 preview:
   title: "Mining Pouch" # The title of the preview GUI. Supports %page% and %max_page% placeholders.
   rows: 3 # Number of rows, between 1 and 6
+  hide-unobtainable: false # Hides rewards from players who cannot win them. Off by default.
   custom-slots: [] # GUI slots shared across all preview pages
   forwards-arrow: # Shown on every page except the last
     item: arrow name:"&fNext Page"
@@ -227,6 +229,10 @@ preview:
           row: 2
           column: 3
 ```
+
+:::info
+With `hide-unobtainable: true`, a reward is hidden for each player who cannot win it, for example after reaching its `max-wins`, or when it is not in this `rewards` list. The page mask shows in its place. A very rare reward whose chance only rounds to 0.00% stays visible.
+:::
 
 :::tip
 Add custom buttons to the preview with custom GUI slots; see [Custom GUI Slots](https://hub.auxilor.io/wiki/eco/pages).

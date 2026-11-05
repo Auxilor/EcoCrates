@@ -58,6 +58,7 @@ open-conditions:
 preview: # The preview GUI, shown on shift + right click or /ecocrates preview pouch <id>
   title: "Mining Pouch"
   rows: 3
+  hide-unobtainable: false # If rewards should be hidden for players who cannot win them, such as after reaching max-wins
   custom-slots: [ ]
   page-change-sound:
     enabled: true
