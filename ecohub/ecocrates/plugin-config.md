@@ -27,10 +27,10 @@ chance-decimal-places: 2 # How many decimal places to show in the %chance% place
 # has permission for - i.e. if a player has both vip and mvp permissions,
 # than they'll have the mvp one applied as it has a higher priority.
 permission-multipliers:
-  - permission: ecocrates.mutliplier.vip
+  - permission: ecocrates.multiplier.vip
     multiplier: 1.5
     priority: 1
-  - permission: ecocrates.mutliplier.mvp
+  - permission: ecocrates.multiplier.mvp
     multiplier: 2
     priority: 2
 
