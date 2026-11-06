@@ -88,6 +88,7 @@ pay-to-open: # If people can pay to open if they have no keys
   enabled: false # If it should be allowed
   price: 5000 # The price to buy the crate
   type: coins # The type of currency to use
+  display: "%value_commas% coins" # Optional. How %price% shows in the pay-to-open confirm GUI; %value% and %value_commas% are the amount
 
 placed: # Options for physically placed crates
   shift-right-click-open-all: true # Shift right-click to instantly open the whole stack of physical keys held, skipping the roll animation
