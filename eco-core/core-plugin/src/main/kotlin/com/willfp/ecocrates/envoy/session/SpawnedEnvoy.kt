@@ -172,6 +172,7 @@ class SpawnedEnvoy(
 
         if (current == null || current.isDead) {
             item = world.dropItem(displayLocation, reward.getDisplay()).apply {
+                isPersistent = false
                 velocity = Vector(0.0, 0.0, 0.0)
                 pickupDelay = Int.MAX_VALUE
                 setGravity(false)
