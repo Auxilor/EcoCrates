@@ -269,14 +269,17 @@ class Crate(
             return
         }
 
-        val openCrate = {
-            openWithMethod(player, method, nicerLocation, PlacedCrates.getPlacedCrateAt(location.block.location))
-        }
+        val blockLocation = location.block.location
+        val placedCrate = PlacedCrates.getPlacedCrateAt(blockLocation)
 
         if (needsPaymentConfirm(player, method)) {
-            PayToOpenConfirmGUI.open(this, player, openCrate)
+            PayToOpenConfirmGUI.open(this, player) {
+                if (PlacedCrates.getPlacedCrateAt(blockLocation) === placedCrate) {
+                    openWithMethod(player, method, nicerLocation, placedCrate)
+                }
+            }
         } else {
-            openCrate()
+            openWithMethod(player, method, nicerLocation, placedCrate)
         }
     }
 
