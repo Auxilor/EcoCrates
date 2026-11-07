@@ -64,6 +64,35 @@ reroll:
       - ""
       - "&fCost: &e%price%" # Cost of the next reroll
 
+# The confirm GUI, shown before a player pays to open a placed crate. Set enabled to false to charge straight away.
+pay-to-open-confirm:
+  enabled: true # If players must confirm in a GUI before paying to open a crate.
+  rows: 3 # Rows in the confirm GUI
+  mask: # Decorative filler items
+    items:
+      - black_stained_glass_pane
+    pattern:
+      - "111111111"
+      - "110111011"
+      - "111111111"
+  title: "Open %crate%?" # Supports %crate% and %price% placeholders.
+  confirm: # The button that pays and opens the crate
+    row: 2
+    column: 3
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
+    item: lime_stained_glass_pane
+    name: "&aConfirm"
+    lore:
+      - "&fOpen %crate% &ffor &e%price%" # Supports %crate% and %price% placeholders.
+  cancel: # The button that closes the GUI without paying
+    row: 2
+    column: 7
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
+    item: red_stained_glass_pane
+    name: "&cCancel"
+    lore: [ ]
+  custom-slots: [] # Custom GUI slots; see https://hub.auxilor.io/wiki/eco/pages
+
 # The /ecocrates keys GUI that lists a player's keys.
 keygui:
   rows: 3 # Rows in the keys GUI

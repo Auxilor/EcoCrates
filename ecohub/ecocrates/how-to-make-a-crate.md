@@ -93,6 +93,7 @@ pay-to-open:
   enabled: false # If players can pay to open instead of using a key
   price: 5000 # The cost to open
   type: coins # The currency to charge
+  display: "%value_commas% coins" # Optional. How %price% shows in the confirm GUI
 
 # === Placed: holograms and particles for physically placed crates ===
 placed:
@@ -201,13 +202,14 @@ Add custom buttons to the preview with custom GUI slots; see [Custom GUI Slots](
 
 ### Pay to open
 
-Lets players spend currency to open the crate instead of consuming a key.
+Lets players spend currency to open a placed crate instead of consuming a key. Players confirm the payment in a GUI first; the GUI is set up, or turned off, under `pay-to-open-confirm` in [`config.yml`](plugin-config).
 
 ```yaml
 pay-to-open:
   enabled: false # If players can pay to open instead of using a key
   price: 5000 # The cost to open
   type: coins # The currency to charge
+  display: "%value_commas% coins" # Optional. How %price% shows in the confirm GUI
 ```
 
 ### Placed

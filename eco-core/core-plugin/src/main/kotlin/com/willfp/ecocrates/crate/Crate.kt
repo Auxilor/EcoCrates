@@ -6,6 +6,8 @@ import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
+import com.willfp.eco.core.price.ConfiguredPrice
+import com.willfp.eco.core.price.Prices
 import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.ecocrates.crate.placed.HologramFrame
 import com.willfp.ecocrates.crate.placed.PlacedCrate
@@ -152,6 +154,8 @@ class Crate(
 
     val currencyType = config.getString("pay-to-open.type")
 
+    private val priceToOpenFormat = config.getStringOrNull("pay-to-open.display") ?: "%value_commas% $currencyType"
+
     private val opensKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_opens"),
         PersistentDataKeyType.INT,
@@ -265,8 +269,30 @@ class Crate(
             return
         }
 
-        openWithMethod(player, method, nicerLocation, PlacedCrates.getPlacedCrateAt(location.block.location))
+        val blockLocation = location.block.location
+        val placedCrate = PlacedCrates.getPlacedCrateAt(blockLocation)
+
+        if (needsPaymentConfirm(player, method)) {
+            PayToOpenConfirmGUI.open(this, player) {
+                if (PlacedCrates.getPlacedCrateAt(blockLocation) === placedCrate) {
+                    openWithMethod(player, method, nicerLocation, placedCrate)
+                }
+            }
+        } else {
+            openWithMethod(player, method, nicerLocation, placedCrate)
+        }
     }
+
+    private fun needsPaymentConfirm(player: Player, method: OpenMethod) = method == OpenMethod.MONEY
+        && canPayToOpen
+        && plugin.configYml.getBool("pay-to-open-confirm.enabled")
+        && player.hasPermission(permission)
+        && !player.isOpeningCrate
+        && !hasRanOutOfRewards(player)
+
+    /** The display string of the pay-to-open price for [player]. */
+    fun getPriceToOpenDisplay(player: Player): String =
+        ConfiguredPrice(Prices.create(priceToOpen.toString(), currencyType), priceToOpenFormat).getDisplay(player)
 
     /** Like [openPlaced], but opens every key the player has (shift-right-click-open-all). */
     fun openPlacedAll(player: Player, location: Location, method: OpenMethod) {

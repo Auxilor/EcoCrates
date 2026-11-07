@@ -53,6 +53,35 @@ reroll:
       - ""
       - "&fCost: &e%price%" # %price% shows the cost of the next reroll
 
+pay-to-open-confirm:
+  enabled: true # If players must confirm in a GUI before paying to open a crate.
+  rows: 3
+  mask:
+    items:
+      - black_stained_glass_pane
+    pattern:
+      - "111111111"
+      - "110111011"
+      - "111111111"
+  title: "Open %crate%?" # Supports %crate% and %price% placeholders.
+  confirm:
+    row: 2
+    column: 3
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
+    item: lime_stained_glass_pane
+    name: "&aConfirm"
+    lore:
+      - "&fOpen %crate% &ffor &e%price%" # Supports %crate% and %price% placeholders.
+  cancel:
+    row: 2
+    column: 7
+    locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
+    item: red_stained_glass_pane
+    name: "&cCancel"
+    lore: [ ]
+  # Custom GUI slots; see here for a how-to: https://hub.auxilor.io/wiki/eco/pages#custom-gui-slots
+  custom-slots: [ ]
+
 keygui:
   rows: 3
   mask:
