@@ -1,7 +1,5 @@
 package com.willfp.ecocrates.commands.target
 
-import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.drops.DropQueue
 import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.envoy.EnvoyItemType
 import com.willfp.ecocrates.envoy.EnvoyItems
@@ -13,6 +11,8 @@ import com.willfp.ecocrates.util.InventoryTake
 import com.willfp.ecocrates.util.addPending
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import wiki.ecohub.game.drop.DropQueue
+import wiki.ecohub.game.entity.player.profile
 
 /** Something the give/giveall/giveoffline/take commands can hand out or remove. */
 interface GiveTarget {

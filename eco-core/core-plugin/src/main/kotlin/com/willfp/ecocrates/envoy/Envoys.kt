@@ -1,9 +1,9 @@
 package com.willfp.ecocrates.envoy
 
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.recipe.Recipes
-import com.willfp.libreforge.loader.LibreforgePlugin
-import com.willfp.libreforge.loader.configs.RegistrableCategory
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.category.RegistrableCategory
+import wiki.ecohub.core.plugin.EcoPlugin
+import wiki.ecohub.modules.recipe.Recipes
 
 /** Registry of [EnvoyCategory] configs, loaded from the `envoys/` config folder. */
 object Envoys : RegistrableCategory<EnvoyCategory>("envoy", "envoys") {

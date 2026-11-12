@@ -1,8 +1,6 @@
 package com.willfp.ecocrates
 
-import com.willfp.eco.core.bstats.EcoMetricsChart
 import com.willfp.eco.core.command.impl.PluginCommand
-import com.willfp.eco.core.display.DisplayModule
 import com.willfp.eco.core.integrations.IntegrationLoader
 import com.willfp.ecocrates.commands.CommandEcoCrates
 import com.willfp.ecocrates.commands.CommandEcoEnvoy
@@ -13,8 +11,8 @@ import com.willfp.ecocrates.converters.impl.ExcellentCratesConverter
 import com.willfp.ecocrates.converters.impl.SpecializedCratesConverter
 import com.willfp.ecocrates.crate.ActiveRolls
 import com.willfp.ecocrates.crate.Crates
-import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.KeyGUI
+import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.PermissionMultipliers
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
@@ -46,21 +44,23 @@ import com.willfp.ecocrates.libreforge.TriggerCrateWin
 import com.willfp.ecocrates.libreforge.TriggerOpenEnvoy
 import com.willfp.ecocrates.libreforge.TriggerPouchOpen
 import com.willfp.ecocrates.libreforge.TriggerPouchWin
-import com.willfp.ecocrates.pouch.Pouches
 import com.willfp.ecocrates.pouch.PouchListener
+import com.willfp.ecocrates.pouch.Pouches
 import com.willfp.ecocrates.reward.PendingRewards
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.CrateKeyListener
 import com.willfp.ecocrates.util.PlacedCrateListener
 import com.willfp.ecocrates.util.RollItemListener
 import com.willfp.ecocrates.util.RollItems
-import com.willfp.libreforge.conditions.Conditions
-import com.willfp.libreforge.effects.Effects
-import com.willfp.libreforge.filters.Filters
-import com.willfp.libreforge.loader.LibreforgePlugin
-import com.willfp.libreforge.loader.configs.ConfigCategory
-import com.willfp.libreforge.triggers.Triggers
 import org.bukkit.event.Listener
+import wiki.ecohub.config.category.NativeConfigCategory
+import wiki.ecohub.core.plugin.EcoPlugin
+import wiki.ecohub.provider.metrics.EcoMetricsChart
+import wiki.ecohub.rules.condition.Conditions
+import wiki.ecohub.rules.effect.Effects
+import wiki.ecohub.rules.filter.Filters
+import wiki.ecohub.rules.trigger.Triggers
+import wiki.ecohub.ui.display.DisplayModule
 
 internal lateinit var plugin: EcoCratesPlugin
     private set

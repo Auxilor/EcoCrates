@@ -1,7 +1,6 @@
 package com.willfp.ecocrates.commands
 
 import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.commands.target.GiveTargets
 import com.willfp.ecocrates.commands.target.LegacySyntax
 import com.willfp.ecocrates.commands.target.TargetCommands
@@ -10,6 +9,7 @@ import com.willfp.ecocrates.runOwned
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
+import wiki.ecohub.game.entity.player.PlayerUtils
 
 /**
  * `/ecocrates take <player> <type> <id> [variant] [amount]`. All-or-nothing:
@@ -44,7 +44,7 @@ object CommandTake : Subcommand(
                 plugin.langYml.getMessage(if (taken) "took-item" else "not-enough-took-item")
                     .replace("%amount%", resolved.amount.toString())
                     .replace("%item%", target.displayName(resolved.id, resolved.variant))
-                    .replace("%user%", player.savedDisplayName)
+                    .replace("%user%", PlayerUtils.getSavedDisplayName(player))
             )
 
             TargetCommands.warnIfLegacy(sender, "take", args[0], resolved, includeAmount = true)

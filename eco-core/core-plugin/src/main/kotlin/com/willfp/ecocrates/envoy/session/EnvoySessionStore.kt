@@ -1,11 +1,11 @@
 package com.willfp.ecocrates.envoy.session
 
-import com.willfp.eco.core.config.ConfigType
-import com.willfp.eco.core.config.StaticBaseConfig
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.spawn.envoyLocationFromString
 import com.willfp.ecocrates.envoy.spawn.toEnvoyString
 import com.willfp.ecocrates.plugin
+import wiki.ecohub.config.ConfigType
+import wiki.ecohub.config.file.StaticBaseConfig
 import java.util.UUID
 
 private object EnvoySessionYml : StaticBaseConfig(

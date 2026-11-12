@@ -1,12 +1,12 @@
 package com.willfp.ecocrates.crate.placed
 
-import com.willfp.eco.core.config.ConfigType
-import com.willfp.eco.core.config.StaticBaseConfig
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import wiki.ecohub.config.ConfigType
+import wiki.ecohub.config.file.StaticBaseConfig
 import java.util.concurrent.ConcurrentHashMap
 
 private object PlacedCratesYml : StaticBaseConfig(

@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.envoy.compass
 
-import com.willfp.eco.core.waypoint.Waypoints
 import com.willfp.ecocrates.envoy.EnvoyCompass
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.session.EnvoySessions
@@ -8,6 +7,7 @@ import com.willfp.ecocrates.envoy.session.SpawnedEnvoy
 import com.willfp.ecocrates.runOwned
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import wiki.ecohub.ui.display.Waypoints
 
 /** Draws/updates the waypoints an active [ActiveCompass] shows on a player's locator bar. */
 object CompassRenderer {

@@ -1,8 +1,6 @@
 package com.willfp.ecocrates.commands.envoy
 
-import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.util.StringUtils
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.withEnvoyPlaceholders
 import com.willfp.ecocrates.plugin
@@ -10,6 +8,8 @@ import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import wiki.ecohub.core.plugin.startup.Prerequisite
+import wiki.ecohub.ui.text.StringUtils
 
 /**
  * `/ecocrates envoy locate [number]` - lists the active envoy session's crate

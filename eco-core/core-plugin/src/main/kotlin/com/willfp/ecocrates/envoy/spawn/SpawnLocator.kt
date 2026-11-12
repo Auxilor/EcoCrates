@@ -1,8 +1,8 @@
 package com.willfp.ecocrates.envoy.spawn
 
-import com.willfp.eco.core.Eco
 import com.willfp.ecocrates.plugin
 import org.bukkit.Location
+import wiki.ecohub.core.Eco
 
 object SpawnLocator {
     /**

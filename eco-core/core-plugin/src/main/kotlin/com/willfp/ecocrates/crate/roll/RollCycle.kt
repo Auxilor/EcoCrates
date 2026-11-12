@@ -1,11 +1,11 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.RewardSource
+import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Location
 import org.bukkit.Sound

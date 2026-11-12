@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
@@ -10,6 +9,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import wiki.ecohub.math.NumberUtils
 
 class RollSemiInstant private constructor(
     override val reward: Reward,

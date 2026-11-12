@@ -1,11 +1,10 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.entities.Entities
-import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.RewardSource
+import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Location
 import org.bukkit.Sound
@@ -14,6 +13,7 @@ import org.bukkit.entity.Item
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import wiki.ecohub.game.entity.Entities
 
 /**
  * A courier entity is spawned at the crate holding the won reward, flies it over to

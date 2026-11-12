@@ -1,13 +1,11 @@
 package com.willfp.ecocrates.crate.placed
 
-import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.integrations.hologram.Hologram
-import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.runOwned
-import com.willfp.ecocrates.util.CrateDisplayItems
 import com.willfp.ecocrates.teleportCompat
+import com.willfp.ecocrates.util.CrateDisplayItems
 import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Bukkit
 import org.bukkit.Chunk
@@ -15,6 +13,8 @@ import org.bukkit.Location
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import wiki.ecohub.core.plugin.startup.Prerequisite
+import wiki.ecohub.provider.hologram.HologramManager
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 

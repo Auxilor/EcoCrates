@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.util
 
-import com.willfp.eco.core.FoliaSupport
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.entity.Entity
 import org.bukkit.persistence.PersistentDataType
+import wiki.ecohub.core.plugin.startup.FoliaSupport
 import java.util.UUID
 
 /**

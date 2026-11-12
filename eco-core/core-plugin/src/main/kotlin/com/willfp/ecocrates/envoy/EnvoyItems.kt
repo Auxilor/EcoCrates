@@ -1,8 +1,5 @@
 package com.willfp.ecocrates.envoy
 
-import com.willfp.eco.core.data.keys.PersistentDataKey
-import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.drops.DropQueue
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.util.addPending
 import com.willfp.ecocrates.util.takePending
@@ -10,6 +7,9 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import wiki.ecohub.data.PersistentDataKey
+import wiki.ecohub.game.drop.DropQueue
+import wiki.ecohub.game.entity.player.profile
 
 /**
  * The kinds of envoy item the give/take commands can hand out. The token is

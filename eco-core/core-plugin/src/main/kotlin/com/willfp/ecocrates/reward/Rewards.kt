@@ -1,8 +1,8 @@
 package com.willfp.ecocrates.reward
 
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.libreforge.loader.LibreforgePlugin
-import com.willfp.libreforge.loader.configs.RegistrableCategory
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.category.RegistrableCategory
+import wiki.ecohub.core.plugin.EcoPlugin
 
 object Rewards : RegistrableCategory<Reward>("reward", "rewards") {
 

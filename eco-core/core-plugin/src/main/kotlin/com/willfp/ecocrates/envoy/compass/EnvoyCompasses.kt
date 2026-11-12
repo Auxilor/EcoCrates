@@ -1,12 +1,12 @@
 package com.willfp.ecocrates.envoy.compass
 
-import com.willfp.eco.core.waypoint.Waypoints
 import com.willfp.ecocrates.envoy.EnvoyCategory
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.runOwned
 import org.bukkit.Bukkit
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
+import wiki.ecohub.ui.display.Waypoints
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 

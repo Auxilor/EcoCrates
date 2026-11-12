@@ -1,11 +1,11 @@
 package com.willfp.ecocrates.libreforge
 
-import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.ecocrates.event.EnvoyOpenEvent
-import com.willfp.libreforge.ArgType
-import com.willfp.libreforge.NoCompileData
-import com.willfp.libreforge.filters.Filter
-import com.willfp.libreforge.triggers.TriggerData
+import wiki.ecohub.config.ArgType
+import wiki.ecohub.config.Config
+import wiki.ecohub.core.registry.NoCompileData
+import wiki.ecohub.rules.filter.Filter
+import wiki.ecohub.rules.trigger.TriggerData
 
 /** Libreforge filter `envoy_type`: [description]. */
 object FilterEnvoyType : Filter<NoCompileData, Collection<String>>("envoy_type") {

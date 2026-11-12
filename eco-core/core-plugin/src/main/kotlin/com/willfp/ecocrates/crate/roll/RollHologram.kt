@@ -1,7 +1,6 @@
 package com.willfp.ecocrates.crate.roll
 
 import com.willfp.eco.core.integrations.hologram.Hologram
-import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.plugin
@@ -11,6 +10,7 @@ import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import wiki.ecohub.provider.hologram.HologramManager
 
 /**
  * A roll with no items at all - the crate's own hologram cycles through rewards

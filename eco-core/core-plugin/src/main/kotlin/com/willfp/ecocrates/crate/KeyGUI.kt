@@ -1,15 +1,15 @@
 package com.willfp.ecocrates.crate
 
-import com.willfp.eco.core.gui.addCustomSlots
-import com.willfp.eco.core.gui.addPage
-import com.willfp.eco.core.gui.addPageChanger
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.menu.Menu
-import com.willfp.eco.core.gui.page.PageChanger
-import com.willfp.eco.core.gui.setMask
-import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.ecocrates.plugin
 import org.bukkit.entity.Player
+import wiki.ecohub.game.sound.PlayableSound
+import wiki.ecohub.modules.menus.addCustomSlots
+import wiki.ecohub.modules.menus.addPage
+import wiki.ecohub.modules.menus.addPageChanger
+import wiki.ecohub.modules.menus.menu
+import wiki.ecohub.modules.menus.menu.Menu
+import wiki.ecohub.modules.menus.page.PageChanger
+import wiki.ecohub.modules.menus.setMask
 
 object KeyGUI {
     @Volatile

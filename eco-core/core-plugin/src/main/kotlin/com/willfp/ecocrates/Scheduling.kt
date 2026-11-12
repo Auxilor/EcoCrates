@@ -1,10 +1,10 @@
 package com.willfp.ecocrates
 
-import com.willfp.eco.core.Eco
-import com.willfp.eco.core.Prerequisite
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
+import wiki.ecohub.core.Eco
+import wiki.ecohub.core.plugin.startup.Prerequisite
 
 /**
  * Run [block] on the region owning this entity: now if the current thread already owns it,

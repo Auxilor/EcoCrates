@@ -1,8 +1,8 @@
 package com.willfp.ecocrates.crate
 
-import com.willfp.eco.core.price.Prices
 import com.willfp.ecocrates.plugin
 import org.bukkit.entity.Player
+import wiki.ecohub.core.price.Prices
 import java.util.Objects
 
 abstract class OpenMethod(

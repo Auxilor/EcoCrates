@@ -4,9 +4,6 @@ package com.willfp.ecocrates.converters.impl
 
 import com.hazebyte.crate.api.CrateAPI
 import com.hazebyte.crate.api.crate.reward.Reward
-import com.willfp.eco.core.config.BuildableConfig
-import com.willfp.eco.core.config.TransientConfig
-import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.items.toLookupString
 import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
@@ -15,6 +12,9 @@ import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.roll.Rolls
 import com.willfp.ecocrates.plugin
 import org.bukkit.configuration.file.YamlConfiguration
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.section.BuildableConfig
+import wiki.ecohub.config.section.TransientConfig
 import java.io.File
 
 object CrateReloadedConverter : Converter {

@@ -1,14 +1,14 @@
 package com.willfp.ecocrates.commands
 
 import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.core.data.forEachSavedProfile
-import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
+import wiki.ecohub.data.playerbase.forEachSavedProfile
+import wiki.ecohub.game.entity.player.PlayerUtils
 
 object CommandResetWins : Subcommand(
     plugin,
@@ -47,11 +47,11 @@ object CommandResetWins : Subcommand(
             return
         }
 
-        sender.sendMessage(plugin.langYml.getMessage("resetting-wins").replace("%user%", player.savedDisplayName))
+        sender.sendMessage(plugin.langYml.getMessage("resetting-wins").replace("%user%", PlayerUtils.getSavedDisplayName(player)))
 
         resetWins(player)
 
-        sender.sendMessage(plugin.langYml.getMessage("reset-wins").replace("%user%", player.savedDisplayName))
+        sender.sendMessage(plugin.langYml.getMessage("reset-wins").replace("%user%", PlayerUtils.getSavedDisplayName(player)))
     }
 
     private fun resetWins(player: OfflinePlayer) {

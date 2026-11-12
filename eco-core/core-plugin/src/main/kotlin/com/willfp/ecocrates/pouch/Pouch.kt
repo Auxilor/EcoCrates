@@ -1,12 +1,5 @@
 package com.willfp.ecocrates.pouch
 
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.data.keys.PersistentDataKey
-import com.willfp.eco.core.data.keys.PersistentDataKeyType
-import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.placeholder.PlayerPlaceholder
-import com.willfp.eco.core.price.ConfiguredPrice
-import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.PreviewGUI
 import com.willfp.ecocrates.crate.isOpeningCrate
@@ -23,13 +16,6 @@ import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.reward.SourceTypes
-import com.willfp.libreforge.NamedValue
-import com.willfp.libreforge.ViolationContext
-import com.willfp.libreforge.conditions.Conditions
-import com.willfp.libreforge.effects.Effects
-import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
-import com.willfp.libreforge.toDispatcher
-import com.willfp.libreforge.triggers.TriggerData
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
@@ -37,6 +23,20 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.ViolationContext
+import wiki.ecohub.core.price.ConfiguredPrice
+import wiki.ecohub.core.registry.KRegistrable
+import wiki.ecohub.core.stdlib.NamedValue
+import wiki.ecohub.data.PersistentDataKey
+import wiki.ecohub.data.PersistentDataKeyType
+import wiki.ecohub.game.entity.player.profile
+import wiki.ecohub.game.entity.toDispatcher
+import wiki.ecohub.rules.chain.NormalExecutorFactory
+import wiki.ecohub.rules.condition.Conditions
+import wiki.ecohub.rules.effect.Effects
+import wiki.ecohub.rules.trigger.TriggerData
+import wiki.ecohub.ui.placeholder.type.PlayerPlaceholder
 import java.util.Objects
 
 /**

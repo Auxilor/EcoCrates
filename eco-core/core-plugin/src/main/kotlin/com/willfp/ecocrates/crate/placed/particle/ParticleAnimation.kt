@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.crate.placed.particle
 
-import com.willfp.eco.core.particle.SpawnableParticle
-import com.willfp.eco.core.registry.Registrable
 import com.willfp.ecocrates.plugin
 import org.bukkit.Location
 import org.bukkit.util.Vector
+import wiki.ecohub.core.registry.Registrable
+import wiki.ecohub.game.particle.SpawnableParticle
 
 abstract class ParticleAnimation(
     val id: String

@@ -2,8 +2,6 @@
 
 package com.willfp.ecocrates.converters.impl
 
-import com.willfp.eco.core.config.BuildableConfig
-import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.items.toLookupString
 import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
@@ -15,6 +13,8 @@ import su.nightexpress.excellentcrates.ExcellentCratesAPI
 import su.nightexpress.excellentcrates.api.OpenCostType
 import su.nightexpress.excellentcrates.api.crate.ICrate
 import su.nightexpress.excellentcrates.api.crate.ICrateReward
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.section.BuildableConfig
 import java.io.File
 
 object ExcellentCratesConverter : Converter {

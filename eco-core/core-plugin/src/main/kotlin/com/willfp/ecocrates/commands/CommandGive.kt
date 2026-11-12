@@ -1,7 +1,6 @@
 package com.willfp.ecocrates.commands
 
 import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.commands.target.GiveTarget
 import com.willfp.ecocrates.commands.target.GiveTargets
 import com.willfp.ecocrates.commands.target.LegacySyntax
@@ -13,6 +12,7 @@ import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
+import wiki.ecohub.game.entity.player.PlayerUtils
 
 /**
  * `/ecocrates give <player> <key|envoy|pouch> <id> [variant] [amount]`.
@@ -82,7 +82,7 @@ object CommandGive : Subcommand(
             plugin.langYml.getMessage("gave-item")
                 .replace("%amount%", resolved.amount.toString())
                 .replace("%item%", target.displayName(resolved.id, resolved.variant))
-                .replace("%user%", player.savedDisplayName)
+                .replace("%user%", PlayerUtils.getSavedDisplayName(player))
         )
 
         TargetCommands.warnIfLegacy(sender, "give", args[0], resolved, includeAmount = true)

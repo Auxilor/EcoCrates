@@ -1,6 +1,6 @@
 package com.willfp.ecocrates.crate.placed.particle
 
-import com.willfp.eco.core.particle.SpawnableParticle
+import wiki.ecohub.game.particle.SpawnableParticle
 
 data class ParticleData(
     val particle: SpawnableParticle,

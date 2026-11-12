@@ -1,16 +1,16 @@
 package com.willfp.ecocrates.crate.reroll
 
-import com.willfp.eco.core.gui.getSlotLocations
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.setMask
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.builder.ItemStackBuilder
-import com.willfp.eco.core.price.ConfiguredPrice
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.plugin
 import org.bukkit.inventory.ItemStack
+import wiki.ecohub.core.price.ConfiguredPrice
+import wiki.ecohub.game.item.Items
+import wiki.ecohub.game.item.builder.ItemStackBuilder
+import wiki.ecohub.modules.menus.getSlotLocations
+import wiki.ecohub.modules.menus.menu
+import wiki.ecohub.modules.menus.setMask
+import wiki.ecohub.modules.menus.slot
 
 /**
  * The menu offered after a roll to accept the reward or pay to roll again.

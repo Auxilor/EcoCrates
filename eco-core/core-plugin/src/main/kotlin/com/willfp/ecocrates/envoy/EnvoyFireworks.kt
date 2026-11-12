@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.envoy
 
-import com.willfp.eco.core.config.interfaces.Config
 import org.bukkit.Color
 import org.bukkit.FireworkEffect
 import org.bukkit.Location
 import org.bukkit.entity.Firework
+import wiki.ecohub.config.Config
 
 /**
  * A rarity's configured firework burst, fired at a crate's spawn location.

@@ -2,8 +2,8 @@
 
 package com.willfp.ecocrates.converters.util
 
-import com.willfp.eco.core.config.TransientConfig
-import com.willfp.eco.core.config.interfaces.Config
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.section.TransientConfig
 
 object ConversionHelpers {
     fun createEmptyReward(): Config {

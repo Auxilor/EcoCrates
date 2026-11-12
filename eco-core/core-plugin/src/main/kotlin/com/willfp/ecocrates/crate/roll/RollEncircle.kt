@@ -1,18 +1,18 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.util.RollItems
 import com.willfp.ecocrates.util.lerp
-import kotlin.math.PI
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import wiki.ecohub.math.NumberUtils
+import kotlin.math.PI
 
 class RollEncircle private constructor(
     override val reward: Reward,

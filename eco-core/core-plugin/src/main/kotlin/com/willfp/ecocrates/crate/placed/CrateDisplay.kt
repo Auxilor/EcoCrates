@@ -1,8 +1,8 @@
 package com.willfp.ecocrates.crate.placed
 
-import com.willfp.eco.core.scheduling.EcoTask
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.runOwned
+import wiki.ecohub.core.scheduler.EcoTask
 
 /**
  * Ticks every placed crate. The timers only fire the tick: each crate's own work runs on

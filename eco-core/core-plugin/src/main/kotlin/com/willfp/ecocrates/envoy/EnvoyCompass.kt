@@ -1,19 +1,19 @@
 package com.willfp.ecocrates.envoy
 
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.data.keys.PersistentDataKey
-import com.willfp.eco.core.data.keys.PersistentDataKeyType
-import com.willfp.eco.core.items.CustomItem
-import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.TestableItem
-import com.willfp.eco.core.items.builder.ItemStackBuilder
-import com.willfp.eco.core.price.ConfiguredPrice
-import com.willfp.eco.core.recipe.Recipes
-import com.willfp.eco.core.recipe.recipes.CraftingRecipe
 import com.willfp.ecocrates.plugin
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import wiki.ecohub.config.Config
+import wiki.ecohub.core.price.ConfiguredPrice
+import wiki.ecohub.data.PersistentDataKey
+import wiki.ecohub.data.PersistentDataKeyType
+import wiki.ecohub.game.item.CustomItem
+import wiki.ecohub.game.item.Items
+import wiki.ecohub.game.item.builder.ItemStackBuilder
+import wiki.ecohub.game.item.lookup.TestableItem
+import wiki.ecohub.modules.recipe.Recipes
+import wiki.ecohub.modules.recipe.crafting.CraftingRecipe
 
 private val compassKey = plugin.namespacedKeyFactory.create("envoy_compass")
 
