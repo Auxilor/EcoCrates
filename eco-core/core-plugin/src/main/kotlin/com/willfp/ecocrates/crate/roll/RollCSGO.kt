@@ -68,13 +68,13 @@ class RollCSGO private constructor(
             )
         )
 
-        title = source.name
+        setTitle(source.name)
 
         for (i in 1..9) {
             setSlot(
-                2,
-                i,
-                slot(
+                row = 2,
+                column = i,
+                slot = slot(
                     ItemStack(Material.AIR)
                 ) {
                     setUpdater { _, _, _ ->

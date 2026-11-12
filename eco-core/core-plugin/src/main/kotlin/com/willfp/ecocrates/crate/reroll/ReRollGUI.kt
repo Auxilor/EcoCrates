@@ -31,13 +31,13 @@ object ReRollGUI {
         val menu = menu(plugin.configYml.getInt("reroll.rows")) {
             setMask(plugin.configYml, "reroll")
 
-            title = plugin.configYml.getFormattedString("reroll.title")
+            setTitle(plugin.configYml.getFormattedString("reroll.title"))
 
             for (location in plugin.configYml.getSlotLocations("reroll.accept")) {
                 setSlot(
-                    location.row,
-                    location.column,
-                    slot(roll.reward.getDisplay(player, crate)) {
+                    row = location.row,
+                    column = location.column,
+                    slot = slot(roll.reward.getDisplay(player, crate)) {
                         onLeftClick { _, _, _ ->
                             player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
                             player.closeInventory()
@@ -49,9 +49,9 @@ object ReRollGUI {
 
             for (location in plugin.configYml.getSlotLocations("reroll.reroll")) {
                 setSlot(
-                    location.row,
-                    location.column,
-                    slot(rerollItem(priceDisplay)) {
+                    row = location.row,
+                    column = location.column,
+                    slot = slot(rerollItem(priceDisplay)) {
                         onLeftClick { _, _, _ ->
                             reroll(crate, roll, rerollNumber, price)
                         }

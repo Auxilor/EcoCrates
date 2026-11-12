@@ -28,7 +28,7 @@ object PreviewGUI {
         val pages = config.getSubsections("preview.pages")
         val hideUnobtainable = config.getBool("preview.hide-unobtainable")
 
-        title = StringUtils.format(config.getString("preview.title"))
+        setTitle(StringUtils.format(config.getString("preview.title")))
 
         maxPages(pages.size)
 

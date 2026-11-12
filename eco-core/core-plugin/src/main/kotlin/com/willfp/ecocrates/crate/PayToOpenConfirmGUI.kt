@@ -28,7 +28,7 @@ object PayToOpenConfirmGUI {
         val menu = menu(plugin.configYml.getInt("$path.rows")) {
             setMask(plugin.configYml, path)
 
-            title = plugin.configYml.getFormattedString("$path.title").withPlaceholders()
+            setTitle(plugin.configYml.getFormattedString("$path.title").withPlaceholders())
 
             addCustomSlots(plugin.configYml, path)
 
@@ -57,9 +57,9 @@ object PayToOpenConfirmGUI {
 
         for (location in plugin.configYml.getSlotLocations(buttonPath)) {
             setSlot(
-                location.row,
-                location.column,
-                slot(item) {
+                row = location.row,
+                column = location.column,
+                slot = slot(item) {
                     onLeftClick { _, _, _ -> onClick() }
                 }
             )

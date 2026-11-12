@@ -46,8 +46,10 @@ class RollChoose private constructor(
         val pageChangeSound = PlayableSound.create(plugin.configYml.getSubsection("rolls.choose.page-change-sound"))
 
         menu(pattern.size) {
-            title = plugin.configYml.getFormattedString("rolls.choose.title")
-                .replace("%crate%", source.name)
+            setTitle(
+                plugin.configYml.getFormattedString("rolls.choose.title")
+                    .replace("%crate%", source.name)
+            )
 
             maxPages(maxPages)
 
@@ -65,9 +67,9 @@ class RollChoose private constructor(
                                 val option = eligibleRewards[rewardIndex]
 
                                 setSlot(
-                                    rowIndex + 1,
-                                    colIndex + 1,
-                                    slot(option.getDisplay(player, source)) {
+                                    row = rowIndex + 1,
+                                    column = colIndex + 1,
+                                    slot = slot(option.getDisplay(player, source)) {
                                         onLeftClick { _, _, _ ->
                                             pick(option)
                                         }

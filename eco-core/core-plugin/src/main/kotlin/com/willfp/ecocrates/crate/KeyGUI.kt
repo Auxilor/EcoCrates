@@ -26,7 +26,7 @@ object KeyGUI {
         val pageChangeSound = PlayableSound.create(plugin.configYml.getSubsection("keygui.page-change-sound"))
 
         menu = menu(plugin.configYml.getInt("keygui.rows")) {
-            title = plugin.configYml.getFormattedString("keygui.title")
+            setTitle(plugin.configYml.getFormattedString("keygui.title"))
 
             maxPages(maxPage)
 

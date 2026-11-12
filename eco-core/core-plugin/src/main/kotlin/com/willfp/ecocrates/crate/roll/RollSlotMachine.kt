@@ -63,7 +63,7 @@ class RollSlotMachine private constructor(
             )
         )
 
-        title = source.name
+        setTitle(source.name)
 
         for ((index, column) in reelColumns.withIndex()) {
             for (row in reelRows) {
