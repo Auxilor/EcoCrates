@@ -10,7 +10,7 @@ import com.willfp.ecocrates.util.CrateKeyListener
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
-import wiki.ecohub.data.playerbase.forEachSavedProfile
+import wiki.ecohub.data.playerbase.forEachSavedPlayer
 import java.util.logging.Level
 
 /**
@@ -39,9 +39,9 @@ object CommandGiveoffline : EcoCratesSubcommand(
             online.uniqueId
         }.toSet()
 
-        forEachSavedProfile(plugin) { uuid ->
-            if (uuid !in givenOnline) {
-                queueAndHandToLateJoiner(Bukkit.getOfflinePlayer(uuid), target, resolved)
+        forEachSavedPlayer(plugin) { offline ->
+            if (offline.uniqueId !in givenOnline) {
+                queueAndHandToLateJoiner(offline, target, resolved)
             }
         }.exceptionally { error ->
             plugin.logger.log(Level.WARNING, "Failed giving to offline players", error)
