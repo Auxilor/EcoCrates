@@ -8,7 +8,7 @@ import wiki.ecohub.modules.recipe.Recipes
 /** Registry of [EnvoyCategory] configs, loaded from the `envoys/` config folder. */
 object Envoys : RegistrableCategory<EnvoyCategory>("envoy", "envoys") {
 
-    override fun clear(plugin: LibreforgePlugin) {
+    override fun clear(plugin: EcoPlugin) {
         for (category in registry.values()) {
             category.flare?.recipe?.let { Recipes.unregister(it) }
             category.compass?.recipe?.let { Recipes.unregister(it) }
@@ -16,7 +16,7 @@ object Envoys : RegistrableCategory<EnvoyCategory>("envoy", "envoys") {
         registry.clear()
     }
 
-    override fun acceptConfig(plugin: LibreforgePlugin, id: String, config: Config) {
+    override fun acceptConfig(plugin: EcoPlugin, id: String, config: Config) {
         registry.register(EnvoyCategory(id, config))
     }
 }

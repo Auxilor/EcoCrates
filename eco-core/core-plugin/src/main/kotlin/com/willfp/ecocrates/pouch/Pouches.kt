@@ -6,14 +6,14 @@ import wiki.ecohub.core.plugin.EcoPlugin
 import wiki.ecohub.modules.recipe.Recipes
 
 object Pouches : RegistrableCategory<Pouch>("pouch", "pouches") {
-    override fun clear(plugin: LibreforgePlugin) {
+    override fun clear(plugin: EcoPlugin) {
         for (pouch in registry.values()) {
             pouch.item.recipe?.let { Recipes.unregister(it) }
         }
         registry.clear()
     }
 
-    override fun acceptConfig(plugin: LibreforgePlugin, id: String, config: Config) {
+    override fun acceptConfig(plugin: EcoPlugin, id: String, config: Config) {
         registry.register(Pouch(id, config))
     }
 }

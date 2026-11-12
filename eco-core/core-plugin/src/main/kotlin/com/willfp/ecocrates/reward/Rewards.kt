@@ -7,11 +7,11 @@ import wiki.ecohub.core.plugin.EcoPlugin
 object Rewards : RegistrableCategory<Reward>("reward", "rewards") {
 
 
-    override fun clear(plugin: LibreforgePlugin) {
+    override fun clear(plugin: EcoPlugin) {
         registry.clear()
     }
 
-    override fun acceptConfig(plugin: LibreforgePlugin, id: String, config: Config) {
+    override fun acceptConfig(plugin: EcoPlugin, id: String, config: Config) {
         registry.register(Reward(id, config))
     }
 }

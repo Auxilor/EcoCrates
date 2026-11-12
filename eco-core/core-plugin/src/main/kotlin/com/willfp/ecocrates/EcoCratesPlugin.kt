@@ -1,6 +1,5 @@
 package com.willfp.ecocrates
 
-import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.ecocrates.commands.ecoCratesCommand
 import com.willfp.ecocrates.commands.ecoEnvoyCommand
 import com.willfp.ecocrates.converters.Converters
@@ -53,7 +52,9 @@ import com.willfp.ecocrates.util.RollItemListener
 import com.willfp.ecocrates.util.RollItems
 import org.bukkit.event.Listener
 import wiki.ecohub.config.category.NativeConfigCategory
+import wiki.ecohub.core.command.EcoCommand
 import wiki.ecohub.core.plugin.EcoPlugin
+import wiki.ecohub.provider.ExternalProviderLoader
 import wiki.ecohub.provider.metrics.EcoMetricsChart
 import wiki.ecohub.rules.condition.Conditions
 import wiki.ecohub.rules.effect.Effects
@@ -69,7 +70,7 @@ internal lateinit var plugin: EcoCratesPlugin
  * config categories, commands, listeners and display modules on enable, and
  * tears down active envoy state (compasses, sessions) on disable/reload.
  */
-class EcoCratesPlugin : LibreforgePlugin() {
+class EcoCratesPlugin : EcoPlugin() {
     init {
         plugin = this
     }
@@ -124,7 +125,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
         EnvoyTicker.start()
     }
 
-    override fun loadConfigCategories(): List<ConfigCategory> {
+    override fun loadConfigCategories(): List<NativeConfigCategory> {
         return listOf(
             Keys,
             Rewards,
@@ -134,7 +135,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
         )
     }
 
-    override fun loadPluginCommands(): List<PluginCommand> {
+    override fun loadPluginCommands(): List<EcoCommand> {
         return listOf(
             ecoCratesCommand(),
             ecoEnvoyCommand()
@@ -160,7 +161,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
     }
 
     override fun getExternalProviderLoaders(): List<ExternalProviderLoader> {
-        return mutableListOf(
+        return listOf(
             ExternalProviderLoader("CrateReloaded") { Converters.register(CrateReloadedConverter); null },
             ExternalProviderLoader("ExcellentCrates") { Converters.register(ExcellentCratesConverter); null },
             ExternalProviderLoader("CrazyCrates") { Converters.register(CrazyCratesConverter); null },

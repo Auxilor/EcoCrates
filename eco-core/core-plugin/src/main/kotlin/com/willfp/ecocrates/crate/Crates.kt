@@ -7,25 +7,25 @@ import wiki.ecohub.modules.recipe.Recipes
 
 object Crates : RegistrableCategory<Crate>("crate", "crates") {
 
-    override fun clear(plugin: LibreforgePlugin) {
+    override fun clear(plugin: EcoPlugin) {
         registry.clear()
     }
 
-    override fun acceptConfig(plugin: LibreforgePlugin, id: String, config: Config) {
+    override fun acceptConfig(plugin: EcoPlugin, id: String, config: Config) {
         registry.register(Crate(id, config))
     }
 }
 
 object Keys : RegistrableCategory<SharedKey>("key", "keys") {
 
-    override fun clear(plugin: LibreforgePlugin) {
+    override fun clear(plugin: EcoPlugin) {
         for (key in registry.values()) {
             key.recipe?.let { Recipes.unregister(it) }
         }
         registry.clear()
     }
 
-    override fun acceptConfig(plugin: LibreforgePlugin, id: String, config: Config) {
+    override fun acceptConfig(plugin: EcoPlugin, id: String, config: Config) {
         registry.register(SharedKey(id, config))
     }
 }
