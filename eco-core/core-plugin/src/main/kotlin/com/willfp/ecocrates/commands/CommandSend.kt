@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.SharedKey
 import com.willfp.ecocrates.plugin
@@ -12,8 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 import wiki.ecohub.game.entity.player.PlayerUtils
 
-object CommandSend : Subcommand(
-    plugin,
+object CommandSend : EcoCratesSubcommand(
     "send",
     "ecocrates.command.send",
     true

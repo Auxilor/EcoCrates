@@ -1,6 +1,6 @@
 package com.willfp.ecocrates.commands.envoy
 
-import com.willfp.eco.core.command.impl.Subcommand
+import com.willfp.ecocrates.commands.EcoCratesSubcommand
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.spawn.EnvoyPoints
 import com.willfp.ecocrates.envoy.withEnvoyPlaceholders
@@ -9,8 +9,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
 
 /** `/ecocrates envoy unset <category> <number>` - removes a previously set envoy spawn point. */
-object CommandEnvoyUnset : Subcommand(
-    plugin,
+object CommandEnvoyUnset : EcoCratesSubcommand(
     "unset",
     "ecocrates.command.envoy.set",
     false

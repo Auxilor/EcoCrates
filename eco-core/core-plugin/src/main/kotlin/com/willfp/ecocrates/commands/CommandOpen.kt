@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
@@ -10,8 +9,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 
-object CommandOpen : Subcommand(
-    plugin,
+object CommandOpen : EcoCratesSubcommand(
     "open",
     "ecocrates.command.open",
     true

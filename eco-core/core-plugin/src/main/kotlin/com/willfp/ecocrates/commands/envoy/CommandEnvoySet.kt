@@ -1,6 +1,6 @@
 package com.willfp.ecocrates.commands.envoy
 
-import com.willfp.eco.core.command.impl.Subcommand
+import com.willfp.ecocrates.commands.EcoCratesSubcommand
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.spawn.EnvoyPoints
 import com.willfp.ecocrates.envoy.spawn.SpawnLocationMode
@@ -16,8 +16,7 @@ import org.bukkit.util.StringUtil
  * points-mode envoy category, targeting the block the player is looking at by
  * default.
  */
-object CommandEnvoySet : Subcommand(
-    plugin,
+object CommandEnvoySet : EcoCratesSubcommand(
     "set",
     "ecocrates.command.envoy.set",
     true

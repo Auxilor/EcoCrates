@@ -1,6 +1,6 @@
 package com.willfp.ecocrates.commands.envoy
 
-import com.willfp.eco.core.command.impl.Subcommand
+import com.willfp.ecocrates.commands.EcoCratesSubcommand
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.withEnvoyPlaceholders
 import com.willfp.ecocrates.plugin
@@ -16,8 +16,7 @@ import wiki.ecohub.ui.text.StringUtils
  * spawns as clickable teleport commands, or teleports the sender directly to
  * one when given its number.
  */
-object CommandEnvoyLocate : Subcommand(
-    plugin,
+object CommandEnvoyLocate : EcoCratesSubcommand(
     "locate",
     "ecocrates.command.envoy.locate",
     true

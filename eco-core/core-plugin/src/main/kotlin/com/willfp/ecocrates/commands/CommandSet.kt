@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.plugin
@@ -8,8 +7,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 
-object CommandSet : Subcommand(
-    plugin,
+object CommandSet : EcoCratesSubcommand(
     "set",
     "ecocrates.command.set",
     true

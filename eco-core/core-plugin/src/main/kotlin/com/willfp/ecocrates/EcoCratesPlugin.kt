@@ -1,9 +1,8 @@
 package com.willfp.ecocrates
 
 import com.willfp.eco.core.command.impl.PluginCommand
-import com.willfp.eco.core.integrations.IntegrationLoader
-import com.willfp.ecocrates.commands.CommandEcoCrates
-import com.willfp.ecocrates.commands.CommandEcoEnvoy
+import com.willfp.ecocrates.commands.ecoCratesCommand
+import com.willfp.ecocrates.commands.ecoEnvoyCommand
 import com.willfp.ecocrates.converters.Converters
 import com.willfp.ecocrates.converters.impl.CrateReloadedConverter
 import com.willfp.ecocrates.converters.impl.CrazyCratesConverter
@@ -137,8 +136,8 @@ class EcoCratesPlugin : LibreforgePlugin() {
 
     override fun loadPluginCommands(): List<PluginCommand> {
         return listOf(
-            CommandEcoCrates,
-            CommandEcoEnvoy
+            ecoCratesCommand(),
+            ecoEnvoyCommand()
         )
     }
 
@@ -160,12 +159,12 @@ class EcoCratesPlugin : LibreforgePlugin() {
         )
     }
 
-    override fun loadIntegrationLoaders(): MutableList<IntegrationLoader> {
+    override fun getExternalProviderLoaders(): List<ExternalProviderLoader> {
         return mutableListOf(
-            IntegrationLoader("CrateReloaded") { Converters.register(CrateReloadedConverter) },
-            IntegrationLoader("ExcellentCrates") { Converters.register(ExcellentCratesConverter) },
-            IntegrationLoader("CrazyCrates") { Converters.register(CrazyCratesConverter) },
-            IntegrationLoader("SpecializedCrates") { Converters.register(SpecializedCratesConverter) }
+            ExternalProviderLoader("CrateReloaded") { Converters.register(CrateReloadedConverter); null },
+            ExternalProviderLoader("ExcellentCrates") { Converters.register(ExcellentCratesConverter); null },
+            ExternalProviderLoader("CrazyCrates") { Converters.register(CrazyCratesConverter); null },
+            ExternalProviderLoader("SpecializedCrates") { Converters.register(SpecializedCratesConverter); null }
         )
     }
 

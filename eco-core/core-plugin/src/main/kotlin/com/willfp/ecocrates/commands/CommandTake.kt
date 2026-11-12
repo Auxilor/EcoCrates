@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.commands.target.GiveTargets
 import com.willfp.ecocrates.commands.target.LegacySyntax
 import com.willfp.ecocrates.commands.target.TargetCommands
@@ -15,8 +14,7 @@ import wiki.ecohub.game.entity.player.PlayerUtils
  * `/ecocrates take <player> <type> <id> [variant] [amount]`. All-or-nothing:
  * takes nothing if the player doesn't have enough.
  */
-object CommandTake : Subcommand(
-    plugin,
+object CommandTake : EcoCratesSubcommand(
     "take",
     "ecocrates.command.take",
     false

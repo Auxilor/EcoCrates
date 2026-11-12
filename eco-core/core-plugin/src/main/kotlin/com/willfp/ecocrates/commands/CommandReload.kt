@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.Keys
@@ -13,8 +12,7 @@ import wiki.ecohub.core.plugin.startup.Prerequisite
 import wiki.ecohub.core.stdlib.toNiceString
 import wiki.ecohub.ui.text.StringUtils
 
-object CommandReload : Subcommand(
-    plugin,
+object CommandReload : EcoCratesSubcommand(
     "reload",
     "ecocrates.command.reload",
     false
