@@ -45,7 +45,7 @@ class PouchItem(
     ).apply { register() }
 
     val item: ItemStack
-        get() = testableItem.item.clone()
+        get() = testableItem.getItem().clone()
 
     val displayName: String
         get() = item.itemMeta?.displayName ?: pouchId

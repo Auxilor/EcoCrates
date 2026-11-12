@@ -34,23 +34,20 @@ object EnvoySessionStore {
             return
         }
 
-        EnvoySessionYml.set("session.category", session.category.id)
-        EnvoySessionYml.set("session.ticks-remaining", session.ticksRemaining)
-        EnvoySessionYml.set("session.total-spawned", session.totalSpawned)
-        EnvoySessionYml.set(
-            "session.spawns",
-            session.spawns.map {
-                mapOf(
-                    "location" to it.blockLocation.toEnvoyString(),
-                    "rarity" to it.rarity.id
-                )
-            }
-        )
+        EnvoySessionYml["session.category"] = session.category.id
+        EnvoySessionYml["session.ticks-remaining"] = session.ticksRemaining
+        EnvoySessionYml["session.total-spawned"] = session.totalSpawned
+        EnvoySessionYml["session.spawns"] = session.spawns.map {
+            mapOf(
+                "location" to it.blockLocation.toEnvoyString(),
+                "rarity" to it.rarity.id
+            )
+        }
 
         // Collection counts drive the top-collector placeholder and the
         // end-effects, so a reload mid-session must not reset the scoreboard.
         for ((uuid, amount) in session.collectionEntries()) {
-            EnvoySessionYml.set("session.collections.$uuid", amount)
+            EnvoySessionYml["session.collections.$uuid"] = amount
         }
 
         EnvoySessionYml.save()
@@ -58,7 +55,7 @@ object EnvoySessionStore {
 
     @Synchronized
     fun clear() {
-        EnvoySessionYml.set("session", null)
+        EnvoySessionYml["session"] = null
         EnvoySessionYml.save()
     }
 

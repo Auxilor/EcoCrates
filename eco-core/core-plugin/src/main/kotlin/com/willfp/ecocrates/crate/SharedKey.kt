@@ -37,13 +37,13 @@ class SharedKey(
         CustomItem(
             plugin.namespacedKeyFactory.create("${id}_key"),
             { it.key == this },
-            Items.lookup(config.getString("item")).item.clone().apply { key = this@SharedKey }
+            Items.lookup(config.getString("item")).getItem().clone().apply { key = this@SharedKey }
         ).apply { register() }
     }
 
     val lore = config.getFormattedStrings("lore")
 
-    val displayName: String = testableItem.item.itemMeta?.displayName ?: id
+    val displayName: String = testableItem.getItem().itemMeta?.displayName ?: id
 
     val name: String = ChatColor.stripColor(displayName) ?: id
 
@@ -51,7 +51,7 @@ class SharedKey(
     internal val toGetKey = makeIntKey("${id}_to_get")
 
     val item: ItemStack
-        get() = testableItem.item.clone()
+        get() = testableItem.getItem().clone()
 
     val recipe: CraftingRecipe? = run {
         if (!config.getBool("craftable")) return@run null
@@ -123,9 +123,9 @@ class SharedKey(
         val crateId = config.getString("keygui.crate").ifEmpty { id }
 
         builder.setSlot(
-            config.getInt("keygui.row"),
-            config.getInt("keygui.column"),
-            slot(
+            row = config.getInt("keygui.row"),
+            column = config.getInt("keygui.column"),
+            slot = slot(
                 ItemStackBuilder(Items.lookup(config.getString("keygui.item"))).build()
             ) {
                 onLeftClick { event, _, _ ->

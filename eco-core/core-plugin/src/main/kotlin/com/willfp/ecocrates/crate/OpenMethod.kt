@@ -71,7 +71,10 @@ abstract class OpenMethod(
 
         val MONEY = object : OpenMethod("money") {
             override fun canUseAndNotify(crate: Crate, player: Player): Boolean {
-                val hasAmount = Prices.create(crate.priceToOpen.toString(), crate.currencyType).canAfford(player)
+                val hasAmount = Prices.create(
+                    expression = crate.priceToOpen.toString(),
+                    priceName = crate.currencyType
+                ).canAfford(player)
                 if (!hasAmount) {
                     player.sendMessage(plugin.langYml.getMessage("cannot-afford").replace("%crate%", crate.name))
                 }
@@ -80,7 +83,7 @@ abstract class OpenMethod(
             }
 
             override fun useMethod(crate: Crate, player: Player) {
-                Prices.create(crate.priceToOpen.toString(), crate.currencyType).pay(player)
+                Prices.create(expression = crate.priceToOpen.toString(), priceName = crate.currencyType).pay(player)
             }
         }
 

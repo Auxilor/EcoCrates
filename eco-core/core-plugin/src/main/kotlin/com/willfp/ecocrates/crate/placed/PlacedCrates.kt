@@ -54,7 +54,7 @@ object PlacedCrates {
     }
 
     private fun saveCrate(location: Location, crate: Crate) {
-        PlacedCratesYml.set("crates.${location.toShortString()}", crate.id)
+        PlacedCratesYml["crates.${location.toShortString()}"] = crate.id
         PlacedCratesYml.save()
     }
 
@@ -62,7 +62,7 @@ object PlacedCrates {
         loaded[location]?.onRemove()
         loaded.remove(location)
 
-        PlacedCratesYml.set("crates.${location.toShortString()}", null)
+        PlacedCratesYml["crates.${location.toShortString()}"] = null
         PlacedCratesYml.save()
     }
 

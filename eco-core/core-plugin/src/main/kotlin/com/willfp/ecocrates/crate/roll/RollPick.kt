@@ -56,8 +56,10 @@ class RollPick private constructor(
             )
         )
 
-        title = plugin.configYml.getFormattedString("rolls.pick.title")
-            .replace("%crate%", source.name)
+        setTitle(
+            plugin.configYml.getFormattedString("rolls.pick.title")
+                .replace("%crate%", source.name)
+        )
 
         for ((index, column) in slotColumns.withIndex()) {
             setSlot(
@@ -66,9 +68,9 @@ class RollPick private constructor(
                 slot(ItemStack(Material.AIR)) {
                     setUpdater { _, _, _ ->
                         when {
-                            pickedIndex == null -> boxItem.item
+                            pickedIndex == null -> boxItem.getItem()
                             pickedIndex == index -> reward.getDisplay(player, source)
-                            !hasOpenedOthers -> boxItem.item
+                            !hasOpenedOthers -> boxItem.getItem()
                             else -> nearMisses[index].getDisplay(player, source)
                         }
                     }

@@ -9,12 +9,14 @@ import wiki.ecohub.ui.text.StringUtils
 
 object KeyDisplay : DisplayModule(plugin, DisplayPriority.LOW) {
     override fun display(context: DisplayContext) {
-        val sharedKey = context.itemStack.key ?: return
+        val sharedKey = context.getItemStack().key ?: return
 
         if (sharedKey.isCustomItem) {
             return
         }
 
-        context.lore.prepend(sharedKey.lore.map { StringUtils.formatToRichComponent(it, context.placeholderContext) })
+        context.getLore().prepend(
+            sharedKey.lore.map { StringUtils.formatToRichComponent(it, context.getPlaceholderContext()) }
+        )
     }
 }

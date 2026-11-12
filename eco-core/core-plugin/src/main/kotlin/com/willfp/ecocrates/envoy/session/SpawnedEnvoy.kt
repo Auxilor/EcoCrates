@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.envoy.session
 
-import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.ecocrates.envoy.EnvoyCategory
 import com.willfp.ecocrates.envoy.EnvoyRarity
 import com.willfp.ecocrates.runOwned
@@ -10,6 +9,7 @@ import org.bukkit.Material
 import org.bukkit.entity.BlockDisplay
 import org.bukkit.entity.Item
 import org.bukkit.util.Vector
+import wiki.ecohub.provider.hologram.Hologram
 import wiki.ecohub.provider.hologram.HologramManager
 import java.util.UUID
 

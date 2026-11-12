@@ -28,9 +28,9 @@ class RollSemiInstant private constructor(
         plugin.configYml.getDouble("rolls.semi_instant.velocity.y"),
         plugin.configYml.getDouble("rolls.semi_instant.velocity.z")
     ).apply {
-        this.x += NumberUtils.randFloat(-randomness, randomness)
-        this.y += NumberUtils.randFloat(-randomness, randomness)
-        this.z += NumberUtils.randFloat(-randomness, randomness)
+        this.x += NumberUtils.randFloat(min = -randomness, max = randomness)
+        this.y += NumberUtils.randFloat(min = -randomness, max = randomness)
+        this.z += NumberUtils.randFloat(min = -randomness, max = randomness)
     }
 
     private lateinit var item: Item

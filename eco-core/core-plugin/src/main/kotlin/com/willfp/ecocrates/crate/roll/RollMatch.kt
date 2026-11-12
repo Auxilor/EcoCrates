@@ -132,8 +132,10 @@ class RollMatch private constructor(
             )
         )
 
-        title = plugin.configYml.getFormattedString("rolls.match.title")
-            .replace("%crate%", source.name)
+        setTitle(
+            plugin.configYml.getFormattedString("rolls.match.title")
+                .replace("%crate%", source.name)
+        )
 
         for ((index, position) in slotsInUse.withIndex()) {
             val (row, column) = position
@@ -146,7 +148,7 @@ class RollMatch private constructor(
                         if (isScratched[index]) {
                             card[index].getDisplay(player, source)
                         } else {
-                            cardItem.item
+                            cardItem.getItem()
                         }
                     }
 

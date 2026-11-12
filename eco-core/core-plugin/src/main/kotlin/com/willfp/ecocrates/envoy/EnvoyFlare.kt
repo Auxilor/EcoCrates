@@ -59,7 +59,7 @@ class EnvoyFlare(
     }
 
     val item: ItemStack
-        get() = testableItem?.item?.clone() ?: ItemStack(Material.AIR)
+        get() = testableItem?.run { getItem().clone() } ?: ItemStack(Material.AIR)
 
     @Suppress("unused")
     val recipe: CraftingRecipe? = run {

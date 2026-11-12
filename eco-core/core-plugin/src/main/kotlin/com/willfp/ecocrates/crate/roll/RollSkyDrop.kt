@@ -61,9 +61,9 @@ class RollSkyDrop private constructor(
 
             decoy.pickupDelay = Int.MAX_VALUE
             decoy.velocity = Vector(
-                NumberUtils.randFloat(-decoySpread, decoySpread),
-                NumberUtils.randFloat(0.25, 0.45),
-                NumberUtils.randFloat(-decoySpread, decoySpread)
+                NumberUtils.randFloat(min = -decoySpread, max = decoySpread),
+                NumberUtils.randFloat(min = 0.25, max = 0.45),
+                NumberUtils.randFloat(min = -decoySpread, max = decoySpread)
             )
             RollItems.mark(decoy)
             decoys.add(decoy)

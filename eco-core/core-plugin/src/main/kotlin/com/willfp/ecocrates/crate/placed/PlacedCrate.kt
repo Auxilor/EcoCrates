@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.crate.placed
 
-import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.runOwned
@@ -14,6 +13,7 @@ import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 import wiki.ecohub.core.plugin.startup.Prerequisite
+import wiki.ecohub.provider.hologram.Hologram
 import wiki.ecohub.provider.hologram.HologramManager
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap

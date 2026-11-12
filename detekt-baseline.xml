@@ -445,10 +445,10 @@
     <ID>MultilineLambdaItParameter:SpecializedCratesConverter.kt:SpecializedCratesConverter${ it.replace( "{name}", "%player%" ) }</ID>
     <ID>MultilineLambdaItParameter:SpecializedCratesConverter.kt:SpecializedCratesConverter${ val salt = id + "_" + counter newRewards.add(convertReward(it, salt, row, col, result)) col++ if (col &gt;= 8) { col = 2 row++ } if (row &gt;= 5) { row = 2 } counter++ }</ID>
     <ID>MultilineLambdaItParameter:TwirlParticleAnimation.kt:TwirlParticleAnimation${ if (tick % 2 == 0) { it.setX(-it.x) .setZ(-it.z) } else it }</ID>
-    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this.set("enabled", true) this.set("height", 1.5) this.set("delay", 30) this.set("name", "") }</ID>
-    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this.set("height", 1.5) this.set("ticks", 100) this.set("frames", emptyList&lt;Config&gt;()) }</ID>
-    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this.set("items", emptyList&lt;String&gt;()) this.set( "pattern", mutableListOf( "000000000", "000000000", "000000000", "000000000", "000000000", "000000000" ) ) }</ID>
-    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this.set("particle", "flame") this.set("animation", "spiral") }</ID>
+    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this["enabled"] = true this["height"] = 1.5 this["delay"] = 30 this["name"] = "" }</ID>
+    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this["height"] = 1.5 this["ticks"] = 100 this["frames"] = emptyList&lt;Config&gt;() }</ID>
+    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this["items"] = emptyList&lt;String&gt;() this["pattern"] = mutableListOf( "000000000", "000000000", "000000000", "000000000", "000000000", "000000000" ) }</ID>
+    <ID>NestedScopeFunctions:ConversionHelpers.kt:ConversionHelpers$apply { this["particle"] = "flame" this["animation"] = "spiral" }</ID>
     <ID>NestedScopeFunctions:SharedKey.kt:SharedKey$apply { lore = config.getStrings("keygui.lore") .map { it.replace("%keys%", getVirtualKeys(player).toString()) } .map { it.formatEco(player) } }</ID>
     <ID>NewLineAtEndOfFile:CommandConvert.kt:com.willfp.ecocrates.commands.CommandConvert.kt</ID>
     <ID>NewLineAtEndOfFile:CommandSend.kt:com.willfp.ecocrates.commands.CommandSend.kt</ID>

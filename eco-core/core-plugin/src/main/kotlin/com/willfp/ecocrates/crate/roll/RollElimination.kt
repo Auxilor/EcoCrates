@@ -61,7 +61,7 @@ class RollElimination private constructor(
             )
         )
 
-        title = source.name
+        setTitle(source.name)
 
         for ((index, column) in slotColumns.withIndex()) {
             setSlot(
@@ -70,7 +70,7 @@ class RollElimination private constructor(
                 slot(ItemStack(Material.AIR)) {
                     setUpdater { _, _, _ ->
                         if (isEliminated[index]) {
-                            eliminatedItem.item
+                            eliminatedItem.getItem()
                         } else {
                             candidates[index].getDisplay(player, source)
                         }

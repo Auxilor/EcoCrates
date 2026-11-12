@@ -106,9 +106,9 @@ class Reward(
         }
 
         if (config.getBool("display.dont-keep-lore")) {
-            fis.lore = lore
+            fis.setLore(lore)
         } else {
-            fis.lore = fis.lore + lore
+            fis.setLore(fis.getLore() + lore)
         }
 
         return fis.unwrap()

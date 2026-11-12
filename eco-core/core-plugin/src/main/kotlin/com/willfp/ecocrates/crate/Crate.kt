@@ -292,7 +292,10 @@ class Crate(
 
     /** The display string of the pay-to-open price for [player]. */
     fun getPriceToOpenDisplay(player: Player): String =
-        ConfiguredPrice(Prices.create(priceToOpen.toString(), currencyType), priceToOpenFormat).getDisplay(player)
+        ConfiguredPrice(
+            Prices.create(expression = priceToOpen.toString(), priceName = currencyType),
+            priceToOpenFormat
+        ).getDisplay(player)
 
     /** Like [openPlaced], but opens every key the player has (shift-right-click-open-all). */
     fun openPlacedAll(player: Player, location: Location, method: OpenMethod) {
