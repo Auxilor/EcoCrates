@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.crate.placed
 
+import com.willfp.ecocrates.isInLoadedChunk
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.runOwned
 import wiki.ecohub.core.scheduler.EcoTask
@@ -25,11 +26,11 @@ object CrateDisplay {
     private fun tick() {
         val tick = tick
 
-        loadedCrates = PlacedCrates.values().filter { it.location.isChunkLoaded }
+        loadedCrates = PlacedCrates.values().filter { it.location.isInLoadedChunk }
 
         for (crate in loadedCrates) {
             crate.location.runOwned {
-                if (crate.location.isChunkLoaded) {
+                if (crate.location.isInLoadedChunk) {
                     crate.tick(tick)
                 }
             }

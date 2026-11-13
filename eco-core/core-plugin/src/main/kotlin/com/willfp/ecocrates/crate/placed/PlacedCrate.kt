@@ -7,12 +7,10 @@ import com.willfp.ecocrates.teleportCompat
 import com.willfp.ecocrates.util.CrateDisplayItems
 import com.willfp.ecocrates.util.RollItems
 import org.bukkit.Bukkit
-import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
-import wiki.ecohub.core.plugin.startup.Prerequisite
 import wiki.ecohub.provider.hologram.Hologram
 import wiki.ecohub.provider.hologram.HologramManager
 import java.util.UUID
@@ -27,12 +25,6 @@ class PlacedCrate(
         x += 0.5
         y += 0.5
         z += 0.5
-    }
-
-    val chunkKey = if (Prerequisite.HAS_FOLIA.isMet) {
-        Chunk.getChunkKey(location.blockX shr 4, location.blockZ shr 4)
-    } else {
-        location.chunk.key
     }
 
     @Volatile

@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import wiki.ecohub.core.plugin.startup.Prerequisite
+import wiki.ecohub.game.world.TeleportationService
 import wiki.ecohub.ui.text.StringUtils
 
 /**
@@ -52,7 +53,12 @@ object CommandEnvoyLocate : EcoCratesSubcommand(
                 .replace("%number%", index.toString())
 
             if (Prerequisite.HAS_FOLIA.isMet) {
-                sender.teleportAsync(spawn.centeredLocation).thenAccept { sender.sendMessage(message) }
+                TeleportationService.teleport(sender, spawn.centeredLocation)
+                    .thenAccept { sender.sendMessage(message) }
+                    .exceptionally { error ->
+                        plugin.logger.warning("Could not teleport to envoy: $error")
+                        null
+                    }
             } else {
                 sender.teleport(spawn.centeredLocation)
                 sender.sendMessage(message)

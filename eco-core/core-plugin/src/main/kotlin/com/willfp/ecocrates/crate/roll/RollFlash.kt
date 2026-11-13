@@ -98,7 +98,16 @@ class RollFlash private constructor(
             val remaining = effect.duration - (player.world.gameTime - startTime).toInt()
             when {
                 effect.isInfinite -> player.addPotionEffect(effect)
-                remaining > 0 -> player.addPotionEffect(effect.withDuration(remaining))
+                remaining > 0 -> player.addPotionEffect(
+                    PotionEffect(
+                        effect.type,
+                        remaining,
+                        effect.amplifier,
+                        effect.isAmbient,
+                        effect.hasParticles(),
+                        effect.hasIcon()
+                    )
+                )
             }
         }
 

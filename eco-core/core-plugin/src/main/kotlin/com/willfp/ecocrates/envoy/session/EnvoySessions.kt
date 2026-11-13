@@ -6,6 +6,7 @@ import com.willfp.ecocrates.envoy.compass.EnvoyCompasses
 import com.willfp.ecocrates.envoy.spawn.EnvoyPoints
 import com.willfp.ecocrates.envoy.spawn.SpawnLocationMode
 import com.willfp.ecocrates.envoy.spawn.SpawnLocator
+import com.willfp.ecocrates.isInLoadedChunk
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.runGlobal
 import com.willfp.ecocrates.runOwned
@@ -228,7 +229,7 @@ object EnvoySessions {
         val session = active ?: return
 
         for (spawn in session.spawns) {
-            if (!spawn.blockLocation.isChunkLoaded) {
+            if (!spawn.blockLocation.isInLoadedChunk) {
                 continue
             }
 
