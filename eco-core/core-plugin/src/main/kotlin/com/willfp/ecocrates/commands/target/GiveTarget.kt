@@ -58,7 +58,7 @@ object KeyTarget : GiveTarget {
 
         DropQueue(online)
             .addItems(List(amount) { key.createItem(online) })
-            .forceTelekinesis()
+            .giveDirectly()
             .push()
 
         return true
