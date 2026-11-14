@@ -113,7 +113,7 @@ object EnvoyTarget : GiveTarget {
         val category = Envoys[id] ?: return id
         val itemType = EnvoyItemType.fromToken(variant) ?: return id
 
-        return EnvoyItems.itemFor(category, itemType)?.itemMeta?.displayName ?: itemType.token
+        return EnvoyItems.itemFor(category, itemType)?.itemMeta?.takeIf { it.hasDisplayName() }?.displayName ?: itemType.token
     }
 
     override fun give(player: OfflinePlayer, id: String, variant: String?, amount: Int): Boolean {
