@@ -1,12 +1,12 @@
 package com.willfp.ecocrates.crate.placed
 
-import com.willfp.eco.core.config.ConfigType
-import com.willfp.eco.core.config.StaticBaseConfig
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import wiki.ecohub.config.ConfigType
+import wiki.ecohub.config.file.StaticBaseConfig
 import java.util.concurrent.ConcurrentHashMap
 
 private object PlacedCratesYml : StaticBaseConfig(
@@ -54,7 +54,7 @@ object PlacedCrates {
     }
 
     private fun saveCrate(location: Location, crate: Crate) {
-        PlacedCratesYml.set("crates.${location.toShortString()}", crate.id)
+        PlacedCratesYml["crates.${location.toShortString()}"] = crate.id
         PlacedCratesYml.save()
     }
 
@@ -62,7 +62,7 @@ object PlacedCrates {
         loaded[location]?.onRemove()
         loaded.remove(location)
 
-        PlacedCratesYml.set("crates.${location.toShortString()}", null)
+        PlacedCratesYml["crates.${location.toShortString()}"] = null
         PlacedCratesYml.save()
     }
 

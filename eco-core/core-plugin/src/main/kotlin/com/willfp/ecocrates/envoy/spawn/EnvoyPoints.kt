@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.envoy.spawn
 
-import com.willfp.eco.core.config.ConfigType
-import com.willfp.eco.core.config.StaticBaseConfig
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import wiki.ecohub.config.ConfigType
+import wiki.ecohub.config.file.StaticBaseConfig
 
 private object EnvoyPointsYml : StaticBaseConfig(
     "envoypoints",

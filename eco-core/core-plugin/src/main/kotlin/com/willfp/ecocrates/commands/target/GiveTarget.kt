@@ -1,7 +1,5 @@
 package com.willfp.ecocrates.commands.target
 
-import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.drops.DropQueue
 import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.envoy.EnvoyItemType
 import com.willfp.ecocrates.envoy.EnvoyItems
@@ -13,6 +11,8 @@ import com.willfp.ecocrates.util.InventoryTake
 import com.willfp.ecocrates.util.addPending
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import wiki.ecohub.game.drop.DropQueue
+import wiki.ecohub.game.entity.player.profile
 
 /** Something the give/giveall/giveoffline/take commands can hand out or remove. */
 interface GiveTarget {
@@ -113,7 +113,7 @@ object EnvoyTarget : GiveTarget {
         val category = Envoys[id] ?: return id
         val itemType = EnvoyItemType.fromToken(variant) ?: return id
 
-        return EnvoyItems.itemFor(category, itemType)?.itemMeta?.displayName ?: itemType.token
+        return EnvoyItems.itemFor(category, itemType)?.itemMeta?.takeIf { it.hasDisplayName() }?.displayName ?: itemType.token
     }
 
     override fun give(player: OfflinePlayer, id: String, variant: String?, amount: Int): Boolean {

@@ -4,10 +4,6 @@ package com.willfp.ecocrates.converters.impl
 
 import com.hazebyte.crate.api.CrateAPI
 import com.hazebyte.crate.api.crate.reward.Reward
-import com.willfp.eco.core.config.BuildableConfig
-import com.willfp.eco.core.config.TransientConfig
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.items.toLookupString
 import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
 import com.willfp.ecocrates.crate.Crates
@@ -15,6 +11,10 @@ import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.crate.roll.Rolls
 import com.willfp.ecocrates.plugin
 import org.bukkit.configuration.file.YamlConfiguration
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.section.BuildableConfig
+import wiki.ecohub.config.section.TransientConfig
+import wiki.ecohub.game.item.toLookupString
 import java.io.File
 
 object CrateReloadedConverter : Converter {
@@ -63,96 +63,97 @@ object CrateReloadedConverter : Converter {
 
         val crateConfig = ConversionHelpers.createEmptyCrate()
 
-        crateConfig.set("name", buildingCrate.config.getString("display-name"))
+        crateConfig["name"] = buildingCrate.config.getString("display-name")
 
         val roll = Rolls.get(buildingCrate.config.getString("animation").lowercase()) ?: Rolls.CSGO
 
-        crateConfig.set("roll", roll.id)
+        crateConfig["roll"] = roll.id
 
         val frame = BuildableConfig()
-            .add("tick", 0)
-            .add("lines", buildingCrate.config.getStrings("holographic"))
+            .add(path = "tick", obj = 0)
+            .add(path = "lines", obj = buildingCrate.config.getStrings("holographic"))
 
-        crateConfig.set("placed.hologram.frames", listOf(frame))
+        crateConfig["placed.hologram.frames"] = listOf(frame)
 
         val crateToConvert = CrateAPI.getCrateRegistrar().getCrate(id)
 
-        crateConfig.set("pay-to-open.enabled", crateToConvert.isBuyable)
-        crateConfig.set("pay-to-open.price", crateToConvert.cost)
+        crateConfig["pay-to-open.enabled"] = crateToConvert.isBuyable
+        crateConfig["pay-to-open.price"] = crateToConvert.cost
 
-        crateConfig.set(
-            "key", BuildableConfig()
-                .add("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")} Key\"")
-                .add(
-                    "lore",
-                    listOf(
-                        "&fUse this key to open",
-                        "&fthe ${crateConfig.getString("name")}"
-                    )
+        crateConfig["key"] = BuildableConfig()
+            .add(
+                path = "item",
+                obj = "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")} Key\""
+            )
+            .add(
+                path = "lore",
+                obj = listOf(
+                    "&fUse this key to open",
+                    "&fthe ${crateConfig.getString("name")}"
                 )
-        )
+            )
 
-        crateConfig.set(
-            "keygui", BuildableConfig()
-                .add("enabled", true)
-                .add("item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")}\"")
-                .add(
-                    "lore", listOf(
-                        crateConfig.getString("name"),
-                        "&fYou have %keys% keys",
-                        "&fGet more at &astore.example.net"
-                    )
+        crateConfig["keygui"] = BuildableConfig()
+            .add(path = "enabled", obj = true)
+            .add(
+                path = "item",
+                obj = "tripwire_hook unbreaking:1 hide_enchants name:\"${crateConfig.getString("name")}\""
+            )
+            .add(
+                path = "lore", obj = listOf(
+                    crateConfig.getString("name"),
+                    "&fYou have %keys% keys",
+                    "&fGet more at &astore.example.net"
                 )
-                .add("row", 2)
-                .add("column", 3)
-                .add("right-click-previews", true)
-                .add("left-click-opens", true)
-                .add(
-                    "shift-left-click-messsage",
-                    listOf("Buy a ${crateConfig.getString("name")} key here! &astore.example.net")
-                )
-        )
+            )
+            .add(path = "row", obj = 2)
+            .add(path = "column", obj = 3)
+            .add(path = "right-click-previews", obj = true)
+            .add(path = "left-click-opens", obj = true)
+            .add(
+                path = "shift-left-click-messsage",
+                obj = listOf("Buy a ${crateConfig.getString("name")} key here! &astore.example.net")
+            )
 
-        crateConfig.set(
-            "open", BuildableConfig()
-                .add("messages", listOf("Good luck!"))
-                .add("broadcasts", listOf("%player%&f is opening the ${crateConfig.getString("name")}!"))
-                .add("commands", listOf<String>())
-                .add(
-                    "sounds", listOf(
-                        BuildableConfig()
-                            .add("sound", "entity_villager_yes")
-                            .add("volume", 10)
-                            .add("pitch", 1)
-                    )
+        crateConfig["open"] = BuildableConfig()
+            .add(path = "messages", obj = listOf("Good luck!"))
+            .add(path = "broadcasts", obj = listOf("%player%&f is opening the ${crateConfig.getString("name")}!"))
+            .add(path = "commands", obj = listOf<String>())
+            .add(
+                path = "sounds", obj = listOf(
+                    BuildableConfig()
+                        .add(path = "sound", obj = "entity_villager_yes")
+                        .add(path = "volume", obj = 10)
+                        .add(path = "pitch", obj = 1)
                 )
-        )
+            )
 
-        crateConfig.set(
-            "finish", BuildableConfig()
-                .add("messages", listOf("You won %reward%&f!"))
-                .add("broadcasts", listOf("%player%&f won %reward%&f from the ${crateConfig.getString("name")}!"))
-                .add("commands", listOf<String>())
-                .add(
-                    "fireworks", listOf(
-                        BuildableConfig()
-                            .add("power", 2)
-                            .add("type", "ball_large")
-                            .add("colors", listOf("ffffff"))
-                            .add("fade-colors", listOf("ffffff"))
-                            .add("trail", true)
-                            .add("flicker", true)
-                    )
+        crateConfig["finish"] = BuildableConfig()
+            .add(path = "messages", obj = listOf("You won %reward%&f!"))
+            .add(
+                path = "broadcasts",
+                obj = listOf("%player%&f won %reward%&f from the ${crateConfig.getString("name")}!")
+            )
+            .add(path = "commands", obj = listOf<String>())
+            .add(
+                path = "fireworks", obj = listOf(
+                    BuildableConfig()
+                        .add(path = "power", obj = 2)
+                        .add(path = "type", obj = "ball_large")
+                        .add(path = "colors", obj = listOf("ffffff"))
+                        .add(path = "fade-colors", obj = listOf("ffffff"))
+                        .add(path = "trail", obj = true)
+                        .add(path = "flicker", obj = true)
                 )
-                .add(
-                    "sounds", listOf(
-                        BuildableConfig()
-                            .add("sound", "entity_generic_explode")
-                            .add("volume", 10)
-                            .add("pitch", 1)
-                    )
+            )
+            .add(
+                path = "sounds", obj = listOf(
+                    BuildableConfig()
+                        .add(path = "sound", obj = "entity_generic_explode")
+                        .add(path = "volume", obj = 10)
+                        .add(path = "pitch", obj = 1)
                 )
-        )
+            )
 
         var row = 2
         var col = 2
@@ -171,7 +172,7 @@ object CrateReloadedConverter : Converter {
             counter++
         }
 
-        crateConfig.set("rewards", newRewards.map { it.id })
+        crateConfig["rewards"] = newRewards.map { it.id }
 
         return ConvertedCrateConfig(id, crateConfig, newRewards)
     }
@@ -186,12 +187,12 @@ object CrateReloadedConverter : Converter {
     ): ConvertedRewardConfig {
         val resultConfig = ConversionHelpers.createEmptyReward()
 
-        resultConfig.set("commands", reward.commands.map {
-            it.replace("/", "")
-                .replace("{player}", "%player%")
-        })
+        resultConfig["commands"] = reward.commands.map {
+        it.replace("/", "")
+            .replace("{player}", "%player%")
+    }
 
-        resultConfig.set("items", reward.items.map { it.toLookupString() })
+        resultConfig["items"] = reward.items.map { it.toLookupString() }
 
         val messages = mutableListOf<String>()
 
@@ -199,21 +200,21 @@ object CrateReloadedConverter : Converter {
             messages.addAll(it)
         }
 
-        resultConfig.set("messages", messages.map { it.replace("{player}", "%player%") })
-        resultConfig.set("weight.display", reward.chance)
-        resultConfig.set("weight.actual", reward.chance)
-        resultConfig.set("display.name", reward.displayItem.itemMeta?.displayName)
-        resultConfig.set("display.item", reward.displayItem.toLookupString())
-        resultConfig.set("display.lore", reward.displayItem.itemMeta?.lore)
+        resultConfig["messages"] = messages.map { it.replace("{player}", "%player%") }
+        resultConfig["weight.display"] = reward.chance
+        resultConfig["weight.actual"] = reward.chance
+        resultConfig["display.name"] = reward.displayItem.itemMeta?.displayName
+        resultConfig["display.item"] = reward.displayItem.toLookupString()
+        resultConfig["display.lore"] = reward.displayItem.itemMeta?.lore
 
         val rewards = crateConfig.getSubsections("preview.rewards").toMutableList()
         rewards.add(
             BuildableConfig()
-                .add("id", salt)
-                .add("row", row)
-                .add("column", col)
+                .add(path = "id", obj = salt)
+                .add(path = "row", obj = row)
+                .add(path = "column", obj = col)
         )
-        crateConfig.set("preview.rewards", rewards)
+        crateConfig["preview.rewards"] = rewards
 
         return ConvertedRewardConfig(salt, resultConfig)
     }

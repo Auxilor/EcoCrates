@@ -1,35 +1,27 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.ecocrates.plugin
-import org.bukkit.command.CommandSender
+import wiki.ecohub.core.command.EcoCommand
+import wiki.ecohub.core.command.command
 
 /** Root `/ecocrates` command; dispatches to all crate-related subcommands. */
-object CommandEcoCrates : PluginCommand(
-    plugin,
-    "ecocrates",
-    "ecocrates.command.ecocrates",
-    false
-) {
-    init {
-        this.addSubcommand(CommandReload)
-            .addSubcommand(CommandOpen)
-            .addSubcommand(CommandPreview)
-            .addSubcommand(CommandGive)
-            .addSubcommand(CommandKeys)
-            .addSubcommand(CommandSet)
-            .addSubcommand(CommandForceOpen)
-            .addSubcommand(CommandResetWins)
-            .addSubcommand(CommandResetTotalWins)
-            .addSubcommand(CommandConvert)
-            .addSubcommand(CommandGiveall)
-            .addSubcommand(CommandTake)
-            .addSubcommand(CommandGiveoffline)
-            .addSubcommand(CommandSend)
-            .addSubcommand(CommandEnvoy)
+internal fun ecoCratesCommand(): EcoCommand =
+    plugin.command(name = "ecocrates", permission = "ecocrates.command.ecocrates") {
+        mount(
+            CommandReload,
+            CommandOpen,
+            CommandPreview,
+            CommandGive,
+            CommandKeys,
+            CommandSet,
+            CommandForceOpen,
+            CommandResetWins,
+            CommandResetTotalWins,
+            CommandConvert,
+            CommandGiveall,
+            CommandTake,
+            CommandGiveoffline,
+            CommandSend
+        )
+        envoyCommand()
     }
-
-    override fun onExecute(sender: CommandSender, args: List<String>) {
-        sender.sendMessage(plugin.langYml.getMessage("invalid-command"))
-    }
-}

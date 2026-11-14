@@ -3,14 +3,14 @@ package com.willfp.ecocrates.converters.impl
 import com.badbones69.crazycrates.api.CrazyManager
 import com.badbones69.crazycrates.api.objects.Crate
 import com.badbones69.crazycrates.api.objects.Prize
-import com.willfp.eco.core.config.BuildableConfig
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.items.toLookupString
 import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.placed.PlacedCrates
 import com.willfp.ecocrates.plugin
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.section.BuildableConfig
+import wiki.ecohub.game.item.toLookupString
 import java.io.File
 
 @Suppress("DEPRECATION")
@@ -45,33 +45,27 @@ object CrazyCratesConverter : Converter {
 
         val id = crate.name.lowercase()
 
-        result.set("name", crate.name)
-        result.set("preview.title", crate.crateInventoryName)
-        result.set("key.item", crate.key.toLookupString())
-        result.set("key.lore", crate.key.itemMeta?.lore)
-        result.set("keygui.item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crate.name}\"")
-        result.set(
-            "keygui.lore", mutableListOf(
-                "<g:#56ab2f>${crate.name}</g:#a8e063>",
-                "&fYou have %keys% keys",
-                "&fGet more at &astore.example.net"
-            )
+        result["name"] = crate.name
+        result["preview.title"] = crate.crateInventoryName
+        result["key.item"] = crate.key.toLookupString()
+        result["key.lore"] = crate.key.itemMeta?.lore
+        result["keygui.item"] = "tripwire_hook unbreaking:1 hide_enchants name:\"${crate.name}\""
+        result["keygui.lore"] = mutableListOf(
+            "<g:#56ab2f>${crate.name}</g:#a8e063>",
+            "&fYou have %keys% keys",
+            "&fGet more at &astore.example.net"
         )
-        result.set(
-            "keygui.shift-left-click-messsage", mutableListOf(
-                "Buy a ${crate.name}&r key here! &astore.example.net"
-            )
+        result["keygui.shift-left-click-messsage"] = mutableListOf(
+            "Buy a ${crate.name}&r key here! &astore.example.net"
         )
-        result.set("placed.hologram.height", crate.hologram.height)
-        result.set(
-            "placed.hologram.frames", mutableListOf(
-                BuildableConfig()
-                    .add("tick", 0)
-                    .add("lines", crate.hologram.messages)
-            )
+        result["placed.hologram.height"] = crate.hologram.height
+        result["placed.hologram.frames"] = mutableListOf(
+            BuildableConfig()
+                .add(path = "tick", obj = 0)
+                .add(path = "lines", obj = crate.hologram.messages)
         )
-        result.set("open.broadcasts", mutableListOf("%player%&f is opening the ${crate.name}!"))
-        result.set("finish.broadcasts", mutableListOf("%player%&f won %reward%&f from the ${crate.name}!"))
+        result["open.broadcasts"] = mutableListOf("%player%&f is opening the ${crate.name}!")
+        result["finish.broadcasts"] = mutableListOf("%player%&f won %reward%&f from the ${crate.name}!")
 
         val newRewards = mutableListOf<ConvertedRewardConfig>()
         var row = 2
@@ -91,7 +85,7 @@ object CrazyCratesConverter : Converter {
             counter++
         }
 
-        result.set("rewards", newRewards.map { it.id })
+        result["rewards"] = newRewards.map { it.id }
 
         return ConvertedCrateConfig(id, result, newRewards)
     }
@@ -105,26 +99,26 @@ object CrazyCratesConverter : Converter {
     ): ConvertedRewardConfig {
         val result = ConversionHelpers.createEmptyReward()
 
-        result.set("commands", reward.commands)
-        result.set("items", reward.items.map { it.toLookupString() })
+        result["commands"] = reward.commands
+        result["items"] = reward.items.map { it.toLookupString() }
 
-        result.set("weight.actual", reward.chance)
-        result.set("weight.display", reward.chance)
+        result["weight.actual"] = reward.chance
+        result["weight.display"] = reward.chance
 
         val meta = reward.displayItem.itemMeta
 
-        result.set("display.name", reward.displayItem.itemMeta?.displayName ?: reward.displayItem.type.name)
-        result.set("display.item", reward.displayItem.toLookupString())
-        result.set("display.lore", meta?.lore)
+        result["display.name"] = reward.displayItem.itemMeta?.displayName ?: reward.displayItem.type.name
+        result["display.item"] = reward.displayItem.toLookupString()
+        result["display.lore"] = meta?.lore
 
         val rewards = crateConfig.getSubsections("preview.rewards").toMutableList()
         rewards.add(
             BuildableConfig()
-                .add("id", salt)
-                .add("row", row)
-                .add("column", col)
+                .add(path = "id", obj = salt)
+                .add(path = "row", obj = row)
+                .add(path = "column", obj = col)
         )
-        crateConfig.set("preview.rewards", rewards)
+        crateConfig["preview.rewards"] = rewards
 
         return ConvertedRewardConfig(salt, result)
     }

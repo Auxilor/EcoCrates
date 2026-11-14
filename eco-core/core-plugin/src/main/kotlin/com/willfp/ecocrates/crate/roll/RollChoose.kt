@@ -1,12 +1,5 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.gui.addPage
-import com.willfp.eco.core.gui.addPageChanger
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.page.PageChanger
-import com.willfp.eco.core.gui.setMask
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
@@ -15,6 +8,13 @@ import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Player
+import wiki.ecohub.game.sound.PlayableSound
+import wiki.ecohub.modules.menus.addPage
+import wiki.ecohub.modules.menus.addPageChanger
+import wiki.ecohub.modules.menus.menu
+import wiki.ecohub.modules.menus.page.PageChanger
+import wiki.ecohub.modules.menus.setMask
+import wiki.ecohub.modules.menus.slot
 
 class RollChoose private constructor(
     override var reward: Reward,
@@ -46,8 +46,10 @@ class RollChoose private constructor(
         val pageChangeSound = PlayableSound.create(plugin.configYml.getSubsection("rolls.choose.page-change-sound"))
 
         menu(pattern.size) {
-            title = plugin.configYml.getFormattedString("rolls.choose.title")
-                .replace("%crate%", source.name)
+            setTitle(
+                plugin.configYml.getFormattedString("rolls.choose.title")
+                    .replace("%crate%", source.name)
+            )
 
             maxPages(maxPages)
 
@@ -65,9 +67,9 @@ class RollChoose private constructor(
                                 val option = eligibleRewards[rewardIndex]
 
                                 setSlot(
-                                    rowIndex + 1,
-                                    colIndex + 1,
-                                    slot(option.getDisplay(player, source)) {
+                                    row = rowIndex + 1,
+                                    column = colIndex + 1,
+                                    slot = slot(option.getDisplay(player, source)) {
                                         onLeftClick { _, _, _ ->
                                             pick(option)
                                         }

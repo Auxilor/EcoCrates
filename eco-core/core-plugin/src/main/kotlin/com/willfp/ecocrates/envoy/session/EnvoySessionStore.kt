@@ -1,11 +1,11 @@
 package com.willfp.ecocrates.envoy.session
 
-import com.willfp.eco.core.config.ConfigType
-import com.willfp.eco.core.config.StaticBaseConfig
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.spawn.envoyLocationFromString
 import com.willfp.ecocrates.envoy.spawn.toEnvoyString
 import com.willfp.ecocrates.plugin
+import wiki.ecohub.config.ConfigType
+import wiki.ecohub.config.file.StaticBaseConfig
 import java.util.UUID
 
 private object EnvoySessionYml : StaticBaseConfig(
@@ -34,23 +34,20 @@ object EnvoySessionStore {
             return
         }
 
-        EnvoySessionYml.set("session.category", session.category.id)
-        EnvoySessionYml.set("session.ticks-remaining", session.ticksRemaining)
-        EnvoySessionYml.set("session.total-spawned", session.totalSpawned)
-        EnvoySessionYml.set(
-            "session.spawns",
-            session.spawns.map {
-                mapOf(
-                    "location" to it.blockLocation.toEnvoyString(),
-                    "rarity" to it.rarity.id
-                )
-            }
-        )
+        EnvoySessionYml["session.category"] = session.category.id
+        EnvoySessionYml["session.ticks-remaining"] = session.ticksRemaining
+        EnvoySessionYml["session.total-spawned"] = session.totalSpawned
+        EnvoySessionYml["session.spawns"] = session.spawns.map {
+            mapOf(
+                "location" to it.blockLocation.toEnvoyString(),
+                "rarity" to it.rarity.id
+            )
+        }
 
         // Collection counts drive the top-collector placeholder and the
         // end-effects, so a reload mid-session must not reset the scoreboard.
         for ((uuid, amount) in session.collectionEntries()) {
-            EnvoySessionYml.set("session.collections.$uuid", amount)
+            EnvoySessionYml["session.collections.$uuid"] = amount
         }
 
         EnvoySessionYml.save()
@@ -58,7 +55,7 @@ object EnvoySessionStore {
 
     @Synchronized
     fun clear() {
-        EnvoySessionYml.set("session", null)
+        EnvoySessionYml["session"] = null
         EnvoySessionYml.save()
     }
 

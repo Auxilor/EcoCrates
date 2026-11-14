@@ -2,31 +2,27 @@
 
 package com.willfp.ecocrates.converters.util
 
-import com.willfp.eco.core.config.TransientConfig
-import com.willfp.eco.core.config.interfaces.Config
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.section.TransientConfig
 
 object ConversionHelpers {
     fun createEmptyReward(): Config {
         val result = TransientConfig()
 
-        result.set("commands", mutableListOf<String>())
-        result.set("items", mutableListOf("stone"))
-        result.set("messages", mutableListOf<String>())
-        result.set("weight",
-            TransientConfig().apply {
-                this.set("permission-multipliers", true)
-                this.set("actual", 1)
-                this.set("display", 25)
-            }
-        )
-        result.set("max-wins", -1)
-        result.set("display",
-            TransientConfig().apply {
-                this.set("name", "Unknown Reward")
-                this.set("item", "stone")
-                this.set("lore", emptyList<String>())
-            }
-        )
+        result["commands"] = mutableListOf<String>()
+        result["items"] = mutableListOf("stone")
+        result["messages"] = mutableListOf<String>()
+        result["weight"] = TransientConfig().apply {
+            this["permission-multipliers"] = true
+            this["actual"] = 1
+            this["display"] = 25
+        }
+        result["max-wins"] = -1
+        result["display"] = TransientConfig().apply {
+            this["name"] = "Unknown Reward"
+            this["item"] = "stone"
+            this["lore"] = emptyList<String>()
+        }
 
         return result
     }
@@ -34,107 +30,105 @@ object ConversionHelpers {
     fun createEmptyCrate(): Config {
         val result = TransientConfig()
 
-        result.set("name", "default")
-        result.set("roll", "csgo")
-        result.set("can-reroll", false)
+        result["name"] = "default"
+        result["roll"] = "csgo"
+        result["can-reroll"] = false
 
         val preview = TransientConfig().apply {
-            this.set("title", "Default Crate")
-            this.set("rows", 6)
+            this["title"] = "Default Crate"
+            this["rows"] = 6
             val mask = TransientConfig().apply {
-                this.set("items", emptyList<String>())
-                this.set(
-                    "pattern", mutableListOf(
-                        "000000000",
-                        "000000000",
-                        "000000000",
-                        "000000000",
-                        "000000000",
-                        "000000000"
-                    )
+                this["items"] = emptyList<String>()
+                this["pattern"] = mutableListOf(
+                    "000000000",
+                    "000000000",
+                    "000000000",
+                    "000000000",
+                    "000000000",
+                    "000000000"
                 )
             }
-            this.set("mask", mask)
-            this.set("rewards", emptyList<Config>())
+            this["mask"] = mask
+            this["rewards"] = emptyList<Config>()
         }
 
-        result.set("preview", preview)
+        result["preview"] = preview
 
         val key = TransientConfig().apply {
-            this.set("item", "tripwire_hook unbreaking:1 hide_enchants name:\"&aDefault Crate Key\"")
-            this.set("lore", emptyList<String>())
+            this["item"] = "tripwire_hook unbreaking:1 hide_enchants name:\"&aDefault Crate Key\""
+            this["lore"] = emptyList<String>()
         }
 
-        result.set("key", key)
+        result["key"] = key
 
         val keygui = TransientConfig().apply {
-            this.set("enabled", true)
-            this.set("item", "tripwire_hook unbreaking:1 hide_enchants name:\"Default Crate\"")
-            this.set("lore", emptyList<String>())
-            this.set("row", 2)
-            this.set("column", 3)
-            this.set("right-click-previews", true)
-            this.set("left-click-opens", true)
-            this.set("shift-left-click-messsage", emptyList<String>())
+            this["enabled"] = true
+            this["item"] = "tripwire_hook unbreaking:1 hide_enchants name:\"Default Crate\""
+            this["lore"] = emptyList<String>()
+            this["row"] = 2
+            this["column"] = 3
+            this["right-click-previews"] = true
+            this["left-click-opens"] = true
+            this["shift-left-click-messsage"] = emptyList<String>()
         }
 
-        result.set("keygui", keygui)
+        result["keygui"] = keygui
 
         val payToOpen = TransientConfig().apply {
-            this.set("enabled", false)
-            this.set("price", 5000)
+            this["enabled"] = false
+            this["price"] = 5000
         }
 
-        result.set("pay-to-open", payToOpen)
+        result["pay-to-open"] = payToOpen
 
         val placed = TransientConfig().apply {
             val randomReward = TransientConfig().apply {
-                this.set("enabled", true)
-                this.set("height", 1.5)
-                this.set("delay", 30)
-                this.set("name", "")
+                this["enabled"] = true
+                this["height"] = 1.5
+                this["delay"] = 30
+                this["name"] = ""
             }
 
-            this.set("random-reward", randomReward)
+            this["random-reward"] = randomReward
 
             val particle = TransientConfig().apply {
-                this.set("particle", "flame")
-                this.set("animation", "spiral")
+                this["particle"] = "flame"
+                this["animation"] = "spiral"
             }
 
-            this.set("particles", mutableListOf(particle))
+            this["particles"] = mutableListOf(particle)
 
             val hologram = TransientConfig().apply {
-                this.set("height", 1.5)
-                this.set("ticks", 100)
-                this.set("frames", emptyList<Config>())
+                this["height"] = 1.5
+                this["ticks"] = 100
+                this["frames"] = emptyList<Config>()
             }
 
-            this.set("hologram", hologram)
+            this["hologram"] = hologram
         }
 
-        result.set("placed", placed)
+        result["placed"] = placed
 
         val open = TransientConfig().apply {
-            this.set("messages", mutableListOf("Good luck!"))
-            this.set("broadcasts", mutableListOf("%player%&f is opening the Default Crate!"))
-            this.set("commands", mutableListOf<String>())
-            this.set("sounds", emptyList<Config>())
+            this["messages"] = mutableListOf("Good luck!")
+            this["broadcasts"] = mutableListOf("%player%&f is opening the Default Crate!")
+            this["commands"] = mutableListOf<String>()
+            this["sounds"] = emptyList<Config>()
         }
 
-        result.set("open", open)
+        result["open"] = open
 
         val finish = TransientConfig().apply {
-            this.set("messages", mutableListOf("You won %reward%&f!"))
-            this.set("broadcasts", mutableListOf("%player%&f won %reward%&f from the Default Crate!"))
-            this.set("commands", mutableListOf<String>())
-            this.set("fireworks", emptyList<Config>())
-            this.set("sounds", emptyList<Config>())
+            this["messages"] = mutableListOf("You won %reward%&f!")
+            this["broadcasts"] = mutableListOf("%player%&f won %reward%&f from the Default Crate!")
+            this["commands"] = mutableListOf<String>()
+            this["fireworks"] = emptyList<Config>()
+            this["sounds"] = emptyList<Config>()
         }
 
-        result.set("finish", finish)
+        result["finish"] = finish
 
-        result.set("rewards", emptyList<String>())
+        result["rewards"] = emptyList<String>()
 
         return result
     }

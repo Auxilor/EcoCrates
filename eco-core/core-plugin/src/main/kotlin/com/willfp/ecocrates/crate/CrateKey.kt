@@ -1,11 +1,11 @@
 package com.willfp.ecocrates.crate
 
-import com.willfp.eco.core.fast.FastItemStack
-import com.willfp.eco.core.fast.fast
 import com.willfp.ecocrates.plugin
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
+import wiki.ecohub.game.item.FastItemStack
+import wiki.ecohub.game.item.fast
 
 private val KEY_ID = plugin.createNamespacedKey("key_id")
 

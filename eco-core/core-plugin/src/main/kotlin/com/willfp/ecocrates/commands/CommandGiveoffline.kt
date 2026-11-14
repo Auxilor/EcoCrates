@@ -1,7 +1,5 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.core.data.forEachSavedPlayer
 import com.willfp.ecocrates.commands.target.GiveTarget
 import com.willfp.ecocrates.commands.target.GiveTargets
 import com.willfp.ecocrates.commands.target.LegacySyntax
@@ -12,6 +10,7 @@ import com.willfp.ecocrates.util.CrateKeyListener
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
+import wiki.ecohub.data.playerbase.forEachSavedPlayer
 import java.util.logging.Level
 
 /**
@@ -19,8 +18,7 @@ import java.util.logging.Level
  * known player. Offline players get physical items queued for when they join.
  * Walks every player with saved data off the main thread, without keeping their profiles loaded.
  */
-object CommandGiveoffline : Subcommand(
-    plugin,
+object CommandGiveoffline : EcoCratesSubcommand(
     "giveoffline",
     "ecocrates.command.giveoffline",
     false

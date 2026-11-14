@@ -1,14 +1,14 @@
 package com.willfp.ecocrates.libreforge
 
-import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.session.EnvoySessions
-import com.willfp.libreforge.ArgType
-import com.willfp.libreforge.NoCompileData
-import com.willfp.libreforge.arguments
-import com.willfp.libreforge.effects.Effect
-import com.willfp.libreforge.getFormattedString
-import com.willfp.libreforge.triggers.TriggerData
+import wiki.ecohub.config.ArgType
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.arguments
+import wiki.ecohub.config.section.getFormattedString
+import wiki.ecohub.core.registry.NoCompileData
+import wiki.ecohub.rules.effect.Effect
+import wiki.ecohub.rules.trigger.TriggerData
 
 /** Libreforge effect `start_envoy`: [description]. */
 object EffectStartEnvoy : Effect<NoCompileData>("start_envoy") {

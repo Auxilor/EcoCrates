@@ -1,6 +1,6 @@
 package com.willfp.ecocrates.converters
 
-import com.willfp.eco.core.registry.Registrable
+import wiki.ecohub.core.registry.Registrable
 
 interface Converter : Registrable {
     val id: String

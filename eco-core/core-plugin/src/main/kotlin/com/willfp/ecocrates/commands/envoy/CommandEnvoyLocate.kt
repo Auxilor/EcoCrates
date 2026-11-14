@@ -1,8 +1,6 @@
 package com.willfp.ecocrates.commands.envoy
 
-import com.willfp.eco.core.Prerequisite
-import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.util.StringUtils
+import com.willfp.ecocrates.commands.EcoCratesSubcommand
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.withEnvoyPlaceholders
 import com.willfp.ecocrates.plugin
@@ -10,14 +8,16 @@ import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import wiki.ecohub.core.plugin.startup.Prerequisite
+import wiki.ecohub.game.world.TeleportationService
+import wiki.ecohub.ui.text.StringUtils
 
 /**
  * `/ecocrates envoy locate [number]` - lists the active envoy session's crate
  * spawns as clickable teleport commands, or teleports the sender directly to
  * one when given its number.
  */
-object CommandEnvoyLocate : Subcommand(
-    plugin,
+object CommandEnvoyLocate : EcoCratesSubcommand(
     "locate",
     "ecocrates.command.envoy.locate",
     true
@@ -53,7 +53,12 @@ object CommandEnvoyLocate : Subcommand(
                 .replace("%number%", index.toString())
 
             if (Prerequisite.HAS_FOLIA.isMet) {
-                sender.teleportAsync(spawn.centeredLocation).thenAccept { sender.sendMessage(message) }
+                TeleportationService.teleport(sender, spawn.centeredLocation)
+                    .thenAccept { sender.sendMessage(message) }
+                    .exceptionally { error ->
+                        plugin.logger.warning("Could not teleport to envoy: $error")
+                        null
+                    }
             } else {
                 sender.teleport(spawn.centeredLocation)
                 sender.sendMessage(message)

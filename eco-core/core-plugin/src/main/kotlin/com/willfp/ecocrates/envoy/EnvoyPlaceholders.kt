@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.envoy
 
-import com.willfp.eco.core.placeholder.PlayerPlaceholder
-import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
-import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.plugin
+import wiki.ecohub.game.entity.player.PlayerUtils
+import wiki.ecohub.ui.placeholder.type.PlayerPlaceholder
+import wiki.ecohub.ui.placeholder.type.PlayerlessPlaceholder
 
 /** Registers PlaceholderAPI-style placeholders for the active envoy session and per-category schedule info. */
 object EnvoyPlaceholders {
@@ -62,7 +62,7 @@ object EnvoyPlaceholders {
         // ---- Per-session leaderboard ----
 
         PlayerlessPlaceholder(plugin, "envoy_active_top_collector") {
-            EnvoySessions.active?.topCollector?.savedDisplayName ?: none()
+            EnvoySessions.active?.topCollector?.let { PlayerUtils.getSavedDisplayName(it) } ?: none()
         }.register()
 
         PlayerlessPlaceholder(plugin, "envoy_active_top_collector_amount") {

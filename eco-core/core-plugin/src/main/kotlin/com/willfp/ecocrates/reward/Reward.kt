@@ -1,30 +1,9 @@
 package com.willfp.ecocrates.reward
 
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.data.ServerProfile
-import com.willfp.eco.core.data.keys.PersistentDataKey
-import com.willfp.eco.core.data.keys.PersistentDataKeyType
-import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.fast.FastItemStack
-import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.builder.ItemStackBuilder
-import com.willfp.eco.core.placeholder.PlayerPlaceholder
-import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
-import com.willfp.eco.core.recipe.parts.EmptyTestableItem
-import com.willfp.eco.core.recipe.parts.MaterialTestableItem
-import com.willfp.eco.core.registry.KRegistrable
-import com.willfp.eco.util.formatEco
-import com.willfp.eco.util.toNiceString
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.PermissionMultipliers
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.util.RewardWeightEvent
-import com.willfp.libreforge.NamedValue
-import com.willfp.libreforge.ViolationContext
-import com.willfp.libreforge.effects.Effects
-import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
-import com.willfp.libreforge.toDispatcher
-import com.willfp.libreforge.triggers.TriggerData
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
@@ -32,6 +11,27 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.ViolationContext
+import wiki.ecohub.core.registry.KRegistrable
+import wiki.ecohub.core.stdlib.NamedValue
+import wiki.ecohub.core.stdlib.toNiceString
+import wiki.ecohub.data.PersistentDataKey
+import wiki.ecohub.data.PersistentDataKeyType
+import wiki.ecohub.data.profile.ServerProfile
+import wiki.ecohub.game.entity.player.profile
+import wiki.ecohub.game.entity.toDispatcher
+import wiki.ecohub.game.item.FastItemStack
+import wiki.ecohub.game.item.Items
+import wiki.ecohub.game.item.builder.ItemStackBuilder
+import wiki.ecohub.game.item.lookup.EmptyTestableItem
+import wiki.ecohub.game.item.lookup.MaterialTestableItem
+import wiki.ecohub.rules.chain.NormalExecutorFactory
+import wiki.ecohub.rules.effect.Effects
+import wiki.ecohub.rules.trigger.TriggerData
+import wiki.ecohub.ui.placeholder.type.PlayerPlaceholder
+import wiki.ecohub.ui.placeholder.type.PlayerlessPlaceholder
+import wiki.ecohub.ui.text.formatEco
 import java.util.Locale
 import java.util.Objects
 
@@ -106,9 +106,9 @@ class Reward(
         }
 
         if (config.getBool("display.dont-keep-lore")) {
-            fis.lore = lore
+            fis.setLore(lore)
         } else {
-            fis.lore = fis.lore + lore
+            fis.setLore(fis.getLore() + lore)
         }
 
         return fis.unwrap()

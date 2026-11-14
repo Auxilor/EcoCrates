@@ -1,10 +1,5 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.gui.slot.FillerMask
-import com.willfp.eco.core.gui.slot.MaskItems
-import com.willfp.eco.core.items.Items
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
@@ -15,6 +10,11 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import wiki.ecohub.game.item.Items
+import wiki.ecohub.modules.menus.menu
+import wiki.ecohub.modules.menus.slot
+import wiki.ecohub.modules.menus.slot.mask.FillerMask
+import wiki.ecohub.modules.menus.slot.mask.MaskItems
 
 class RollPick private constructor(
     override val reward: Reward,
@@ -56,8 +56,10 @@ class RollPick private constructor(
             )
         )
 
-        title = plugin.configYml.getFormattedString("rolls.pick.title")
-            .replace("%crate%", source.name)
+        setTitle(
+            plugin.configYml.getFormattedString("rolls.pick.title")
+                .replace("%crate%", source.name)
+        )
 
         for ((index, column) in slotColumns.withIndex()) {
             setSlot(
@@ -66,9 +68,9 @@ class RollPick private constructor(
                 slot(ItemStack(Material.AIR)) {
                     setUpdater { _, _, _ ->
                         when {
-                            pickedIndex == null -> boxItem.item
+                            pickedIndex == null -> boxItem.getItem()
                             pickedIndex == index -> reward.getDisplay(player, source)
-                            !hasOpenedOthers -> boxItem.item
+                            !hasOpenedOthers -> boxItem.getItem()
                             else -> nearMisses[index].getDisplay(player, source)
                         }
                     }

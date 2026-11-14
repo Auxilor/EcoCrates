@@ -2,9 +2,6 @@
 
 package com.willfp.ecocrates.converters.impl
 
-import com.willfp.eco.core.config.BuildableConfig
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.items.toLookupString
 import com.willfp.ecocrates.converters.Converter
 import com.willfp.ecocrates.converters.util.ConversionHelpers
 import com.willfp.ecocrates.crate.Crates
@@ -15,6 +12,9 @@ import su.nightexpress.excellentcrates.ExcellentCratesAPI
 import su.nightexpress.excellentcrates.api.OpenCostType
 import su.nightexpress.excellentcrates.api.crate.ICrate
 import su.nightexpress.excellentcrates.api.crate.ICrateReward
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.section.BuildableConfig
+import wiki.ecohub.game.item.toLookupString
 import java.io.File
 
 object ExcellentCratesConverter : Converter {
@@ -44,37 +44,35 @@ object ExcellentCratesConverter : Converter {
 
         val id = crate.id
 
-        result.set("name", crate.name)
+        result["name"] = crate.name
 
         if (crate.getOpenCost(OpenCostType.MONEY) > 0.0) {
-            result.set("pay-to-open.enabled", true)
-            result.set("pay-to-open.price", crate.getOpenCost(OpenCostType.MONEY))
+            result["pay-to-open.enabled"] = true
+            result["pay-to-open.price"] = crate.getOpenCost(OpenCostType.MONEY)
         }
 
         if (crate.keyIds.isNotEmpty()) {
             val key = ExcellentCratesAPI.getKeyManager().getKeyById(crate.keyIds.first())!!
-            result.set("key.item", key.item.toLookupString())
-            result.set("key.lore", key.item.itemMeta?.lore)
+            result["key.item"] = key.item.toLookupString()
+            result["key.lore"] = key.item.itemMeta?.lore
         } else {
-            result.set("key.item", "tripwire_hook unbreaking:1 hide_enchants name:\"${crate.name} Key\"")
-            result.set("key.lore", mutableListOf("&fUse this key to open", "&fthe ${crate.name}"))
+            result["key.item"] = "tripwire_hook unbreaking:1 hide_enchants name:\"${crate.name} Key\""
+            result["key.lore"] = mutableListOf("&fUse this key to open", "&fthe ${crate.name}")
         }
 
-        result.set("keygui.item", crate.item.toLookupString())
-        result.set("keygui.lore", crate.item.itemMeta?.lore)
+        result["keygui.item"] = crate.item.toLookupString()
+        result["keygui.lore"] = crate.item.itemMeta?.lore
 
-        result.set("placed.hologram.height", crate.blockHologramOffsetY)
-        result.set(
-            "placed.hologram.frames", mutableListOf(
-                BuildableConfig()
-                    .add("tick", 0)
-                    .add("lines", crate.blockHologramText)
-            )
+        result["placed.hologram.height"] = crate.blockHologramOffsetY
+        result["placed.hologram.frames"] = mutableListOf(
+            BuildableConfig()
+                .add(path = "tick", obj = 0)
+                .add(path = "lines", obj = crate.blockHologramText)
         )
 
-        result.set("preview.title", crate.name)
-        result.set("open.broadcasts", mutableListOf("%player%&f is opening the ${crate.name}!"))
-        result.set("finish.broadcasts", mutableListOf("%player%&f won %reward%&f from the ${crate.name}!"))
+        result["preview.title"] = crate.name
+        result["open.broadcasts"] = mutableListOf("%player%&f is opening the ${crate.name}!")
+        result["finish.broadcasts"] = mutableListOf("%player%&f won %reward%&f from the ${crate.name}!")
 
         val newRewards = mutableListOf<ConvertedRewardConfig>()
         var row = 2
@@ -91,7 +89,7 @@ object ExcellentCratesConverter : Converter {
             counter++
         }
 
-        result.set("rewards", newRewards.map { it.id })
+        result["rewards"] = newRewards.map { it.id }
 
         return ConvertedCrateConfig(id, result, newRewards)
     }
@@ -105,33 +103,33 @@ object ExcellentCratesConverter : Converter {
     ): ConvertedRewardConfig {
         val result = ConversionHelpers.createEmptyReward()
 
-        result.set("commands", reward.commands.map {
-            it.replace("[CONSOLE]", "")
-                .replace("[CONSOLE] ", "")
-                .replace("[PLAYER]", "")
-                .replace("[PLAYER] ", "")
-        })
-        result.set("items", reward.items.map { it.toLookupString() })
+        result["commands"] = reward.commands.map {
+        it.replace("[CONSOLE]", "")
+            .replace("[CONSOLE] ", "")
+            .replace("[PLAYER]", "")
+            .replace("[PLAYER] ", "")
+    }
+        result["items"] = reward.items.map { it.toLookupString() }
 
-        result.set("max-wins", reward.winLimitAmount)
+        result["max-wins"] = reward.winLimitAmount
 
-        result.set("weight.actual", reward.chance)
-        result.set("weight.display", reward.chance)
+        result["weight.actual"] = reward.chance
+        result["weight.display"] = reward.chance
 
         val meta = reward.preview.itemMeta
 
-        result.set("display.name", reward.name)
-        result.set("display.item", reward.preview.toLookupString())
-        result.set("display.lore", meta?.lore)
+        result["display.name"] = reward.name
+        result["display.item"] = reward.preview.toLookupString()
+        result["display.lore"] = meta?.lore
 
         val rewards = crateConfig.getSubsections("preview.rewards").toMutableList()
         rewards.add(
             BuildableConfig()
-                .add("id", salt)
-                .add("row", row)
-                .add("column", col)
+                .add(path = "id", obj = salt)
+                .add(path = "row", obj = row)
+                .add(path = "column", obj = col)
         )
-        crateConfig.set("preview.rewards", rewards)
+        crateConfig["preview.rewards"] = rewards
 
         return ConvertedRewardConfig(salt, result)
     }

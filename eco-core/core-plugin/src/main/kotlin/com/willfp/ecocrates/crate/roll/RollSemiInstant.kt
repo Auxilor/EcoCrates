@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
@@ -10,6 +9,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import wiki.ecohub.math.NumberUtils
 
 class RollSemiInstant private constructor(
     override val reward: Reward,
@@ -28,9 +28,9 @@ class RollSemiInstant private constructor(
         plugin.configYml.getDouble("rolls.semi_instant.velocity.y"),
         plugin.configYml.getDouble("rolls.semi_instant.velocity.z")
     ).apply {
-        this.x += NumberUtils.randFloat(-randomness, randomness)
-        this.y += NumberUtils.randFloat(-randomness, randomness)
-        this.z += NumberUtils.randFloat(-randomness, randomness)
+        this.x += NumberUtils.randFloat(min = -randomness, max = randomness)
+        this.y += NumberUtils.randFloat(min = -randomness, max = randomness)
+        this.z += NumberUtils.randFloat(min = -randomness, max = randomness)
     }
 
     private lateinit var item: Item

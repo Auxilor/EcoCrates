@@ -1,11 +1,7 @@
 package com.willfp.ecocrates
 
-import com.willfp.eco.core.bstats.EcoMetricsChart
-import com.willfp.eco.core.command.impl.PluginCommand
-import com.willfp.eco.core.display.DisplayModule
-import com.willfp.eco.core.integrations.IntegrationLoader
-import com.willfp.ecocrates.commands.CommandEcoCrates
-import com.willfp.ecocrates.commands.CommandEcoEnvoy
+import com.willfp.ecocrates.commands.ecoCratesCommand
+import com.willfp.ecocrates.commands.ecoEnvoyCommand
 import com.willfp.ecocrates.converters.Converters
 import com.willfp.ecocrates.converters.impl.CrateReloadedConverter
 import com.willfp.ecocrates.converters.impl.CrazyCratesConverter
@@ -13,8 +9,8 @@ import com.willfp.ecocrates.converters.impl.ExcellentCratesConverter
 import com.willfp.ecocrates.converters.impl.SpecializedCratesConverter
 import com.willfp.ecocrates.crate.ActiveRolls
 import com.willfp.ecocrates.crate.Crates
-import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.KeyGUI
+import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.PermissionMultipliers
 import com.willfp.ecocrates.crate.placed.CrateDisplay
 import com.willfp.ecocrates.crate.placed.PlacedCrates
@@ -46,21 +42,25 @@ import com.willfp.ecocrates.libreforge.TriggerCrateWin
 import com.willfp.ecocrates.libreforge.TriggerOpenEnvoy
 import com.willfp.ecocrates.libreforge.TriggerPouchOpen
 import com.willfp.ecocrates.libreforge.TriggerPouchWin
-import com.willfp.ecocrates.pouch.Pouches
 import com.willfp.ecocrates.pouch.PouchListener
+import com.willfp.ecocrates.pouch.Pouches
 import com.willfp.ecocrates.reward.PendingRewards
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.CrateKeyListener
 import com.willfp.ecocrates.util.PlacedCrateListener
 import com.willfp.ecocrates.util.RollItemListener
 import com.willfp.ecocrates.util.RollItems
-import com.willfp.libreforge.conditions.Conditions
-import com.willfp.libreforge.effects.Effects
-import com.willfp.libreforge.filters.Filters
-import com.willfp.libreforge.loader.LibreforgePlugin
-import com.willfp.libreforge.loader.configs.ConfigCategory
-import com.willfp.libreforge.triggers.Triggers
 import org.bukkit.event.Listener
+import wiki.ecohub.config.category.NativeConfigCategory
+import wiki.ecohub.core.command.EcoCommand
+import wiki.ecohub.core.plugin.EcoPlugin
+import wiki.ecohub.provider.ExternalProviderLoader
+import wiki.ecohub.provider.metrics.EcoMetricsChart
+import wiki.ecohub.rules.condition.Conditions
+import wiki.ecohub.rules.effect.Effects
+import wiki.ecohub.rules.filter.Filters
+import wiki.ecohub.rules.trigger.Triggers
+import wiki.ecohub.ui.display.DisplayModule
 
 internal lateinit var plugin: EcoCratesPlugin
     private set
@@ -70,7 +70,7 @@ internal lateinit var plugin: EcoCratesPlugin
  * config categories, commands, listeners and display modules on enable, and
  * tears down active envoy state (compasses, sessions) on disable/reload.
  */
-class EcoCratesPlugin : LibreforgePlugin() {
+class EcoCratesPlugin : EcoPlugin() {
     init {
         plugin = this
     }
@@ -125,7 +125,7 @@ class EcoCratesPlugin : LibreforgePlugin() {
         EnvoyTicker.start()
     }
 
-    override fun loadConfigCategories(): List<ConfigCategory> {
+    override fun loadConfigCategories(): List<NativeConfigCategory> {
         return listOf(
             Keys,
             Rewards,
@@ -135,10 +135,10 @@ class EcoCratesPlugin : LibreforgePlugin() {
         )
     }
 
-    override fun loadPluginCommands(): List<PluginCommand> {
+    override fun loadPluginCommands(): List<EcoCommand> {
         return listOf(
-            CommandEcoCrates,
-            CommandEcoEnvoy
+            ecoCratesCommand(),
+            ecoEnvoyCommand()
         )
     }
 
@@ -160,12 +160,12 @@ class EcoCratesPlugin : LibreforgePlugin() {
         )
     }
 
-    override fun loadIntegrationLoaders(): MutableList<IntegrationLoader> {
-        return mutableListOf(
-            IntegrationLoader("CrateReloaded") { Converters.register(CrateReloadedConverter) },
-            IntegrationLoader("ExcellentCrates") { Converters.register(ExcellentCratesConverter) },
-            IntegrationLoader("CrazyCrates") { Converters.register(CrazyCratesConverter) },
-            IntegrationLoader("SpecializedCrates") { Converters.register(SpecializedCratesConverter) }
+    override fun getExternalProviderLoaders(): List<ExternalProviderLoader> {
+        return listOf(
+            ExternalProviderLoader("CrateReloaded") { Converters.register(CrateReloadedConverter); null },
+            ExternalProviderLoader("ExcellentCrates") { Converters.register(ExcellentCratesConverter); null },
+            ExternalProviderLoader("CrazyCrates") { Converters.register(CrazyCratesConverter); null },
+            ExternalProviderLoader("SpecializedCrates") { Converters.register(SpecializedCratesConverter); null }
         )
     }
 

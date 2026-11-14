@@ -1,12 +1,12 @@
 package com.willfp.ecocrates.envoy.compass
 
-import com.willfp.eco.core.waypoint.Waypoints
 import com.willfp.ecocrates.envoy.EnvoyCategory
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.runOwned
 import org.bukkit.Bukkit
-import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
+import wiki.ecohub.game.entity.getAttribute
+import wiki.ecohub.ui.display.Waypoints
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
@@ -34,7 +34,7 @@ object EnvoyCompasses {
             return false
         }
 
-        val attribute = player.getAttribute(Attribute.WAYPOINT_RECEIVE_RANGE)
+        val attribute = player.getAttribute("minecraft:waypoint_receive_range")
         val previous = attribute?.baseValue
 
         // The client only renders waypoints within its receive range, so a
@@ -64,7 +64,7 @@ object EnvoyCompasses {
 
         compass.shownWaypoints.clear()
 
-        val attribute = player.getAttribute(Attribute.WAYPOINT_RECEIVE_RANGE)
+        val attribute = player.getAttribute("minecraft:waypoint_receive_range")
 
         // Restore whatever the player had before, so the compass never
         // permanently changes their attributes.
