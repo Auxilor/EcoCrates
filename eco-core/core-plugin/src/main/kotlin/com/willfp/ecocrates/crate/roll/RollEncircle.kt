@@ -13,26 +13,35 @@ import org.bukkit.Sound
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import java.util.concurrent.CopyOnWriteArrayList
 
+/**
+ * Items rise into a spinning ring around the crate, then every loser is removed and
+ * the winners glide into a line across the centre.
+ * The ring is topped up with filler rewards. One slot is reserved for each winning reward.
+ */
 class RollEncircle private constructor(
-    override val reward: Reward,
+    override val rewards: List<Reward>,
     override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
     override val method: OpenMethod
 ) : Roll {
+    override val reward: Reward = rewards.first()
+
     private val riseVelocity = plugin.configYml.getDouble("rolls.encircle.rise-velocity")
     private val spinVelocity = plugin.configYml.getDouble("rolls.encircle.spin-velocity")
     private val revealVelocity = plugin.configYml.getDouble("rolls.encircle.reveal-velocity")
     private val spinTime = plugin.configYml.getInt("rolls.encircle.spin-time")
     private val revealTime = plugin.configYml.getInt("rolls.encircle.reveal-time")
     private val spinsPerSecond = plugin.configYml.getDouble("rolls.encircle.spins-per-second")
-    private val itemCount = plugin.configYml.getInt("rolls.encircle.items").coerceAtLeast(1)
-    private val fillerItems = source.getRandomRewards(
-        player,
-        itemCount - 1 // One slot is reserved for the winning reward.
+    private val itemCount = RingItems.count(
+        configured = plugin.configYml.getInt("rolls.encircle.items"),
+        minimum = 1,
+        rewards = rewards.size
     )
+    private val fillerItems = source.getRandomRewards(player, itemCount - rewards.size)
     private val radius = plugin.configYml.getDouble("rolls.encircle.radius")
     private val height = plugin.configYml.getDouble("rolls.encircle.height")
     private val angle = 2 * PI / itemCount
@@ -43,21 +52,24 @@ class RollEncircle private constructor(
     private var state = EncircleState.RISE
     private var timeSpentSpinning = 0
     private var timeSpentRevealing = 0
-    private var rewardItem: Item? = null
 
     private val display = mutableListOf<Item>()
+    private val winners = CopyOnWriteArrayList<Item>()
+    private val winnerTargets = RingItems.winnerTargets(
+        center = circleCenter,
+        count = rewards.size,
+        yaw = player.location.yaw.toDouble()
+    )
 
     @Suppress("DEPRECATION")
     override fun roll() {
         val world = location.world!!
-
-        val itemsToDisplay = fillerItems.toMutableList()
-        itemsToDisplay.add(reward)
-        itemsToDisplay.shuffle()
+        val fillers = fillerItems.iterator()
 
         player.closeInventory()
 
-        for (item in itemsToDisplay) {
+        val spawned = RingItems.order(itemCount = itemCount, rewards = rewards.size).map { rewardIndex ->
+            val item = if (rewardIndex == RingItems.FILLER) fillers.next() else rewards[rewardIndex]
             val entity = world.dropItem(location, item.getDisplay(player, source))
 
             entity.pickupDelay = Int.MAX_VALUE
@@ -67,15 +79,15 @@ class RollEncircle private constructor(
             RollItems.mark(entity)
             display.add(entity)
 
-            if (item === reward) {
-                rewardItem = entity
-            }
+            rewardIndex to entity
         }
+
+        winners.addAll(RingItems.winners(spawned))
     }
 
     override fun tick(tick: Int) {
         display.removeIf { !it.isValid }
-        if (display.isEmpty()) {
+        if (display.isEmpty() || state == EncircleState.REVEAL && winners.any { !it.isValid }) {
             state = EncircleState.DONE
             return
         }
@@ -132,35 +144,11 @@ class RollEncircle private constructor(
             }
 
             EncircleState.REVEAL -> {
-                val winner = rewardItem
-                if (winner == null || !winner.isValid) {
-                    state = EncircleState.DONE
-                    return
-                }
-
-                for (item in display.toSet()) {
-                    if (item != winner) {
-                        item.remove()
-                        display.remove(item)
-                    }
-                }
-
-                if (circleCenter.distance(winner.location.toVector()) > 0.2) {
-                    winner.velocity = circleCenter.clone()
-                        .subtract(winner.location.toVector())
-                        .normalize()
-                        .multiply(revealVelocity)
-                }
-
-                timeSpentRevealing++
-
-                if (timeSpentRevealing > revealTime) {
-                    state = EncircleState.DONE
-                }
+                tickReveal()
             }
 
-            else -> {
-                // Do nothing
+            EncircleState.DONE -> {
+                return
             }
         }
 
@@ -171,6 +159,32 @@ class RollEncircle private constructor(
                 1f,
                 lerp(0.5, 2.0, tick.toDouble() / (spinTime + revealTime)).toFloat()
             )
+        }
+    }
+
+    private fun tickReveal() {
+        val winnerSet = winners.toSet()
+
+        for (item in display.toSet()) {
+            if (item !in winnerSet) {
+                item.remove()
+                display.remove(item)
+            }
+        }
+
+        for ((winner, target) in winners.zip(winnerTargets)) {
+            if (target.distance(winner.location.toVector()) > 0.2) {
+                winner.velocity = target.clone()
+                    .subtract(winner.location.toVector())
+                    .normalize()
+                    .multiply(revealVelocity)
+            }
+        }
+
+        timeSpentRevealing++
+
+        if (timeSpentRevealing > revealTime) {
+            state = EncircleState.DONE
         }
     }
 
@@ -190,9 +204,12 @@ class RollEncircle private constructor(
     }
 
     object Factory : RollFactory<RollEncircle>("encircle") {
+        override val maxRewards: Int
+            get() = RingItems.capacity(plugin.configYml.getInt("rolls.encircle.items"))
+
         override fun create(options: RollOptions): RollEncircle =
             RollEncircle(
-                options.reward,
+                options.rewards,
                 options.source,
                 options.player,
                 options.location,
