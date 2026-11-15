@@ -15,8 +15,11 @@ data class LineOffset(
  * Lays rewards out side by side in a line perpendicular to the player's view, centred on the crate.
  */
 object RewardLine {
-    /** The default distance in blocks between neighbouring rewards. */
-    const val DEFAULT_SPACING = 0.6
+    /**
+     * The default distance in blocks between neighbouring rewards, wide enough that their name labels
+     * don't overlap.
+     */
+    const val DEFAULT_SPACING = 1.25
 
     /**
      * Gets the offsets of [count] rewards from the crate, ordered left to right as the player sees them.

@@ -20,7 +20,7 @@ class RewardLineTest {
     @Test
     fun `facing south runs east to west`() {
         val offsets = RewardLine.offsets(count = 3, yaw = 0.0)
-        listOf(0.6, 0.0, -0.6).zip(offsets).forEach { (expected, offset) ->
+        listOf(1.25, 0.0, -1.25).zip(offsets).forEach { (expected, offset) ->
             assertNear(expected = expected, actual = offset.x)
         }
         offsets.forEach { assertNear(expected = 0.0, actual = it.z) }
@@ -29,8 +29,8 @@ class RewardLineTest {
     @Test
     fun `facing east runs north south`() {
         val offsets = RewardLine.offsets(count = 2, yaw = -90.0)
-        assertNear(expected = -0.3, actual = offsets[0].z)
-        assertNear(expected = 0.3, actual = offsets[1].z)
+        assertNear(expected = -0.625, actual = offsets[0].z)
+        assertNear(expected = 0.625, actual = offsets[1].z)
         offsets.forEach { assertNear(expected = 0.0, actual = it.x) }
     }
 

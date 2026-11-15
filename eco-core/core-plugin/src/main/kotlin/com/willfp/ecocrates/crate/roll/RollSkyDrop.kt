@@ -169,7 +169,11 @@ class RollSkyDrop private constructor(
     override fun roll() {
         val world = location.world!!
 
-        RewardLine.offsets(count = rewards.size, yaw = player.location.yaw.toDouble(), spacing = decoySpread)
+        RewardLine.offsets(
+            count = rewards.size,
+            yaw = player.location.yaw.toDouble(),
+            spacing = decoySpread.coerceAtLeast(RewardLine.DEFAULT_SPACING)
+        )
             .zip(rewards)
             .forEachIndexed { index, (offset, itemReward) ->
                 launches.add(

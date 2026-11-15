@@ -369,7 +369,7 @@ rolls:
     pause: 20 # Ticks held at the top before dropping
     settle: 20 # Ticks held on the ground before finishing
     decoy-count: 8 # Extra items thrown out of the crate
-    decoy-spread: 0.25 # Horizontal spread of the thrown items
+    decoy-spread: 0.25 # Horizontal spread of the thrown items. With several rewards, the landings are this far apart, at least 1.25 blocks
     timeout: 400 # Safety cap in ticks; ends the roll if the item never settles
     hide-placed-crate: false
   quick:
