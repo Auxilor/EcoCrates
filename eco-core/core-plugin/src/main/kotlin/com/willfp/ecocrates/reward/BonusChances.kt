@@ -2,6 +2,7 @@ package com.willfp.ecocrates.reward
 
 import com.willfp.eco.core.placeholder.context.placeholderContext
 import com.willfp.eco.util.evaluateExpression
+import com.willfp.ecocrates.plugin
 import org.bukkit.entity.Player
 import java.util.concurrent.ThreadLocalRandom
 
@@ -100,6 +101,27 @@ class BonusChances(private val expressions: List<String>) {
      */
     fun count(player: Player, mode: BonusChanceMode): Int =
         BonusCount.count(evaluate(player), mode) { ThreadLocalRandom.current().nextDouble(MAX_ROLL) }
+
+    /**
+     * Log a warning if the chances are plain numbers that are not in descending order,
+     * as the overall mode sorts them.
+     *
+     * @param owner The source the chances belong to, as it starts the warning.
+     * @param mode How the chances are rolled.
+     */
+    fun warnIfUnsorted(owner: String, mode: BonusChanceMode) {
+        val values = expressions.map { it.trim().toDoubleOrNull() }
+
+        if (
+            mode == BonusChanceMode.OVERALL
+            && values.all { it != null }
+            && !isDescending(values.filterNotNull())
+        ) {
+            plugin.logger.warning(
+                "$owner has bonus-chances that are not in descending order; they are sorted for the overall mode."
+            )
+        }
+    }
 
     companion object {
         private const val MAX_ROLL = 100.0

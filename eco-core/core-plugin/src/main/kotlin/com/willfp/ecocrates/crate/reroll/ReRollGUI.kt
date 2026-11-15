@@ -25,7 +25,7 @@ object ReRollGUI {
     fun open(session: OpenSession, pick: OpenPick) {
         val player = session.player
 
-        val price = session.crate.rerollPrice(pick)
+        val price = session.sessionSource.rerollPrice(pick)
         val priceDisplay = price.getDisplay(player)
 
         val menu = menu(plugin.configYml.getInt("reroll.rows")) {

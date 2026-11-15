@@ -26,7 +26,6 @@ import com.willfp.ecocrates.event.CrateOpenEvent
 import com.willfp.ecocrates.event.CrateRewardEvent
 import com.willfp.ecocrates.event.PickInfo
 import com.willfp.ecocrates.plugin
-import com.willfp.ecocrates.reward.BonusChanceMode
 import com.willfp.ecocrates.reward.BonusChances
 import com.willfp.ecocrates.reward.MultiRewardSettings
 import com.willfp.ecocrates.reward.PendingRewards
@@ -194,7 +193,7 @@ class Crate(
             plugin.logger.warning("Crate '$id' has no rewards - it can't be opened.")
         }
 
-        warnIfBonusChancesUnsorted()
+        bonusChances.warnIfUnsorted("Crate '$id'", multiRewardSettings.bonusChanceMode)
 
         PlayerPlaceholder(
             plugin,
@@ -213,20 +212,6 @@ class Crate(
             plugin.logger.warning("Crate '$id' has $path set to $ticks, defaulting to 1.")
         }
         return ticks.coerceAtLeast(1)
-    }
-
-    private fun warnIfBonusChancesUnsorted() {
-        val values = config.getStrings("bonus-chances").map { it.trim().toDoubleOrNull() }
-
-        if (
-            multiRewardSettings.bonusChanceMode == BonusChanceMode.OVERALL
-            && values.all { it != null }
-            && !BonusChances.isDescending(values.filterNotNull())
-        ) {
-            plugin.logger.warning(
-                "Crate '$id' has bonus-chances that are not in descending order; they are sorted for the overall mode."
-            )
-        }
     }
 
     /** Makes the roll that shows [rewards], the first of which is the roll's main reward. */
@@ -507,11 +492,7 @@ class Crate(
 
             recordOpen(player)
 
-            val session = OpenSession(this, player, picks, OpenContext(method, loc, placedCrate))
-            OpenSessions.register(player, session)
-            runCatching { session.play() }
-                .onFailure { OpenSessions.unregister(player) }
-                .getOrThrow()
+            OpenSessions.start(OpenSession(this, player, picks, OpenContext(method, loc, placedCrate)))
         }
 
         return picks.isNotEmpty()

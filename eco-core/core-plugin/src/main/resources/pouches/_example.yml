@@ -4,7 +4,7 @@
 # _example.yml is not loaded.
 #
 # A pouch is a single-use item. Right-clicking it consumes one and runs a
-# GUI roll that gives exactly one reward. No keys, no rerolls.
+# GUI roll that gives one reward, plus any bonus rewards. No keys, no rerolls.
 # Give it with /ecocrates give <player> pouch <id> [amount]. Other plugins can
 # use the item as ecocrates:pouch_<id>.
 
@@ -103,7 +103,7 @@ open-effects: # Placeholders: %pouch%, %pouch_id%, %pouch_rarity%
       volume: 1
       pitch: 1
 
-finish-effects: # Also %reward% and %reward_id%
+finish-effects: # Also %reward%, %reward_id%, %reward_number% and %reward_amount%
   - id: send_message
     args:
       message: "You found %reward%&f in your %pouch%&f!"
@@ -113,3 +113,20 @@ rewards:
   - diamond_sword
   - stack_of_emeralds
   - 1000_coins
+
+# Optional. One reward is always given. Each entry is the chance of one more bonus reward.
+# Entries accept math and placeholders, like reward weights.
+# bonus-chances:
+#   - 50
+#   - 20
+
+# Optional. Overrides the multi-reward section in config.yml for this pouch only.
+# Leave out any key to use the value from config.yml.
+# Pouches never offer rerolls, so bonus-rerollable is ignored here.
+# multi-reward:
+#   fallback: sequential
+#   bonus-chance-mode: overall
+
+# Optional. Effects run once after every reward from an open is given.
+# Supports %rewards% (the reward names) and %reward_amount% (the number of rewards).
+all-finish-effects: []

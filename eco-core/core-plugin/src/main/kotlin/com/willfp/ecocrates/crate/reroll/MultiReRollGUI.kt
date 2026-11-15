@@ -28,7 +28,7 @@ object MultiReRollGUI {
 
     /** Opens the menu for [picks], or gives them all if none can be rerolled. */
     fun open(session: OpenSession, picks: List<OpenPick>) {
-        if (picks.none { session.crate.canReroll(session.player, it) }) {
+        if (picks.none { session.sessionSource.canReroll(session.player, it) }) {
             session.acceptAll(picks)
         } else {
             buildMenu(session, picks).open(session.player)
@@ -85,7 +85,8 @@ object MultiReRollGUI {
         }
 
         for ((location, pick) in locations.zip(picks)) {
-            val price = session.crate.rerollPrice(pick).takeIf { session.crate.canReroll(session.player, pick) }
+            val price = session.sessionSource.rerollPrice(pick)
+                .takeIf { session.sessionSource.canReroll(session.player, pick) }
 
             setSlot(
                 location.row,

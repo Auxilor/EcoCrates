@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.crate.open
 
-import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.reroll.MultiReRollGUI
 import com.willfp.ecocrates.crate.reroll.ReRollGUI
 import com.willfp.ecocrates.crate.roll.Roll
@@ -35,12 +34,12 @@ class OpenSession(
     val picks: List<OpenPick>,
     val context: OpenContext
 ) {
-    /** The crate being opened. */
-    internal val crate: Crate = requireNotNull(source as? Crate) { "Only crates open through sessions" }
+    /** What this open needs from [source]. */
+    internal val sessionSource: SessionSource = SessionSource.forSource(source)
 
     private val batches: List<List<OpenPick>> = splitIntoRollBatches(
         picks = picks,
-        maxRewards = crate.rollFactory.maxRewards,
+        maxRewards = sessionSource.maxRewards,
         fallback = source.multiRewardSettings.fallback
     )
 
@@ -75,7 +74,7 @@ class OpenSession(
     fun give(pick: OpenPick) {
         if (!pick.isGiven) {
             pick.isGiven = true
-            crate.deliver(player = player, pick = pick, amount = rewardAmount)
+            sessionSource.deliver(player = player, pick = pick, amount = rewardAmount)
 
             if (picks.all { it.isGiven }) {
                 finish()
@@ -102,7 +101,7 @@ class OpenSession(
                     } else {
                         give(pick)
                     }
-                }.onFailure { logOpenFailure(player, it) }
+                }.onFailure { logOpenFailure(it) }
             }
         } finally {
             finish()
@@ -142,7 +141,7 @@ class OpenSession(
         val replacement = if (
             !isFinished.get()
             && !pick.isGiven
-            && crate.canStartReroll(player)
+            && sessionSource.canStartReroll(player)
         ) {
             source.pickReward(
                 player = player,
@@ -154,20 +153,19 @@ class OpenSession(
         }
 
         val reward = replacement?.let {
-            crate.fireOpenEvent(player, context.method, it, true, PickInfo(pick.number, pick.isBonus))
+            sessionSource.beginReroll(player, context.method, it, PickInfo(pick.number, pick.isBonus))
         }
 
         if (reward != null) {
             pick.reward = reward
             pick.rerolls++
-            crate.recordOpen(player)
             batchToReopenAfterReroll = multiBatch
             startRoll(listOf(pick), isReroll = true)
         }
 
         reward != null
     }.getOrElse { error ->
-        logOpenFailure(player, error)
+        logOpenFailure(error)
         finishAll(false)
         false
     }
@@ -184,19 +182,19 @@ class OpenSession(
     }
 
     private fun startRoll(batch: List<OpenPick>, isReroll: Boolean) {
-        val roll = crate.createRoll(player, context, batch.map { it.reward }, isReroll)
+        val roll = sessionSource.createRoll(player, context, batch.map { it.reward }, isReroll)
 
         activeBatch = batch
         activeRoll = roll
 
-        crate.hidePlacedCrate(player, context)
+        sessionSource.hidePlacedCrate(player, context)
 
         RollSession.start(roll) { finishedRoll, forced -> onRolled(batch, finishedRoll, forced) }
     }
 
     private fun onRolled(batch: List<OpenPick>, roll: Roll, forced: Boolean) = finishRemainingPicksOnFailure {
         adopt(roll, batch)
-        crate.showPlacedCrate(player, context)
+        sessionSource.showPlacedCrate(player, context)
 
         val pick = batch.singleOrNull()
         val multiBatch = batchToReopenAfterReroll ?: batch.takeIf { it.size > 1 }
@@ -210,7 +208,7 @@ class OpenSession(
                 MultiReRollGUI.open(this, multiBatch)
             }
 
-            pick != null && crate.canReroll(player, pick) -> {
+            pick != null && sessionSource.canReroll(player, pick) -> {
                 ReRollGUI.open(this, pick)
             }
 
@@ -236,20 +234,20 @@ class OpenSession(
             OpenSessions.unregister(player)
 
             if (player.isOnline) {
-                runCatching { crate.runAllFinishEffects(player, picks.map { it.reward }) }
-                    .onFailure { logOpenFailure(player, it) }
+                runCatching { sessionSource.finishOpen(player, picks.map { it.reward }) }
+                    .onFailure { logOpenFailure(it) }
             }
         }
     }
 }
 
-private fun logOpenFailure(player: Player, error: Throwable) {
-    plugin.logger.log(Level.WARNING, "Error during a crate open for ${player.name}", error)
+private fun OpenSession.logOpenFailure(error: Throwable) {
+    plugin.logger.log(Level.WARNING, "Error during a ${source.sourceType} open for ${player.name}", error)
 }
 
 private inline fun OpenSession.finishRemainingPicksOnFailure(block: () -> Unit) {
     runCatching { block() }.onFailure { error ->
-        logOpenFailure(player, error)
+        logOpenFailure(error)
         finishAll(false)
     }
 }

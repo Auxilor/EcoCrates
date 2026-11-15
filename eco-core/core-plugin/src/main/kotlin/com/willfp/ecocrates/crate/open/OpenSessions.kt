@@ -26,6 +26,18 @@ object OpenSessions {
     fun get(player: Player): OpenSession? = sessions[player.uniqueId]
 
     /**
+     * Registers [session] and plays its first roll, unregistering it again if that fails.
+     *
+     * @param session The open to start.
+     */
+    fun start(session: OpenSession) {
+        register(session.player, session)
+        runCatching { session.play() }
+            .onFailure { unregister(session.player) }
+            .getOrThrow()
+    }
+
+    /**
      * Finishes every open in progress, giving or queueing each reward not yet given.
      *
      * Each open is finished on its player's region, as finishing touches the player.
