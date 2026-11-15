@@ -16,31 +16,37 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
+/**
+ * Shows a row of candidates and knocks them out one by one until only the winners remain.
+ * With several rewards, each remaining candidate shows its own reward.
+ */
 class RollElimination private constructor(
-    override val reward: Reward,
+    override val rewards: List<Reward>,
     override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
     override val method: OpenMethod
 ) : Roll {
+    override val reward: Reward = rewards.first()
+
     // Seven is the widest row that still leaves a border of filler either side.
-    private val candidateCount = plugin.configYml.getInt("rolls.elimination.candidates")
-        .coerceIn(2, 7)
+    private val candidateCount = GuiRollLayout.eliminationCandidates(
+        configured = plugin.configYml.getInt("rolls.elimination.candidates"),
+        rewards = rewards.size
+    )
 
     private val interval = plugin.configYml.getInt("rolls.elimination.interval").coerceAtLeast(1)
     private val revealTime = plugin.configYml.getInt("rolls.elimination.reveal-time")
 
     private val eliminatedItem = Items.lookup(plugin.configYml.getString("rolls.elimination.eliminated"))
 
-    // The winner is hidden among fillers, and everything except it is knocked out one by one.
-    private val candidates = source.getRandomRewards(player, candidateCount - 1)
-        .toMutableList().apply {
-            add(reward)
-            shuffle()
-        }
+    // The winners are hidden among fillers, and everything except them is knocked out one by one.
+    private val order = RingItems.order(itemCount = candidateCount, rewards = rewards.size)
 
-    private val winnerIndex = candidates.indexOfFirst { it === reward }
+    private val candidates = source.getRandomRewards(player, candidateCount - rewards.size)
+        .iterator()
+        .let { fillers -> order.map { if (it == RingItems.FILLER) fillers.next() else rewards[it] } }
 
     private val slotColumns = List(candidateCount) { ((9 - candidateCount) / 2) + 1 + it }
 
@@ -89,7 +95,7 @@ class RollElimination private constructor(
     }
 
     override fun tick(tick: Int) {
-        if (isOnlyWinnerLeft()) {
+        if (areOnlyWinnersLeft()) {
             timeSpentRevealing++
             return
         }
@@ -103,26 +109,23 @@ class RollElimination private constructor(
         ticksSinceElimination = 0
 
         val victim = candidates.indices
-            .filter { it != winnerIndex && !isEliminated[it] }
-            .randomOrNull() ?: return
+            .filter { order[it] == RingItems.FILLER && !isEliminated[it] }
+            .randomOrNull()
+            ?: return
 
         isEliminated[victim] = true
         gui.refresh(player)
 
-        if (isOnlyWinnerLeft()) {
+        if (areOnlyWinnersLeft()) {
             player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.4f)
         } else {
             player.playSound(player.location, Sound.BLOCK_GLASS_BREAK, 1.0f, 1.0f)
         }
     }
 
-    private fun isOnlyWinnerLeft(): Boolean {
-        return isEliminated.count { !it } <= 1
-    }
+    private fun areOnlyWinnersLeft(): Boolean = isEliminated.count { !it } <= rewards.size
 
-    override fun shouldContinueTicking(tick: Int): Boolean {
-        return !isOnlyWinnerLeft() || timeSpentRevealing <= revealTime
-    }
+    override fun shouldContinueTicking(tick: Int): Boolean = !areOnlyWinnersLeft() || timeSpentRevealing <= revealTime
 
     override fun onFinish() {
         player.closeInventory()
@@ -131,9 +134,12 @@ class RollElimination private constructor(
     object Factory : RollFactory<RollElimination>("elimination") {
         override val isGuiRoll = true
 
+        override val maxRewards: Int
+            get() = GuiRollLayout.eliminationCapacity(plugin.configYml.getInt("rolls.elimination.candidates"))
+
         override fun create(options: RollOptions): RollElimination =
             RollElimination(
-                options.reward,
+                options.rewards,
                 options.source,
                 options.player,
                 options.location,
