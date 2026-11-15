@@ -102,12 +102,16 @@ class Reward(
             if (totalWeight <= 0.0) 0.0 else rewardWeight.effectiveWeight / totalWeight * 100
         }
         val lore = config.getStrings("display.lore").map { line ->
-            line.replace(
-                "%chance%",
-                formatChance(chance)
-            ).replace(
-                "%weight%",
-                rewardWeight.weight.toNiceString()
+            BonusPlaceholders.replace(
+                line.replace(
+                    "%chance%",
+                    formatChance(chance)
+                ).replace(
+                    "%weight%",
+                    rewardWeight.weight.toNiceString()
+                ),
+                source,
+                player
             ).formatEco(player, formatPlaceholders = true)
         }
 
@@ -181,11 +185,6 @@ class Reward(
         }
 
         return (weight / totalWeight) * 100
-    }
-
-    private fun formatChance(chance: Double): String {
-        val places = plugin.configYml.getInt("chance-decimal-places").coerceAtLeast(0)
-        return String.format(Locale.ROOT, "%.${places}f", chance)
     }
 
     init {
@@ -278,5 +277,18 @@ class Reward(
 
     override fun getID(): String {
         return id
+    }
+
+    companion object {
+        /**
+         * Format a percentage chance to the configured decimal places.
+         *
+         * @param chance The chance.
+         * @return The formatted chance.
+         */
+        fun formatChance(chance: Double): String {
+            val places = plugin.configYml.getInt("chance-decimal-places").coerceAtLeast(0)
+            return String.format(Locale.ROOT, "%.${places}f", chance)
+        }
     }
 }
