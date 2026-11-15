@@ -29,7 +29,9 @@ import org.bukkit.inventory.ItemStack
  * rewards the open's pick rules rule out: bonus-eligible false, and any reward already held
  * max-per-open times by the other picks of the open and the earlier choices. A bonus choice with
  * nothing left to show is dropped, and the open session removes its pick before anything is given.
- * Choices left when the roll is forced to finish are made the same way as auto-pick, without sounds.
+ * With several choices, choices left when the roll is forced to finish or the menu is closed are made the
+ * same way as auto-pick, without sounds. With one choice nothing is made then, so the planned reward is given,
+ * as it always has been.
  *
  * With one choice the options never change, so each option slot is fixed and positions past the last
  * option stay empty, as they always have. With several choices each option slot shows whatever the
@@ -148,7 +150,9 @@ class RollChoose private constructor(
     }
 
     override fun completePendingChoices() {
-        choices.completeAtRandom()
+        if (choices.size > 1) {
+            choices.completeAtRandom()
+        }
     }
 
     private fun pick(option: Reward) {
