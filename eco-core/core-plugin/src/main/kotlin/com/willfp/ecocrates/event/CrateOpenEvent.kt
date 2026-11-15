@@ -8,13 +8,14 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
 
-class CrateOpenEvent(
+class CrateOpenEvent @JvmOverloads constructor(
     player: Player,
     override val crate: Crate,
     val method: OpenMethod,
     var reward: Reward,
-    val isReroll: Boolean
-) : PlayerEvent(player), CrateEvent, Cancellable {
+    val isReroll: Boolean,
+    override val pick: PickInfo = PickInfo.FIRST
+) : PlayerEvent(player), PickEvent, CrateEvent, Cancellable {
     private var cancelled = false
 
     override fun isCancelled() = cancelled

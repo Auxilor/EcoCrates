@@ -7,11 +7,12 @@ import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
 
 /** Fired when a pouch roll finishes, just before [reward] is given. */
-class PouchRewardEvent(
+class PouchRewardEvent @JvmOverloads constructor(
     player: Player,
     val pouch: Pouch,
-    var reward: Reward
-) : PlayerEvent(player) {
+    var reward: Reward,
+    override val pick: PickInfo = PickInfo.FIRST
+) : PlayerEvent(player), PickEvent {
     override fun getHandlers(): HandlerList {
         return Companion.handlers
     }
