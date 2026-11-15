@@ -21,6 +21,7 @@ import com.willfp.ecocrates.crate.placed.particle.ParticleData
 import com.willfp.ecocrates.crate.reroll.RerollProfile
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollOptions
+import com.willfp.ecocrates.crate.roll.RollPickContext
 import com.willfp.ecocrates.crate.roll.Rolls
 import com.willfp.ecocrates.event.CrateOpenEvent
 import com.willfp.ecocrates.event.CrateRewardEvent
@@ -214,20 +215,28 @@ class Crate(
         return ticks.coerceAtLeast(1)
     }
 
-    /** Makes the roll that shows [rewards], the first of which is the roll's main reward. */
-    internal fun createRoll(player: Player, context: OpenContext, rewards: List<Reward>, isReroll: Boolean): Roll =
-        rollFactory.create(
-            RollOptions(
-                rewards.first(),
-                this,
-                player,
-                context.location,
-                isReroll,
-                context.method,
-                context.placedCrate,
-                rewards
-            )
-        )
+    /**
+     * Makes the roll that shows [rewards], the first of which is the roll's main reward.
+     * [pickContext] says where [rewards] sit in the open.
+     */
+    internal fun createRoll(
+        player: Player,
+        context: OpenContext,
+        rewards: List<Reward>,
+        isReroll: Boolean,
+        pickContext: RollPickContext
+    ): Roll = rollFactory.create(
+        RollOptions(
+            rewards.first(),
+            this,
+            player,
+            context.location,
+            isReroll,
+            context.method,
+            context.placedCrate,
+            rewards
+        ).apply { this.pickContext = pickContext }
+    )
 
     /** Hides the placed crate of [context] from [player] while a roll plays, if this crate's roll asks for it. */
     internal fun hidePlacedCrate(player: Player, context: OpenContext) {

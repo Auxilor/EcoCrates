@@ -24,3 +24,22 @@ internal fun <T> splitIntoRollBatches(
     fallback == MultiRewardFallback.PRIMARY -> listOf(picks.take(1))
     else -> picks.map { listOf(it) }
 }
+
+/**
+ * Gets the picks of an open whose rewards a batch's choices count as already held.
+ *
+ * A batch played in turn counts only the picks before it, since the picks after it are not
+ * chosen yet. A reroll counts every other pick of the open.
+ *
+ * @param T The pick type.
+ * @param picks Every pick of the open, in order.
+ * @param batch The picks the roll shows.
+ * @param isReroll If the roll replays one pick after a reroll.
+ * @return The picks outside [batch] that count, in order.
+ */
+internal fun <T> heldOutsideBatch(picks: List<T>, batch: List<T>, isReroll: Boolean): List<T> =
+    if (isReroll) {
+        picks.filter { pick -> batch.none { it === pick } }
+    } else {
+        picks.takeWhile { pick -> batch.none { it === pick } }
+    }

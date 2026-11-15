@@ -4,6 +4,7 @@ import com.willfp.eco.core.price.ConfiguredPrice
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.roll.Roll
+import com.willfp.ecocrates.crate.roll.RollPickContext
 import com.willfp.ecocrates.crate.roll.RollOptions
 import com.willfp.ecocrates.event.PickInfo
 import com.willfp.ecocrates.pouch.Pouch
@@ -25,9 +26,16 @@ internal sealed interface SessionSource {
      * @param context Where and how the open happens.
      * @param rewards The rewards the roll shows.
      * @param isReroll If the roll replays one pick after a reroll.
+     * @param pickContext Where [rewards] sit in the open.
      * @return The roll, not yet started.
      */
-    fun createRoll(player: Player, context: OpenContext, rewards: List<Reward>, isReroll: Boolean): Roll
+    fun createRoll(
+        player: Player,
+        context: OpenContext,
+        rewards: List<Reward>,
+        isReroll: Boolean,
+        pickContext: RollPickContext
+    ): Roll
 
     /**
      * Hides the placed crate of [context] from [player] while a roll plays, if this source asks for it.
@@ -123,8 +131,13 @@ internal class CrateSessionSource(private val crate: Crate) : SessionSource {
     override val maxRewards: Int
         get() = crate.rollFactory.maxRewards
 
-    override fun createRoll(player: Player, context: OpenContext, rewards: List<Reward>, isReroll: Boolean): Roll =
-        crate.createRoll(player, context, rewards, isReroll)
+    override fun createRoll(
+        player: Player,
+        context: OpenContext,
+        rewards: List<Reward>,
+        isReroll: Boolean,
+        pickContext: RollPickContext
+    ): Roll = crate.createRoll(player, context, rewards, isReroll, pickContext)
 
     override fun hidePlacedCrate(player: Player, context: OpenContext) {
         crate.hidePlacedCrate(player, context)
@@ -161,19 +174,24 @@ internal class PouchSessionSource(private val pouch: Pouch) : SessionSource {
     override val maxRewards: Int
         get() = pouch.rollFactory.maxRewards
 
-    override fun createRoll(player: Player, context: OpenContext, rewards: List<Reward>, isReroll: Boolean): Roll =
-        pouch.rollFactory.create(
-            RollOptions(
-                rewards.first(),
-                pouch,
-                player,
-                context.location,
-                isReroll,
-                context.method,
-                context.placedCrate,
-                rewards
-            )
-        )
+    override fun createRoll(
+        player: Player,
+        context: OpenContext,
+        rewards: List<Reward>,
+        isReroll: Boolean,
+        pickContext: RollPickContext
+    ): Roll = pouch.rollFactory.create(
+        RollOptions(
+            rewards.first(),
+            pouch,
+            player,
+            context.location,
+            isReroll,
+            context.method,
+            context.placedCrate,
+            rewards
+        ).apply { this.pickContext = pickContext }
+    )
 
     override fun hidePlacedCrate(player: Player, context: OpenContext) = Unit
 

@@ -24,6 +24,13 @@ data class RollOptions(
     var rewards: List<Reward> = listOf(reward)
         private set
 
+    /**
+     * Where the rewards sit in their open. Set by the open session before the roll is created.
+     * Not part of the data class components, so the constructors, copy and component functions stay binary compatible.
+     */
+    var pickContext: RollPickContext = RollPickContext.DEFAULT
+        internal set
+
     constructor(
         reward: Reward,
         source: RewardSource,

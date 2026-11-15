@@ -16,21 +16,31 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
+/**
+ * A row of boxes: the player picks one box per reward, and each picked box reveals the next reward
+ * in the order picked. The boxes the player didn't pick then open to show near misses.
+ */
 class RollPick private constructor(
-    override val reward: Reward,
+    override val rewards: List<Reward>,
     override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
     override val method: OpenMethod
 ) : Roll {
-    private val boxCount = plugin.configYml.getInt("rolls.pick.boxes").coerceIn(2, 7)
+    override val reward: Reward = rewards.first()
+
+    private val boxCount = ChoiceRolls.pickBoxes(
+        configured = plugin.configYml.getInt("rolls.pick.boxes"),
+        rewards = rewards.size
+    )
+
     private val revealTime = plugin.configYml.getInt("rolls.pick.reveal-time")
 
-    // How long the picked box is shown on its own before the other boxes open.
+    // How long the picked boxes are shown on their own before the other boxes open.
     private val soloRevealTime = plugin.configYml.getInt("rolls.pick.solo-reveal-time")
 
-    // If the player never picks, one is chosen for them so the roll can't hang.
+    // If the player doesn't pick every box, the rest are chosen for them so the roll can't hang.
     private val autoPickTime = plugin.configYml.getInt("rolls.pick.auto-pick")
 
     private val boxItem = Items.lookup(plugin.configYml.getString("rolls.pick.box"))
@@ -40,7 +50,8 @@ class RollPick private constructor(
 
     private val slotColumns = List(boxCount) { ((9 - boxCount) / 2) + 1 + it }
 
-    private var pickedIndex: Int? = null
+    private val revealedRewardIndex = IntArray(boxCount) { UNPICKED }
+    private var picksMade = 0
     private var timeSpentRevealing = 0
     private var hasOpenedOthers = false
 
@@ -66,8 +77,8 @@ class RollPick private constructor(
                 slot(ItemStack(Material.AIR)) {
                     setUpdater { _, _, _ ->
                         when {
-                            pickedIndex == null -> boxItem.item
-                            pickedIndex == index -> reward.getDisplay(player, source)
+                            revealedRewardIndex[index] != UNPICKED ->
+                                rewards[revealedRewardIndex[index]].getDisplay(player, source)
                             !hasOpenedOthers -> boxItem.item
                             else -> nearMisses[index].getDisplay(player, source)
                         }
@@ -85,12 +96,15 @@ class RollPick private constructor(
         }
     }
 
+    private fun hasPickedAll(): Boolean = picksMade >= rewards.size
+
     private fun pick(index: Int) {
-        if (pickedIndex != null) {
+        if (hasPickedAll() || revealedRewardIndex[index] != UNPICKED) {
             return
         }
 
-        pickedIndex = index
+        revealedRewardIndex[index] = picksMade
+        picksMade++
         gui.refresh(player)
 
         player.playSound(player.location, Sound.BLOCK_CHEST_OPEN, 1.0f, 1.0f)
@@ -102,7 +116,7 @@ class RollPick private constructor(
     }
 
     override fun tick(tick: Int) {
-        if (pickedIndex != null) {
+        if (hasPickedAll()) {
             timeSpentRevealing++
 
             if (!hasOpenedOthers && timeSpentRevealing >= soloRevealTime) {
@@ -116,7 +130,9 @@ class RollPick private constructor(
         }
 
         if (tick >= autoPickTime) {
-            pick(slotColumns.indices.random())
+            while (!hasPickedAll()) {
+                pick(slotColumns.indices.filter { revealedRewardIndex[it] == UNPICKED }.random())
+            }
             return
         }
 
@@ -125,20 +141,25 @@ class RollPick private constructor(
         }
     }
 
-    override fun shouldContinueTicking(tick: Int): Boolean {
-        return pickedIndex == null || timeSpentRevealing <= soloRevealTime + revealTime
-    }
+    override fun shouldContinueTicking(tick: Int): Boolean =
+        !hasPickedAll() || timeSpentRevealing <= soloRevealTime + revealTime
 
     override fun onFinish() {
         player.closeInventory()
     }
 
+    private companion object {
+        const val UNPICKED = -1
+    }
+
     object Factory : RollFactory<RollPick>("pick") {
         override val isGuiRoll = true
 
+        override val maxRewards = ChoiceRolls.PICK_MAX_REWARDS
+
         override fun create(options: RollOptions): RollPick =
             RollPick(
-                options.reward,
+                options.rewards,
                 options.source,
                 options.player,
                 options.location,

@@ -5,12 +5,12 @@ import com.willfp.ecocrates.reward.Reward
 /**
  * One reward of an open: the guaranteed first pick or a bonus.
  *
- * @property number The 1-based position of the pick within the open.
+ * @property number The 1-based position of the pick within the open, renumbered if a choose roll drops a pick.
  * @property reward The reward, replaced in place by a reroll or by the player's choice in a choose roll.
  * @property isBonus If the pick is a bonus beyond the first.
  */
 data class OpenPick(
-    val number: Int,
+    var number: Int,
     var reward: Reward,
     val isBonus: Boolean
 ) {

@@ -104,7 +104,13 @@ fun RewardSource.pickReward(player: Player, taken: List<Reward>, isBonus: Boolea
     }
 }
 
-private fun pickRule(player: Player): PickRule<Reward> = PickRule(
+/**
+ * The pick rules of one open for [player]: each reward's max-per-open, bonus-eligible and wins left before max-wins.
+ *
+ * @param player The opening player.
+ * @return The rules.
+ */
+internal fun pickRule(player: Player): PickRule<Reward> = PickRule(
     maxPerOpen = { it.maxPerOpen },
     isBonusEligible = { it.isBonusEligible },
     maxWinsLeft = { if (it.maxWins > 0) it.maxWins - it.getWins(player) else Int.MAX_VALUE }

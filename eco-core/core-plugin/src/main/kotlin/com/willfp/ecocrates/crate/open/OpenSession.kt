@@ -3,6 +3,7 @@ package com.willfp.ecocrates.crate.open
 import com.willfp.ecocrates.crate.reroll.MultiReRollGUI
 import com.willfp.ecocrates.crate.reroll.ReRollGUI
 import com.willfp.ecocrates.crate.roll.Roll
+import com.willfp.ecocrates.crate.roll.RollPickContext
 import com.willfp.ecocrates.crate.roll.RollSession
 import com.willfp.ecocrates.event.PickInfo
 import com.willfp.ecocrates.plugin
@@ -10,6 +11,7 @@ import com.willfp.ecocrates.reward.PendingRewards
 import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.reward.pickReward
 import org.bukkit.entity.Player
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Level
@@ -21,19 +23,30 @@ import java.util.logging.Level
  * gives the bonuses straight after it is accepted. A roll that shows several rewards offers them in
  * [MultiReRollGUI], which returns here after each reroll until the batch is accepted.
  *
+ * Once a roll ends, its rewards are copied into the batch's picks before anything is given. The roll
+ * first settles any choice left (a choose roll auto-picks them), and the picks of its dropped reward
+ * slots leave the open, with the picks left renumbered in order, so the reward amount counts only
+ * what is given.
+ *
  * Everything here runs on the player's region.
  *
  * @property source The source being opened.
  * @property player The opening player.
- * @property picks Every pick of the open, in order.
+ * @param picks Every pick of the open, in order.
  * @property context Where and how the open happens.
  */
 class OpenSession(
     val source: RewardSource,
     val player: Player,
-    val picks: List<OpenPick>,
+    picks: List<OpenPick>,
     val context: OpenContext
 ) {
+    private val openPicks = CopyOnWriteArrayList(picks)
+
+    /** Every pick of the open, in order, less any pick a choose roll dropped. */
+    val picks: List<OpenPick>
+        get() = openPicks
+
     /** What this open needs from [source]. */
     internal val sessionSource: SessionSource = SessionSource.forSource(source)
 
@@ -145,7 +158,7 @@ class OpenSession(
         ) {
             source.pickReward(
                 player = player,
-                taken = picks.filter { it !== pick }.map { it.reward },
+                taken = heldOutsideBatch(picks = picks, batch = listOf(pick), isReroll = true).map { it.reward },
                 isBonus = pick.isBonus
             )
         } else {
@@ -182,7 +195,16 @@ class OpenSession(
     }
 
     private fun startRoll(batch: List<OpenPick>, isReroll: Boolean) {
-        val roll = sessionSource.createRoll(player, context, batch.map { it.reward }, isReroll)
+        val roll = sessionSource.createRoll(
+            player = player,
+            context = context,
+            rewards = batch.map { it.reward },
+            isReroll = isReroll,
+            pickContext = RollPickContext(
+                bonusSlots = batch.map { it.isBonus },
+                otherPicks = heldOutsideBatch(picks = picks, batch = batch, isReroll = isReroll).map { it.reward }
+            )
+        )
 
         activeBatch = batch
         activeRoll = roll
@@ -193,11 +215,11 @@ class OpenSession(
     }
 
     private fun onRolled(batch: List<OpenPick>, roll: Roll, forced: Boolean) = finishRemainingPicksOnFailure {
-        adopt(roll, batch)
+        val kept = adopt(roll, batch)
         sessionSource.showPlacedCrate(player, context)
 
-        val pick = batch.singleOrNull()
-        val multiBatch = batchToReopenAfterReroll ?: batch.takeIf { it.size > 1 }
+        val pick = kept.singleOrNull()
+        val multiBatch = batchToReopenAfterReroll?.filter { openPicks.holds(it) } ?: kept.takeIf { it.size > 1 }
 
         when {
             forced || !player.isOnline -> {
@@ -213,20 +235,28 @@ class OpenSession(
             }
 
             else -> {
-                batch.forEach { give(it) }
+                kept.forEach { give(it) }
                 playBatch(batchIndex.get() + 1)
             }
         }
     }
 
-    private fun adopt(roll: Roll, batch: List<OpenPick>) {
+    private fun adopt(roll: Roll, batch: List<OpenPick>): List<OpenPick> {
         activeRoll = null
+        roll.completePendingChoices()
 
         if (batch.size == 1) {
             batch.single().reward = roll.reward
         } else {
             roll.rewards.zip(batch).forEach { (reward, pick) -> pick.reward = reward }
         }
+
+        roll.droppedRewardSlots.mapNotNull { batch.getOrNull(it) }.forEach { dropped ->
+            openPicks.removeIf { it === dropped }
+        }
+        openPicks.forEachIndexed { index, pick -> pick.number = index + 1 }
+
+        return batch.filter { openPicks.holds(it) }
     }
 
     private fun finish() {
@@ -240,6 +270,8 @@ class OpenSession(
         }
     }
 }
+
+private fun List<OpenPick>.holds(pick: OpenPick): Boolean = any { it === pick }
 
 private fun OpenSession.logOpenFailure(error: Throwable) {
     plugin.logger.log(Level.WARNING, "Error during a ${source.sourceType} open for ${player.name}", error)

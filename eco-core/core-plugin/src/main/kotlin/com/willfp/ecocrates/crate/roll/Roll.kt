@@ -21,6 +21,13 @@ interface Roll {
         get() = listOf(reward)
 
     /**
+     * The indices of [rewards] the roll dropped because it had nothing left to offer for them,
+     * such as a choose roll's bonus choice with no options. Their picks are not given.
+     */
+    val droppedRewardSlots: Set<Int>
+        get() = emptySet()
+
+    /**
      * The player.
      */
     val player: Player
@@ -90,4 +97,11 @@ interface Roll {
      * roll has an inventory as it can then be closed.
      */
     fun onFinish()
+
+    /**
+     * Called before the rewards are read, including when the roll is forced to finish early,
+     * so a roll that waits on the player can settle what is left the same way it would on its own.
+     */
+    fun completePendingChoices() {
+    }
 }

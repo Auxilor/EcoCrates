@@ -40,4 +40,16 @@ class RollBatchesTest {
             fallback = MultiRewardFallback.SEQUENTIAL
         )
     )
+
+    @Test
+    fun `batch holds earlier picks`() = assertEquals(
+        expected = listOf(1, 2),
+        actual = heldOutsideBatch(picks = five, batch = five.subList(fromIndex = 2, toIndex = 4), isReroll = false)
+    )
+
+    @Test
+    fun `reroll holds other picks`() = assertEquals(
+        expected = listOf(1, 2, 4, 5),
+        actual = heldOutsideBatch(picks = five, batch = five.subList(fromIndex = 2, toIndex = 3), isReroll = true)
+    )
 }
