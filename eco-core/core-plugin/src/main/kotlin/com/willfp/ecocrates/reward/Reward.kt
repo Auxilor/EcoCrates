@@ -67,6 +67,15 @@ class Reward(
 
     val maxWins = config.getInt("max-wins")
 
+    @Suppress("U003")
+    val maxPerOpen = config.getIntOrNull("max-per-open") ?: -1
+
+    @Suppress("U003")
+    val isBonusEligible = config.getBoolOrNull("bonus-eligible") != false
+
+    @Suppress("U003")
+    val isRerollable = config.getBoolOrNull("rerollable") != false
+
     private val winsKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_wins"),
         PersistentDataKeyType.INT,
