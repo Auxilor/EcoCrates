@@ -160,7 +160,8 @@ internal class OpenSession(
             source.pickReward(
                 player = player,
                 taken = heldOutsideBatch(picks = picks, batch = listOf(pick), isReroll = true).map { it.reward },
-                isBonus = pick.isBonus
+                isBonus = pick.isBonus,
+                isReroll = true
             )
         } else {
             null

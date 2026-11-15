@@ -90,17 +90,19 @@ internal fun RewardSource.planPicks(
  * @param player The opening player.
  * @param taken The rewards already picked in this open.
  * @param isBonus If this is a bonus pick.
- * @return The reward, or null if nothing is eligible for a bonus pick.
+ * @param isReroll If this replaces a pick already made. A first pick that is not a reroll falls back to
+ * every reward when nothing is eligible, so the open always has a reward.
+ * @return The reward, or null if nothing is eligible for a bonus pick or a reroll.
  */
-fun RewardSource.pickReward(player: Player, taken: List<Reward>, isBonus: Boolean): Reward? {
+fun RewardSource.pickReward(player: Player, taken: List<Reward>, isBonus: Boolean, isReroll: Boolean = false): Reward? {
     val weights = getRewardWeights(player)
     val candidates = PickRules.eligible(candidates = rewards, taken = taken, isBonus = isBonus, rule = pickRule(player))
         .let { eligible -> weights.filter { it.reward in eligible } }
 
-    return if (isBonus) {
-        candidates.filter { it.weight > 0 }.takeIf { it.isNotEmpty() }?.let { pickRandomReward(it) }
-    } else {
-        pickRandomReward(candidates.ifEmpty { weights })
+    return when {
+        isBonus -> candidates.filter { it.weight > 0 }.takeIf { it.isNotEmpty() }?.let { pickRandomReward(it) }
+        isReroll && candidates.isEmpty() -> null
+        else -> pickRandomReward(candidates.ifEmpty { weights })
     }
 }
 

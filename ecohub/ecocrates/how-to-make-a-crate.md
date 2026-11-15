@@ -348,7 +348,7 @@ Every built-in roll can show several rewards at once, up to a limit that depends
 
 #### Rerolls
 
-Each reward is rerolled on its own, and the `max-rerolls` limit and the `%reroll%` price count per reward. A reward can be rerolled if the crate's `rerolls` allow it, the reward isn't set to `rerollable: false`, and, for a bonus reward, `bonus-rerollable` is `true`. A bonus reward can't be rerolled into a reward that is `bonus-eligible: false`. If no reward from the open can be rerolled, no reroll menu opens.
+Each reward is rerolled on its own, and the `max-rerolls` limit and the `%reroll%` price count per reward. A reward can be rerolled if the crate's `rerolls` allow it, the reward isn't set to `rerollable: false`, and, for a bonus reward, `bonus-rerollable` is `true`. A bonus reward can't be rerolled into a reward that is `bonus-eligible: false`. A reroll keeps `max-per-open` across the open's other rewards: if nothing is left that the reward can be rerolled into, the reroll doesn't happen, the reward is kept and nothing is charged. If no reward from the open can be rerolled, no reroll menu opens.
 
 When an animation shows several rewards at once, a reroll menu opens afterwards listing every reward from the open. Clicking a reward rerolls only that one, then the menu opens again with the new reward in its place. Accepting, or closing the menu, gives every reward. The menu is set up under `reroll.multi` in [Plugin Config](plugin-config).
 
