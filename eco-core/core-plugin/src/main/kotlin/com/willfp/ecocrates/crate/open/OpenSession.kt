@@ -2,6 +2,7 @@ package com.willfp.ecocrates.crate.open
 
 import com.willfp.ecocrates.crate.reroll.MultiReRollGUI
 import com.willfp.ecocrates.crate.reroll.ReRollGUI
+import com.willfp.ecocrates.crate.roll.ChoiceRoll
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollPickContext
 import com.willfp.ecocrates.crate.roll.RollSession
@@ -243,7 +244,7 @@ class OpenSession(
 
     private fun adopt(roll: Roll, batch: List<OpenPick>): List<OpenPick> {
         activeRoll = null
-        roll.completePendingChoices()
+        (roll as? ChoiceRoll)?.completePendingChoices()
 
         if (batch.size == 1) {
             batch.single().reward = roll.reward
@@ -251,9 +252,9 @@ class OpenSession(
             roll.rewards.zip(batch).forEach { (reward, pick) -> pick.reward = reward }
         }
 
-        roll.droppedRewardSlots.mapNotNull { batch.getOrNull(it) }.forEach { dropped ->
-            openPicks.removeIf { it === dropped }
-        }
+        (roll as? ChoiceRoll)?.droppedRewardSlots.orEmpty()
+            .mapNotNull { batch.getOrNull(it) }
+            .forEach { dropped -> openPicks.removeIf { it === dropped } }
         openPicks.forEachIndexed { index, pick -> pick.number = index + 1 }
 
         return batch.filter { openPicks.holds(it) }

@@ -41,7 +41,7 @@ import org.bukkit.inventory.ItemStack
  */
 class RollChoose private constructor(
     private val options: RollOptions
-) : Roll {
+) : Roll, ChoiceRoll {
     override val source: RewardSource
         get() = options.source
 
