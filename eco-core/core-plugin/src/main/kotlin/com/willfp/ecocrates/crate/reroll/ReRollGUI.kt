@@ -7,8 +7,11 @@ import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.price.ConfiguredPrice
+import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.open.OpenPick
 import com.willfp.ecocrates.crate.open.OpenSession
+import com.willfp.ecocrates.crate.open.OpenSessions
+import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.plugin
 import org.bukkit.inventory.ItemStack
 
@@ -71,6 +74,31 @@ object ReRollGUI {
         }
 
         menu.open(player)
+    }
+
+    /**
+     * Offers the reroll menu for [roll], kept so addons built against the old menu still link.
+     *
+     * The open session now prices and counts rerolls per pick, so [rerollNumber] and [profile] are not
+     * used. If [roll]'s player has an open of [crate] in progress with a pick of [roll]'s reward not yet
+     * given, the menu opens for that pick. Otherwise the reward is given straight away.
+     *
+     * @param crate The crate the roll is for.
+     * @param roll The finished roll.
+     * @param rerollNumber How many times the roll has been rerolled.
+     * @param profile The crate's reroll settings.
+     */
+    @Deprecated("Rerolls are offered per pick by the open session")
+    @Suppress("UnusedParameter")
+    fun open(crate: Crate, roll: Roll, rerollNumber: Int, profile: RerollProfile) {
+        val session = OpenSessions.get(roll.player)?.takeIf { it.source === crate }
+        val pick = session?.run { picks.firstOrNull { !it.isGiven && it.reward == roll.reward } }
+
+        if (session != null && pick != null) {
+            open(session, pick)
+        } else {
+            crate.handleFinish(roll)
+        }
     }
 
     private fun rerollItem(priceDisplay: String): ItemStack =
