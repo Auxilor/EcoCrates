@@ -78,7 +78,6 @@ class BonusChances(private val expressions: List<String>) {
     val size: Int
         get() = expressions.size
 
-    @Suppress("U003")
     val isEmpty: Boolean
         get() = expressions.isEmpty()
 

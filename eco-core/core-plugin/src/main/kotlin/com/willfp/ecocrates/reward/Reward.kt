@@ -67,13 +67,10 @@ class Reward(
 
     val maxWins = config.getInt("max-wins")
 
-    @Suppress("U003")
     val maxPerOpen = config.getIntOrNull("max-per-open") ?: -1
 
-    @Suppress("U003")
     val isBonusEligible = config.getBoolOrNull("bonus-eligible") != false
 
-    @Suppress("U003")
     val isRerollable = config.getBoolOrNull("rerollable") != false
 
     private val winsKey: PersistentDataKey<Int> = PersistentDataKey(
@@ -132,6 +129,7 @@ class Reward(
     }
 
     /** Kept for binary compatibility with addons compiled against the crate-only signature. */
+    @Suppress("U002")
     fun getDisplay(player: Player, crate: Crate): ItemStack =
         getDisplay(player, crate as RewardSource)
 
@@ -243,8 +241,10 @@ class Reward(
         giveTo(player, source.name, source.id)
 
     /** Kept for binary compatibility with addons compiled against the crate-only signature. */
-    fun giveTo(player: Player, crate: Crate) =
+    @Suppress("U002")
+    fun giveTo(player: Player, crate: Crate) {
         giveTo(player, crate as RewardSource)
+    }
 
     fun getWins(player: OfflinePlayer): Int {
         return if (maxWins > 0) player.profile.read(winsKey) else 0

@@ -8,7 +8,6 @@ interface PickEvent {
     val pick: PickInfo
 
     /** The 1-based position of the pick within the open. */
-    @Suppress("U003")
     val pickNumber: Int
         get() = pick.pickNumber
 

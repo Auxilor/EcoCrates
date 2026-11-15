@@ -24,7 +24,6 @@ data class RollOptions(
     var rewards: List<Reward> = listOf(reward)
         private set
 
-    @Suppress("U007")
     constructor(
         reward: Reward,
         source: RewardSource,

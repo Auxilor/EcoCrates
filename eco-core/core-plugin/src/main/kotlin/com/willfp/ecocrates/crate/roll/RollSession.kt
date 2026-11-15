@@ -2,6 +2,7 @@ package com.willfp.ecocrates.crate.roll
 
 import com.willfp.ecocrates.crate.ActiveRolls
 import com.willfp.ecocrates.crate.isOpeningCrate
+import com.willfp.ecocrates.crate.open.OpenSessions
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.PendingRewards
 import java.util.concurrent.atomic.AtomicBoolean
@@ -39,7 +40,7 @@ object RollSession {
             player.isOpeningCrate = false
 
             if (queueForLater) {
-                PendingRewards.queue(player, roll.source, roll.reward)
+                queueOwedRewardsOfOpen(roll)
                 return
             }
 
@@ -85,5 +86,15 @@ object RollSession {
         player.isOpeningCrate = true
 
         roll.roll()
+    }
+
+    private fun queueOwedRewardsOfOpen(roll: Roll) {
+        val session = OpenSessions.get(roll.player)?.takeIf { it.activeRoll === roll }
+
+        if (session != null) {
+            session.finishAll(true)
+        } else {
+            PendingRewards.queue(roll.player, roll.source, roll.reward)
+        }
     }
 }

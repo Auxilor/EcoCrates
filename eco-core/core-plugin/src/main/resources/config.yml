@@ -53,6 +53,21 @@ reroll:
       - ""
       - "&fCost: &e%price%" # %price% shows the cost of the next reroll
 
+# Options for crates and pouches that give more than one reward per open.
+# A crate or pouch can override any of these in its own multi-reward section.
+multi-reward:
+  # How rolls with no multi-reward animation show several rewards.
+  # sequential: the roll plays once per reward, one after another.
+  # primary: the roll plays for the first reward, then the bonus rewards are given straight after.
+  fallback: sequential
+  # If bonus rewards can be rerolled at all.
+  bonus-rerollable: true
+  # How bonus-chances combine.
+  # overall: each entry is the chance of getting at least that many rewards.
+  # chained: an entry is only rolled if the one before it hit.
+  # independent: each entry rolls on its own; the number of hits is the bonus count.
+  bonus-chance-mode: overall
+
 pay-to-open-confirm:
   enabled: true # If players must confirm in a GUI before paying to open a crate.
   rows: 3
