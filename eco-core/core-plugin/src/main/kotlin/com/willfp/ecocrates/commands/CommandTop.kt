@@ -41,9 +41,10 @@ object CommandTop : Subcommand(
 
     private fun sendPage(sender: CommandSender, crateName: String, leaderboard: Leaderboard, page: Int) {
         val offset = (page.coerceAtLeast(1) - 1) * PAGE_SIZE
+        val snapshot = leaderboard.snapshot
 
         val lines = (offset + 1..offset + PAGE_SIZE).asSequence()
-            .mapNotNull { leaderboard.getTop(it) }
+            .mapNotNull { snapshot.getEntry(it) }
             .map { entry ->
                 plugin.langYml.getString("top-line-format")
                     .replace(oldValue = "%rank%", newValue = entry.position.toString())
