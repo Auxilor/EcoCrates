@@ -5,12 +5,16 @@ import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
+import com.willfp.eco.core.leaderboard.Leaderboard
+import com.willfp.eco.core.leaderboard.Leaderboards
+import com.willfp.eco.core.leaderboard.registerStandardPlaceholders
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
 import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
 import com.willfp.eco.core.price.ConfiguredPrice
 import com.willfp.eco.core.price.Prices
 import com.willfp.eco.core.registry.KRegistrable
+import com.willfp.eco.util.formatEco
 import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.placed.HologramFrame
 import com.willfp.ecocrates.crate.placed.PlacedCrate
@@ -177,6 +181,14 @@ class Crate(
         ""
     )
 
+    /**
+     * The leaderboard ranking players by how many times they have opened this crate, or null
+     * when leaderboards are disabled or before the first reload has registered it.
+     */
+    @Volatile
+    var leaderboard: Leaderboard? = null
+        private set
+
     /** The last player to win a reward from this crate, or null if nobody has yet. */
     val lastWinner: OfflinePlayer?
         get() = ServerProfile.load().read(lastWinnerKey)
@@ -222,6 +234,29 @@ class Crate(
             plugin,
             "${id}_last_reward",
         ) { lastReward?.name ?: noLastWinner() }.register()
+    }
+
+    /**
+     * Register (or re-register) this crate's opens leaderboard and its placeholders.
+     *
+     * Called from the plugin's reload handler, after [Leaderboards.unregisterAll], because config
+     * categories are loaded before that handler runs.
+     */
+    internal fun registerLeaderboard() {
+        if (!plugin.configYml.getBool("leaderboard.enabled")) {
+            leaderboard = null
+            return
+        }
+
+        val board = Leaderboards.ofKey(plugin, "${id}_leaderboard", opensKey)
+
+        leaderboard = board
+
+        board.registerStandardPlaceholders(
+            plugin = plugin,
+            prefix = "${id}_leaderboard",
+            emptyText = plugin.langYml.getString("top.empty-position").formatEco()
+        ) { it.toInt().toString() }
     }
 
     private fun noLastWinner() = plugin.langYml.getFormattedString("messages.last-winner-none")
