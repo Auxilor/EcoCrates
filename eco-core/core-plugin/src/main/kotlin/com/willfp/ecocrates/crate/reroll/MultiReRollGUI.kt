@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * The flag is set before closing because onClose runs inside closeInventory, and the menu closes so the
  * reroll animation plays without it. After a reroll the session opens this menu again for the same batch.
  */
-object MultiReRollGUI {
+internal object MultiReRollGUI {
     private const val metaKey = "ecocrates-multi-reroll-fix"
 
     /** Opens the menu for [picks], or gives them all if none can be rerolled. */

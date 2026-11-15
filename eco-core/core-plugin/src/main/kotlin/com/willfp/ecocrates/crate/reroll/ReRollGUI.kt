@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack
 object ReRollGUI {
     private const val metaKey = "ecocrates-reroll-fix"
 
-    fun open(session: OpenSession, pick: OpenPick) {
+    internal fun open(session: OpenSession, pick: OpenPick) {
         val player = session.player
 
         val price = session.sessionSource.rerollPrice(pick)

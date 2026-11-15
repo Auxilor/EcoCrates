@@ -62,7 +62,7 @@ interface RewardSource {
  * @param firePick Fires the open event for a pick and returns its reward, or null if it was cancelled.
  * @return The picks, numbered contiguously, or empty if the first pick was cancelled.
  */
-fun RewardSource.planPicks(
+internal fun RewardSource.planPicks(
     player: Player,
     firePick: (pickNumber: Int, reward: Reward, isBonus: Boolean) -> Reward?
 ): List<OpenPick> {

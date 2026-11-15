@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap
  * An open stays here from its first roll until its last reward is given or queued,
  * including the gaps between rolls while a reroll menu is open.
  */
-object OpenSessions {
+internal object OpenSessions {
     private val sessions = ConcurrentHashMap<UUID, OpenSession>()
 
     fun register(player: Player, session: OpenSession) {

@@ -36,7 +36,7 @@ import java.util.logging.Level
  * @param picks Every pick of the open, in order.
  * @property context Where and how the open happens.
  */
-class OpenSession(
+internal class OpenSession(
     val source: RewardSource,
     val player: Player,
     picks: List<OpenPick>,

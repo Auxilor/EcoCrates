@@ -11,7 +11,7 @@ import org.bukkit.Location
  * @property location Where the rolls play.
  * @property placedCrate The placed crate being opened, if any.
  */
-data class OpenContext(
+internal data class OpenContext(
     val method: OpenMethod,
     val location: Location,
     val placedCrate: PlacedCrate?
