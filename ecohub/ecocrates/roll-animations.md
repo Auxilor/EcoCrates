@@ -88,7 +88,7 @@ If the player doesn't click anything, `auto-pick` ticks pass and a random eligib
 
 ## Multiple rewards
 
-A crate or pouch with `bonus-chances` can give several rewards per open; see [How to Make a Crate](how-to-make-a-crate#bonus-rewards). Every reward in an open is independent: it is picked, rerolled, counted and runs its effects on its own. Every built-in roll shows several rewards natively, up to its **capacity**. Every pick is decided when the open starts, so the number of rewards never changes during the animation.
+A crate or pouch with `bonus-chances` can give several rewards per open; see [How to Make a Crate](how-to-make-a-crate#bonus-rewards). Every reward in an open is independent: it is picked, rerolled, counted and runs its effects on its own. Every built-in roll shows several rewards natively, up to its **capacity**. Every pick is decided when the open starts, so the number of rewards never changes during the animation. The one exception is `choose`: a bonus choice with nothing left to offer is dropped, so that open gives one reward fewer.
 
 | Roll | With several rewards | Capacity |
 | --- | --- | --- |
