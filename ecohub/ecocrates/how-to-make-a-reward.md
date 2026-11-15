@@ -32,6 +32,7 @@ IDs may only contain lowercase letters, numbers, and underscores (a-z, 0-9, _). 
 | --- | --- |
 | **Basics** | The reward name and the effects that run on win |
 | **Weight** | How likely the reward is and how many times it can be won |
+| **Multiple rewards** | Optional. How the reward behaves when a crate gives several rewards per open |
 | **Display** | The item shown in the preview GUI and roll animation |
 
 ```yaml
@@ -50,6 +51,9 @@ weight:
   permission-multipliers: true # If permission multipliers affect this reward's chance
   value: 1 # The chance weight; supports maths and placeholders, e.g. %player_y% * 25
 max-wins: -1 # Max times any player can win this reward; -1 for unlimited
+max-per-open: -1 # Optional. The most times this reward can be won in one open. -1 or missing means no limit.
+bonus-eligible: true # Optional. If false, this reward can only be the first reward of an open, never a bonus reward.
+rerollable: true # Optional. If false, winning this reward skips the reroll offer for that pick.
 
 # === Display: how it looks in the preview ===
 display:
@@ -112,6 +116,20 @@ display:
     - "&fWeight: &b%weight%"
 ```
 
+### Multiple rewards
+
+These optional keys only matter for crates and pouches that give several rewards per open with `bonus-chances`; see [How to Make a Crate](how-to-make-a-crate#bonus-rewards). Each reward in an open is independent, so these keys apply to every pick on its own.
+
+```yaml
+max-per-open: -1 # Optional. The most times this reward can be won in one open. -1 or missing means no limit.
+bonus-eligible: true # Optional. If false, this reward can only be the first reward of an open, never a bonus reward.
+rerollable: true # Optional. If false, winning this reward skips the reroll offer for that pick.
+```
+
+:::info
+Rewards are shared between crates, so these keys apply in every crate and pouch that lists the reward. `rerollable` also applies to crates that only give one reward. It has no effect on pouches, which never offer rerolls.
+:::
+
 ## Internal placeholders
 
 | Placeholder | Value |
@@ -120,6 +138,10 @@ display:
 | `%weight%` | Raw weight value of this reward. |
 | `%reward%` | The reward display name. |
 | `%crate%` | The crate display name. |
+| `%bonus_chance_<n>%` | The chance of the n-th `bonus-chances` entry of the crate, for the player viewing. Reward lore only. |
+| `%max_rewards%` | The most rewards one open of the crate can give. Reward lore only. |
+
+Win effects can also use `%reward_number%`, the 1-based number of the reward within the open, and `%reward_amount%`, how many rewards the open gives.
 
 Reward lore also reads other plugin placeholders, for example `In existence: %ecocrates_<reward>_total%` to show how many times a reward has been won. See [PlaceholderAPI](placeholderapi).
 
