@@ -52,6 +52,46 @@ reroll:
       - "&fa chance at something else!"
       - ""
       - "&fCost: &e%price%" # %price% shows the cost of the next reroll
+  # The menu shown after a roll that shows several rewards at once.
+  # Each reward is rerolled on its own; closing the menu accepts every reward.
+  multi:
+    title: "Accept your rewards?"
+    rows: 4
+    mask:
+      items:
+        - black_stained_glass_pane
+        - green_stained_glass_pane
+      pattern:
+        - "122222221"
+        - "100000001"
+        - "100000001"
+        - "122202221"
+    # The slots the rewards show in, in order. Rewards beyond the last slot are still given.
+    rewards:
+      - { row: 2, column: 2 }
+      - { row: 2, column: 3 }
+      - { row: 2, column: 4 }
+      - { row: 2, column: 5 }
+      - { row: 2, column: 6 }
+      - { row: 2, column: 7 }
+      - { row: 2, column: 8 }
+      - { row: 3, column: 2 }
+      - { row: 3, column: 3 }
+      - { row: 3, column: 4 }
+      - { row: 3, column: 5 }
+      - { row: 3, column: 6 }
+      - { row: 3, column: 7 }
+      - { row: 3, column: 8 }
+    accept:
+      row: 4
+      column: 5
+      locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
+      item: 'lime_stained_glass_pane name:"&aAccept all"'
+    # Lines added to the lore of each reward that can be rerolled. %price% shows the cost of its next reroll.
+    reroll-lore:
+      - ""
+      - "&fClick to reroll this reward"
+      - "&fCost: &e%price%"
 
 # Options for crates and pouches that give more than one reward per open.
 # A crate or pouch can override any of these in its own multi-reward section.

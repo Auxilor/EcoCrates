@@ -1,7 +1,7 @@
 package com.willfp.ecocrates.crate.open
 
-import com.willfp.eco.core.price.ConfiguredPrice
 import com.willfp.ecocrates.crate.Crate
+import com.willfp.ecocrates.crate.reroll.MultiReRollGUI
 import com.willfp.ecocrates.crate.reroll.ReRollGUI
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.crate.roll.RollSession
@@ -19,7 +19,8 @@ import java.util.logging.Level
  * One open in progress: every pick decided up front, played through rolls in batches of the
  * roll's `maxRewards`. Rolls that show one reward use the `multi-reward` fallback: `sequential`
  * plays a roll per pick, each with its own reroll offer, and `primary` plays the first pick and
- * gives the bonuses straight after it is accepted.
+ * gives the bonuses straight after it is accepted. A roll that shows several rewards offers them in
+ * [MultiReRollGUI], which returns here after each reroll until the batch is accepted.
  *
  * Everything here runs on the player's region.
  *
@@ -34,7 +35,8 @@ class OpenSession(
     val picks: List<OpenPick>,
     val context: OpenContext
 ) {
-    private val crate: Crate = requireNotNull(source as? Crate) { "Only crates open through sessions" }
+    /** The crate being opened. */
+    internal val crate: Crate = requireNotNull(source as? Crate) { "Only crates open through sessions" }
 
     private val batches: List<List<OpenPick>> = splitIntoRollBatches(
         picks = picks,
@@ -53,6 +55,9 @@ class OpenSession(
 
     @Volatile
     private var activeBatch: List<OpenPick> = emptyList()
+
+    @Volatile
+    private var batchToReopenAfterReroll: List<OpenPick>? = null
 
     /** The number of rewards in this open, after bonuses that dropped out. */
     val rewardAmount: Int
@@ -114,15 +119,26 @@ class OpenSession(
         }
     }
 
-    /** The price of the next reroll of [pick]. */
-    fun rerollPrice(pick: OpenPick): ConfiguredPrice = crate.rerollPrice(pick)
+    /** Accepts every pick of [batch] from [MultiReRollGUI], gives them, and plays on. */
+    fun acceptAll(batch: List<OpenPick>) {
+        if (batch.any { !it.isGiven } && !isFinished.get()) {
+            finishRemainingPicksOnFailure {
+                batchToReopenAfterReroll = null
+                batch.forEach { give(it) }
+                playBatch(batchIndex.get() + 1)
+            }
+        }
+    }
 
     /**
      * Replaces [pick] with a new pick under the same rules and plays it as a single-reward roll.
      *
+     * @param pick The pick to reroll.
+     * @param multiBatch The batch [MultiReRollGUI] showed, to open it again once the reroll finishes,
+     * or null to offer the single-pick menu as usual.
      * @return If the reroll started.
      */
-    fun reroll(pick: OpenPick): Boolean = runCatching {
+    fun reroll(pick: OpenPick, multiBatch: List<OpenPick>? = null): Boolean = runCatching {
         val replacement = if (
             !isFinished.get()
             && !pick.isGiven
@@ -145,6 +161,7 @@ class OpenSession(
             pick.reward = reward
             pick.rerolls++
             crate.recordOpen(player)
+            batchToReopenAfterReroll = multiBatch
             startRoll(listOf(pick), isReroll = true)
         }
 
@@ -182,10 +199,15 @@ class OpenSession(
         crate.showPlacedCrate(player, context)
 
         val pick = batch.singleOrNull()
+        val multiBatch = batchToReopenAfterReroll ?: batch.takeIf { it.size > 1 }
 
         when {
             forced || !player.isOnline -> {
                 finishAll(false)
+            }
+
+            multiBatch != null -> {
+                MultiReRollGUI.open(this, multiBatch)
             }
 
             pick != null && crate.canReroll(player, pick) -> {
