@@ -9,8 +9,10 @@ import kotlin.random.Random
 /**
  * The choices of one choose roll, made in order, one per reward of the roll.
  *
- * The main pick shows every candidate. A bonus pick shows only the candidates the open's pick
- * rules still allow, counting the rewards held elsewhere in the open and the earlier choices.
+ * Each pick shows only the candidates the open's pick rules still allow, counting the rewards held
+ * elsewhere in the open and the earlier choices. The main pick falls back to every candidate when
+ * the rules leave none.
+ * A bonus pick also hides the candidates that are not bonus-eligible.
  * A bonus pick with nothing left to show is dropped: it is skipped, and its reward is neither
  * given nor counted as held.
  *
@@ -96,17 +98,16 @@ class ChoiceSequence<T>(
         }
     }
 
-    private fun optionsForChoice(choice: Int): List<T> =
-        if (isBonus(choice)) {
-            PickRules.eligible(
-                candidates = candidates,
-                taken = heldElsewhere + chosen.take(choice).filterIndexed { index, _ -> index !in dropped },
-                isBonus = true,
-                rule = rule
-            )
-        } else {
-            candidates
-        }
+    private fun optionsForChoice(choice: Int): List<T> {
+        val eligible = PickRules.eligible(
+            candidates = candidates,
+            taken = heldElsewhere + chosen.take(choice).filterIndexed { index, _ -> index !in dropped },
+            isBonus = isBonus(choice),
+            rule = rule
+        )
+
+        return if (isBonus(choice)) eligible else eligible.ifEmpty { candidates }
+    }
 
     private fun skipChoicesWithNoOptions() {
         while (!isComplete() && optionsForChoice(choicesMade).isEmpty()) {

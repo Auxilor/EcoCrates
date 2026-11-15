@@ -25,9 +25,11 @@ import org.bukkit.inventory.ItemStack
  * must not be random. The player makes one choice per reward in the same menu, each replacing
  * the matching entry of [rewards].
  *
- * The first choice of an open shows every reward the player could win. A bonus choice hides the
- * rewards the open's pick rules rule out: bonus-eligible false, and any reward already held
- * max-per-open times by the other picks of the open and the earlier choices. A bonus choice with
+ * The first choice of an open shows every reward the player could win. On a reroll of the first
+ * choice, any reward the other picks of the open already hold max-per-open times is hidden, unless
+ * that would leave nothing to show. A bonus choice hides the rewards the open's pick rules rule out:
+ * bonus-eligible false, and any reward already held max-per-open times by the other picks of the open
+ * and the earlier choices. A bonus choice with
  * nothing left to show is dropped, and the open session removes its pick before anything is given.
  * With several choices, choices left when the roll is forced to finish or the menu is closed are made the
  * same way as auto-pick, without sounds. With one choice nothing is made then, so the planned reward is given,

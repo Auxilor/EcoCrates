@@ -34,6 +34,22 @@ class ChoiceSequenceTest {
     }
 
     @Test
+    fun `main reroll keeps max per open`() {
+        val choices = sequence(planned = listOf("coins"), heldElsewhere = listOf("jackpot"))
+        assertEquals(expected = listOf("grand", "coins"), actual = choices.shown)
+    }
+
+    @Test
+    fun `main falls back if all capped`() {
+        val choices = sequence(
+            planned = listOf("jackpot"),
+            candidates = listOf("jackpot"),
+            heldElsewhere = listOf("jackpot")
+        )
+        assertEquals(expected = listOf("jackpot"), actual = choices.shown)
+    }
+
+    @Test
     fun `bonus hides ineligible`() {
         val choices = sequence(planned = listOf("coins", "coins"))
         choices.choose("coins")
