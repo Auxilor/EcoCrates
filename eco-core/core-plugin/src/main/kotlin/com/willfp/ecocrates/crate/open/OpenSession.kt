@@ -162,7 +162,7 @@ internal class OpenSession(
                 taken = heldOutsideBatch(picks = picks, batch = listOf(pick), isReroll = true).map { it.reward },
                 isBonus = pick.isBonus,
                 isReroll = true
-            )
+            )?.takeIf { sessionSource.canReroll(player, pick) }
         } else {
             null
         }
