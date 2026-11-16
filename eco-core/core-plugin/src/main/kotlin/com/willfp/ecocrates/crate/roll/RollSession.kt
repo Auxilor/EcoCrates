@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * Drives a roll from start to finish: marks the player as opening, ticks the
  * roll every tick, and finalizes exactly once - when the roll says it's done,
- * when the player stops opening (e.g. quits), or when a tick throws.
+ * when the player stops opening (e.g. quits), or when starting or a tick throws.
  */
 object RollSession {
     /**
@@ -85,7 +85,15 @@ object RollSession {
 
         player.isOpeningCrate = true
 
-        roll.roll()
+        try {
+            roll.roll()
+        } catch (e: Exception) {
+            plugin.logger.warning("Error while starting roll for ${player.name}, cancelling")
+            e.printStackTrace()
+
+            rollTask.cancel()
+            finalizeRoll(true)
+        }
     }
 
     private fun queueOwedRewardsOfOpen(roll: Roll) {
