@@ -8,10 +8,12 @@ import com.willfp.ecocrates.reward.Reward
  *
  * @property bonusSlots Per reward of the roll, in order, if it is a bonus pick.
  * @property otherPicks The rewards the open's other picks already hold, outside this roll.
+ * @property pendingPicks The rewards of [otherPicks] not yet given.
  */
 class RollPickContext(
     val bonusSlots: List<Boolean>,
-    val otherPicks: List<Reward>
+    val otherPicks: List<Reward>,
+    val pendingPicks: List<Reward> = otherPicks
 ) {
     /**
      * Gets if a reward of the roll is a bonus pick.

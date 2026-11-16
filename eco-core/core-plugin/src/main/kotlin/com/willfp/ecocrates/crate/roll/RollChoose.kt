@@ -71,7 +71,8 @@ class RollChoose private constructor(
         isBonus = { options.pickContext.isBonus(it) },
         candidates = eligibleRewards,
         heldElsewhere = options.pickContext.otherPicks,
-        rule = pickRule(player)
+        rule = pickRule(player),
+        pendingElsewhere = options.pickContext.pendingPicks
     )
 
     override var reward: Reward

@@ -157,11 +157,14 @@ internal class OpenSession(
             && !pick.isGiven
             && sessionSource.canStartReroll(player)
         ) {
+            val others = heldOutsideBatch(picks = picks, batch = listOf(pick), isReroll = true)
+
             source.pickReward(
                 player = player,
-                taken = heldOutsideBatch(picks = picks, batch = listOf(pick), isReroll = true).map { it.reward },
+                taken = others.map { it.reward },
                 isBonus = pick.isBonus,
-                isReroll = true
+                isReroll = true,
+                pending = others.filterNot { it.isGiven }.map { it.reward }
             )?.takeIf { sessionSource.canReroll(player, pick) }
         } else {
             null
@@ -197,6 +200,7 @@ internal class OpenSession(
     }
 
     private fun startRoll(batch: List<OpenPick>, isReroll: Boolean) {
+        val others = heldOutsideBatch(picks = picks, batch = batch, isReroll = isReroll)
         val roll = sessionSource.createRoll(
             player = player,
             context = context,
@@ -204,7 +208,8 @@ internal class OpenSession(
             isReroll = isReroll,
             pickContext = RollPickContext(
                 bonusSlots = batch.map { it.isBonus },
-                otherPicks = heldOutsideBatch(picks = picks, batch = batch, isReroll = isReroll).map { it.reward }
+                otherPicks = others.map { it.reward },
+                pendingPicks = others.filterNot { it.isGiven }.map { it.reward }
             )
         )
 

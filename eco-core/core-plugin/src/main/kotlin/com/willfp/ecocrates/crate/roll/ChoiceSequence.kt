@@ -22,13 +22,15 @@ import kotlin.random.Random
  * @param candidates Every option the roll can show, in display order.
  * @param heldElsewhere The rewards the open's other picks already hold.
  * @param rule The open's pick rules.
+ * @param pendingElsewhere The rewards of [heldElsewhere] not yet given.
  */
 class ChoiceSequence<T>(
     planned: List<T>,
     private val isBonus: (Int) -> Boolean,
     private val candidates: List<T>,
     private val heldElsewhere: List<T>,
-    private val rule: PickRule<T>
+    private val rule: PickRule<T>,
+    private val pendingElsewhere: List<T> = heldElsewhere
 ) {
     private val chosen = CopyOnWriteArrayList(planned)
     private val dropped = CopyOnWriteArraySet<Int>()
@@ -99,11 +101,13 @@ class ChoiceSequence<T>(
     }
 
     private fun optionsForChoice(choice: Int): List<T> {
+        val earlierChoices = chosen.take(choice).filterIndexed { index, _ -> index !in dropped }
         val eligible = PickRules.eligible(
             candidates = candidates,
-            taken = heldElsewhere + chosen.take(choice).filterIndexed { index, _ -> index !in dropped },
+            taken = heldElsewhere + earlierChoices,
             isBonus = isBonus(choice),
-            rule = rule
+            rule = rule,
+            pending = pendingElsewhere + earlierChoices
         )
 
         return if (isBonus(choice)) eligible else eligible.ifEmpty { candidates }
