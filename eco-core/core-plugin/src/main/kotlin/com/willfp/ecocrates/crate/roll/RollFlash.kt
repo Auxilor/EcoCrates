@@ -44,7 +44,7 @@ class RollFlash private constructor(
     private inner class FlashItem(
         private val itemReward: Reward,
         private val offset: LineOffset,
-        private val lockTick: Int
+        val lockTick: Int
     ) {
         private val display = source.getRandomRewards(player, 100)
 
@@ -115,9 +115,7 @@ class RollFlash private constructor(
     }
 
     override fun tick(tick: Int) {
-        if (tick % 5 == 0) {
-            flashItems.filter { it.item.isValid }.forEach { it.tick(tick) }
-        }
+        flashItems.filter { it.item.isValid && (tick % 5 == 0 || it.lockTick == tick) }.forEach { it.tick(tick) }
 
         if (tick % 4 == 0) {
             player.playSound(

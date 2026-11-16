@@ -44,7 +44,7 @@ class RollCycle private constructor(
     private inner class CycleItem(
         private val itemReward: Reward,
         private val offset: LineOffset,
-        private val lockTick: Int
+        val lockTick: Int
     ) {
         private val display = source.getRandomRewards(player, 100)
 
@@ -94,9 +94,9 @@ class RollCycle private constructor(
     override fun tick(tick: Int) {
         cycleItems.forEach { it.hover() }
 
-        if (tick % interval == 0) {
-            cycleItems.forEach { it.cycle(tick) }
+        cycleItems.filter { tick % interval == 0 || it.lockTick == tick }.forEach { it.cycle(tick) }
 
+        if (tick % interval == 0) {
             player.playSound(
                 player.location,
                 Sound.BLOCK_NOTE_BLOCK_PLING,

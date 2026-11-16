@@ -52,7 +52,7 @@ class RollHologram private constructor(
      */
     private inner class HologramBlock(
         private val blockReward: Reward,
-        private val lockTick: Int
+        val lockTick: Int
     ) {
         private val display = source.getRandomRewards(player, lockTick / interval + 1)
 
@@ -77,16 +77,18 @@ class RollHologram private constructor(
     }
 
     override fun tick(tick: Int) {
-        if (tick % interval != 0) {
-            return
+        val isIntervalTick = tick % interval == 0
+
+        if (isIntervalTick || blocks.any { it.lockTick == tick }) {
+            hologram?.setContents(blocks.flatMap { it.linesAt(tick) })
         }
 
-        hologram?.setContents(blocks.flatMap { it.linesAt(tick) })
-
-        if (blocks.any { it.isRolling(tick) }) {
-            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 0.5f)
-        } else {
-            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 1.2f)
+        if (isIntervalTick) {
+            if (blocks.any { it.isRolling(tick) }) {
+                player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 0.5f)
+            } else {
+                player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 1.2f)
+            }
         }
     }
 
