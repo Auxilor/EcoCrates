@@ -51,6 +51,7 @@ permissions:
       ecocrates.command.convert: true
       ecocrates.command.giveall: true
       ecocrates.command.giveoffline: true
+      ecocrates.command.top: true
       ecocrates.rewards.*: true
       ecocrates.break: true
       ecocrates.open.*: true
@@ -109,6 +110,9 @@ permissions:
   ecocrates.command.resettotalwins:
     description: Allows resetting the server-wide total wins of rewards
     default: op
+  ecocrates.command.top:
+    description: Allows viewing crate leaderboards
+    default: true
   ecocrates.command.convert:
     description: Allows converting crates over from other plugins
     default: op

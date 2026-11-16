@@ -95,3 +95,12 @@ messages:
   gave-item-offline: "Gave %amount%&f %item%&f to all online and offline players!"
   took-item: "Took %amount%&f %item%&f from %user%&f!"
   not-enough-took-item: "&c%user%&f doesn't have %amount%&f %item%&f to take!"
+  invalid-page: "&cInvalid page!"
+  last-winner-none: "None" # Shown by the last winner placeholders when nobody has won from a crate yet.
+
+top-line-format: "%rank%. %player% - %opens%"
+top:
+  empty-position: "&cN/A"
+  format:
+    - "---- %crate%&r Leaderboard ----"
+    - "%lines%"

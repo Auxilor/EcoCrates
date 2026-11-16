@@ -4,6 +4,9 @@ import com.willfp.eco.core.bstats.EcoMetricsChart
 import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.display.DisplayModule
 import com.willfp.eco.core.integrations.IntegrationLoader
+import com.willfp.eco.core.leaderboard.Leaderboards
+import com.willfp.eco.core.leaderboard.registerCategoryTopPlaceholders
+import com.willfp.eco.util.formatEco
 import com.willfp.ecocrates.commands.CommandEcoCrates
 import com.willfp.ecocrates.commands.CommandEcoEnvoy
 import com.willfp.ecocrates.converters.Converters
@@ -97,6 +100,12 @@ class EcoCratesPlugin : LibreforgePlugin() {
 
         EnvoyPlaceholders.register()
 
+        registerCategoryTopPlaceholders(
+            this,
+            this.langYml.getString("top.empty-position").formatEco(),
+            listOf("opens")
+        ) { Crates.getByID(it)?.leaderboard }
+
         RollItems.sweepLoadedChunks()
 
         PendingRewards.register()
@@ -111,6 +120,10 @@ class EcoCratesPlugin : LibreforgePlugin() {
     }
 
     override fun handleReload() {
+        Leaderboards.unregisterAll(this)
+
+        Crates.values().forEach { it.registerLeaderboard() }
+
         ActiveRolls.finalizeAll(queueForLater = false)
 
         PermissionMultipliers.update()
@@ -177,6 +190,9 @@ class EcoCratesPlugin : LibreforgePlugin() {
         EcoMetricsChart.SingleLine("placed_crates") { PlacedCrates.values().size },
         EcoMetricsChart.SingleLine("total_envoys") { Envoys.values().size },
         EcoMetricsChart.SingleLine("active_envoy_crates") { EnvoySessions.remaining() },
-        EcoMetricsChart.SingleLine("total_pouches") { Pouches.values().size }
+        EcoMetricsChart.SingleLine("total_pouches") { Pouches.values().size },
+        EcoMetricsChart.SimplePie("leaderboard_enabled") {
+            if (configYml.getBool("leaderboard.enabled")) "enabled" else "disabled"
+        }
     )
 }

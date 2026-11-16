@@ -1,14 +1,21 @@
 package com.willfp.ecocrates.crate
 
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.data.profile
+import com.willfp.eco.core.leaderboard.Leaderboard
+import com.willfp.eco.core.leaderboard.Leaderboards
+import com.willfp.eco.core.leaderboard.registerStandardPlaceholders
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.placeholder.PlayerPlaceholder
+import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
 import com.willfp.eco.core.price.ConfiguredPrice
 import com.willfp.eco.core.price.Prices
 import com.willfp.eco.core.registry.KRegistrable
+import com.willfp.eco.util.formatEco
+import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.placed.HologramFrame
 import com.willfp.ecocrates.crate.placed.PlacedCrate
 import com.willfp.ecocrates.crate.placed.PlacedCrates
@@ -162,6 +169,36 @@ class Crate(
         0
     )
 
+    private val lastWinnerKey: PersistentDataKey<String> = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("${id}_last_winner"),
+        PersistentDataKeyType.STRING,
+        ""
+    )
+
+    private val lastRewardKey: PersistentDataKey<String> = PersistentDataKey(
+        plugin.namespacedKeyFactory.create("${id}_last_reward"),
+        PersistentDataKeyType.STRING,
+        ""
+    )
+
+    /**
+     * The leaderboard ranking players by how many times they have opened this crate, or null
+     * when leaderboards are disabled or before the first reload has registered it.
+     */
+    @Volatile
+    var leaderboard: Leaderboard? = null
+        private set
+
+    /** The last player to win a reward from this crate, or null if nobody has yet. */
+    val lastWinner: OfflinePlayer?
+        get() = ServerProfile.load().read(lastWinnerKey)
+            .takeIf { it.isNotBlank() }
+            ?.let { Bukkit.getOfflinePlayer(UUID.fromString(it)) }
+
+    /** The reward the [lastWinner] won, or null if nobody has won yet or it no longer exists. */
+    val lastReward: Reward?
+        get() = Rewards.getByID(ServerProfile.load().read(lastRewardKey))
+
     private val rollFactory = Rolls.get(config.getString("roll"))!!
 
     // Whether to hide the placed crate's preview hologram/item from the player
@@ -187,6 +224,48 @@ class Crate(
             plugin,
             "${id}_opens",
         ) { getOpens(it).toString() }.register()
+
+        PlayerlessPlaceholder(
+            plugin,
+            "${id}_last_winner",
+        ) { lastWinner?.savedDisplayName ?: noLastWinner() }.register()
+
+        PlayerlessPlaceholder(
+            plugin,
+            "${id}_last_reward",
+        ) { lastReward?.name ?: noLastWinner() }.register()
+    }
+
+    /**
+     * Register (or re-register) this crate's opens leaderboard and its placeholders.
+     *
+     * Called from the plugin's reload handler, after [Leaderboards.unregisterAll], because config
+     * categories are loaded before that handler runs.
+     */
+    internal fun registerLeaderboard() {
+        if (!plugin.configYml.getBool("leaderboard.enabled")) {
+            leaderboard = null
+            return
+        }
+
+        val board = Leaderboards.ofKey(plugin, "${id}_leaderboard", opensKey)
+
+        leaderboard = board
+
+        board.registerStandardPlaceholders(
+            plugin = plugin,
+            prefix = "${id}_leaderboard",
+            emptyText = plugin.langYml.getString("top.empty-position").formatEco()
+        ) { it.toInt().toString() }
+    }
+
+    private fun noLastWinner() = plugin.langYml.getFormattedString("messages.last-winner-none")
+
+    private fun recordWin(player: Player, reward: Reward) {
+        ServerProfile.load().apply {
+            write(lastWinnerKey, player.uniqueId.toString())
+            write(lastRewardKey, reward.id)
+        }
     }
 
     private fun positiveTicks(path: String, isUsed: Boolean): Int {
@@ -422,6 +501,7 @@ class Crate(
                     lastRewardEvent = rewardEvent
                 }
 
+                recordWin(player, rewardEvent.reward)
                 rewardEvent.reward.giveTo(player, this)
             }
         }
@@ -550,6 +630,7 @@ class Crate(
                 }
         )
 
+        recordWin(player, event.reward)
         event.reward.giveTo(player, this)
     }
 
