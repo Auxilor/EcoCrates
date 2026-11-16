@@ -18,6 +18,9 @@ weight: # The chances / probabilities
   permission-multipliers: true # If permission multipliers should affect the reward chance
   value: 1 # The chance of winning the crate, can use maths and placeholders (eg %player_y% * 25) for reactive chance
 max-wins: -1 # The max amount of times any player can win the reward, useful for giving permissions / perks
+max-per-open: -1 # Optional. The most times this reward can be won in one open. -1 or missing means no limit.
+bonus-eligible: true # Optional. If false, this reward can only be the first reward of an open, never a bonus reward.
+rerollable: true # Optional. If false, winning this reward skips the reroll offer for that pick.
 
 display: # The display item shown in animations and GUIs
   name: "&bDiamond Sword" # The item name

@@ -20,36 +20,39 @@ import org.bukkit.inventory.ItemStack
  * A scratchcard: the player scratches cards off until they turn up to-match copies
  * of the same reward, and that reward is what they win.
  *
- * The card is dealt when the roll starts. to-match slots hold the winning reward, and
- * a losing reward never gets more than to-match - 1 copies, so it can tease a set but
- * never complete one. However the player scratches, the only set on the card is the
- * reward the crate already picked for them.
+ * The card is dealt when the roll starts. to-match slots hold each winning reward, one
+ * set per reward, and a losing reward never gets more than to-match - 1 copies, so it
+ * can tease a set but never complete one. However the player scratches, the only sets
+ * on the card are the rewards the crate already picked for them. With several rewards
+ * the player scratches until every set is found, and the card grows a row if it needs
+ * one to fit the extra sets.
  *
- * The only thing that isn't left to chance is an instant win: completing the set
+ * The only thing that isn't left to chance is an instant win: completing a set
  * before min-scratches moves the winner under a card that hasn't been scratched
  * yet. The player can't see unscratched cards, so it stays hidden, and past the
  * floor the card behaves exactly as it was dealt.
  */
 class RollMatch private constructor(
-    override val reward: Reward,
+    override val rewards: List<Reward>,
     override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
     override val method: OpenMethod
 ) : Roll {
-    private val maxCardRows = 3
-    private val maxCardsPerRow = 7
+    override val reward: Reward = rewards.first()
 
-    private val toMatch = plugin.configYml.getInt("rolls.match.to-match")
-        .coerceIn(2, maxCardRows * maxCardsPerRow)
+    private val maxCardRows = ChoiceRolls.MATCH_MAX_ROWS
+    private val maxCardsPerRow = ChoiceRolls.MATCH_CARDS_PER_ROW
 
-    private val maxCards = maxCardRows * maxCardsPerRow
+    private val toMatch = ChoiceRolls.matchToMatch(plugin.configYml.getInt("rolls.match.to-match"))
 
     private val fillerRewards = source.rewards
-        .filter { it !== reward }
+        .asSequence()
+        .filter { it !in rewards }
         .distinct()
         .shuffled()
+        .toList()
 
     /*
     A losing reward may appear up to to-match - 1 times: enough to tease a set the
@@ -57,12 +60,13 @@ class RollMatch private constructor(
     that means every loser is unique, since any repeat would be a winning pair.
 
     That also decides the card size, which is why there's nothing to configure: the
-    card is dealt as large as the crate's own rewards can fill, up to the grid.
+    card is dealt as large as the crate's own rewards can fill, up to the grid. The
+    losers keep the room they have on a single-reward card; extra sets add cards.
      */
     private val maxCopiesPerFiller = toMatch - 1
 
     private val losingCards = run {
-        val capacity = maxCards - toMatch
+        val capacity = ChoiceRolls.matchLoserCapacity(toMatch = toMatch, rewards = rewards.size)
         val copies = fillerRewards.associateWithTo(mutableMapOf()) { 0 }
         val dealt = mutableListOf<Reward>()
 
@@ -78,7 +82,7 @@ class RollMatch private constructor(
         dealt
     }
 
-    private val cardCount = losingCards.size + toMatch
+    private val cardCount = losingCards.size + rewards.size * toMatch
 
     private val revealTime = plugin.configYml.getInt("rolls.match.reveal-time")
 
@@ -107,14 +111,15 @@ class RollMatch private constructor(
 
     private val isScratched = BooleanArray(cardCount)
 
-    // The slots holding the winner; the rest are dealt a filler each.
-    private val winningSlots = (0 until cardCount).shuffled().take(toMatch).toMutableSet()
+    // The slots holding the winners, to-match per reward; the rest are dealt a filler each.
+    private val winningSlots = (0 until cardCount).shuffled().take(rewards.size * toMatch).toMutableSet()
 
     private val card = run {
         val losers = losingCards.iterator()
+        val winners = rewards.flatMap { winner -> List(toMatch) { winner } }.iterator()
 
         Array(cardCount) { index ->
-            if (index in winningSlots) reward else losers.next()
+            if (index in winningSlots) winners.next() else losers.next()
         }
     }
 
@@ -175,41 +180,56 @@ class RollMatch private constructor(
         scratchCount++
         ticksSinceScratch = 0
 
-        if (hasMatched()) {
-            // Show what was under the rest, so the near misses are visible.
-            isScratched.fill(true)
+        when {
+            hasMatched() -> {
+                // Show what was under the rest, so the near misses are visible.
+                isScratched.fill(true)
 
-            player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.4f)
-        } else if (index in winningSlots) {
-            // Part of the set: the pitch climbs with every one found.
-            val found = winningSlots.count { isScratched[it] }
+                player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.4f)
+            }
 
-            player.playSound(
-                player.location,
-                Sound.BLOCK_NOTE_BLOCK_BELL,
-                1.0f,
-                (0.8 + (0.6 * found / toMatch)).toFloat()
-            )
-        } else {
-            player.playSound(player.location, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1.0f, 1.0f)
+            index !in winningSlots -> {
+                player.playSound(player.location, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1.0f, 1.0f)
+            }
+
+            setProgressAt(index) == toMatch -> {
+                player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
+            }
+
+            else -> {
+                // Part of the set: the pitch climbs with every one found.
+                player.playSound(
+                    player.location,
+                    Sound.BLOCK_NOTE_BLOCK_BELL,
+                    1.0f,
+                    (0.8 + 0.6 * setProgressAt(index) / toMatch).toFloat()
+                )
+            }
         }
 
         gui.refresh(player)
     }
 
+    private fun setProgressAt(index: Int): Int =
+        ChoiceRolls.setProgress(found = scratchedCopiesOf(card[index]), toMatch = toMatch)
+
+    private fun scratchedCopiesOf(winner: Reward): Int =
+        winningSlots.count { isScratched[it] && card[it] == winner }
+
     /**
-     * Whether scratching [index] would complete the set sooner than the floor allows.
+     * Whether scratching [index] would complete a set sooner than the floor allows.
      */
     private fun isTooEarlyToWin(index: Int): Boolean {
         if (scratchCount + 1 >= minScratches) {
             return false
         }
 
-        return index in winningSlots && winningSlots.count { isScratched[it] } == toMatch - 1
+        return index in winningSlots &&
+            ChoiceRolls.setProgress(found = scratchedCopiesOf(card[index]) + 1, toMatch = toMatch) == toMatch
     }
 
     /**
-     * Swap the winner out of [index] and into a card the player hasn't scratched,
+     * Swap the winning card out of [index] and into a card the player hasn't scratched,
      * so the pair lands later. Silent - unscratched cards give nothing away.
      */
     private fun moveWinnerElsewhere(index: Int) {
@@ -219,8 +239,7 @@ class RollMatch private constructor(
 
         // Straight swap, so the cards are only ever rearranged - every reward keeps
         // the number of copies it was dealt, and no loser can grow into a set.
-        card[index] = card[destination]
-        card[destination] = reward
+        card[index] = card[destination].also { card[destination] = card[index] }
 
         winningSlots.remove(index)
         winningSlots.add(destination)
@@ -261,9 +280,12 @@ class RollMatch private constructor(
     object Factory : RollFactory<RollMatch>("match") {
         override val isGuiRoll = true
 
+        override val maxRewards: Int
+            get() = ChoiceRolls.matchCapacity(ChoiceRolls.matchToMatch(plugin.configYml.getInt("rolls.match.to-match")))
+
         override fun create(options: RollOptions): RollMatch =
             RollMatch(
-                options.reward,
+                options.rewards,
                 options.source,
                 options.player,
                 options.location,

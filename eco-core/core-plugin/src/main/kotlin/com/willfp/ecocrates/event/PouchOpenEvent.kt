@@ -11,11 +11,12 @@ import org.bukkit.event.player.PlayerEvent
  * Fired before a pouch is opened, before anything is paid or consumed.
  * Cancelling stops the open entirely; [reward] can be swapped.
  */
-class PouchOpenEvent(
+class PouchOpenEvent @JvmOverloads constructor(
     player: Player,
     val pouch: Pouch,
-    var reward: Reward
-) : PlayerEvent(player), Cancellable {
+    var reward: Reward,
+    override val pick: PickInfo = PickInfo.FIRST
+) : PlayerEvent(player), PickEvent, Cancellable {
     private var cancelled = false
 
     override fun isCancelled(): Boolean = cancelled

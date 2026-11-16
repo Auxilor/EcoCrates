@@ -14,20 +14,24 @@ import org.bukkit.entity.Item
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * A courier entity is spawned at the crate holding the won reward, flies it over to
  * the player, and hands it off. The entity comes from eco's entity lookup, so it can
- * be any vanilla type or a custom entity from another plugin.
+ * be any vanilla type or a custom entity from another plugin. With several rewards the
+ * one courier carries them all and hands them over one after another.
  */
 class RollDelivery private constructor(
-    override val reward: Reward,
+    override val rewards: List<Reward>,
     override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
     override val method: OpenMethod
 ) : Roll {
+    override val reward: Reward = rewards.first()
+
     private val courierEntity = Entities.lookup(plugin.configYml.getString("rolls.delivery.entity"))
 
     private val spawnDistance = plugin.configYml.getDouble("rolls.delivery.spawn-distance")
@@ -35,7 +39,12 @@ class RollDelivery private constructor(
     private val speed = plugin.configYml.getDouble("rolls.delivery.speed").coerceAtLeast(0.01)
     private val hoverHeight = plugin.configYml.getDouble("rolls.delivery.hover-height")
     private val handOverTime = plugin.configYml.getInt("rolls.delivery.hand-over-time")
-    private val timeout = plugin.configYml.getInt("rolls.delivery.timeout")
+    private val handOverTotal = handOverTime * rewards.size
+    private val timeout = RewardStagger.lockTick(
+        index = rewards.size - 1,
+        firstLock = plugin.configYml.getInt("rolls.delivery.timeout"),
+        gap = handOverTime
+    )
 
     private var courier: Entity? = null
 
@@ -44,6 +53,8 @@ class RollDelivery private constructor(
 
     private var timeSpentHandingOver = 0
     private var hasArrived = false
+
+    private val heldIndex = AtomicInteger(0)
 
     @Suppress("DEPRECATION")
     override fun roll() {
@@ -105,7 +116,7 @@ class RollDelivery private constructor(
 
         if (courier == null || !courier.isValid) {
             hasArrived = true
-            timeSpentHandingOver = handOverTime + 1
+            timeSpentHandingOver = handOverTotal + 1
             return
         }
 
@@ -119,6 +130,7 @@ class RollDelivery private constructor(
             }
 
             timeSpentHandingOver++
+            holdNext(courier)
             return
         }
 
@@ -133,9 +145,35 @@ class RollDelivery private constructor(
         }
     }
 
-    override fun shouldContinueTicking(tick: Int): Boolean {
-        return timeSpentHandingOver <= handOverTime && tick < timeout
+    @Suppress("DEPRECATION")
+    private fun holdNext(courier: Entity) {
+        val index = RewardStagger.lockedCount(
+            tick = timeSpentHandingOver,
+            firstLock = handOverTime,
+            gap = handOverTime,
+            count = rewards.lastIndex
+        )
+
+        if (heldIndex.getAndSet(index) == index) {
+            return
+        }
+
+        val next = rewards[index]
+
+        if (courier is LivingEntity) {
+            courier.equipment?.setItemInMainHand(next.getDisplay(player, source))
+        }
+
+        carriedItem?.let { item ->
+            item.itemStack = next.getDisplay(player, source)
+            item.customName = next.displayName
+        }
+
+        player.playSound(player.location, Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.2f)
     }
+
+    override fun shouldContinueTicking(tick: Int): Boolean =
+        timeSpentHandingOver <= handOverTotal && tick < timeout
 
     override fun onFinish() {
         carriedItem?.remove()
@@ -146,9 +184,11 @@ class RollDelivery private constructor(
     }
 
     object Factory : RollFactory<RollDelivery>("delivery") {
+        override val maxRewards = Int.MAX_VALUE
+
         override fun create(options: RollOptions): RollDelivery =
             RollDelivery(
-                options.reward,
+                options.rewards,
                 options.source,
                 options.player,
                 options.location,

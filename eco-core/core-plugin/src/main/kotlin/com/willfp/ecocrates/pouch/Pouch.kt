@@ -10,19 +10,25 @@ import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.PreviewGUI
 import com.willfp.ecocrates.crate.isOpeningCrate
+import com.willfp.ecocrates.crate.open.OpenContext
+import com.willfp.ecocrates.crate.open.OpenPick
+import com.willfp.ecocrates.crate.open.OpenSession
+import com.willfp.ecocrates.crate.open.OpenSessions
 import com.willfp.ecocrates.crate.roll.RollFactory
-import com.willfp.ecocrates.crate.roll.RollOptions
-import com.willfp.ecocrates.crate.roll.RollSession
 import com.willfp.ecocrates.crate.roll.RollValidation
 import com.willfp.ecocrates.crate.roll.Rolls
+import com.willfp.ecocrates.event.PickInfo
 import com.willfp.ecocrates.event.PouchOpenEvent
 import com.willfp.ecocrates.event.PouchRewardEvent
 import com.willfp.ecocrates.plugin
+import com.willfp.ecocrates.reward.BonusChances
+import com.willfp.ecocrates.reward.MultiRewardSettings
 import com.willfp.ecocrates.reward.PendingRewards
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.reward.SourceTypes
+import com.willfp.ecocrates.reward.planPicks
 import com.willfp.libreforge.NamedValue
 import com.willfp.libreforge.ViolationContext
 import com.willfp.libreforge.conditions.Conditions
@@ -41,7 +47,7 @@ import java.util.Objects
 
 /**
  * A pouch: a held item that, when used, consumes one and runs a GUI roll for
- * a single reward.
+ * one reward, plus any bonus rewards won from its bonus chances.
  *
  * @param id The pouch's config-file ID.
  * @param config The pouch's parsed config section.
@@ -58,6 +64,12 @@ class Pouch(
     override val rollHeight: Double = 0.0
 
     val rarity: String = config.getFormattedString("rarity")
+
+    private val pouchValues: List<NamedValue> = listOf(
+        NamedValue("pouch", name),
+        NamedValue("pouch_id", id),
+        NamedValue("pouch_rarity", rarity)
+    )
 
     /** [rarity] without colour codes, as matched by the pouch_rarity filter. */
     val plainRarity: String = ChatColor.stripColor(rarity) ?: rarity
@@ -82,7 +94,11 @@ class Pouch(
             Bukkit.getPluginManager().addPermission(this)
         }
 
-    private val rollFactory: RollFactory<*> = run {
+    override val bonusChances = BonusChances(config.getStrings("bonus-chances"))
+
+    override val multiRewardSettings = MultiRewardSettings.fromConfig(config)
+
+    internal val rollFactory: RollFactory<*> = run {
         val resolution = RollValidation.resolveGuiRoll(config.getString("roll")) { Rolls.get(it)?.isGuiRoll }
         resolution.warning?.let { plugin.logger.warning("Pouch '$id' $it") }
         Rolls.get(resolution.id)!!
@@ -105,6 +121,12 @@ class Pouch(
         ViolationContext(plugin, "Pouch $id Finish Effects")
     )
 
+    private val allFinishEffects = Effects.compileChain(
+        config.getSubsections("all-finish-effects"),
+        NormalExecutorFactory.create(),
+        ViolationContext(plugin, "Pouch $id All Finish Effects")
+    )
+
     private val opensKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("pouch_${id}_opens"),
         PersistentDataKeyType.INT,
@@ -114,6 +136,8 @@ class Pouch(
     private val previewGUI = PreviewGUI.build(config, this)
 
     init {
+        bonusChances.warnIfUnsorted("Pouch '$id'", multiRewardSettings.bonusChanceMode)
+
         PlayerPlaceholder(
             plugin,
             "pouch_${id}_opens"
@@ -126,120 +150,132 @@ class Pouch(
         previewGUI.open(player)
     }
 
-    private fun placeholders(): List<NamedValue> = listOf(
-        NamedValue("pouch", name),
-        NamedValue("pouch_id", id),
-        NamedValue("pouch_rarity", rarity)
-    )
-
     /**
      * Opens this pouch for [player], consuming one of [held]. Checks run in
      * order - permission, already opening, rewards left, open-conditions,
-     * price, open event - and nothing is taken unless all of them pass.
+     * price, open event per pick - and nothing is taken unless all of them pass.
      */
     fun open(player: Player, held: ItemStack) {
-        if (!player.hasPermission(permission)) {
+        if (canOpenAndNotify(player, held)) {
+            val picks = planPicks(player) { pickNumber, reward, isBonus ->
+                val event = PouchOpenEvent(player, this, reward, PickInfo(pickNumber, isBonus))
+                Bukkit.getPluginManager().callEvent(event)
+                event.takeUnless { it.isCancelled }?.reward
+            }
+
+            // The held item may have changed since it was captured (e.g. another
+            // plugin modified the inventory during the event); re-read it so we
+            // don't pay for or consume a pouch the player no longer holds.
+            val current = player.inventory.itemInMainHand
+
+            if (picks.isNotEmpty() && item.matches(current)) {
+                price.pay(player)
+                current.amount -= 1
+                player.profile.write(opensKey, getOpens(player) + 1)
+
+                openEffects?.trigger(
+                    TriggerData(
+                        player = player,
+                        location = player.location
+                    ).dispatch(player.toDispatcher())
+                        .apply { addPlaceholders(pouchValues) }
+                )
+
+                OpenSessions.start(
+                    OpenSession(this, player, picks, OpenContext(OpenMethod.OTHER, player.eyeLocation, null))
+                )
+            }
+        }
+    }
+
+    private fun canOpenAndNotify(player: Player, held: ItemStack): Boolean = when {
+        !player.hasPermission(permission) -> {
             player.sendMessage(plugin.langYml.getMessage("no-pouch-permission").replace("%name%", name))
-            return
+            false
         }
 
-        if (player.isOpeningCrate) {
-            return
+        player.isOpeningCrate || OpenSessions.get(player) != null -> {
+            false
         }
 
-        if (hasRanOutOfRewards(player)) {
+        hasRanOutOfRewards(player) -> {
             player.sendMessage(plugin.langYml.getMessage("all-rewards-used"))
-            return
+            false
         }
 
         // Failing conditions report through their own not-met-effects.
-        val conditionsMet = openConditions.areMetAndTrigger(
+        !openConditions.areMetAndTrigger(
             TriggerData(
                 player = player,
                 location = player.location,
                 item = held
             ).dispatch(player.toDispatcher())
-        )
-
-        if (!conditionsMet) {
-            return
+        ) -> {
+            false
         }
 
-        if (!price.canAfford(player)) {
+        !price.canAfford(player) -> {
             player.sendMessage(
                 plugin.langYml.getMessage("pouch-cannot-afford")
                     .replace("%name%", name)
                     .replace("%price%", price.getDisplay(player))
             )
-            return
+            false
         }
 
-        val event = PouchOpenEvent(player, this, getRandomReward(player))
-        Bukkit.getPluginManager().callEvent(event)
-
-        if (event.isCancelled) {
-            return
-        }
-
-        // The held item may have changed since it was captured (e.g. another
-        // plugin modified the inventory during the event); re-read it so we
-        // don't pay for or consume a pouch the player no longer holds.
-        val current = player.inventory.itemInMainHand
-        if (!item.matches(current)) {
-            return
-        }
-
-        price.pay(player)
-        current.amount -= 1
-        player.profile.write(opensKey, getOpens(player) + 1)
-
-        openEffects?.trigger(
-            TriggerData(
-                player = player,
-                location = player.location
-            ).dispatch(player.toDispatcher())
-                .apply { addPlaceholders(placeholders()) }
-        )
-
-        val roll = rollFactory.create(
-            RollOptions(
-                event.reward,
-                this,
-                player,
-                player.eyeLocation,
-                false,
-                OpenMethod.OTHER
-            )
-        )
-
-        RollSession.start(roll) { finishedRoll, _ ->
-            handleFinish(finishedRoll.player, finishedRoll.reward)
+        else -> {
+            true
         }
     }
 
     override fun handleFinish(player: Player, reward: Reward) {
+        deliverPick(player = player, pick = OpenPick(number = 1, reward = reward, isBonus = false), amount = 1)
+    }
+
+    internal fun deliverPick(player: Player, pick: OpenPick, amount: Int) {
         if (!player.isOnline) {
-            PendingRewards.queue(player, this, reward)
+            PendingRewards.queue(player, this, pick.reward)
             return
         }
 
-        val event = PouchRewardEvent(player, this, reward)
+        val event = PouchRewardEvent(player, this, pick.reward, PickInfo(pick.number, pick.isBonus))
         Bukkit.getPluginManager().callEvent(event)
+        pick.reward = event.reward
+
+        val pickValues = listOf(
+            NamedValue("reward_number", pick.number),
+            NamedValue("reward_amount", amount)
+        )
 
         finishEffects?.trigger(
             TriggerData(player = player)
                 .dispatch(player.toDispatcher())
                 .apply {
                     addPlaceholders(
-                        placeholders() + listOf(
+                        pouchValues + listOf(
                             NamedValue("reward", event.reward.name),
                             NamedValue("reward_id", event.reward.id)
-                        )
+                        ) + pickValues
                     )
                 }
         )
 
-        event.reward.giveTo(player, this)
+        event.reward.giveTo(player = player, sourceName = name, sourceId = id, extraPlaceholders = pickValues)
+    }
+
+    internal fun finishOpen(player: Player, rewards: List<Reward>) {
+        allFinishEffects?.trigger(
+            TriggerData(player = player)
+                .dispatch(player.toDispatcher())
+                .apply {
+                    addPlaceholders(
+                        pouchValues + listOf(
+                            NamedValue("rewards", rewards.joinToString(", ") { it.name }),
+                            NamedValue("reward_amount", rewards.size)
+                        )
+                    )
+                }
+        )
     }
 
     override fun equals(other: Any?): Boolean {

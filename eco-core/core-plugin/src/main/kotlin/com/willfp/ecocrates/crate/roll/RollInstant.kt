@@ -7,13 +7,15 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 
 class RollInstant private constructor(
-    override val reward: Reward,
+    override val rewards: List<Reward>,
     override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
     override val method: OpenMethod
 ) : Roll {
+    override val reward: Reward = rewards.first()
+
     override fun roll() {
         // No roll.
     }
@@ -33,9 +35,11 @@ class RollInstant private constructor(
     object Factory : RollFactory<RollInstant>("instant") {
         override val isGuiRoll = true
 
+        override val maxRewards = Int.MAX_VALUE
+
         override fun create(options: RollOptions): RollInstant =
             RollInstant(
-                options.reward,
+                options.rewards,
                 options.source,
                 options.player,
                 options.location,

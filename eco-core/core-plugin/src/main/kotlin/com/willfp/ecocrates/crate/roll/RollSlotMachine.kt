@@ -16,16 +16,24 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
+/**
+ * Spins five reels that stop in turn, left to right. With several rewards there is
+ * one payline per reward: the middle reel row first, then the rows above and below it.
+ * Each payline ends showing its reward on every reel.
+ */
 class RollSlotMachine private constructor(
-    override val reward: Reward,
+    override val rewards: List<Reward>,
     override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
     override val method: OpenMethod
 ) : Roll {
+    override val reward: Reward = rewards.first()
+
     private val reelRows = listOf(2, 3, 4)
     private val middleRow = 3
+    private val paylineRewards = GuiRollLayout.paylineRows(rewards.size).zip(rewards).toMap()
 
     private val symbolCount = plugin.configYml.getInt("rolls.slot_machine.symbols")
     private val spinTicks = plugin.configYml.getInt("rolls.slot_machine.spin-ticks")
@@ -72,8 +80,8 @@ class RollSlotMachine private constructor(
                     column,
                     slot(ItemStack(Material.AIR)) {
                         setUpdater { _, _, _ ->
-                            if (reelStopped[index] && row == middleRow) {
-                                reward.getDisplay(player, source)
+                            if (reelStopped[index] && row in paylineRewards) {
+                                paylineRewards.getValue(row).getDisplay(player, source)
                             } else {
                                 val strip = reelStrips[index]
                                 val rowOffset = row - middleRow
@@ -147,9 +155,11 @@ class RollSlotMachine private constructor(
     object Factory : RollFactory<RollSlotMachine>("slot_machine") {
         override val isGuiRoll = true
 
+        override val maxRewards = GuiRollLayout.slotMachineCapacity
+
         override fun create(options: RollOptions): RollSlotMachine =
             RollSlotMachine(
-                options.reward,
+                options.rewards,
                 options.source,
                 options.player,
                 options.location,

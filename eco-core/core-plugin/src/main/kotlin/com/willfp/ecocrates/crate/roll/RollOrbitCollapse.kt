@@ -14,15 +14,23 @@ import org.bukkit.Sound
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import java.util.concurrent.CopyOnWriteArrayList
 
+/**
+ * Items orbit the crate, then collapse. Everything that isn't a winner falls inwards
+ * and is swallowed at the centre, while the winners settle in a line across it.
+ * The ring is topped up with filler rewards. One slot is reserved for each winning reward.
+ */
 class RollOrbitCollapse private constructor(
-    override val reward: Reward,
+    override val rewards: List<Reward>,
     override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
     override val method: OpenMethod
 ) : Roll {
+    override val reward: Reward = rewards.first()
+
     private val riseVelocity = plugin.configYml.getDouble("rolls.orbit_collapse.rise-velocity")
     private val orbitVelocity = plugin.configYml.getDouble("rolls.orbit_collapse.orbit-velocity")
     private val collapseVelocity = plugin.configYml.getDouble("rolls.orbit_collapse.collapse-velocity")
@@ -31,16 +39,17 @@ class RollOrbitCollapse private constructor(
     private val orbitTime = plugin.configYml.getInt("rolls.orbit_collapse.orbit-time")
     private val rewardHoldTime = plugin.configYml.getInt("rolls.orbit_collapse.reward-hold-time")
     private val spinsPerSecond = plugin.configYml.getDouble("rolls.orbit_collapse.spins-per-second")
-    private val itemCount = plugin.configYml.getInt("rolls.orbit_collapse.items").coerceAtLeast(1)
+    private val itemCount = RingItems.count(
+        configured = plugin.configYml.getInt("rolls.orbit_collapse.items"),
+        minimum = 1,
+        rewards = rewards.size
+    )
 
     // Items are moved by velocity, so they can end up circling a target they never quite
     // reach. This caps the whole animation so a player can never be stuck mid-open.
     private val timeout = plugin.configYml.getInt("rolls.orbit_collapse.timeout")
 
-    private val fillerItems = source.getRandomRewards(
-        player,
-        itemCount - 1 // One slot is reserved for the winning reward.
-    )
+    private val fillerItems = source.getRandomRewards(player, itemCount - rewards.size)
 
     private val angle = 2 * PI / itemCount
 
@@ -48,7 +57,12 @@ class RollOrbitCollapse private constructor(
         .add(Vector(0.0, height, 0.0))
 
     private val display = mutableListOf<Item>()
-    private var rewardItem: Item? = null
+    private val winners = CopyOnWriteArrayList<Item>()
+    private val winnerTargets = RingItems.winnerTargets(
+        center = circleCenter,
+        count = rewards.size,
+        yaw = player.location.yaw.toDouble()
+    )
 
     private var state = OrbitCollapseState.RISE
     private var timeSpentOrbiting = 0
@@ -57,14 +71,12 @@ class RollOrbitCollapse private constructor(
     @Suppress("DEPRECATION")
     override fun roll() {
         val world = location.world!!
-
-        val itemsToDisplay = fillerItems.toMutableList()
-        itemsToDisplay.add(reward)
-        itemsToDisplay.shuffle()
+        val fillers = fillerItems.iterator()
 
         player.closeInventory()
 
-        for (item in itemsToDisplay) {
+        val spawned = RingItems.order(itemCount = itemCount, rewards = rewards.size).map { rewardIndex ->
+            val item = if (rewardIndex == RingItems.FILLER) fillers.next() else rewards[rewardIndex]
             val entity = world.dropItem(location, item.getDisplay(player, source))
 
             entity.pickupDelay = Int.MAX_VALUE
@@ -74,10 +86,10 @@ class RollOrbitCollapse private constructor(
             RollItems.mark(entity)
             display.add(entity)
 
-            if (item === reward) {
-                rewardItem = entity
-            }
+            rewardIndex to entity
         }
+
+        winners.addAll(RingItems.winners(spawned))
     }
 
     override fun tick(tick: Int) {
@@ -142,16 +154,15 @@ class RollOrbitCollapse private constructor(
     }
 
     private fun tickCollapse() {
-        val winner = rewardItem
-
-        if (winner == null || !winner.isValid) {
+        if (winners.any { !it.isValid }) {
             state = OrbitCollapseState.DONE
             return
         }
 
-        // Everything that isn't the winner falls inwards and is swallowed at the centre.
+        val winnerSet = winners.toSet()
+
         for (item in display.toList()) {
-            if (item === winner) {
+            if (item in winnerSet) {
                 continue
             }
 
@@ -166,20 +177,31 @@ class RollOrbitCollapse private constructor(
             }
         }
 
-        if (winner.location.toVector().distance(circleCenter) <= 0.3) {
-            winner.teleportCompat(circleCenter.toLocation(winner.world))
-            winner.velocity = Vector(0, 0, 0)
+        val arrived = winners.zip(winnerTargets).map { (winner, target) -> collapseWinner(winner, target) }
+
+        if (arrived.all { it }) {
             timeSpentHolding++
-        } else {
-            winner.velocity = circleCenter.clone()
-                .subtract(winner.location.toVector())
-                .normalize()
-                .multiply(collapseVelocity)
         }
 
         if (timeSpentHolding > rewardHoldTime) {
             state = OrbitCollapseState.DONE
         }
+    }
+
+    private fun collapseWinner(winner: Item, target: Vector): Boolean {
+        val arrived = winner.location.toVector().distance(target) <= 0.3
+
+        if (arrived) {
+            winner.teleportCompat(target.toLocation(winner.world))
+            winner.velocity = Vector(0, 0, 0)
+        } else {
+            winner.velocity = target.clone()
+                .subtract(winner.location.toVector())
+                .normalize()
+                .multiply(collapseVelocity)
+        }
+
+        return arrived
     }
 
     private fun positionOnRing(index: Int, ticksElapsed: Int): Vector {
@@ -210,9 +232,12 @@ class RollOrbitCollapse private constructor(
     }
 
     object Factory : RollFactory<RollOrbitCollapse>("orbit_collapse") {
+        override val maxRewards: Int
+            get() = RingItems.capacity(plugin.configYml.getInt("rolls.orbit_collapse.items"))
+
         override fun create(options: RollOptions): RollOrbitCollapse =
             RollOrbitCollapse(
-                options.reward,
+                options.rewards,
                 options.source,
                 options.player,
                 options.location,

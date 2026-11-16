@@ -1,5 +1,6 @@
 package com.willfp.ecocrates.crate
 
+import com.willfp.ecocrates.crate.open.OpenSessions
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.runOwned
 import org.bukkit.entity.Player
@@ -30,6 +31,7 @@ object ActiveRolls {
      * instead of giving them immediately when [queueForLater] is set.
      *
      * Each roll is finished on its player's region, as finishing touches the player.
+     * Opens still in progress between rolls are finished afterwards through [OpenSessions].
      */
     fun finalizeAll(queueForLater: Boolean) {
         val snapshot = synchronized(active) { active.keys.toList() }
@@ -45,5 +47,7 @@ object ActiveRolls {
                 }
             }
         }
+
+        OpenSessions.finalizeAll(queueForLater)
     }
 }

@@ -82,7 +82,51 @@ The winner is decided before the roll starts, as it is for every roll except `ch
 
 `choose` is the one roll where the winner isn't decided beforehand. It opens a GUI listing every reward the player is currently eligible to win (the same eligibility every other roll's weighted pick respects - permission-gated rewards that a player can't win never appear), paginated if there are more than fit on one page. Whichever one they click is what they win.
 
+With several rewards the player makes one choice per reward, the first reward plus each bonus reward. Bonus choices hide rewards that are `bonus-eligible: false`, and rewards already chosen `max-per-open` times. A bonus choice with nothing left to offer is dropped: it isn't given and isn't counted in `%reward_amount%`. The number of choices comes from `bonus-chances`, and any entry under `100` makes the number of choices random, so a crate that must be fully non-random uses only `100` entries.
+
 If the player doesn't click anything, `auto-pick` ticks pass and a random eligible reward is chosen for them so the roll can't hang open forever. `reveal-time` is how long the GUI stays open showing the pick before the crate finishes.
+
+## Multiple rewards
+
+A crate or pouch with `bonus-chances` can give several rewards per open; see [How to Make a Crate](how-to-make-a-crate#bonus-rewards). Every reward in an open is independent: it is picked, rerolled, counted and runs its effects on its own. Every built-in roll shows several rewards natively, up to its **capacity**. Every pick is decided when the open starts, so the number of rewards never changes during the animation. The one exception is `choose`: a bonus choice with nothing left to offer is dropped, so that open gives one reward fewer.
+
+| Roll | With several rewards | Capacity |
+| --- | --- | --- |
+| `instant` | Every reward is given at once. | Unlimited |
+| `semi_instant` | One item is thrown out per reward. | Unlimited |
+| `delivery` | One courier carries every item and hands them over one after another. | Unlimited |
+| `quick` | The items rise side by side around the crate. | 5 |
+| `flash`, `cycle`, `strike` | One item per reward side by side, each cycling. They lock on in turn, left to right. | 5 |
+| `sky_drop` | One launch per reward, landing in turn. | 5 |
+| `hologram` | One block of lines per reward, locking in turn. | 5 |
+| `encircle`, `orbit_collapse`, `vortex` | The roll ends with the last few items left, and each one is a winner. | `items` - 1 |
+| `roulette` | The cursor stops once per reward, and each stop stays lit. | `items` - 1 |
+| `csgo` | One scrolling lane per reward, stacked. The lanes stop in turn. | 4 |
+| `slot_machine` | One payline per reward. | 3 |
+| `elimination` | Candidates are knocked out until as many are left as there are rewards. | `candidates` - 1 |
+| `pick` | The player opens one box per reward. The number of boxes is raised to at least one more than the rewards, up to 7. | 6 |
+| `match` | The card holds one set per reward and grows to fit. The player scratches until every set is found. | 28 divided by `to-match` |
+| `choose` | The player makes one choice per reward. See [Choosing your own reward](#choosing-your-own-reward). | Unlimited |
+
+`items`, `candidates` and `to-match` are the settings of that roll in [Plugin Config](plugin-config), so changing them changes the capacity. A roll that needs room for the winners, such as `encircle` or `pick`, raises its item or box count automatically when there are more rewards.
+
+If an open has more rewards than the roll's capacity, they play in **batches**: the roll plays once for the first batch of up to its capacity, then again for the next, in order, until every reward has been shown.
+
+`pick` and `match` give the rewards the crate decided in advance, the same as with one reward. The player's clicks only decide where each reward is revealed.
+
+:::tip Hologram roll
+The `rolling` and `winner` lines of the `hologram` roll repeat once for every reward, each block locking in turn. In `winner` lines, `%rewards%` lists the names of every reward, so you can show the whole haul on one line. Because the whole block repeats, keep the lines short when a crate gives several rewards.
+
+```yaml
+winner:
+  - "&a&lYou won!"
+  - "&f%rewards%"
+```
+:::
+
+### Rolls from other plugins
+
+A roll registered by another plugin that doesn't support several rewards uses `multi-reward.fallback`, set in [Plugin Config](plugin-config) or per crate. `sequential` plays the roll once per reward, one after another. `primary` plays it for the first reward only and gives the bonus rewards straight after, with no animation.
 
 ## Rerolls
 
@@ -90,9 +134,9 @@ A reroll lets a player swap a won reward for a fresh roll. After winning, the pl
 
 Rerolls are configured per crate with the `rerolls:` block:
 
-- `enabled` — whether rerolling is offered.
-- `max-rerolls` — how many rerolls in a row before the player is forced to accept. The count resets once a reward is accepted (or forced).
-- `price` — the cost of each reroll, using the standard price system (currencies or items). The `%reroll%` placeholder (1-based) lets the price scale per reroll, e.g. `value: "%reroll%*2"` charges 2, then 4, then 6. If the player can't afford the next reroll, the reward is given automatically.
+- `enabled`: whether rerolling is offered.
+- `max-rerolls`: how many rerolls in a row before the player is forced to accept. The count resets once a reward is accepted (or forced).
+- `price`: the cost of each reroll, using the standard price system (currencies or items). The `%reroll%` placeholder (1-based) lets the price scale per reroll, e.g. `value: "%reroll%*2"` charges 2, then 4, then 6. If the player can't afford the next reroll, the reward is given automatically.
 
 ```yaml
 rerolls:
@@ -103,6 +147,12 @@ rerolls:
     value: "%reroll%*2"
     display: "&e%value% &7Emeralds"
 ```
+
+Each reward in an open is rerolled on its own. `max-rerolls` and the `%reroll%` price count per reward. A reward can be rerolled only if the crate's `rerolls` allow it and the reward isn't set to `rerollable: false`. Bonus rewards can also be switched off from rerolling with `bonus-rerollable`. Pouches never offer rerolls.
+
+When a roll shows several rewards at once, a menu lists every reward after the animation. Click a reward to reroll only that one, and the menu reopens with its replacement. Accepting, or closing the menu, gives every reward. Rolls using the `sequential` fallback offer the normal reroll GUI after each reward instead, and the `primary` fallback only offers a reroll for the first reward. The menu is configured under `reroll.multi` in [Plugin Config](plugin-config).
+
+A reroll replaces its reward in place, so it can't change how many rewards the open gives. Rerolling a `choose` reward means choosing it again.
 
 By default every player can reroll where it's enabled. To stop certain groups or players, negate the `ecocrates.reroll.<crate>` permission. The reroll GUI itself is configured in [Plugin Config](plugin-config).
 

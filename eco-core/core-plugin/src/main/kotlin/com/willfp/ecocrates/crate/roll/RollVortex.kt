@@ -14,20 +14,29 @@ import org.bukkit.Sound
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * Items spiral inwards and upwards around the crate, and the funnel throws out a
- * loser on every pass until only the winner is left at the top.
+ * loser on every pass until only the winners are left at the top.
+ * It throws out one loser per pass, keeping the winners until the funnel closes.
+ * The funnel is topped up with filler rewards. One slot is reserved for each winning reward.
  */
 class RollVortex private constructor(
-    override val reward: Reward,
+    override val rewards: List<Reward>,
     override val source: RewardSource,
     override val player: Player,
     override val location: Location,
     override val isReroll: Boolean,
     override val method: OpenMethod
 ) : Roll {
-    private val itemCount = plugin.configYml.getInt("rolls.vortex.items").coerceAtLeast(2)
+    override val reward: Reward = rewards.first()
+
+    private val itemCount = RingItems.count(
+        configured = plugin.configYml.getInt("rolls.vortex.items"),
+        minimum = 2,
+        rewards = rewards.size
+    )
     private val startRadius = plugin.configYml.getDouble("rolls.vortex.start-radius")
     private val endRadius = plugin.configYml.getDouble("rolls.vortex.end-radius")
     private val startHeight = plugin.configYml.getDouble("rolls.vortex.start-height")
@@ -38,33 +47,28 @@ class RollVortex private constructor(
     private val rewardHoldTime = plugin.configYml.getInt("rolls.vortex.reward-hold-time")
     private val timeout = plugin.configYml.getInt("rolls.vortex.timeout")
 
-    private val fillerItems = source.getRandomRewards(
-        player,
-        itemCount - 1 // One slot is reserved for the winning reward.
-    )
+    private val fillerItems = source.getRandomRewards(player, itemCount - rewards.size)
 
     // Losers are thrown clear one at a time, spread evenly across the funnel.
-    private val ejectInterval = (duration / itemCount).coerceAtLeast(1)
+    private val ejectInterval = (duration / (itemCount - rewards.size + 1)).coerceAtLeast(1)
 
     private val center = location.toVector()
 
     private val orbiting = mutableListOf<Item>()
     private val ejected = mutableListOf<Item>()
-    private var rewardItem: Item? = null
+    private val winners = CopyOnWriteArrayList<Item>()
 
     private var timeSpentHolding = 0
 
     @Suppress("DEPRECATION")
     override fun roll() {
         val world = location.world!!
-
-        val itemsToDisplay = fillerItems.toMutableList()
-        itemsToDisplay.add(reward)
-        itemsToDisplay.shuffle()
+        val fillers = fillerItems.iterator()
 
         player.closeInventory()
 
-        for (item in itemsToDisplay) {
+        for (rewardIndex in RingItems.order(itemCount = itemCount, rewards = rewards.size)) {
+            val item = if (rewardIndex == RingItems.FILLER) fillers.next() else rewards[rewardIndex]
             val entity = world.dropItem(location, item.getDisplay(player, source))
 
             entity.pickupDelay = Int.MAX_VALUE
@@ -74,8 +78,8 @@ class RollVortex private constructor(
             RollItems.mark(entity)
             orbiting.add(entity)
 
-            if (item === reward) {
-                rewardItem = entity
+            if (rewardIndex != RingItems.FILLER) {
+                winners.add(entity)
             }
         }
     }
@@ -83,9 +87,7 @@ class RollVortex private constructor(
     override fun tick(tick: Int) {
         orbiting.removeIf { !it.isValid }
 
-        val winner = rewardItem
-
-        if (orbiting.isEmpty() || winner == null || !winner.isValid) {
+        if (orbiting.isEmpty() || winners.any { !it.isValid }) {
             timeSpentHolding = rewardHoldTime + 1
             return
         }
@@ -110,12 +112,11 @@ class RollVortex private constructor(
             item.teleportCompat(target.toLocation(item.world))
         }
 
-        // Throw out one loser per pass, keeping the winner until the funnel closes.
-        if (tick > 0 && tick % ejectInterval == 0 && orbiting.size > 1) {
-            eject(orbiting.first { it !== winner })
+        if (tick > 0 && tick % ejectInterval == 0 && orbiting.size > winners.size) {
+            eject(orbiting.first { it !in winners })
         }
 
-        if (orbiting.size == 1) {
+        if (orbiting.size == winners.size) {
             timeSpentHolding++
         }
 
@@ -153,9 +154,12 @@ class RollVortex private constructor(
     }
 
     object Factory : RollFactory<RollVortex>("vortex") {
+        override val maxRewards: Int
+            get() = RingItems.capacity(plugin.configYml.getInt("rolls.vortex.items"))
+
         override fun create(options: RollOptions): RollVortex =
             RollVortex(
-                options.reward,
+                options.rewards,
                 options.source,
                 options.player,
                 options.location,

@@ -63,6 +63,61 @@ reroll:
       - "&fa chance at something else!"
       - ""
       - "&fCost: &e%price%" # Cost of the next reroll
+  # The menu shown after a roll that shows several rewards at once.
+  # Each reward is rerolled on its own; closing the menu accepts every reward.
+  multi:
+    title: "Accept your rewards?" # The GUI title is shown at the top.
+    rows: 4 # The number of rows in the menu.
+    mask: # Decorative filler items fill the empty slots.
+      items:
+        - black_stained_glass_pane
+        - green_stained_glass_pane
+      pattern:
+        - "122222221"
+        - "100000001"
+        - "100000001"
+        - "122202221"
+    # The slots the rewards show in, in order. Rewards beyond the last slot are still given.
+    rewards:
+      - { row: 2, column: 2 }
+      - { row: 2, column: 3 }
+      - { row: 2, column: 4 }
+      - { row: 2, column: 5 }
+      - { row: 2, column: 6 }
+      - { row: 2, column: 7 }
+      - { row: 2, column: 8 }
+      - { row: 3, column: 2 }
+      - { row: 3, column: 3 }
+      - { row: 3, column: 4 }
+      - { row: 3, column: 5 }
+      - { row: 3, column: 6 }
+      - { row: 3, column: 7 }
+      - { row: 3, column: 8 }
+    accept: # The button to keep every reward.
+      row: 4
+      column: 5
+      locations: [ ] # Optional list of row/column slots; if set, the button shows in each of them instead of row/column
+      item: 'lime_stained_glass_pane name:"&aAccept all"'
+    # Lines added to the lore of each reward that can be rerolled. %price% shows the cost of its next reroll.
+    reroll-lore:
+      - ""
+      - "&fClick to reroll this reward"
+      - "&fCost: &e%price%"
+
+# Options for crates and pouches that give more than one reward per open.
+# A crate or pouch can override any of these in its own multi-reward section.
+multi-reward:
+  # How rolls with no multi-reward animation show several rewards.
+  # sequential: the roll plays once per reward, one after another.
+  # primary: the roll plays for the first reward, then the bonus rewards are given straight after.
+  fallback: sequential
+  # If bonus rewards can be rerolled at all.
+  bonus-rerollable: true
+  # How bonus-chances combine.
+  # overall: each entry is the chance of getting at least that many rewards.
+  # chained: an entry is only rolled if the one before it hit.
+  # independent: each entry rolls on its own; the number of hits is the bonus count.
+  bonus-chance-mode: overall
 
 # The confirm GUI, shown before a player pays to open a placed crate. Set enabled to false to charge straight away.
 pay-to-open-confirm:
@@ -314,7 +369,7 @@ rolls:
     pause: 20 # Ticks held at the top before dropping
     settle: 20 # Ticks held on the ground before finishing
     decoy-count: 8 # Extra items thrown out of the crate
-    decoy-spread: 0.25 # Horizontal spread of the thrown items
+    decoy-spread: 0.25 # Horizontal spread of the thrown items. With several rewards, the landings are this far apart, at least 1.25 blocks
     timeout: 400 # Safety cap in ticks; ends the roll if the item never settles
     hide-placed-crate: false
   quick:
@@ -341,6 +396,35 @@ rolls:
     pitch-step: 0.08 # Pitch increase per spin sound
     hold-ticks: 30 # Ticks the won reward is held on screen after the last reel stops
 ```
+
+## Multiple rewards
+
+Two sections of `config.yml` cover crates and pouches that give more than one reward per open, set up with `bonus-chances` as described in [How to Make a Crate](how-to-make-a-crate#bonus-rewards).
+
+### multi-reward
+
+The server-wide defaults. A crate or pouch can override any of them, key by key, in its own `multi-reward` section, and keys it leaves out come from here. Missing keys use the defaults shown above.
+
+| Key | Default | What it does |
+| --- | --- | --- |
+| `fallback` | `sequential` | How rolls with no multi-reward animation, such as rolls from other plugins, show several rewards. `sequential` plays the roll once per reward, each with its own reroll offer. `primary` plays the roll for the first reward and gives the bonus rewards straight after, with no animation or reroll for the bonus rewards. The first reward still gets its reroll offer. |
+| `bonus-rerollable` | `true` | If bonus rewards can be rerolled at all. The first reward follows the crate's normal reroll rules. Ignored for pouches, which never offer rerolls. |
+| `bonus-chance-mode` | `overall` | How `bonus-chances` combine into a number of bonus rewards: `overall`, `chained` or `independent`. |
+
+### reroll.multi
+
+The menu shown after an animation that shows several rewards at once. It lists every reward from the open. Clicking a reward rerolls only that one, and accepting or closing the menu gives every reward. It is laid out like the normal reroll GUI, and the `accept` button can use `locations` the same way.
+
+| Key | What it does |
+| --- | --- |
+| `title` | The GUI title. |
+| `rows` | Rows in the menu. |
+| `mask` | The decorative filler items and pattern. |
+| `rewards` | A list of `row` and `column` slots the rewards show in, in order. Rewards beyond the last slot are not shown, so they can't be rerolled, but they are still given. |
+| `accept` | The button that keeps every reward. |
+| `reroll-lore` | Lines added to the lore of each reward that can be rerolled. `%price%` shows the cost of its next reroll. Rewards that can't be rerolled show without these lines. |
+
+If no reward from the open can be rerolled, the menu doesn't open.
 
 <hr/>
 

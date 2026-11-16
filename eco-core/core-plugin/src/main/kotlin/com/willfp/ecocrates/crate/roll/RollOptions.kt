@@ -17,6 +17,33 @@ data class RollOptions(
     val method: OpenMethod,
     val placedCrate: PlacedCrate? = null
 ) {
+    /**
+     * All rewards to give, the first being [reward]. Not part of the data class components,
+     * so the original constructor, copy and component functions stay binary compatible.
+     */
+    var rewards: List<Reward> = listOf(reward)
+        private set
+
+    /**
+     * Where the rewards sit in their open. Set by the open session before the roll is created.
+     * Not part of the data class components, so the constructors, copy and component functions stay binary compatible.
+     */
+    var pickContext: RollPickContext = RollPickContext.DEFAULT
+        internal set
+
+    constructor(
+        reward: Reward,
+        source: RewardSource,
+        player: Player,
+        location: Location,
+        isReroll: Boolean,
+        method: OpenMethod,
+        placedCrate: PlacedCrate?,
+        rewards: List<Reward>
+    ) : this(reward, source, player, location, isReroll, method, placedCrate) {
+        this.rewards = rewards
+    }
+
     @Deprecated("Rolls can come from pouches too", ReplaceWith("source"))
     val crate: Crate
         get() = source as? Crate
