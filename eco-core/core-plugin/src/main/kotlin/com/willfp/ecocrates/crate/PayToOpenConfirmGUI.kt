@@ -1,15 +1,15 @@
 package com.willfp.ecocrates.crate
 
-import com.willfp.eco.core.gui.addCustomSlots
-import com.willfp.eco.core.gui.getSlotLocations
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.menu.MenuBuilder
-import com.willfp.eco.core.gui.setMask
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.ecocrates.plugin
 import org.bukkit.entity.Player
+import wiki.ecohub.game.item.Items
+import wiki.ecohub.game.item.builder.ItemStackBuilder
+import wiki.ecohub.modules.menus.addCustomSlots
+import wiki.ecohub.modules.menus.getSlotLocations
+import wiki.ecohub.modules.menus.menu
+import wiki.ecohub.modules.menus.menu.MenuBuilder
+import wiki.ecohub.modules.menus.setMask
+import wiki.ecohub.modules.menus.slot
 
 /**
  * The menu shown before a player pays to open a crate. Nothing is charged by this menu:
@@ -28,7 +28,7 @@ object PayToOpenConfirmGUI {
         val menu = menu(plugin.configYml.getInt("$path.rows")) {
             setMask(plugin.configYml, path)
 
-            title = plugin.configYml.getFormattedString("$path.title").withPlaceholders()
+            setTitle(plugin.configYml.getFormattedString("$path.title").withPlaceholders())
 
             addCustomSlots(plugin.configYml, path)
 
@@ -57,9 +57,9 @@ object PayToOpenConfirmGUI {
 
         for (location in plugin.configYml.getSlotLocations(buttonPath)) {
             setSlot(
-                location.row,
-                location.column,
-                slot(item) {
+                row = location.row,
+                column = location.column,
+                slot = slot(item) {
                     onLeftClick { _, _, _ -> onClick() }
                 }
             )

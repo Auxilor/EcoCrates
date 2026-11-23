@@ -1,12 +1,12 @@
 package com.willfp.ecocrates.libreforge
 
 import com.willfp.ecocrates.event.CrateOpenEvent
-import com.willfp.libreforge.toDispatcher
-import com.willfp.libreforge.triggers.Trigger
-import com.willfp.libreforge.triggers.TriggerData
-import com.willfp.libreforge.triggers.TriggerParameter
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
+import wiki.ecohub.game.entity.toDispatcher
+import wiki.ecohub.rules.trigger.Trigger
+import wiki.ecohub.rules.trigger.TriggerData
+import wiki.ecohub.rules.trigger.TriggerParameter
 
 object TriggerCrateOpen : Trigger("crate_open") {
     override val description = "Fires when the player opens a crate."

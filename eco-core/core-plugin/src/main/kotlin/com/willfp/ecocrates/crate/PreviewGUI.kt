@@ -1,21 +1,5 @@
 package com.willfp.ecocrates.crate
 
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.fast.FastItemStack
-import com.willfp.eco.core.gui.GUIComponent
-import com.willfp.eco.core.gui.addPage
-import com.willfp.eco.core.gui.addPageChanger
-import com.willfp.eco.core.gui.getSlotLocations
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.menu.Menu
-import com.willfp.eco.core.gui.page.PageBuilder
-import com.willfp.eco.core.gui.page.PageChanger
-import com.willfp.eco.core.gui.setMask
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.gui.slot.ConfigSlot
-import com.willfp.eco.core.gui.slot.Slot
-import com.willfp.eco.core.sound.PlayableSound
-import com.willfp.eco.util.StringUtils
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.BonusPlaceholders
 import com.willfp.ecocrates.reward.Reward
@@ -23,6 +7,23 @@ import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.reward.Rewards
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import wiki.ecohub.config.Config
+import wiki.ecohub.game.item.FastItemStack
+import wiki.ecohub.game.sound.PlayableSound
+import wiki.ecohub.modules.menus.addCustomSlots
+import wiki.ecohub.modules.menus.addPage
+import wiki.ecohub.modules.menus.addPageChanger
+import wiki.ecohub.modules.menus.component.GUIComponent
+import wiki.ecohub.modules.menus.getSlotLocations
+import wiki.ecohub.modules.menus.menu
+import wiki.ecohub.modules.menus.menu.Menu
+import wiki.ecohub.modules.menus.page.PageBuilder
+import wiki.ecohub.modules.menus.page.PageChanger
+import wiki.ecohub.modules.menus.setMask
+import wiki.ecohub.modules.menus.slot
+import wiki.ecohub.modules.menus.slot.ConfigSlot
+import wiki.ecohub.modules.menus.slot.Slot
+import wiki.ecohub.ui.text.StringUtils
 
 /**
  * Builds the paged, read-only reward preview menu from a `preview:` config
@@ -33,7 +34,7 @@ object PreviewGUI {
         val pages = config.getSubsections("preview.pages")
         val hideUnobtainable = config.getBool("preview.hide-unobtainable")
 
-        title = BonusPlaceholders.replaceMaxRewards(StringUtils.format(config.getString("preview.title")), source)
+        setTitle(BonusPlaceholders.replaceMaxRewards(StringUtils.format(config.getString("preview.title")), source))
 
         maxPages(pages.size)
 
@@ -112,15 +113,15 @@ private class BonusPlaceholderSlot(private val inner: Slot, private val source: 
         val item = inner.getItemStack(player)
         val meta = item.itemMeta ?: return item
         val fast = FastItemStack.wrap(item.clone())
-        val hasName = meta.hasDisplayName() && BonusPlaceholders.hasPlaceholder(fast.displayName)
-        val hasLore = fast.lore.any { BonusPlaceholders.hasPlaceholder(it) }
+        val hasName = meta.hasDisplayName() && BonusPlaceholders.hasPlaceholder(fast.getDisplayName())
+        val hasLore = fast.getLore().any { BonusPlaceholders.hasPlaceholder(it) }
 
         if (hasName) {
-            fast.displayName = BonusPlaceholders.replace(fast.displayName, source, player)
+            fast.setDisplayName(BonusPlaceholders.replace(fast.getDisplayName(), source, player))
         }
 
         if (hasLore) {
-            fast.lore = fast.lore.map { BonusPlaceholders.replace(it, source, player) }
+            fast.setLore(fast.getLore().map { BonusPlaceholders.replace(it, source, player) })
         }
 
         return if (hasName || hasLore) fast.unwrap() else item

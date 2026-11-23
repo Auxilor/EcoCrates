@@ -1,8 +1,8 @@
 package com.willfp.ecocrates.crate.reroll
 
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.placeholder.StaticPlaceholder
-import com.willfp.eco.core.price.ConfiguredPrice
+import wiki.ecohub.config.Config
+import wiki.ecohub.core.price.ConfiguredPrice
+import wiki.ecohub.ui.placeholder.type.StaticPlaceholder
 
 /**
  * Unified reroll configuration for a crate, resolving both the legacy

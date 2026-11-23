@@ -1,7 +1,7 @@
 package com.willfp.ecocrates.reward
 
-import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.ecocrates.plugin
+import wiki.ecohub.config.Config
 
 /**
  * How a roll with no multi-reward animation shows several rewards.

@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
@@ -12,6 +11,7 @@ import org.bukkit.Sound
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import wiki.ecohub.math.NumberUtils
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -189,9 +189,9 @@ class RollSkyDrop private constructor(
 
             decoy.pickupDelay = Int.MAX_VALUE
             decoy.velocity = Vector(
-                NumberUtils.randFloat(-decoySpread, decoySpread),
-                NumberUtils.randFloat(0.25, 0.45),
-                NumberUtils.randFloat(-decoySpread, decoySpread)
+                NumberUtils.randFloat(min = -decoySpread, max = decoySpread),
+                NumberUtils.randFloat(min = 0.25, max = 0.45),
+                NumberUtils.randFloat(min = -decoySpread, max = decoySpread)
             )
             RollItems.mark(decoy)
             decoys.add(decoy)

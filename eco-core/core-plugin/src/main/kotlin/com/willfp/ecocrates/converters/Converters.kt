@@ -1,5 +1,5 @@
 package com.willfp.ecocrates.converters
 
-import com.willfp.eco.core.registry.Registry
+import wiki.ecohub.core.registry.Registry
 
 object Converters : Registry<Converter>()

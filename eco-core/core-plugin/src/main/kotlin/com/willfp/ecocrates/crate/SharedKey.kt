@@ -1,25 +1,25 @@
 package com.willfp.ecocrates.crate
 
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.data.keys.PersistentDataKey
-import com.willfp.eco.core.data.keys.PersistentDataKeyType
-import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.gui.page.PageBuilder
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.items.CustomItem
-import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.TestableItem
-import com.willfp.eco.core.items.builder.ItemStackBuilder
-import com.willfp.eco.core.recipe.Recipes
-import com.willfp.eco.core.recipe.recipes.CraftingRecipe
-import com.willfp.eco.core.registry.KRegistrable
-import com.willfp.eco.util.formatEco
 import com.willfp.ecocrates.plugin
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import wiki.ecohub.config.Config
+import wiki.ecohub.core.registry.KRegistrable
+import wiki.ecohub.data.PersistentDataKey
+import wiki.ecohub.data.PersistentDataKeyType
+import wiki.ecohub.game.entity.player.profile
+import wiki.ecohub.game.item.CustomItem
+import wiki.ecohub.game.item.Items
+import wiki.ecohub.game.item.builder.ItemStackBuilder
+import wiki.ecohub.game.item.lookup.TestableItem
+import wiki.ecohub.modules.menus.page.PageBuilder
+import wiki.ecohub.modules.menus.slot
+import wiki.ecohub.modules.recipe.Recipes
+import wiki.ecohub.modules.recipe.crafting.CraftingRecipe
+import wiki.ecohub.ui.text.formatEco
 import java.util.Objects
 
 class SharedKey(
@@ -37,13 +37,13 @@ class SharedKey(
         CustomItem(
             plugin.namespacedKeyFactory.create("${id}_key"),
             { it.key == this },
-            Items.lookup(config.getString("item")).item.clone().apply { key = this@SharedKey }
+            Items.lookup(config.getString("item")).getItem().clone().apply { key = this@SharedKey }
         ).apply { register() }
     }
 
     val lore = config.getFormattedStrings("lore")
 
-    val displayName: String = testableItem.item.itemMeta?.displayName ?: id
+    val displayName: String = testableItem.getItem().itemMeta?.displayName ?: id
 
     val name: String = ChatColor.stripColor(displayName) ?: id
 
@@ -51,7 +51,7 @@ class SharedKey(
     internal val toGetKey = makeIntKey("${id}_to_get")
 
     val item: ItemStack
-        get() = testableItem.item.clone()
+        get() = testableItem.getItem().clone()
 
     val recipe: CraftingRecipe? = run {
         if (!config.getBool("craftable")) return@run null
@@ -123,9 +123,9 @@ class SharedKey(
         val crateId = config.getString("keygui.crate").ifEmpty { id }
 
         builder.setSlot(
-            config.getInt("keygui.row"),
-            config.getInt("keygui.column"),
-            slot(
+            row = config.getInt("keygui.row"),
+            column = config.getInt("keygui.column"),
+            slot = slot(
                 ItemStackBuilder(Items.lookup(config.getString("keygui.item"))).build()
             ) {
                 onLeftClick { event, _, _ ->

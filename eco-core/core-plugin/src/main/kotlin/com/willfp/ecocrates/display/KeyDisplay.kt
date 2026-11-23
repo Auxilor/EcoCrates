@@ -1,20 +1,22 @@
 package com.willfp.ecocrates.display
 
-import com.willfp.eco.core.display.DisplayContext
-import com.willfp.eco.core.display.DisplayModule
-import com.willfp.eco.core.display.DisplayPriority
-import com.willfp.eco.util.formatEcoRich
 import com.willfp.ecocrates.crate.key
 import com.willfp.ecocrates.plugin
+import wiki.ecohub.ui.display.DisplayContext
+import wiki.ecohub.ui.display.DisplayModule
+import wiki.ecohub.ui.display.DisplayPriority
+import wiki.ecohub.ui.text.StringUtils
 
 object KeyDisplay : DisplayModule(plugin, DisplayPriority.LOW) {
     override fun display(context: DisplayContext) {
-        val sharedKey = context.itemStack.key ?: return
+        val sharedKey = context.getItemStack().key ?: return
 
         if (sharedKey.isCustomItem) {
             return
         }
 
-        context.lore.prepend(sharedKey.lore.formatEcoRich(context.placeholderContext))
+        context.getLore().prepend(
+            sharedKey.lore.map { StringUtils.formatToRichComponent(it, context.getPlaceholderContext()) }
+        )
     }
 }

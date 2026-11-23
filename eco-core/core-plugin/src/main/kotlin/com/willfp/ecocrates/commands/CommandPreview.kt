@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.commands.target.LegacySyntax
 import com.willfp.ecocrates.commands.target.TargetCommands
 import com.willfp.ecocrates.commands.target.TargetType
@@ -11,8 +10,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 /** `/ecocrates preview <crate|pouch> <id>`. The old `preview <crate>` still works. */
-object CommandPreview : Subcommand(
-    plugin,
+object CommandPreview : EcoCratesSubcommand(
     "preview",
     "ecocrates.command.preview",
     true

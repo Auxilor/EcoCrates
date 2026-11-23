@@ -1,6 +1,6 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.registry.Registrable
+import wiki.ecohub.core.registry.Registrable
 
 abstract class RollFactory<T : Roll>(
     val id: String

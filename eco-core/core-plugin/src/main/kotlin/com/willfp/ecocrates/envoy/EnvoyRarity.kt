@@ -1,23 +1,23 @@
 package com.willfp.ecocrates.envoy
 
-import com.willfp.eco.core.blocks.Blocks
-import com.willfp.eco.core.blocks.TestableBlock
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.sound.AbstractPlayableSound
-import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.weightedRandom
-import com.willfp.libreforge.NamedValue
-import com.willfp.libreforge.ViolationContext
-import com.willfp.libreforge.effects.Effects
-import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
-import com.willfp.libreforge.toDispatcher
-import com.willfp.libreforge.triggers.TriggerData
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.ViolationContext
+import wiki.ecohub.core.stdlib.NamedValue
+import wiki.ecohub.game.block.Blocks
+import wiki.ecohub.game.block.lookup.TestableBlock
+import wiki.ecohub.game.entity.toDispatcher
+import wiki.ecohub.game.sound.AbstractPlayableSound
+import wiki.ecohub.game.sound.PlayableSound
+import wiki.ecohub.rules.chain.NormalExecutorFactory
+import wiki.ecohub.rules.effect.Effects
+import wiki.ecohub.rules.trigger.TriggerData
 
 /**
  * One rarity of envoy crate within a category. Rarities are not registered

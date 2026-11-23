@@ -1,6 +1,6 @@
 package com.willfp.ecocrates.commands.envoy
 
-import com.willfp.eco.core.command.impl.Subcommand
+import com.willfp.ecocrates.commands.EcoCratesSubcommand
 import com.willfp.ecocrates.envoy.Envoys
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.withEnvoyPlaceholders
@@ -9,8 +9,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
 
 /** `/ecocrates envoy start <category>` - manually starts an envoy session for the given category. */
-object CommandEnvoyStart : Subcommand(
-    plugin,
+object CommandEnvoyStart : EcoCratesSubcommand(
     "start",
     "ecocrates.command.envoy.start",
     false

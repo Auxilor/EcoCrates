@@ -1,11 +1,11 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.Prerequisite
 import com.willfp.ecocrates.plugin
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import wiki.ecohub.core.plugin.startup.Prerequisite
 
 /**
  * Find the player called [name], then run [action] with them.

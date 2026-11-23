@@ -1,13 +1,5 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.gui.addPage
-import com.willfp.eco.core.gui.addPageChanger
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.page.PageChanger
-import com.willfp.eco.core.gui.setMask
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.gui.slot.Slot
-import com.willfp.eco.core.sound.PlayableSound
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
@@ -19,6 +11,14 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import wiki.ecohub.game.sound.PlayableSound
+import wiki.ecohub.modules.menus.addPage
+import wiki.ecohub.modules.menus.addPageChanger
+import wiki.ecohub.modules.menus.menu
+import wiki.ecohub.modules.menus.page.PageChanger
+import wiki.ecohub.modules.menus.setMask
+import wiki.ecohub.modules.menus.slot
+import wiki.ecohub.modules.menus.slot.Slot
 
 /**
  * Lets the player choose their reward instead of the crate picking one at random, for crates that
@@ -100,8 +100,10 @@ class RollChoose private constructor(
         val pageChangeSound = PlayableSound.create(plugin.configYml.getSubsection("rolls.choose.page-change-sound"))
 
         menu(pattern.size) {
-            title = plugin.configYml.getFormattedString("rolls.choose.title")
-                .replace("%crate%", source.name)
+            setTitle(
+                plugin.configYml.getFormattedString("rolls.choose.title")
+                    .replace("%crate%", source.name)
+            )
 
             maxPages(maxPages)
 

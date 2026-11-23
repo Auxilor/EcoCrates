@@ -1,14 +1,13 @@
 package com.willfp.ecocrates.commands.envoy
 
-import com.willfp.eco.core.command.impl.Subcommand
+import com.willfp.ecocrates.commands.EcoCratesSubcommand
 import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.withEnvoyPlaceholders
 import com.willfp.ecocrates.plugin
 import org.bukkit.command.CommandSender
 
 /** `/ecocrates envoy end` - force-ends the currently active envoy session, if any. */
-object CommandEnvoyEnd : Subcommand(
-    plugin,
+object CommandEnvoyEnd : EcoCratesSubcommand(
     "end",
     "ecocrates.command.envoy.end",
     false

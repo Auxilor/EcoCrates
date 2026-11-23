@@ -1,6 +1,6 @@
 package com.willfp.ecocrates.envoy
 
-import com.willfp.eco.core.config.interfaces.Config
+import wiki.ecohub.config.Config
 import java.time.LocalTime
 
 /**

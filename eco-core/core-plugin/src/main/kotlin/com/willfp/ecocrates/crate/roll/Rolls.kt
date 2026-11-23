@@ -1,6 +1,6 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.registry.Registry
+import wiki.ecohub.core.registry.Registry
 
 object Rolls : Registry<RollFactory<*>>() {
     val CSGO: RollFactory<*> = RollCSGO.Factory

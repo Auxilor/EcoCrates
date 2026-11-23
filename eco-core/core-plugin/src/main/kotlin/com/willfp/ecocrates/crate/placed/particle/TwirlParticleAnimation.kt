@@ -1,8 +1,8 @@
 package com.willfp.ecocrates.crate.placed.particle
 
-import com.willfp.eco.util.NumberUtils
 import com.willfp.ecocrates.util.lerp
 import org.bukkit.util.Vector
+import wiki.ecohub.math.NumberUtils
 import kotlin.math.PI
 
 object TwirlParticleAnimation : ParticleAnimation("twirl") {

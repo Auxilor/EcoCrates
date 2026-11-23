@@ -1,13 +1,13 @@
 package com.willfp.ecocrates.libreforge
 
-import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.ecocrates.envoy.session.EnvoySessions
-import com.willfp.libreforge.ArgType
-import com.willfp.libreforge.Dispatcher
-import com.willfp.libreforge.NoCompileData
-import com.willfp.libreforge.ProvidedHolder
-import com.willfp.libreforge.arguments
-import com.willfp.libreforge.conditions.Condition
+import wiki.ecohub.config.ArgType
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.arguments
+import wiki.ecohub.core.registry.NoCompileData
+import wiki.ecohub.rules.condition.Condition
+import wiki.ecohub.rules.holder.Dispatcher
+import wiki.ecohub.rules.holder.ProvidedHolder
 
 /** Libreforge condition `envoy_started`: [description]. */
 object ConditionEnvoyStarted : Condition<NoCompileData>("envoy_started") {

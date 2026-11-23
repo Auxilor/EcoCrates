@@ -1,20 +1,18 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.core.leaderboard.Leaderboard
-import com.willfp.eco.core.leaderboard.Leaderboards
-import com.willfp.eco.core.placeholder.context.placeholderContext
-import com.willfp.eco.util.formatEco
-import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.plugin
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
+import wiki.ecohub.data.playerbase.leaderboard.Leaderboard
+import wiki.ecohub.data.playerbase.leaderboard.Leaderboards
+import wiki.ecohub.game.entity.player.PlayerUtils
+import wiki.ecohub.ui.placeholder.placeholderContext
+import wiki.ecohub.ui.text.formatEco
 
 /** `/ecocrates top <crate> [page]`: shows who has opened a crate the most. */
-object CommandTop : Subcommand(
-    plugin,
+object CommandTop : EcoCratesSubcommand(
     "top",
     "ecocrates.command.top",
     false
@@ -41,7 +39,7 @@ object CommandTop : Subcommand(
 
     private fun sendPage(sender: CommandSender, crateName: String, leaderboard: Leaderboard, page: Int) {
         val offset = (page.coerceAtLeast(1) - 1) * PAGE_SIZE
-        val snapshot = leaderboard.snapshot
+        val snapshot = leaderboard.getSnapshot()
 
         val lines = (offset + 1..offset + PAGE_SIZE).asSequence()
             .mapNotNull { snapshot.getEntry(it) }
@@ -49,7 +47,7 @@ object CommandTop : Subcommand(
                 plugin.langYml.getString("top-line-format")
                     .replace(oldValue = "%rank%", newValue = entry.position.toString())
                     .replace(oldValue = "%opens%", newValue = entry.value.toInt().toString())
-                    .replace(oldValue = "%player%", newValue = entry.player.savedDisplayName)
+                    .replace(oldValue = "%player%", newValue = PlayerUtils.getSavedDisplayName(entry.player))
             }
             .toList()
             .ifEmpty { listOf(Leaderboards.getNoRecordsMessage(plugin)) }

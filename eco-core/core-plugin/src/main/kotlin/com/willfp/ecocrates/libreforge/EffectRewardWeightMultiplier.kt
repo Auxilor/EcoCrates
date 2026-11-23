@@ -3,11 +3,11 @@ package com.willfp.ecocrates.libreforge
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.util.RewardWeightEvent
-import com.willfp.libreforge.ArgType
-import com.willfp.libreforge.arguments
-import com.willfp.libreforge.effects.templates.MultiMultiplierEffect
-import com.willfp.libreforge.toDispatcher
 import org.bukkit.event.EventHandler
+import wiki.ecohub.config.ArgType
+import wiki.ecohub.config.arguments
+import wiki.ecohub.game.entity.toDispatcher
+import wiki.ecohub.rules.effect.MultiMultiplierEffect
 
 object EffectRewardWeightMultiplier : MultiMultiplierEffect<Reward>("reward_weight_multiplier") {
     override val description = "Multiplies the weight of one or all EcoCrates rewards while the holder is active."

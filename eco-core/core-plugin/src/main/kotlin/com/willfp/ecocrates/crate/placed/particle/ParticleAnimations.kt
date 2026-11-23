@@ -1,6 +1,6 @@
 package com.willfp.ecocrates.crate.placed.particle
 
-import com.willfp.eco.core.registry.Registry
+import wiki.ecohub.core.registry.Registry
 
 object ParticleAnimations : Registry<ParticleAnimation>() {
     fun reload() {

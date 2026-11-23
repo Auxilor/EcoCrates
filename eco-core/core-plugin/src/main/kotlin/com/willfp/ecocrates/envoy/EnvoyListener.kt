@@ -4,7 +4,6 @@ import com.willfp.ecocrates.envoy.session.EnvoySessions
 import com.willfp.ecocrates.envoy.session.SpawnedEnvoy
 import com.willfp.ecocrates.event.EnvoyOpenEvent
 import com.willfp.ecocrates.plugin
-import com.willfp.libreforge.NamedValue
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -12,6 +11,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import wiki.ecohub.core.stdlib.NamedValue
 
 /** Handles right-clicking a spawned envoy crate to collect its reward, and blocks it from being mined. */
 object EnvoyListener : Listener {

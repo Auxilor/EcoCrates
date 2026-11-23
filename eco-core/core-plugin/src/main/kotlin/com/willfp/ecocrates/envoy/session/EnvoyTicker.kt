@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.envoy.session
 
-import com.willfp.eco.core.scheduling.EcoTask
 import com.willfp.ecocrates.envoy.EnvoyScheduler
 import com.willfp.ecocrates.envoy.compass.CompassRenderer
 import com.willfp.ecocrates.envoy.compass.EnvoyCompasses
 import com.willfp.ecocrates.plugin
+import wiki.ecohub.core.scheduler.EcoTask
 
 /**
  * The single repeating task behind envoys: it advances the active session

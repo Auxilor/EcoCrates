@@ -1,18 +1,18 @@
 package com.willfp.ecocrates.crate.reroll
 
-import com.willfp.eco.core.gui.SlotLocation
-import com.willfp.eco.core.gui.getSlotLocations
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.menu.MenuBuilder
-import com.willfp.eco.core.gui.setMask
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.builder.ItemStackBuilder
-import com.willfp.eco.core.price.ConfiguredPrice
 import com.willfp.ecocrates.crate.open.OpenPick
 import com.willfp.ecocrates.crate.open.OpenSession
 import com.willfp.ecocrates.plugin
 import org.bukkit.inventory.ItemStack
+import wiki.ecohub.core.price.ConfiguredPrice
+import wiki.ecohub.game.item.Items
+import wiki.ecohub.game.item.builder.ItemStackBuilder
+import wiki.ecohub.modules.menus.SlotLocation
+import wiki.ecohub.modules.menus.getSlotLocations
+import wiki.ecohub.modules.menus.menu
+import wiki.ecohub.modules.menus.menu.MenuBuilder
+import wiki.ecohub.modules.menus.setMask
+import wiki.ecohub.modules.menus.slot
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -42,7 +42,7 @@ internal object MultiReRollGUI {
 
             setMask(plugin.configYml, "reroll.multi")
 
-            title = plugin.configYml.getFormattedString("reroll.multi.title")
+            setTitle(plugin.configYml.getFormattedString("reroll.multi.title"))
 
             placeRewards(session, picks, isHandled)
 
@@ -50,7 +50,7 @@ internal object MultiReRollGUI {
                 setSlot(
                     location.row,
                     location.column,
-                    slot(Items.lookup(plugin.configYml.getString("reroll.multi.accept.item")).item) {
+                    slot(Items.lookup(plugin.configYml.getString("reroll.multi.accept.item")).getItem()) {
                         onLeftClick { _, _, _ ->
                             if (isHandled.compareAndSet(false, true)) {
                                 player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))

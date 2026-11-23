@@ -1,13 +1,11 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Rewards
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
 
-object CommandResetTotalWins : Subcommand(
-    plugin,
+object CommandResetTotalWins : EcoCratesSubcommand(
     "resettotalwins",
     "ecocrates.command.resettotalwins",
     false

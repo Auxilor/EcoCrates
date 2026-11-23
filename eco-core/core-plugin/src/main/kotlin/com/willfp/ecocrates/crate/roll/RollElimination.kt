@@ -1,10 +1,5 @@
 package com.willfp.ecocrates.crate.roll
 
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.gui.slot.FillerMask
-import com.willfp.eco.core.gui.slot.MaskItems
-import com.willfp.eco.core.items.Items
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.plugin
@@ -15,6 +10,11 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import wiki.ecohub.game.item.Items
+import wiki.ecohub.modules.menus.menu
+import wiki.ecohub.modules.menus.slot
+import wiki.ecohub.modules.menus.slot.mask.FillerMask
+import wiki.ecohub.modules.menus.slot.mask.MaskItems
 
 /**
  * Shows a row of candidates and knocks them out one by one until only the winners remain.
@@ -67,7 +67,7 @@ class RollElimination private constructor(
             )
         )
 
-        title = source.name
+        setTitle(source.name)
 
         for ((index, column) in slotColumns.withIndex()) {
             setSlot(
@@ -76,7 +76,7 @@ class RollElimination private constructor(
                 slot(ItemStack(Material.AIR)) {
                     setUpdater { _, _, _ ->
                         if (isEliminated[index]) {
-                            eliminatedItem.item
+                            eliminatedItem.getItem()
                         } else {
                             candidates[index].getDisplay(player, source)
                         }

@@ -1,10 +1,10 @@
 package com.willfp.ecocrates.envoy
 
-import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.ecocrates.envoy.session.EnvoySession
 import com.willfp.ecocrates.plugin
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarStyle
+import wiki.ecohub.config.Config
 import java.util.Locale
 
 /**

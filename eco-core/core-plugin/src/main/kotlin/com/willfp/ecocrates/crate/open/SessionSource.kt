@@ -1,16 +1,16 @@
 package com.willfp.ecocrates.crate.open
 
-import com.willfp.eco.core.price.ConfiguredPrice
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.OpenMethod
 import com.willfp.ecocrates.crate.roll.Roll
-import com.willfp.ecocrates.crate.roll.RollPickContext
 import com.willfp.ecocrates.crate.roll.RollOptions
+import com.willfp.ecocrates.crate.roll.RollPickContext
 import com.willfp.ecocrates.event.PickInfo
 import com.willfp.ecocrates.pouch.Pouch
 import com.willfp.ecocrates.reward.Reward
 import com.willfp.ecocrates.reward.RewardSource
 import org.bukkit.entity.Player
+import wiki.ecohub.core.price.ConfiguredPrice
 
 /**
  * What an [OpenSession] needs from the source it opens: a crate or a pouch.

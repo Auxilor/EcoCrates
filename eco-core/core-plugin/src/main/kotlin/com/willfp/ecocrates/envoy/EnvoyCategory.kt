@@ -1,17 +1,17 @@
 package com.willfp.ecocrates.envoy
 
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.ecocrates.envoy.spawn.RadiusBox
 import com.willfp.ecocrates.envoy.spawn.SpawnLocationMode
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.util.weightedRandom
-import com.willfp.libreforge.GlobalDispatcher
-import com.willfp.libreforge.NamedValue
-import com.willfp.libreforge.ViolationContext
-import com.willfp.libreforge.effects.Effects
-import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
-import com.willfp.libreforge.triggers.TriggerData
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.ViolationContext
+import wiki.ecohub.core.registry.KRegistrable
+import wiki.ecohub.core.stdlib.NamedValue
+import wiki.ecohub.rules.chain.NormalExecutorFactory
+import wiki.ecohub.rules.effect.Effects
+import wiki.ecohub.rules.holder.GlobalDispatcher
+import wiki.ecohub.rules.trigger.TriggerData
 import java.util.Objects
 import kotlin.random.Random
 

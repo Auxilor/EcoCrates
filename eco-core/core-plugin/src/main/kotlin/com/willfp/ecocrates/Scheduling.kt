@@ -1,10 +1,12 @@
 package com.willfp.ecocrates
 
-import com.willfp.eco.core.Eco
-import com.willfp.eco.core.Prerequisite
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
+import wiki.ecohub.core.Eco
+import wiki.ecohub.core.platform.ownsGlobal
+import wiki.ecohub.core.plugin.startup.Prerequisite
+import wiki.ecohub.game.entity.teleportRegionAware
 
 /**
  * Run [block] on the region owning this entity: now if the current thread already owns it,
@@ -35,7 +37,7 @@ internal inline fun Location.runOwned(crossinline block: () -> Unit) {
  * which is always the case off Folia, otherwise on the global region's next tick.
  */
 internal inline fun runGlobal(crossinline block: () -> Unit) {
-    if (Prerequisite.HAS_FOLIA.isMet && !Bukkit.isGlobalTickThread()) {
+    if (Prerequisite.HAS_FOLIA.isMet && !Bukkit.getServer().ownsGlobal()) {
         plugin.scheduler.global().run { block() }
     } else {
         block()
@@ -46,9 +48,11 @@ internal inline fun runGlobal(crossinline block: () -> Unit) {
  * Entity#teleport is unsupported on Folia, where teleportAsync replaces it.
  */
 internal fun Entity.teleportCompat(location: Location) {
-    if (Prerequisite.HAS_FOLIA.isMet) {
-        teleportAsync(location)
-    } else {
-        teleport(location)
-    }
+    teleportRegionAware(location)
 }
+
+/**
+ * Whether the chunk holding this location is loaded, without loading it.
+ */
+internal val Location.isInLoadedChunk: Boolean
+    get() = world?.isChunkLoaded(blockX shr 4, blockZ shr 4) == true

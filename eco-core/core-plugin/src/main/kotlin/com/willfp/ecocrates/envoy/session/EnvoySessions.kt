@@ -1,18 +1,19 @@
 package com.willfp.ecocrates.envoy.session
 
-import com.willfp.eco.core.Prerequisite
 import com.willfp.ecocrates.envoy.EnvoyCategory
 import com.willfp.ecocrates.envoy.EnvoyRarity
 import com.willfp.ecocrates.envoy.compass.EnvoyCompasses
 import com.willfp.ecocrates.envoy.spawn.EnvoyPoints
 import com.willfp.ecocrates.envoy.spawn.SpawnLocationMode
 import com.willfp.ecocrates.envoy.spawn.SpawnLocator
+import com.willfp.ecocrates.isInLoadedChunk
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.runGlobal
 import com.willfp.ecocrates.runOwned
-import com.willfp.eco.util.savedDisplayName
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import wiki.ecohub.core.plugin.startup.Prerequisite
+import wiki.ecohub.game.entity.player.PlayerUtils
 import java.time.LocalTime
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
@@ -188,7 +189,7 @@ object EnvoySessions {
         // Snapshot before despawnAll clears the spawn list.
         val remaining = session.spawns.size
         val collected = session.collectedCount
-        val topCollector = session.topCollector?.savedDisplayName
+        val topCollector = session.topCollector?.let { PlayerUtils.getSavedDisplayName(it) }
             ?: plugin.langYml.getMessage("envoy-no-top-collector")
         val topAmount = session.topCollectorAmount
 
@@ -228,7 +229,7 @@ object EnvoySessions {
         val session = active ?: return
 
         for (spawn in session.spawns) {
-            if (!spawn.blockLocation.isChunkLoaded) {
+            if (!spawn.blockLocation.isInLoadedChunk) {
                 continue
             }
 

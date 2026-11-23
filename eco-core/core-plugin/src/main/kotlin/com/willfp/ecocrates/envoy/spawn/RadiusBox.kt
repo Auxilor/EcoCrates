@@ -1,6 +1,6 @@
 package com.willfp.ecocrates.envoy.spawn
 
-import com.willfp.eco.core.config.interfaces.Config
+import wiki.ecohub.config.Config
 import kotlin.random.Random
 
 /** A whole-number block coordinate. */

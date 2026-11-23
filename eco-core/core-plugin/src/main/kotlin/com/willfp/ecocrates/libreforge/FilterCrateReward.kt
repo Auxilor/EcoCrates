@@ -1,12 +1,12 @@
 package com.willfp.ecocrates.libreforge
 
-import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.ecocrates.event.CrateRewardEvent
 import com.willfp.ecocrates.event.PouchRewardEvent
-import com.willfp.libreforge.ArgType
-import com.willfp.libreforge.NoCompileData
-import com.willfp.libreforge.filters.Filter
-import com.willfp.libreforge.triggers.TriggerData
+import wiki.ecohub.config.ArgType
+import wiki.ecohub.config.Config
+import wiki.ecohub.core.registry.NoCompileData
+import wiki.ecohub.rules.filter.Filter
+import wiki.ecohub.rules.trigger.TriggerData
 
 object FilterCrateReward : Filter<NoCompileData, Collection<String>>("crate_reward") {
     override val description = "Matches when the reward involved in the triggering event is one of the given reward IDs."

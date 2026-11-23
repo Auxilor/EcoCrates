@@ -1,6 +1,5 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.commands.target.GiveTargets
 import com.willfp.ecocrates.commands.target.LegacySyntax
 import com.willfp.ecocrates.commands.target.TargetCommands
@@ -10,8 +9,7 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 
 /** `/ecocrates giveall <type> <id> [variant] [amount]` - gives to every online player. */
-object CommandGiveall : Subcommand(
-    plugin,
+object CommandGiveall : EcoCratesSubcommand(
     "giveall",
     "ecocrates.command.giveall",
     false

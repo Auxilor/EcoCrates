@@ -1,7 +1,5 @@
 package com.willfp.ecocrates.util
 
-import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.drops.DropQueue
 import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.isOpeningCrate
 import com.willfp.ecocrates.crate.key
@@ -16,6 +14,8 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
+import wiki.ecohub.game.drop.DropQueue
+import wiki.ecohub.game.entity.player.profile
 
 /**
  * Prevents crate key items from being placed as blocks, and hands out

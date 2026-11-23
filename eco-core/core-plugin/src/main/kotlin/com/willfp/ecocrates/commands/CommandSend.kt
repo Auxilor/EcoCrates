@@ -1,7 +1,5 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.Keys
 import com.willfp.ecocrates.crate.SharedKey
 import com.willfp.ecocrates.plugin
@@ -11,9 +9,9 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
+import wiki.ecohub.game.entity.player.PlayerUtils
 
-object CommandSend : Subcommand(
-    plugin,
+object CommandSend : EcoCratesSubcommand(
     "send",
     "ecocrates.command.send",
     true
@@ -72,14 +70,14 @@ object CommandSend : Subcommand(
             plugin.langYml.getMessage("key-trade-sent")
                 .replace("%amount%", amount.toString())
                 .replace("%key%", key.displayName)
-                .replace("%player%", recipient.savedDisplayName)
+                .replace("%player%", PlayerUtils.getSavedDisplayName(recipient))
         )
 
         recipient.player?.sendMessage(
             plugin.langYml.getMessage("key-trade-received")
                 .replace("%amount%", amount.toString())
                 .replace("%key%", key.displayName)
-                .replace("%player%", sender.savedDisplayName)
+                .replace("%player%", PlayerUtils.getSavedDisplayName(sender))
         )
     }
 

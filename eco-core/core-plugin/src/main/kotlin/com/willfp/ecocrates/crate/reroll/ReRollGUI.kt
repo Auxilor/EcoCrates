@@ -1,12 +1,5 @@
 package com.willfp.ecocrates.crate.reroll
 
-import com.willfp.eco.core.gui.getSlotLocations
-import com.willfp.eco.core.gui.menu
-import com.willfp.eco.core.gui.setMask
-import com.willfp.eco.core.gui.slot
-import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.builder.ItemStackBuilder
-import com.willfp.eco.core.price.ConfiguredPrice
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.open.OpenPick
 import com.willfp.ecocrates.crate.open.OpenSession
@@ -14,6 +7,13 @@ import com.willfp.ecocrates.crate.open.OpenSessions
 import com.willfp.ecocrates.crate.roll.Roll
 import com.willfp.ecocrates.plugin
 import org.bukkit.inventory.ItemStack
+import wiki.ecohub.core.price.ConfiguredPrice
+import wiki.ecohub.game.item.Items
+import wiki.ecohub.game.item.builder.ItemStackBuilder
+import wiki.ecohub.modules.menus.getSlotLocations
+import wiki.ecohub.modules.menus.menu
+import wiki.ecohub.modules.menus.setMask
+import wiki.ecohub.modules.menus.slot
 
 /**
  * The menu offered after a roll to accept the reward of one pick or pay to roll that pick again.
@@ -34,13 +34,13 @@ object ReRollGUI {
         val menu = menu(plugin.configYml.getInt("reroll.rows")) {
             setMask(plugin.configYml, "reroll")
 
-            title = plugin.configYml.getFormattedString("reroll.title")
+            setTitle(plugin.configYml.getFormattedString("reroll.title"))
 
             for (location in plugin.configYml.getSlotLocations("reroll.accept")) {
                 setSlot(
-                    location.row,
-                    location.column,
-                    slot(pick.reward.getDisplay(player, session.source)) {
+                    row = location.row,
+                    column = location.column,
+                    slot = slot(pick.reward.getDisplay(player, session.source)) {
                         onLeftClick { _, _, _ ->
                             player.setMetadata(metaKey, plugin.metadataValueFactory.create(true))
                             player.closeInventory()
@@ -52,9 +52,9 @@ object ReRollGUI {
 
             for (location in plugin.configYml.getSlotLocations("reroll.reroll")) {
                 setSlot(
-                    location.row,
-                    location.column,
-                    slot(rerollItem(priceDisplay)) {
+                    row = location.row,
+                    column = location.column,
+                    slot = slot(rerollItem(priceDisplay)) {
                         onLeftClick { _, _, _ ->
                             reroll(session, pick, price)
                         }

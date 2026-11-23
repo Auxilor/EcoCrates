@@ -1,13 +1,11 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.command.impl.Subcommand
 import com.willfp.ecocrates.converters.Converters
 import com.willfp.ecocrates.plugin
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
 
-object CommandConvert : Subcommand(
-    plugin,
+object CommandConvert : EcoCratesSubcommand(
     "convert",
     "ecocrates.command.convert",
     false
@@ -30,7 +28,7 @@ object CommandConvert : Subcommand(
         sender.sendMessage(plugin.langYml.getMessage("converted"))
     }
 
-    override fun tabComplete(sender: CommandSender, args: MutableList<String>): MutableList<String> {
+    override fun tabComplete(sender: CommandSender, args: List<String>): List<String> {
         val values = mutableListOf<String>()
         if (args.size == 1) {
             StringUtil.copyPartialMatches(

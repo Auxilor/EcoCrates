@@ -1,7 +1,7 @@
 package com.willfp.ecocrates.util
 
-import com.willfp.eco.core.data.Profile
-import com.willfp.eco.core.data.keys.PersistentDataKey
+import wiki.ecohub.data.PersistentDataKey
+import wiki.ecohub.data.profile.Profile
 
 /**
  * Add [amount] to a pending count in one atomic step, so a join handing the count out at the

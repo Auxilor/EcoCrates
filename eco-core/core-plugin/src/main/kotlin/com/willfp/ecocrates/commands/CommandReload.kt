@@ -1,9 +1,5 @@
 package com.willfp.ecocrates.commands
 
-import com.willfp.eco.core.Prerequisite
-import com.willfp.eco.core.command.impl.Subcommand
-import com.willfp.eco.util.StringUtils
-import com.willfp.eco.util.toNiceString
 import com.willfp.ecocrates.crate.Crate
 import com.willfp.ecocrates.crate.Crates
 import com.willfp.ecocrates.crate.Keys
@@ -12,15 +8,18 @@ import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.Rewards
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
+import wiki.ecohub.core.platform.ownsGlobal
+import wiki.ecohub.core.plugin.startup.Prerequisite
+import wiki.ecohub.core.stdlib.toNiceString
+import wiki.ecohub.ui.text.StringUtils
 
-object CommandReload : Subcommand(
-    plugin,
+object CommandReload : EcoCratesSubcommand(
     "reload",
     "ecocrates.command.reload",
     false
 ) {
     override fun onExecute(sender: CommandSender, args: List<String>) {
-        if (Prerequisite.HAS_FOLIA.isMet && !Bukkit.isGlobalTickThread()) {
+        if (Prerequisite.HAS_FOLIA.isMet && !Bukkit.getServer().ownsGlobal()) {
             plugin.scheduler.global().run { onExecute(sender, args) }
             return
         }

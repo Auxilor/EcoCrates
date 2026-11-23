@@ -1,21 +1,5 @@
 package com.willfp.ecocrates.crate
 
-import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.data.ServerProfile
-import com.willfp.eco.core.data.keys.PersistentDataKey
-import com.willfp.eco.core.data.keys.PersistentDataKeyType
-import com.willfp.eco.core.data.profile
-import com.willfp.eco.core.leaderboard.Leaderboard
-import com.willfp.eco.core.leaderboard.Leaderboards
-import com.willfp.eco.core.leaderboard.registerStandardPlaceholders
-import com.willfp.eco.core.particle.Particles
-import com.willfp.eco.core.placeholder.PlayerPlaceholder
-import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
-import com.willfp.eco.core.price.ConfiguredPrice
-import com.willfp.eco.core.price.Prices
-import com.willfp.eco.core.registry.KRegistrable
-import com.willfp.eco.util.formatEco
-import com.willfp.eco.util.savedDisplayName
 import com.willfp.ecocrates.crate.open.OpenContext
 import com.willfp.ecocrates.crate.open.OpenPick
 import com.willfp.ecocrates.crate.open.OpenSession
@@ -42,13 +26,6 @@ import com.willfp.ecocrates.reward.RewardSource
 import com.willfp.ecocrates.reward.Rewards
 import com.willfp.ecocrates.reward.SourceTypes
 import com.willfp.ecocrates.reward.planPicks
-import com.willfp.libreforge.NamedValue
-import com.willfp.libreforge.ViolationContext
-import com.willfp.libreforge.conditions.Conditions
-import com.willfp.libreforge.effects.Effects
-import com.willfp.libreforge.effects.executors.impl.NormalExecutorFactory
-import com.willfp.libreforge.toDispatcher
-import com.willfp.libreforge.triggers.TriggerData
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -57,6 +34,29 @@ import org.bukkit.entity.Player
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.Vector
+import wiki.ecohub.config.Config
+import wiki.ecohub.config.ViolationContext
+import wiki.ecohub.core.price.ConfiguredPrice
+import wiki.ecohub.core.price.Prices
+import wiki.ecohub.core.registry.KRegistrable
+import wiki.ecohub.core.stdlib.NamedValue
+import wiki.ecohub.data.PersistentDataKey
+import wiki.ecohub.data.PersistentDataKeyType
+import wiki.ecohub.data.playerbase.leaderboard.Leaderboard
+import wiki.ecohub.data.playerbase.leaderboard.Leaderboards
+import wiki.ecohub.data.playerbase.leaderboard.registerStandardPlaceholders
+import wiki.ecohub.data.profile.ServerProfile
+import wiki.ecohub.game.entity.player.PlayerUtils
+import wiki.ecohub.game.entity.player.profile
+import wiki.ecohub.game.entity.toDispatcher
+import wiki.ecohub.game.particle.Particles
+import wiki.ecohub.rules.chain.NormalExecutorFactory
+import wiki.ecohub.rules.condition.Conditions
+import wiki.ecohub.rules.effect.Effects
+import wiki.ecohub.rules.trigger.TriggerData
+import wiki.ecohub.ui.placeholder.type.PlayerPlaceholder
+import wiki.ecohub.ui.placeholder.type.PlayerlessPlaceholder
+import wiki.ecohub.ui.text.formatEco
 import java.util.Objects
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -246,7 +246,7 @@ class Crate(
         PlayerlessPlaceholder(
             plugin,
             "${id}_last_winner",
-        ) { lastWinner?.savedDisplayName ?: noLastWinner() }.register()
+        ) { lastWinner?.let { PlayerUtils.getSavedDisplayName(it) } ?: noLastWinner() }.register()
 
         PlayerlessPlaceholder(
             plugin,
@@ -405,7 +405,10 @@ class Crate(
 
     /** The display string of the pay-to-open price for [player]. */
     fun getPriceToOpenDisplay(player: Player): String =
-        ConfiguredPrice(Prices.create(priceToOpen.toString(), currencyType), priceToOpenFormat).getDisplay(player)
+        ConfiguredPrice(
+            Prices.create(expression = priceToOpen.toString(), priceName = currencyType),
+            priceToOpenFormat
+        ).getDisplay(player)
 
     /** Like [openPlaced], but opens every key the player has (shift-right-click-open-all). */
     fun openPlacedAll(player: Player, location: Location, method: OpenMethod) {
