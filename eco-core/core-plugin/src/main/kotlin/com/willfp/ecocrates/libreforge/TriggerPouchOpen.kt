@@ -20,6 +20,10 @@ object TriggerPouchOpen : Trigger("pouch_open") {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun PouchOpenEvent.handle() {
+        if (pickNumber > 1) {
+            return
+        }
+
         dispatch(
             player.toDispatcher(),
             TriggerData(

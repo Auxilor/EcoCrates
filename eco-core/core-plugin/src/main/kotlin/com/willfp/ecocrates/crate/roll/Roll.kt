@@ -15,6 +15,12 @@ interface Roll {
     val reward: Reward
 
     /**
+     * All rewards that will be given, the first being [reward].
+     */
+    val rewards: List<Reward>
+        get() = listOf(reward)
+
+    /**
      * The player.
      */
     val player: Player

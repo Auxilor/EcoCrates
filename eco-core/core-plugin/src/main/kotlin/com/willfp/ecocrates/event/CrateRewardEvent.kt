@@ -6,11 +6,12 @@ import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
 
-class CrateRewardEvent(
+class CrateRewardEvent @JvmOverloads constructor(
     player: Player,
     override val crate: Crate,
-    var reward: Reward
-) : PlayerEvent(player), CrateEvent {
+    var reward: Reward,
+    override val pick: PickInfo = PickInfo.FIRST
+) : PlayerEvent(player), PickEvent, CrateEvent {
     override fun getHandlers(): HandlerList {
         return Companion.handlers
     }

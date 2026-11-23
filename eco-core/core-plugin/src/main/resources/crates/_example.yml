@@ -161,3 +161,20 @@ rewards:
   - stack_of_emeralds
   - bedrock
   - 1000_coins
+
+# Optional. One reward is always given. Each entry is the chance of one more bonus reward.
+# Entries accept math and placeholders, like reward weights.
+# bonus-chances:
+#   - 50
+#   - 20
+
+# Optional. Overrides the multi-reward section in config.yml for this crate only.
+# Leave out any key to use the value from config.yml.
+# multi-reward:
+#   fallback: sequential
+#   bonus-rerollable: true
+#   bonus-chance-mode: overall
+
+# Optional. Effects run once after every reward from an open is given.
+# Supports %rewards% (the reward names) and %reward_amount% (the number of rewards).
+all-finish-effects: []

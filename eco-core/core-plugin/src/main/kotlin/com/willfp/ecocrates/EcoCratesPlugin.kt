@@ -54,6 +54,8 @@ import org.bukkit.event.Listener
 import wiki.ecohub.config.category.NativeConfigCategory
 import wiki.ecohub.core.command.EcoCommand
 import wiki.ecohub.core.plugin.EcoPlugin
+import wiki.ecohub.data.playerbase.leaderboard.Leaderboards
+import wiki.ecohub.data.playerbase.leaderboard.registerCategoryTopPlaceholders
 import wiki.ecohub.provider.ExternalProviderLoader
 import wiki.ecohub.provider.metrics.EcoMetricsChart
 import wiki.ecohub.rules.condition.Conditions
@@ -61,6 +63,7 @@ import wiki.ecohub.rules.effect.Effects
 import wiki.ecohub.rules.filter.Filters
 import wiki.ecohub.rules.trigger.Triggers
 import wiki.ecohub.ui.display.DisplayModule
+import wiki.ecohub.ui.text.formatEco
 
 internal lateinit var plugin: EcoCratesPlugin
     private set
@@ -97,6 +100,12 @@ class EcoCratesPlugin : EcoPlugin() {
 
         EnvoyPlaceholders.register()
 
+        registerCategoryTopPlaceholders(
+            this,
+            this.langYml.getString("top.empty-position").formatEco(),
+            listOf("opens")
+        ) { Crates.getByID(it)?.leaderboard }
+
         RollItems.sweepLoadedChunks()
 
         PendingRewards.register()
@@ -111,6 +120,10 @@ class EcoCratesPlugin : EcoPlugin() {
     }
 
     override fun handleReload() {
+        Leaderboards.unregisterAll(this)
+
+        Crates.values().forEach { it.registerLeaderboard() }
+
         ActiveRolls.finalizeAll(queueForLater = false)
 
         PermissionMultipliers.update()
@@ -177,6 +190,9 @@ class EcoCratesPlugin : EcoPlugin() {
         EcoMetricsChart.SingleLine("placed_crates") { PlacedCrates.values().size },
         EcoMetricsChart.SingleLine("total_envoys") { Envoys.values().size },
         EcoMetricsChart.SingleLine("active_envoy_crates") { EnvoySessions.remaining() },
-        EcoMetricsChart.SingleLine("total_pouches") { Pouches.values().size }
+        EcoMetricsChart.SingleLine("total_pouches") { Pouches.values().size },
+        EcoMetricsChart.SimplePie("leaderboard_enabled") {
+            if (configYml.getBool("leaderboard.enabled")) "enabled" else "disabled"
+        }
     )
 }

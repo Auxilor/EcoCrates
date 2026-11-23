@@ -2,6 +2,7 @@ package com.willfp.ecocrates.crate.roll
 
 import com.willfp.ecocrates.crate.ActiveRolls
 import com.willfp.ecocrates.crate.isOpeningCrate
+import com.willfp.ecocrates.crate.open.OpenSessions
 import com.willfp.ecocrates.plugin
 import com.willfp.ecocrates.reward.PendingRewards
 import java.util.concurrent.atomic.AtomicBoolean
@@ -9,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * Drives a roll from start to finish: marks the player as opening, ticks the
  * roll every tick, and finalizes exactly once - when the roll says it's done,
- * when the player stops opening (e.g. quits), or when a tick throws.
+ * when the player stops opening (e.g. quits), or when starting or a tick throws.
  */
 object RollSession {
     /**
@@ -39,7 +40,7 @@ object RollSession {
             player.isOpeningCrate = false
 
             if (queueForLater) {
-                PendingRewards.queue(player, roll.source, roll.reward)
+                queueOwedRewardsOfOpen(roll)
                 return
             }
 
@@ -84,6 +85,24 @@ object RollSession {
 
         player.isOpeningCrate = true
 
-        roll.roll()
+        try {
+            roll.roll()
+        } catch (e: Exception) {
+            plugin.logger.warning("Error while starting roll for ${player.name}, cancelling")
+            e.printStackTrace()
+
+            rollTask.cancel()
+            finalizeRoll(true)
+        }
+    }
+
+    private fun queueOwedRewardsOfOpen(roll: Roll) {
+        val session = OpenSessions.get(roll.player)?.takeIf { it.activeRoll === roll }
+
+        if (session != null) {
+            session.finishAll(true)
+        } else {
+            PendingRewards.queue(roll.player, roll.source, roll.reward)
+        }
     }
 }

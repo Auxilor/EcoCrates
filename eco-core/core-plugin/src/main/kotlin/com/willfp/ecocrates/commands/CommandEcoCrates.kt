@@ -21,7 +21,8 @@ internal fun ecoCratesCommand(): EcoCommand =
             CommandGiveall,
             CommandTake,
             CommandGiveoffline,
-            CommandSend
+            CommandSend,
+            CommandTop
         )
         envoyCommand()
     }

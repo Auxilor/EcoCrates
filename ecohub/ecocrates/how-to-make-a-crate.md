@@ -36,6 +36,7 @@ IDs may only contain lowercase letters, numbers, and underscores (a-z, 0-9, _). 
 | **Placed** | Holograms and particles for physically placed crates |
 | **Effects** | What runs when the crate opens and finishes rolling |
 | **Rewards** | Which rewards are in the pool |
+| **Bonus rewards** | Optional. Extra rewards given on top of the first one |
 
 ```yaml
 # === Basics: identity and behaviour ===
@@ -295,13 +296,125 @@ rewards:
   - 1000_coins
 ```
 
+### Bonus rewards
+
+By default a crate gives one reward per open. Add `bonus-chances` to also give a chance of extra bonus rewards. One reward is always given, and each entry in the list is the chance of one more.
+
+```yaml
+bonus-chances: # Optional. Each entry is the chance, as a percentage, of one more bonus reward.
+  - 50
+  - 20
+  - 5
+multi-reward: # Optional. Overrides the multi-reward section in config.yml for this crate only.
+  fallback: sequential
+  bonus-rerollable: true
+  bonus-chance-mode: overall
+all-finish-effects: [] # Optional. Runs once after every reward from the open is given.
+```
+
+A crate with no `bonus-chances` behaves exactly as it always has. The example above has three entries, so an open gives between 1 and 4 rewards. Entries are percentages from 0 to 100, are worked out for the player opening the crate, and accept maths and placeholders like a reward's `weight`, e.g. `"%vip_bonus% * 5"`. `100` always hits and `0` never does, so `[100, 100]` gives exactly 3 rewards.
+
+:::info Every reward is independent
+Each reward in an open is its own reward. It is picked on its own, using the normal reward weights. It can be rerolled on its own, counts as its own win, and runs its own `finish-effects` and the reward's own `win-effects`. A multi-reward open is the same as several ordinary opens that share one key (or payment) and one set of `open-effects`.
+:::
+
+#### Bonus chance modes
+
+`bonus-chance-mode` decides how the entries combine into a number of bonus rewards. It defaults to `overall` and can be set for every crate in [Plugin Config](plugin-config), or for one crate in its `multi-reward` section. The table shows the chance of each bonus count for `[50, 20, 5]`.
+
+| Mode | How it works | 0 bonus | 1 bonus | 2 bonus | 3 bonus |
+| --- | --- | --- | --- | --- | --- |
+| `overall` | A single roll is made. Entry `k` is the chance of getting **at least** `k` bonus rewards. | 50% | 30% | 15% | 5% |
+| `chained` | Entries are rolled in order and rolling stops at the first miss. The bonus count is the number of hits before it. | 50% | 40% | 9.5% | 0.5% |
+| `independent` | Every entry is rolled on its own. The bonus count is the number of hits. | 38% | 49.5% | 12% | 0.5% |
+
+In `overall` mode the entries are sorted from highest to lowest, and a warning is logged on load if your plain-number entries were not already in that order. The other two modes use the order you wrote.
+
+#### How rewards are picked
+
+The first reward is picked as normal. Each bonus reward is then picked the same way, from the same weights, so `max-wins`, permission multipliers and weight effects all apply. Two reward keys, set in [How to Make a Reward](how-to-make-a-reward), tune this:
+
+- `max-per-open` caps how many times one reward can be won in a single open.
+- `bonus-eligible: false` keeps a reward out of bonus picks, so it can only ever be the first reward.
+
+A reward already picked earlier in the same open counts towards its `max-wins`, so a reward with `max-wins: 1` can't be won twice in one open. If no reward is left to pick for a bonus, that bonus is skipped. Every pick is decided when the crate opens, before any animation plays.
+
+#### Animations
+
+Every built-in roll can show several rewards at once, up to a limit that depends on the roll. If an open has more rewards than the roll can show, they play in batches. The limits are listed on [Animations / Rolls](roll-animations). Rolls added by other plugins that don't support several rewards use `multi-reward.fallback`:
+
+- `sequential`: the roll plays once per reward, one after another. Each reward gets its own reroll offer before the next starts.
+- `primary`: the roll plays for the first reward. The bonus rewards are given straight after, with no animation and no reroll offer.
+
+#### Rerolls
+
+Each reward is rerolled on its own, and the `max-rerolls` limit and the `%reroll%` price count per reward. A reward can be rerolled if the crate's `rerolls` allow it, the reward isn't set to `rerollable: false`, and, for a bonus reward, `bonus-rerollable` is `true`. A bonus reward can't be rerolled into a reward that is `bonus-eligible: false`. A reroll keeps `max-per-open` across the open's other rewards: if nothing is left that the reward can be rerolled into, the reroll doesn't happen, the reward is kept and nothing is charged. If no reward from the open can be rerolled, no reroll menu opens.
+
+When an animation shows several rewards at once, a reroll menu opens afterwards listing every reward from the open. Clicking a reward rerolls only that one, then the menu opens again with the new reward in its place. Accepting, or closing the menu, gives every reward. The menu is set up under `reroll.multi` in [Plugin Config](plugin-config).
+
+#### Choosing your own rewards
+
+With the `choose` roll the player picks every reward themselves, so weights don't apply. The player makes one choice for the first reward and one for each bonus reward.
+
+- Bonus choices hide rewards that are `bonus-eligible: false`, and rewards already chosen `max-per-open` times in the open.
+- If a bonus choice has nothing left to offer, it is dropped. It isn't given and isn't counted in `%reward_amount%`.
+- The number of choices comes from `bonus-chances`, so any entry under `100` makes the number of choices random. A crate that must be fully non-random, with the same number of choices every time, uses only `100` entries.
+- Rerolling a choice means choosing that reward again.
+
+#### Effects
+
+- `open-effects` run once per open, not again for bonus rewards or rerolls.
+- `finish-effects` run once per reward, when that reward is given. They can use `%reward_number%` and `%reward_amount%`.
+- `all-finish-effects` run once after the last reward of the open is given. They can use `%rewards%` and `%reward_amount%`.
+- The reward's own `win-effects` run once per reward too, with the same two extra placeholders.
+
+```yaml
+all-finish-effects:
+  - id: broadcast
+    args:
+      message: "%player%&f won %reward_amount% rewards from the %crate%&f: %rewards%"
+```
+
+The `opens` counter goes up once per open and once per reroll, as before, while wins count once per reward given.
+
+#### Open paths
+
+Every way of opening gives the extra rewards: placed keys, virtual keys, paying to open, and `/ecocrates forceopen`. One key or one payment is taken per open.
+
+Shift right-click open-all gives every key its bonus rewards too, with no animation and no rerolls. With `open-all-effects-per-key: true`, `open-effects` run once per key, `finish-effects` once per reward, and `all-finish-effects` once per key. With it `false`, `open-effects` run once, `finish-effects` run once for the last reward, and `all-finish-effects` run once for the whole batch.
+
+A player can't start a new open while another is in progress, including while the reroll menu is open.
+
+If a player logs out in the middle of an open, or the server reloads or shuts down, every reward not yet given is given or queued for when they next log in. `all-finish-effects` run at that moment if the player is online. Rewards queued for later run their `finish-effects` as single rewards, so `%reward_number%` and `%reward_amount%` are `1`.
+
+#### Previewing bonus chances
+
+Show players what to expect in the preview title, custom slot lore and reward lore.
+
+| Placeholder | Value |
+| --- | --- |
+| `%max_rewards%` | The most rewards one open can give, which is 1 plus the number of `bonus-chances` entries. Works in the preview title too. |
+| `%bonus_chance_<n>%` | The chance of the n-th `bonus-chances` entry for the player viewing, formatted like `%chance%`. Works in custom slot lore and reward lore, but not the preview title, which has no viewer. |
+
+```yaml
+preview:
+  title: "Demo Crate (up to %max_rewards% rewards)" # %bonus_chance_<n>% would not work here.
+```
+
+In a reward's `display.lore`, a line such as `"&fChance of a bonus: &a%bonus_chance_1%%"` shows the first chance to the player previewing.
+
 ## Internal placeholders
 
 | Placeholder | Value |
 | --- | --- |
 | `%player%` | The player's name. |
 | `%crate%` | The crate display name. |
-| `%reward%` | The reward display name. |
+| `%crate_id%` | The crate ID. |
+| `%reward%` | The reward display name. Finish effects and reward win effects. |
+| `%reward_id%` | The reward ID. Finish effects and reward win effects. |
+| `%reward_number%` | The 1-based number of the reward within the open. Finish effects and reward win effects. |
+| `%reward_amount%` | How many rewards the open gives, after any bonus that dropped out. Finish effects, reward win effects and all-finish effects. |
+| `%rewards%` | The reward names, joined with commas. All-finish effects only. |
 
 :::tip Troubleshooting
 - **Crate not loading?** Check the file name is lowercase letters, numbers, and underscores only, and that it isn't prefixed with `_`.

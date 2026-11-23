@@ -3,7 +3,7 @@ title: "How to Make a Pouch"
 sidebar_position: 6
 ---
 
-Pouches are single-use reward items. Right-clicking one uses it up, plays a GUI roll, and gives exactly one reward. A pouch defines the **item** players hold, an optional **price** and **open conditions**, a **preview GUI**, and the **rewards** it can give. This page walks you through making one from an empty file to a working item.
+Pouches are single-use reward items. Right-clicking one uses it up, plays a GUI roll, and gives one reward, plus any bonus rewards you set up. A pouch defines the **item** players hold, an optional **price** and **open conditions**, a **preview GUI**, and the **rewards** it can give. This page walks you through making one from an empty file to a working item.
 
 ## Quick start
 
@@ -37,6 +37,7 @@ IDs may only contain lowercase letters, numbers, and underscores (a-z, 0-9, _). 
 | **Preview** | The GUI players see when previewing the pouch |
 | **Effects** | What runs when the pouch opens and finishes rolling |
 | **Rewards** | Which rewards are in the pool |
+| **Bonus rewards** | Optional. Extra rewards given on top of the first one |
 
 ```yaml
 # === Basics: identity and behaviour ===
@@ -240,7 +241,7 @@ Add custom buttons to the preview with custom GUI slots; see [Custom GUI Slots](
 
 ### Effects
 
-`open-effects` run once the pouch has been paid for and used up; `finish-effects` run when the roll lands on a reward.
+`open-effects` run once the pouch has been paid for and used up; `finish-effects` run when the roll lands on a reward, once per reward if the pouch gives bonus rewards.
 
 ```yaml
 open-effects:
@@ -273,6 +274,28 @@ rewards:
   - 1000_coins
 ```
 
+### Bonus rewards
+
+Pouches take the same bonus reward keys as crates: `bonus-chances`, `multi-reward` and `all-finish-effects`, all optional. One reward is always given, and each `bonus-chances` entry is the chance of one more. A pouch with no `bonus-chances` gives exactly one reward, as before.
+
+```yaml
+bonus-chances: # Optional. Each entry is the chance, as a percentage, of one more bonus reward.
+  - 50
+  - 20
+multi-reward: # Optional. Overrides the multi-reward section in config.yml for this pouch only.
+  fallback: sequential
+  bonus-chance-mode: overall
+all-finish-effects: [] # Optional. Runs once after every reward from the open is given.
+```
+
+How the chances combine in each `bonus-chance-mode`, how rewards are picked, the `choose` roll, the effects and the preview placeholders all work exactly as they do for crates; see [Bonus rewards](how-to-make-a-crate#bonus-rewards). In short, every reward in an open is independent: picked, counted and running its own `finish-effects` on its own. `PouchOpenEvent` and `PouchRewardEvent` fire once per reward.
+
+:::warning Pouches never offer rerolls
+`bonus-rerollable` and a reward's `rerollable` key are ignored for pouches, and the multi-reward reroll menu never opens. Every reward is simply given.
+:::
+
+A player who already has something open, including a roll or a crate's reroll menu, can't open a pouch until it finishes.
+
 ## Internal placeholders
 
 | Placeholder | Value |
@@ -281,8 +304,11 @@ rewards:
 | `%pouch%` | The pouch display name. |
 | `%pouch_id%` | The pouch ID. |
 | `%pouch_rarity%` | The pouch rarity. |
-| `%reward%` | The reward display name. Finish effects only. |
-| `%reward_id%` | The reward ID. Finish effects only. |
+| `%reward%` | The reward display name. Finish effects and reward win effects. |
+| `%reward_id%` | The reward ID. Finish effects and reward win effects. |
+| `%reward_number%` | The 1-based number of the reward within the open. Finish effects only. |
+| `%reward_amount%` | How many rewards the open gives. Finish effects and all-finish effects. |
+| `%rewards%` | The reward names, joined with commas. All-finish effects only. |
 
 :::tip Troubleshooting
 - **Pouch not loading?** Check the file name is lowercase letters, numbers, and underscores only, and that it isn't prefixed with `_`.

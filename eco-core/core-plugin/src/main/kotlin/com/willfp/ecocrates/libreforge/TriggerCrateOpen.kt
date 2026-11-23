@@ -20,6 +20,10 @@ object TriggerCrateOpen : Trigger("crate_open") {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun CrateOpenEvent.handle() {
+        if (pickNumber > 1 && !isReroll) {
+            return
+        }
+
         dispatch(
             player.toDispatcher(),
             TriggerData(

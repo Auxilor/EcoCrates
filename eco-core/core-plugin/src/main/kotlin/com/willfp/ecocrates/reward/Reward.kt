@@ -67,6 +67,12 @@ class Reward(
 
     val maxWins = config.getInt("max-wins")
 
+    val maxPerOpen = config.getIntOrNull("max-per-open") ?: -1
+
+    val isBonusEligible = config.getBoolOrNull("bonus-eligible") != false
+
+    val isRerollable = config.getBoolOrNull("rerollable") != false
+
     private val winsKey: PersistentDataKey<Int> = PersistentDataKey(
         plugin.namespacedKeyFactory.create("${id}_wins"),
         PersistentDataKeyType.INT,
@@ -96,12 +102,16 @@ class Reward(
             if (totalWeight <= 0.0) 0.0 else rewardWeight.effectiveWeight / totalWeight * 100
         }
         val lore = config.getStrings("display.lore").map { line ->
-            line.replace(
-                "%chance%",
-                formatChance(chance)
-            ).replace(
-                "%weight%",
-                rewardWeight.weight.toNiceString()
+            BonusPlaceholders.replace(
+                line.replace(
+                    "%chance%",
+                    formatChance(chance)
+                ).replace(
+                    "%weight%",
+                    rewardWeight.weight.toNiceString()
+                ),
+                source,
+                player
             ).formatEco(player, formatPlaceholders = true)
         }
 
@@ -123,6 +133,7 @@ class Reward(
     }
 
     /** Kept for binary compatibility with addons compiled against the crate-only signature. */
+    @Suppress("U002")
     fun getDisplay(player: Player, crate: Crate): ItemStack =
         getDisplay(player, crate as RewardSource)
 
@@ -174,11 +185,6 @@ class Reward(
         }
 
         return (weight / totalWeight) * 100
-    }
-
-    private fun formatChance(chance: Double): String {
-        val places = plugin.configYml.getInt("chance-decimal-places").coerceAtLeast(0)
-        return String.format(Locale.ROOT, "%.${places}f", chance)
     }
 
     init {
@@ -234,8 +240,10 @@ class Reward(
         giveTo(player, source.name, source.id)
 
     /** Kept for binary compatibility with addons compiled against the crate-only signature. */
-    fun giveTo(player: Player, crate: Crate) =
+    @Suppress("U002")
+    fun giveTo(player: Player, crate: Crate) {
         giveTo(player, crate as RewardSource)
+    }
 
     fun getWins(player: OfflinePlayer): Int {
         return if (maxWins > 0) player.profile.read(winsKey) else 0
@@ -269,5 +277,18 @@ class Reward(
 
     override fun getID(): String {
         return id
+    }
+
+    companion object {
+        /**
+         * Format a percentage chance to the configured decimal places.
+         *
+         * @param chance The chance.
+         * @return The formatted chance.
+         */
+        fun formatChance(chance: Double): String {
+            val places = plugin.configYml.getInt("chance-decimal-places").coerceAtLeast(0)
+            return String.format(Locale.ROOT, "%.${places}f", chance)
+        }
     }
 }
